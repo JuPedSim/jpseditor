@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuDatei">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="action_ffnen"/>
+    <addaction name="actionSpeichern"/>
+    <addaction name="separator"/>
+    <addaction name="actionBeenden"/>
+   </widget>
+   <widget class="QMenu" name="menuHilfe">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="action_ber"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionWall"/>
+    <addaction name="actionDoor"/>
+    <addaction name="actionExit"/>
+    <addaction name="separator"/>
+    <addaction name="actiongridmode"/>
+    <addaction name="actionObjectsnap"/>
+    <addaction name="actionDelete_lines"/>
+    <addaction name="actionDelete_single_line"/>
+    <addaction name="separator"/>
+    <addaction name="actionRoom"/>
+   </widget>
+   <addaction name="menuDatei"/>
+   <addaction name="menuHilfe"/>
+   <addaction name="menuTools"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="separator"/>
+   <addaction name="actionWall"/>
+   <addaction name="actionDoor"/>
+   <addaction name="actionExit"/>
+   <addaction name="separator"/>
+   <addaction name="actiongridmode"/>
+   <addaction name="separator"/>
+   <addaction name="actionObjectsnap"/>
+   <addaction name="separator"/>
+   <addaction name="actionDelete_lines"/>
+   <addaction name="separator"/>
+   <addaction name="actionDelete_single_line"/>
+   <addaction name="separator"/>
+   <addaction name="actionRoom"/>
+  </widget>
+  <action name="action_ffnen">
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/open.png</normaloff>:/open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open</string>
+   </property>
+   <property name="toolTip">
+    <string>Open</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionSpeichern">
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/filesave.png</normaloff>:/filesave.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="toolTip">
+    <string>Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionBeenden">
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/man-gimp1.png</normaloff>:/man-gimp1.png</iconset>
+   </property>
+   <property name="text">
+    <string>Quit</string>
+   </property>
+   <property name="toolTip">
+    <string>Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="action_ber">
+   <property name="text">
+    <string>About</string>
+   </property>
+   <property name="toolTip">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actiongridmode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/Grid.png</normaloff>:/Grid.png</iconset>
+   </property>
+   <property name="text">
+    <string>Gridmode</string>
+   </property>
+   <property name="toolTip">
+    <string>Gridmode</string>
+   </property>
+  </action>
+  <action name="actionWall">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/Wall.png</normaloff>:/Wall.png</iconset>
+   </property>
+   <property name="text">
+    <string>Wall</string>
+   </property>
+   <property name="shortcut">
+    <string>Space</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionObjectsnap">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/Trans.png</normaloff>:/Trans.png</iconset>
+   </property>
+   <property name="text">
+    <string>Objectsnap</string>
+   </property>
+   <property name="toolTip">
+    <string>Objectsnap</string>
+   </property>
+  </action>
+  <action name="actionDelete_lines">
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/DeleteAll.png</normaloff>:/DeleteAll.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete all</string>
+   </property>
+  </action>
+  <action name="actionDelete_single_line">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/Delete.png</normaloff>:/Delete.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete_single_line</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
+   </property>
+  </action>
+  <action name="actionDoor">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/Door.png</normaloff>:/Door.png</iconset>
+   </property>
+   <property name="text">
+    <string>Door</string>
+   </property>
+   <property name="toolTip">
+    <string>Door</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/Exit.png</normaloff>:/Exit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Exit</string>
+   </property>
+   <property name="toolTip">
+    <string>Exit</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionRoom">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Rooms</string>
+   </property>
+   <property name="toolTip">
+    <string>Define Room</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="Ressource.qrc"/>
+ </resources>
+ <connections/>
+</ui>
