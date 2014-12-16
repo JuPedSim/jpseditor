@@ -98,9 +98,29 @@ void jpsLineItem::add_intersectionPoint(QPointF *point)
     intersectionVector.push_back(point);
 }
 
+void jpsLineItem::remove_intersectionPoint(QPointF *point)
+{
+    intersectionVector.removeOne(point);
+}
+
 QList<QPointF *> jpsLineItem::get_intersectionVector()
 {
     return intersectionVector;
+}
+
+QList<jpsLineItem *> jpsLineItem::get_intersectLineVector()
+{
+    return intersectLineVector;
+}
+
+void jpsLineItem::add_intersectLine(jpsLineItem *lineItem)
+{
+    intersectLineVector.push_back(lineItem);
+}
+
+void jpsLineItem::remove_interLine(jpsLineItem *lineItem)
+{
+    intersectLineVector.removeOne(lineItem);
 }
 
 

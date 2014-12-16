@@ -23,7 +23,12 @@ public:
     bool is_Door();
     bool is_Exit();
     void add_intersectionPoint(QPointF *point);
+    void remove_intersectionPoint(QPointF *point);
     QList<QPointF *> get_intersectionVector();
+    QList<jpsLineItem* > get_intersectLineVector();
+    void add_intersectLine(jpsLineItem * lineItem);
+    void remove_interLine(jpsLineItem * lineItem);
+
 
 
 private:
@@ -34,6 +39,7 @@ private:
     bool door;
     bool exit;
     QList<QPointF *> intersectionVector;
+    QList<jpsLineItem* > intersectLineVector;
     /*
     jpsCrossing* assigned_crossing=0L;
     jpsRoom* assigned_room=0L;

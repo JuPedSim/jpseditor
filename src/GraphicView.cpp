@@ -1,6 +1,5 @@
 
 #include <QtGui>
-#include <QGraphicsLineItem>
 #include "GraphicView.h"
 #include <iostream>
 
@@ -45,10 +44,14 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager* dmanager):QGra
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setCursor(Qt::CrossCursor);
 
+
+
+
     //Set-up the scene
     Scene = new QGraphicsScene(this);
     setScene(Scene);
     setSceneRect(0, 0, 1920, 1080);
+
 }
 
 
@@ -94,16 +97,13 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
         if (current_line!=0L)
         {
-            current_line->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
-            //current_line->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
+            current_line->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
 
         }
 
         for (int i=0; i<line_vector.size(); i++)
         {
-            //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
-            line_vector[i]->get_line()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
-
+            line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
 
         }
         //if (current_line_mark!=0L)
@@ -161,8 +161,7 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
             if (current_line==0L)
             {
                 current_line = Scene->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),currentPen);
-                //current_line->translate(translation_x,translation_y);
-                current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+                current_line->translate(translation_x,translation_y);
 
             }
 
@@ -203,8 +202,12 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                         {
                             // attaching current intersection point
                             intersect_point_vector.push_back(intersection_point);
+                            // LineItem remember intersectionPoint
                             lineItem->add_intersectionPoint(intersection_point);
                             line_vector[i]->add_intersectionPoint(intersection_point);
+                            //LineItem remembers line which it has an intersection with
+                            lineItem->add_intersectLine(line_vector[i]);
+                            line_vector[i]->add_intersectLine(lineItem);
 
                             // Free memory
                             //delete intersection_point;
@@ -518,7 +521,17 @@ void jpsGraphicsView::delete_marked_lines()
 
             for (int j=0; j<points.size(); j++)
             {
+
                 intersect_point_vector.removeOne(points[i]);
+                for (int k=0; k<marked_lines[i]->get_intersectLineVector().size(); k++)
+                {
+                    // removing the intersectionPoint pointer from all lines which includes the point
+                    marked_lines[i]->get_intersectLineVector()[k]->remove_intersectionPoint(points[i]);
+                    // as marked_lines is removed it is has no intersections with any other line anymore
+                    // so pointers of possible intersectionsLine have to be removed
+                    marked_lines[i]->get_intersectLineVector()[k]->remove_interLine(marked_lines[i]);
+                }
+                delete points[i];
             }
 
             line_vector.removeOne(marked_lines[i]);
@@ -533,7 +546,6 @@ void jpsGraphicsView::delete_marked_lines()
                         if (marked_lines[i]==cList[j]->get_listWalls()[k])
                         {
                             delete_candidates.push_back(cList[j]->get_listWalls()[k]);
-
                         }
                     }
                     cList[j]->removeWall(delete_candidates);
