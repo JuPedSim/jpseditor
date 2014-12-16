@@ -5,8 +5,8 @@
 jpsDatamanager::jpsDatamanager(QWidget *parent)
 {
     parent_widget=parent;
-    room_id_counter=1;
-    obs_id_counter=1;
+    room_id_counter=0;
+    obs_id_counter=0;
 
 }
 
@@ -185,7 +185,7 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream,const qreal &min_x,cons
     //rooms
     stream->writeStartElement("rooms");
     stream->writeStartElement("room");
-    stream->writeAttribute("id","1");
+    stream->writeAttribute("id","0");
     stream->writeAttribute("caption","hall");
 
     for (int i=0; i<roomlist.size(); i++)

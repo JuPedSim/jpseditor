@@ -97,13 +97,15 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
         if (current_line!=0L)
         {
-            current_line->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
+            //current_line->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
+            current_line->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
 
         }
 
         for (int i=0; i<line_vector.size(); i++)
         {
-            line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
+            //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
+            line_vector[i]->get_line()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
 
         }
         //if (current_line_mark!=0L)
@@ -161,7 +163,8 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
             if (current_line==0L)
             {
                 current_line = Scene->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),currentPen);
-                current_line->translate(translation_x,translation_y);
+                //current_line->translate(translation_x,translation_y);
+                current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
 
             }
 
