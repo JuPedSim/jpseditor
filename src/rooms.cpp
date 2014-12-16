@@ -1,6 +1,7 @@
 #include "rooms.h"
 #include <QtGui>
 #include <iostream>
+#include <QGraphicsLineItem>
 
 
 jpsRoom::jpsRoom(int id_room)

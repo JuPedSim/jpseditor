@@ -4,6 +4,7 @@
 #include<QtGui>
 #include <QApplication>
 #include <QGraphicsView>
+#include <QGraphicsLineItem>
 #include "rooms.h"
 #include "jpscrossing.h"
 #include "jpsLineItem.h"
