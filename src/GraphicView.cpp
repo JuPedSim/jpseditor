@@ -1,5 +1,6 @@
 
 #include <QtGui>
+#include <QGraphicsLineItem>
 #include "GraphicView.h"
 #include <iostream>
 
@@ -44,14 +45,10 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager* dmanager):QGra
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setCursor(Qt::CrossCursor);
 
-
-
-
     //Set-up the scene
     Scene = new QGraphicsScene(this);
     setScene(Scene);
     setSceneRect(0, 0, 1920, 1080);
-
 }
 
 

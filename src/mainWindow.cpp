@@ -1,10 +1,12 @@
 //mainWindow.cpp
 
 #include "mainWindow.h"
-//#include "mainWidget.h"
 #include "GraphicView.h"
 #include "roomwidget.h"
 
+
+#include <QFileDialog>
+#include <QMessageBox>
 
 MWindow :: MWindow() {
 

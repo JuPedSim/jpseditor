@@ -4,9 +4,8 @@
 
 #include <QGraphicsView>
 #include <QGraphicsSceneMouseEvent>
-//#include "GraphicScene.h"
-//#include "line.h"
 #include "datamanager.h"
+#include <QGraphicsLineItem>
 
 
 

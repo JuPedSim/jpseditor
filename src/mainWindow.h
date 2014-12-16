@@ -4,6 +4,8 @@
 
 
 #include <QtGui>
+#include <QLabel>
+#include <QLineEdit>
 #include "ui_mainwindow.h"
 #include "roomwidget.h"
 #include "GraphicView.h"
