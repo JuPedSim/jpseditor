@@ -44,6 +44,8 @@ protected slots:
     void delete_marked_lines();
     void send_length();
     void define_room();
+    void en_selectMode();
+    void dis_selectMode();
 
 };
 

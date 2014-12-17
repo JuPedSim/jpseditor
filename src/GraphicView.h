@@ -42,6 +42,7 @@ public:
     void select_line(jpsLineItem *mline);
     qreal get_gl_min_x();
     qreal get_gl_min_y();
+    void disable_drawing();
 
 protected:
     virtual void mouseMoveEvent(QMouseEvent * mouseEvent);
@@ -85,6 +86,7 @@ signals:
     void mouse_moved();
     void set_focus_textedit();
     void lines_deleted();
+    void no_drawing();
 
 
 

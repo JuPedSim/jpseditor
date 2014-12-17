@@ -51,6 +51,11 @@ MWindow :: MWindow() {
     connect(mview,SIGNAL(set_focus_textedit()),length_edit,SLOT(setFocus()));
     connect(length_edit,SIGNAL(returnPressed()),this,SLOT(send_length()));
     connect(actionRoom,SIGNAL(triggered(bool)),this,SLOT(define_room()));
+    connect(actionSelect_Mode,SIGNAL(triggered(bool)),this,SLOT(en_selectMode()));
+    connect(mview,SIGNAL(no_drawing()),this,SLOT(en_selectMode()));
+    connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
+    connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
+    connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
 
 
 }
@@ -162,6 +167,20 @@ void MWindow::define_room()
         rwidget=0L;
         actionRoom->setChecked(false);
     }
+}
+
+void MWindow::en_selectMode()
+{
+    mview->disable_drawing();
+    actionSelect_Mode->setChecked(true);
+    actionWall->setChecked(false);
+    actionDoor->setChecked(false);
+    actionExit->setChecked(false);
+}
+
+void MWindow::dis_selectMode()
+{
+    actionSelect_Mode->setChecked(false);
 }
 
 

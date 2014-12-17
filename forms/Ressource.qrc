@@ -32,5 +32,8 @@
         <file>./filesaveas.png</file>
         <file>./Trans.png</file>
         <file>./TransC.png</file>
+		<file>./snap.png</file>
+		<file>./basicCursor.png</file>
+		<file>./Room.png</file>
     </qresource>
 </RCC>

@@ -490,6 +490,13 @@ qreal jpsGraphicsView::get_gl_min_y()
     return gl_min_y;
 }
 
+void jpsGraphicsView::disable_drawing()
+{
+    statWall=false;
+    statDoor=false;
+    statExit=false;
+}
+
 
 qreal jpsGraphicsView::calc_d_point(const QLineF &line,const qreal &x, const qreal &y)
 
@@ -661,7 +668,15 @@ void jpsGraphicsView::en_disableWall()
     statWall=!statWall;
     statDoor=false;
     statExit=false;
+    if (statWall==false)
+    {
+        emit no_drawing();
+    }
+    else
+    {
     currentPen.setColor(Qt::black);
+    }
+
 }
 
 bool jpsGraphicsView::statusWall()
@@ -684,7 +699,15 @@ void jpsGraphicsView::en_disableDoor()
     statDoor=!statDoor;
     statExit=false;
     statWall=false;
+    if (statDoor==false)
+    {
+        emit no_drawing();
+    }
+    else
+    {
     currentPen.setColor(Qt::blue);
+    }
+
 }
 
 bool jpsGraphicsView::statusDoor()
@@ -697,7 +720,14 @@ void jpsGraphicsView::en_disableExit()
     statExit=!statExit;
     statDoor=false;
     statWall=false;
+    if (statExit==false)
+    {
+        emit no_drawing();
+    }
+    else
+    {
     currentPen.setColor(Qt::darkMagenta);
+    }
 }
 
 bool jpsGraphicsView::statusExit()

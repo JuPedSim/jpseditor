@@ -42,6 +42,8 @@
     <property name="title">
      <string>Tools</string>
     </property>
+    <addaction name="actionSelect_Mode"/>
+    <addaction name="separator"/>
     <addaction name="actionWall"/>
     <addaction name="actionDoor"/>
     <addaction name="actionExit"/>
@@ -68,6 +70,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionSelect_Mode"/>
    <addaction name="separator"/>
    <addaction name="actionWall"/>
    <addaction name="actionDoor"/>
@@ -153,6 +156,9 @@
    <property name="toolTip">
     <string>Gridmode</string>
    </property>
+   <property name="shortcut">
+    <string>H, Ctrl+S</string>
+   </property>
   </action>
   <action name="actionWall">
    <property name="checkable">
@@ -184,13 +190,16 @@
    </property>
    <property name="icon">
     <iconset resource="Ressource.qrc">
-     <normaloff>:/Trans.png</normaloff>:/Trans.png</iconset>
+     <normaloff>:/snap.png</normaloff>:/snap.png</iconset>
    </property>
    <property name="text">
     <string>Objectsnap</string>
    </property>
    <property name="toolTip">
     <string>Objectsnap</string>
+   </property>
+   <property name="shortcut">
+    <string>O</string>
    </property>
   </action>
   <action name="actionDelete_lines">
@@ -200,6 +209,9 @@
    </property>
    <property name="text">
     <string>Delete all</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Del</string>
    </property>
   </action>
   <action name="actionDelete_single_line">
@@ -234,6 +246,9 @@
    <property name="toolTip">
     <string>Door</string>
    </property>
+   <property name="shortcut">
+    <string>D</string>
+   </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
    </property>
@@ -255,6 +270,9 @@
    <property name="toolTip">
     <string>Exit</string>
    </property>
+   <property name="shortcut">
+    <string>E</string>
+   </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
    </property>
@@ -266,11 +284,42 @@
    <property name="enabled">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/Room.png</normaloff>:/Room.png</iconset>
+   </property>
    <property name="text">
     <string>Rooms</string>
    </property>
    <property name="toolTip">
     <string>Define Room</string>
+   </property>
+   <property name="shortcut">
+    <string>R</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionSelect_Mode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/basicCursor.png</normaloff>:/basicCursor.png</iconset>
+   </property>
+   <property name="text">
+    <string>Select Mode</string>
+   </property>
+   <property name="toolTip">
+    <string>Select Mode</string>
+   </property>
+   <property name="shortcut">
+    <string>Esc</string>
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
