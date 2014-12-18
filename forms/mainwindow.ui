@@ -92,10 +92,10 @@
      <normaloff>:/open.png</normaloff>:/open.png</iconset>
    </property>
    <property name="text">
-    <string>Open</string>
+    <string>Load DXF</string>
    </property>
    <property name="toolTip">
-    <string>Open</string>
+    <string>Load DXF</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -107,10 +107,10 @@
      <normaloff>:/filesave.png</normaloff>:/filesave.png</iconset>
    </property>
    <property name="text">
-    <string>Save</string>
+    <string>Save as XML</string>
    </property>
    <property name="toolTip">
-    <string>Save</string>
+    <string>Save as XML</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>

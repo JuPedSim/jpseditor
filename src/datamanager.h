@@ -10,12 +10,17 @@
 #include "jpsLineItem.h"
 #include "jpsexit.h"
 #include "jpsobstacle.h"
-//#include "../dxflib/src/dl_creationadapter.h"
+#include "GraphicView.h"
 
-class jpsDatamanager//: public DL_CreationAdapter
+
+#include "../dxflib/src/dl_creationadapter.h"
+#include "../dxflib/src/dl_dxf.h"
+
+
+class jpsDatamanager: public DL_CreationAdapter
 {
 public:
-    jpsDatamanager(QWidget* parent=0L);
+    jpsDatamanager(QWidget* parent=0L, jpsGraphicsView* view=0L);
     ~jpsDatamanager(){}
     QList<jpsRoom *> get_roomlist();
     void new_room();
@@ -44,10 +49,12 @@ public:
     void writeTransitions(QXmlStreamWriter *stream);
     void writeObstacles(QXmlStreamWriter *stream, jpsObstacle *obs);
     void remove_all();
+    void remove_marked_lines();
+    void set_view(jpsGraphicsView* view);
+    jpsGraphicsView* get_view();
 
-    //virtual void addDXFLine(const DL_LineData& d);
-
-
+    void readDXF(std::string filename);
+    virtual void addLine(const DL_LineData& d);
 
 private:
     QList<jpsRoom *> roomlist;
@@ -57,6 +64,8 @@ private:
     int room_id_counter;
     int obs_id_counter;
     QWidget* parent_widget;
+    jpsGraphicsView* mView;
+
 
 
 };

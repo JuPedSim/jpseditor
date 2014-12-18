@@ -4,15 +4,13 @@
 #include <iostream>
 
 
-jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager* dmanager):QGraphicsView(parent)
+jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
 {
-
-    datamanager=dmanager;
     current_line=0L;
     //current_line_mark=0L;
     midbutton_hold=false;
-    translation_x=0;
-    translation_y=0;
+    translation_x=960;
+    translation_y=540;
     gridmode=false;
     gl_scale_f=1.0;
     catch_radius=10*gl_scale_f;
@@ -27,9 +25,10 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager* dmanager):QGra
     statDoor=false;
     statExit=false;
     currentPen.setColor(Qt::black);
+    this->scale(1,-1);
 
-    gl_min_x=1e6;
-    gl_min_y=1e6;
+    //gl_min_x=1e6;
+    //gl_min_y=1e6;
 
     //m_graphView->setFixedSize(1600, 900);
     //m_graphView->setScene(m_graphScen);
@@ -74,6 +73,8 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
     QPointF old_pos=pos;
 
     pos=mapToScene(mouseEvent->pos());
+
+
 
     if (current_line!=0L)
     {
@@ -306,7 +307,7 @@ QPointF jpsGraphicsView::return_Pos()
 
 void jpsGraphicsView::delete_all()
 {
-    datamanager->remove_all();
+    emit remove_all();
 
     // Delete all lines
 
@@ -477,6 +478,16 @@ void jpsGraphicsView::disable_drawing()
 
 }
 
+void jpsGraphicsView::addLineItem(qreal x1, qreal y1, qreal x2, qreal y2)
+{
+    current_line=Scene->addLine(x1,y1,x2,y2);
+    current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+    jpsLineItem* newLine = new jpsLineItem(current_line);
+    line_vector.push_back(newLine);
+    current_line=0L;
+
+}
+
 
 qreal jpsGraphicsView::calc_d_point(const QLineF &line,const qreal &x, const qreal &y)
 
@@ -505,6 +516,8 @@ void jpsGraphicsView::delete_marked_lines()
 {
     if (line_tracked!=-1)
     {
+        emit remove_marked_lines();
+
         for (int i=0; i<marked_lines.size(); i++)
         {
             QList<QPointF *> points = marked_lines[i]->get_intersectionVector();
@@ -525,48 +538,6 @@ void jpsGraphicsView::delete_marked_lines()
             }
 
             line_vector.removeOne(marked_lines[i]);
-
-            if (marked_lines[i]->is_Wall()==true)
-            {
-                QList<jpsRoom* > cList= datamanager->get_roomlist();
-                for (int j=0; j<cList.size(); j++)
-                {   QList<jpsLineItem* > delete_candidates;
-                    for (int k=0; k<cList[j]->get_listWalls().size(); k++)
-                    {
-                        if (marked_lines[i]==cList[j]->get_listWalls()[k])
-                        {
-                            delete_candidates.push_back(cList[j]->get_listWalls()[k]);
-                        }
-                    }
-                    cList[j]->removeWall(delete_candidates);
-                }
-            }
-
-            else if (marked_lines[i]->is_Door()==true)
-            {
-                QList<jpsCrossing* > cList= datamanager->get_crossingList();
-                for (int j=0; j<cList.size(); j++)
-                {
-                    if (marked_lines[i]==cList[j]->get_cLine())
-                    {
-                        datamanager->remove_crossing(cList[i]);
-                        break;
-                    }
-                }
-
-            }
-            else
-            {
-                QList<jpsExit* > cList= datamanager->get_exitList();
-                for (int j=0; j<cList.size(); j++)
-                {
-                    if (marked_lines[i]==cList[j]->get_cLine())
-                    {
-                        datamanager->remove_exit(cList[i]);
-                        break;
-                    }
-                }
-            }
 
             delete marked_lines[i]->get_line();
             delete marked_lines[i];

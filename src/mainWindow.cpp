@@ -15,8 +15,10 @@ MWindow :: MWindow() {
     //Signal/Slot
     //VBox= new QVBoxLayout;
 
-    dmanager = new jpsDatamanager(this);
-    mview = new jpsGraphicsView(this,dmanager);
+
+    mview = new jpsGraphicsView(this);
+    dmanager = new jpsDatamanager(this,mview);
+
 
     rwidget=0L;
 
@@ -57,6 +59,8 @@ MWindow :: MWindow() {
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
+    connect(mview,SIGNAL(remove_marked_lines()),this,SLOT(lines_deleted()));
+    connect(mview,SIGNAL(remove_all()),this,SLOT(remove_all_lines()));
 
 
 }
@@ -64,7 +68,9 @@ MWindow :: MWindow() {
 void MWindow::openFile(){
 
     QString fileName=QFileDialog::getOpenFileName(this);
-    QFile file(fileName);
+    //QFile file(fileName);
+    std::string fName= fileName.toStdString();
+    dmanager->readDXF(fName);
     /*if(file.open(QIODevice::ReadOnly|QIODevice::Text)) {
         textEdit->setPlainText(QString::fromUtf8(file.readAll()));
         statusBar()->showMessage(tr("Datei erfolgreich geladen"),5000);
@@ -186,6 +192,16 @@ void MWindow::dis_selectMode()
     {
         actionSelect_Mode->setChecked(false);
     }
+}
+
+void MWindow::lines_deleted()
+{
+    dmanager->remove_marked_lines();
+}
+
+void MWindow::remove_all_lines()
+{
+    dmanager->remove_all();
 }
 
 

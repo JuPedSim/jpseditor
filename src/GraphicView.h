@@ -4,8 +4,8 @@
 
 #include <QGraphicsView>
 #include <QGraphicsSceneMouseEvent>
-#include "datamanager.h"
 #include <QGraphicsLineItem>
+#include "jpsLineItem.h"
 
 
 
@@ -14,7 +14,7 @@ class jpsGraphicsView: public QGraphicsView {
     Q_OBJECT
 
 public:
-    jpsGraphicsView(QWidget* parent = 0L, jpsDatamanager *dmanager = 0L);
+    jpsGraphicsView(QWidget* parent = 0L);
     ~jpsGraphicsView(){}
     void change_gridmode();
     bool get_gridmode();
@@ -40,6 +40,7 @@ public:
     void unmark_all_lines();
     void select_line(jpsLineItem *mline);
     void disable_drawing();
+    void addLineItem(qreal x1,qreal y1, qreal x2, qreal y2);
 
 protected:
     virtual void mouseMoveEvent(QMouseEvent * mouseEvent);
@@ -49,7 +50,6 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent *event);
 
 private:
-    jpsDatamanager* datamanager;
     QGraphicsLineItem* current_line;
     //std::vector<jpsLineItem> line_vector;
     QList<QPointF *> intersect_point_vector;
@@ -76,14 +76,16 @@ private:
     QPen currentPen;
     qreal catch_line_distance;
     QList<jpsLineItem *> marked_lines;
-    qreal gl_min_x;
-    qreal gl_min_y;
+    //qreal gl_min_x;
+    //qreal gl_min_y;
 
 signals:
     void mouse_moved();
     void set_focus_textedit();
     void lines_deleted();
     void no_drawing();
+    void remove_marked_lines();
+    void remove_all();
 
 
 

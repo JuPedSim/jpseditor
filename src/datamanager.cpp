@@ -2,9 +2,11 @@
 #include <iostream>
 
 
-jpsDatamanager::jpsDatamanager(QWidget *parent)
+
+jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 {
     parent_widget=parent;
+    mView=view;
     room_id_counter=0;
     obs_id_counter=0;
 
@@ -347,6 +349,90 @@ void jpsDatamanager::remove_all()
     remove_all_exits();
     remove_all_obstacles();
 }
+
+void jpsDatamanager::remove_marked_lines()
+{
+    QList<jpsLineItem* > marked_lines = mView->get_markedLines();
+    for (int i=0; i<marked_lines.size(); i++)
+    {
+        if (marked_lines[i]->is_Wall()==true)
+        {
+            QList<jpsRoom* > cList= this->get_roomlist();
+            for (int j=0; j<cList.size(); j++)
+            {   QList<jpsLineItem* > delete_candidates;
+                for (int k=0; k<cList[j]->get_listWalls().size(); k++)
+                {
+                    if (marked_lines[i]==cList[j]->get_listWalls()[k])
+                    {
+                        delete_candidates.push_back(cList[j]->get_listWalls()[k]);
+                    }
+                }
+                cList[j]->removeWall(delete_candidates);
+            }
+        }
+
+        else if (marked_lines[i]->is_Door()==true)
+        {
+            QList<jpsCrossing* > cList= this->get_crossingList();
+            for (int j=0; j<cList.size(); j++)
+            {
+                if (marked_lines[i]==cList[j]->get_cLine())
+                {
+                    this->remove_crossing(cList[i]);
+                    break;
+                }
+            }
+
+        }
+        else
+        {
+            QList<jpsExit* > cList= this->get_exitList();
+            for (int j=0; j<cList.size(); j++)
+            {
+                if (marked_lines[i]==cList[j]->get_cLine())
+                {
+                    this->remove_exit(cList[i]);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void jpsDatamanager::set_view(jpsGraphicsView *view)
+{
+    mView=view;
+}
+
+jpsGraphicsView * jpsDatamanager::get_view()
+{
+    return mView;
+}
+
+void jpsDatamanager::readDXF(std::string filename)
+{
+
+    DL_Dxf dxf;
+    if (!dxf.in(filename, this))
+    {
+        std::cerr << "drawing.dxf could not be opened.\n";
+    }
+    //else
+    //{
+    //    dxf.in(filename, this);
+   // }
+
+}
+
+void jpsDatamanager::addLine(const DL_LineData &d)
+{
+
+    mView->addLineItem(d.x1,d.y1,d.x2,d.y2);
+
+}
+
+
+
 
 
 
