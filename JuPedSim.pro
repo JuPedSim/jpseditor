@@ -35,7 +35,18 @@ HEADERS += \
     src/jpscrossing.h \
     src/jpsLineItem.h \
     src/jpsexit.h \
-    src/jpsobstacle.h
+    src/jpsobstacle.h \
+    dxflib/src/dl_writer_ascii.h \
+    dxflib/src/dl_writer.h \
+    dxflib/src/dl_global.h \
+    dxflib/src/dl_extrusion.h \
+    dxflib/src/dl_exception.h \
+    dxflib/src/dl_entities.h \
+    dxflib/src/dl_dxf.h \
+    dxflib/src/dl_creationinterface.h \
+    dxflib/src/dl_creationadapter.h \
+    dxflib/src/dl_codes.h \
+    dxflib/src/dl_attributes.h
 
 SOURCES += \
     src/mainWindow.cpp \
@@ -47,7 +58,9 @@ SOURCES += \
     src/jpscrossing.cpp \
     src/jpsLineItem.cpp \
     src/jpsexit.cpp \
-    src/jpsobstacle.cpp
+    src/jpsobstacle.cpp \
+    dxflib/src/dl_writer_ascii.cpp \
+    dxflib/src/dl_dxf.cpp
 
 RESOURCES += \
     forms/Ressource.qrc

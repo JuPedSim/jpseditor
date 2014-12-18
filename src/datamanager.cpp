@@ -151,14 +151,14 @@ void jpsDatamanager::remove_all_exits()
     }
 }
 
-void jpsDatamanager::writeXML(QFile &file,const qreal &min_x,const qreal &min_y)
+void jpsDatamanager::writeXML(QFile &file)
 {
     QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
 
 
     writeHeader(stream);
-    writeRooms(stream,min_x,min_y);
-    writeTransitions(stream,min_x,min_y);
+    writeRooms(stream);
+    writeTransitions(stream);
 
     stream->writeEndElement();//geometry
 
@@ -180,7 +180,7 @@ void jpsDatamanager::writeHeader(QXmlStreamWriter *stream)
     stream->writeAttribute("unit","m");
 }
 
-void jpsDatamanager::writeRooms(QXmlStreamWriter *stream,const qreal &min_x,const qreal &min_y)
+void jpsDatamanager::writeRooms(QXmlStreamWriter *stream)
 {
     //rooms
     stream->writeStartElement("rooms");
@@ -203,13 +203,13 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream,const qreal &min_x,cons
             stream->writeAttribute("caption","wall");
 
             stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x1()-min_x));
-            stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y1()-min_y));
+            stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x1()));
+            stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y1()));
             stream->writeEndElement(); //vertex
 
             stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x2()-min_x));
-            stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y2()-min_y));
+            stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x2()));
+            stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y2()));
             stream->writeEndElement(); //vertex
 
             stream->writeEndElement(); //polygon
@@ -225,8 +225,8 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream,const qreal &min_x,cons
         {
 
             stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(vertices[j].x()-min_x));
-            stream->writeAttribute("py",QString::number(vertices[j].y()-min_y));
+            stream->writeAttribute("px",QString::number(vertices[j].x()));
+            stream->writeAttribute("py",QString::number(vertices[j].y()));
             stream->writeEndElement(); //vertex
         }*/
 
@@ -237,21 +237,21 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream,const qreal &min_x,cons
         {
             if (roomlist[i]==obstaclelist[k]->get_room())
             {
-                writeObstacles(stream, min_x,min_y,obstaclelist[k]);
+                writeObstacles(stream ,obstaclelist[k]);
             }
         }
 
         stream->writeEndElement();//subroom
     }
 
-    writeCrossings(stream,min_x,min_y);
+    writeCrossings(stream);
 
     stream->writeEndElement();//room
     stream->writeEndElement();//rooms
 
 }
 
-void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream,const qreal &min_x,const qreal &min_y)
+void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream)
 {
     stream->writeStartElement("crossings");
 
@@ -263,12 +263,12 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream,const qreal &min_x,
         stream->writeAttribute("subroom1_id",QString::number(crossingList[i]->get_roomList()[0]->get_id()));
         stream->writeAttribute("subroom2_id",QString::number(crossingList[i]->get_roomList()[1]->get_id()));
         stream->writeStartElement("vertex");
-        stream->writeAttribute("px",QString::number(crossingList[i]->get_cLine()->get_line()->line().x1()-min_x));
-        stream->writeAttribute("py",QString::number(crossingList[i]->get_cLine()->get_line()->line().y1()-min_y));
+        stream->writeAttribute("px",QString::number(crossingList[i]->get_cLine()->get_line()->line().x1()));
+        stream->writeAttribute("py",QString::number(crossingList[i]->get_cLine()->get_line()->line().y1()));
         stream->writeEndElement(); //vertex
         stream->writeStartElement("vertex");
-        stream->writeAttribute("px",QString::number(crossingList[i]->get_cLine()->get_line()->line().x2()-min_x));
-        stream->writeAttribute("py",QString::number(crossingList[i]->get_cLine()->get_line()->line().y2()-min_y));
+        stream->writeAttribute("px",QString::number(crossingList[i]->get_cLine()->get_line()->line().x2()));
+        stream->writeAttribute("py",QString::number(crossingList[i]->get_cLine()->get_line()->line().y2()));
         stream->writeEndElement();//vertex
 
         stream->writeEndElement();//crossing
@@ -277,7 +277,7 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream,const qreal &min_x,
     stream->writeEndElement();//crossings
 }
 
-void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream,const qreal &min_x,const qreal &min_y)
+void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream)
 {
     stream->writeStartElement("transitions");
 
@@ -293,12 +293,12 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream,const qreal &min_
         stream->writeAttribute("room2_id","-1");
         stream->writeAttribute("subroom2_id","-1");
         stream->writeStartElement("vertex");
-        stream->writeAttribute("px",QString::number(exitList[i]->get_cLine()->get_line()->line().x1()-min_x));
-        stream->writeAttribute("py",QString::number(exitList[i]->get_cLine()->get_line()->line().y1()-min_y));
+        stream->writeAttribute("px",QString::number(exitList[i]->get_cLine()->get_line()->line().x1()));
+        stream->writeAttribute("py",QString::number(exitList[i]->get_cLine()->get_line()->line().y1()));
         stream->writeEndElement(); //vertex
         stream->writeStartElement("vertex");
-        stream->writeAttribute("px",QString::number(exitList[i]->get_cLine()->get_line()->line().x2()-min_x));
-        stream->writeAttribute("py",QString::number(exitList[i]->get_cLine()->get_line()->line().y2()-min_y));
+        stream->writeAttribute("px",QString::number(exitList[i]->get_cLine()->get_line()->line().x2()));
+        stream->writeAttribute("py",QString::number(exitList[i]->get_cLine()->get_line()->line().y2()));
         stream->writeEndElement();//vertex
 
         stream->writeEndElement();//transition
@@ -307,12 +307,12 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream,const qreal &min_
     stream->writeEndElement();//transitions
 }
 
-void jpsDatamanager::writeObstacles(QXmlStreamWriter *stream, const qreal &min_x, const qreal &min_y, jpsObstacle* obs)
+void jpsDatamanager::writeObstacles(QXmlStreamWriter *stream, jpsObstacle* obs)
 {
     stream->writeStartElement("obstacle");
     stream->writeAttribute("id",QString::number(obs->get_id()));
     stream->writeAttribute("caption",obs->get_name());
-    stream->writeAttribute("status","closed");
+    stream->writeAttribute("closed","1");
     //stream->writeAttribute("height","1.0");  // height not implemented yet!
 
     //walls
@@ -324,13 +324,13 @@ void jpsDatamanager::writeObstacles(QXmlStreamWriter *stream, const qreal &min_x
         stream->writeStartElement("polygon");
 
         stream->writeStartElement("vertex");
-        stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x1()-min_x));
-        stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().y1()-min_y));
+        stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x1()));
+        stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y1()));
         stream->writeEndElement(); //vertex
 
         stream->writeStartElement("vertex");
-        stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x2()-min_x));
-        stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().y2()-min_y));
+        stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x2()));
+        stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y2()));
         stream->writeEndElement(); //vertex
 
         stream->writeEndElement(); //polygon

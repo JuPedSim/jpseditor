@@ -3,6 +3,7 @@
 #include "mainWindow.h"
 #include "GraphicView.h"
 #include "roomwidget.h"
+#include <iostream>
 
 
 #include <QFileDialog>
@@ -78,9 +79,8 @@ void MWindow::saveFile(){
     if(file.open(QIODevice::WriteOnly|QIODevice::Text))
     {
         //QString coord_string=mview->build_coordString();
-        const qreal gl_x=mview->get_gl_min_x();
-        const qreal gl_y=mview->get_gl_min_y();
-        dmanager->writeXML(file,gl_x,gl_y);
+
+        dmanager->writeXML(file);
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("Datei erfolgreich gespeichert"),5000);
     }
@@ -172,15 +172,20 @@ void MWindow::define_room()
 void MWindow::en_selectMode()
 {
     mview->disable_drawing();
+
     actionSelect_Mode->setChecked(true);
     actionWall->setChecked(false);
     actionDoor->setChecked(false);
     actionExit->setChecked(false);
+    length_edit->clearFocus();
 }
 
 void MWindow::dis_selectMode()
 {
-    actionSelect_Mode->setChecked(false);
+    if (actionWall->isChecked()==true || actionDoor->isChecked()==true || actionExit->isChecked()==true)
+    {
+        actionSelect_Mode->setChecked(false);
+    }
 }
 
 

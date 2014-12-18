@@ -34,14 +34,11 @@ public:
     qreal calc_d_point(const QLineF &line, const qreal &x, const qreal &y);
     void delete_marked_lines();
     void take_l_from_lineEdit(const qreal &length);
-    QString build_coordString();
     QList<jpsLineItem *> get_markedLines();
     QList<jpsLineItem *> get_line_vector();
     qreal get_scale_f();
     void unmark_all_lines();
     void select_line(jpsLineItem *mline);
-    qreal get_gl_min_x();
-    qreal get_gl_min_y();
     void disable_drawing();
 
 protected:

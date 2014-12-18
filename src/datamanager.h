@@ -10,8 +10,9 @@
 #include "jpsLineItem.h"
 #include "jpsexit.h"
 #include "jpsobstacle.h"
+//#include "../dxflib/src/dl_creationadapter.h"
 
-class jpsDatamanager
+class jpsDatamanager//: public DL_CreationAdapter
 {
 public:
     jpsDatamanager(QWidget* parent=0L);
@@ -36,13 +37,15 @@ public:
     void remove_exit(jpsExit* exit);
     void change_exitName(jpsExit* exit, QString name);
     void remove_all_exits();
-    void writeXML(QFile &file, const qreal &min_x, const qreal &min_y);
+    void writeXML(QFile &file);
     void writeHeader(QXmlStreamWriter *stream);
-    void writeRooms(QXmlStreamWriter *stream, const qreal &min_x, const qreal &min_y);
-    void writeCrossings(QXmlStreamWriter *stream,const qreal &min_x,const qreal &min_y);
-    void writeTransitions(QXmlStreamWriter *stream,const qreal &min_x,const qreal &min_y);
-    void writeObstacles(QXmlStreamWriter *stream,const qreal &min_x,const qreal &min_y, jpsObstacle *obs);
+    void writeRooms(QXmlStreamWriter *stream);
+    void writeCrossings(QXmlStreamWriter *stream);
+    void writeTransitions(QXmlStreamWriter *stream);
+    void writeObstacles(QXmlStreamWriter *stream, jpsObstacle *obs);
     void remove_all();
+
+    //virtual void addDXFLine(const DL_LineData& d);
 
 
 

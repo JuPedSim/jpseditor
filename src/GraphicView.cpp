@@ -171,25 +171,6 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
             // if the mouse was pressed secondly of two times
             else
             {
-                if (current_line->line().p1().x()<gl_min_x)
-                {
-                    gl_min_x=current_line->line().p1().x();
-                }
-
-                if (current_line->line().p2().x()<gl_min_x)
-                {
-                    gl_min_x=current_line->line().p2().x();
-                }
-
-                if (current_line->line().p1().y()<gl_min_y)
-                {
-                    gl_min_y=current_line->line().p1().y();
-                }
-
-                if (current_line->line().p2().y()<gl_min_y)
-                {
-                    gl_min_y=current_line->line().p2().y();
-                }
                 jpsLineItem* lineItem= new jpsLineItem(current_line);
 
                 // if there is already a drawn line
@@ -480,21 +461,20 @@ void jpsGraphicsView::select_line(jpsLineItem *mline)
     marked_lines.push_back(mline);
 }
 
-qreal jpsGraphicsView::get_gl_min_x()
-{
-    return gl_min_x;
-}
-
-qreal jpsGraphicsView::get_gl_min_y()
-{
-    return gl_min_y;
-}
 
 void jpsGraphicsView::disable_drawing()
 {
     statWall=false;
     statDoor=false;
     statExit=false;
+    // if drawing was canceled by pushing ESC
+    if (current_line!=0L)
+    {
+        //not completed line will be deleted
+        delete current_line;
+        current_line=0L;
+    }
+
 }
 
 
@@ -615,27 +595,7 @@ void jpsGraphicsView::take_l_from_lineEdit(const qreal &length)
     }
 }
 
-QString jpsGraphicsView::build_coordString()
-{
-    QString coordString;
-    for (int i=0; i<this->line_vector.size(); i++)
-    {
-        coordString.append("ID:");
-        coordString.append(QString::number(i));
-        coordString.append(" Wall:");
-        coordString.append(" x1:");
-        coordString.append(QString::number(this->line_vector[i]->get_line()->line().x1()));
-        coordString.append(" x2:");
-        coordString.append(QString::number(this->line_vector[i]->get_line()->line().x2()));
-        coordString.append(" y1:");
-        coordString.append(QString::number(this->line_vector[i]->get_line()->line().y1()));
-        coordString.append(" y2:");
-        coordString.append(QString::number(this->line_vector[i]->get_line()->line().y2()));
-        coordString.append("\n");
-    }
-    return coordString;
 
-}
 
 QList<jpsLineItem *> jpsGraphicsView::get_markedLines()
 {
@@ -674,7 +634,7 @@ void jpsGraphicsView::en_disableWall()
     }
     else
     {
-    currentPen.setColor(Qt::black);
+        currentPen.setColor(Qt::black);
     }
 
 }
@@ -705,7 +665,7 @@ void jpsGraphicsView::en_disableDoor()
     }
     else
     {
-    currentPen.setColor(Qt::blue);
+        currentPen.setColor(Qt::blue);
     }
 
 }
@@ -726,7 +686,7 @@ void jpsGraphicsView::en_disableExit()
     }
     else
     {
-    currentPen.setColor(Qt::darkMagenta);
+        currentPen.setColor(Qt::darkMagenta);
     }
 }
 
