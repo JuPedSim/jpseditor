@@ -29,13 +29,21 @@ MWindow :: MWindow() {
     label1->setText("Length of Line :");
     label2 = new QLabel();
     label2->setMinimumWidth(300);
+    label2->setText("[m]");
+    infoLabel= new QLabel();
+    infoLabel->setMinimumWidth(135);
+
+
 
     setCentralWidget(mview);
     //this->setMaximumSize(1920,1080);
     this->showMaximized();
+    statusBar()->addPermanentWidget(infoLabel);
     statusBar()->addPermanentWidget(label1);
     statusBar()->addPermanentWidget(length_edit);
     statusBar()->addPermanentWidget(label2);
+
+
 
 
     //Signals and Slots
@@ -70,11 +78,19 @@ void MWindow::openFile(){
     QString fileName=QFileDialog::getOpenFileName(this);
     //QFile file(fileName);
     std::string fName= fileName.toStdString();
-    dmanager->readDXF(fName);
-    /*if(file.open(QIODevice::ReadOnly|QIODevice::Text)) {
-        textEdit->setPlainText(QString::fromUtf8(file.readAll()));
-        statusBar()->showMessage(tr("Datei erfolgreich geladen"),5000);
-    }*/
+    if (!dmanager->readDXF(fName))
+    {
+        statusBar()->showMessage("DXF-File could not be parsed!",10000);
+    }
+    //if(file.open(QIODevice::ReadOnly|QIODevice::Text)) {
+      //  textEdit->setPlainText(QString::fromUtf8(file.readAll()));
+     //   statusBar()->showMessage(tr("Datei erfolgreich geladen"),5000);
+    //}
+    else
+    {
+
+        statusBar()->showMessage("DXF-File successfully loaded!",10000);
+    }
 }
 
 void MWindow::saveFile(){
@@ -88,7 +104,7 @@ void MWindow::saveFile(){
 
         dmanager->writeXML(file);
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
-        statusBar()->showMessage(tr("Datei erfolgreich gespeichert"),5000);
+        statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
     }
 }
 
@@ -138,7 +154,8 @@ void MWindow::show_coords()
     string.append(QString::number(point.x()));
     string.append(" y: ");
     string.append(QString::number(point.y()));
-    statusBar()->showMessage(string);
+    string.append(" [m]");
+    infoLabel->setText(string);
 }
 
 void MWindow::delete_lines()

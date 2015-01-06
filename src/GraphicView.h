@@ -41,6 +41,7 @@ public:
     void select_line(jpsLineItem *mline);
     void disable_drawing();
     void addLineItem(qreal x1,qreal y1, qreal x2, qreal y2);
+    void locate_intersection(jpsLineItem* item1, jpsLineItem* item2);
 
 protected:
     virtual void mouseMoveEvent(QMouseEvent * mouseEvent);

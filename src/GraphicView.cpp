@@ -9,8 +9,8 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     current_line=0L;
     //current_line_mark=0L;
     midbutton_hold=false;
-    translation_x=960;
-    translation_y=540;
+    translation_x=0;
+    translation_y=this->height();
     gridmode=false;
     gl_scale_f=1.0;
     catch_radius=10*gl_scale_f;
@@ -178,40 +178,16 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                 if (line_vector.size()>=1)
                 {
                     // Searching for intersection of the current line with all already drawn lines
-                    for (signed int i=0; i<line_vector.size(); i++)
+                    for (int i=0; i<line_vector.size(); i++)
                     {
-                        //this pointer is necessary due to the architecture of the method 'intersect'
-                       QPointF* intersection_point = new QPointF;
-                        // if 'intersect'==1 -> an intersection point exists
-                        if (lineItem->get_line()->line().intersect(line_vector[i]->get_line()->line(),intersection_point)==1)
-                        {
-                            // attaching current intersection point
-                            intersect_point_vector.push_back(intersection_point);
-                            // LineItem remember intersectionPoint
-                            lineItem->add_intersectionPoint(intersection_point);
-                            line_vector[i]->add_intersectionPoint(intersection_point);
-                            //LineItem remembers line which it has an intersection with
-                            lineItem->add_intersectLine(line_vector[i]);
-                            line_vector[i]->add_intersectLine(lineItem);
-
-                            // Free memory
-                            //delete intersection_point;
-                            // resetting pointer
-                            intersection_point=0L;
-                        }
+                        // locate possible intersection between lines
+                        // if there are some, intersectionPoint will be added to container
+                        locate_intersection(lineItem,line_vector[i]);
                     }
                 }
-                // completed line is appended to "line_vector"
-
-
-                //std::cout << current_line->line().x1() << std::endl;
-
-
 
                 lineItem->set_type(statWall,statDoor,statExit);
                 line_vector.push_back(lineItem);
-
-
 
                 // pointer "current_line" is reset
                 current_line=0L;
@@ -341,9 +317,6 @@ void jpsGraphicsView::use_gridmode()
     if (line.angle()<=185 && line.angle()>=175){
 
         pos.setY(current_line->line().y1()+translation_y);
-        //current_line->line().setAngle(180.0);
-        //std::cout << current_line->line().angle() << std::endl;
-        //current_line->setLine(current_line->line());
     }
 
     else if (line.angle()<=5 || line.angle()>=355){
@@ -362,8 +335,6 @@ void jpsGraphicsView::use_gridmode()
 
 void jpsGraphicsView::catch_points()
 {
-    //std::cout << "sagwas" << std::endl;
-
     //Searching for startpoints of all lines near the current cursor position
     for (signed int i=0; i<line_vector.size(); i++){
 
@@ -402,7 +373,6 @@ void jpsGraphicsView::catch_points()
         // see above
         for (int j=0; j<intersect_point_vector.size(); j++)
         {
-
             if (intersect_point_vector[j]->x()>=(translated_pos.x()-catch_radius) && intersect_point_vector[j]->x()<=(translated_pos.x()+catch_radius) && intersect_point_vector[j]->y()>=(translated_pos.y()-catch_radius) && intersect_point_vector[j]->y()<=(translated_pos.y()+catch_radius))
             {
                 translated_pos.setX(intersect_point_vector[j]->x());
@@ -484,7 +454,42 @@ void jpsGraphicsView::addLineItem(qreal x1, qreal y1, qreal x2, qreal y2)
     current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
     jpsLineItem* newLine = new jpsLineItem(current_line);
     line_vector.push_back(newLine);
+
+    for (int i=0; i<line_vector.size(); i++)
+    {
+        locate_intersection(newLine,line_vector[i]);
+    }
+
     current_line=0L;
+
+}
+
+void jpsGraphicsView::locate_intersection(jpsLineItem *item1, jpsLineItem *item2)
+{
+
+    //this pointer is necessary due to the architecture of the method 'intersect'
+    QPointF* intersection_point = new QPointF;
+    // if 'intersect'==1 -> an intersection point exists
+    if (item1->get_line()->line().intersect(item2->get_line()->line(),intersection_point)==1)
+    {
+        // attaching current intersection point
+        intersect_point_vector.push_back(intersection_point);
+        // LineItem remember intersectionPoint
+        item1->add_intersectionPoint(intersection_point);
+        item2->add_intersectionPoint(intersection_point);
+        //LineItem remembers line which it has an intersection with
+        item1->add_intersectLine(item2);
+        item2->add_intersectLine(item1);
+
+        // resetting pointer
+        intersection_point=0L;
+    }
+    else
+    {
+        // Free memory
+        delete intersection_point;
+        intersection_point=0L;
+    }
 
 }
 

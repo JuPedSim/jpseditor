@@ -28,6 +28,7 @@ private:
     QLineEdit* length_edit;
     QLabel* label1;
     QLabel* label2;
+    QLabel* infoLabel;
 
 
 protected slots:

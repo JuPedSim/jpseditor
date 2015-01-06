@@ -52,9 +52,11 @@ public:
     void remove_marked_lines();
     void set_view(jpsGraphicsView* view);
     jpsGraphicsView* get_view();
-
-    void readDXF(std::string filename);
+    // Read DXF
+    bool readDXF(std::string filename);
     virtual void addLine(const DL_LineData& d);
+    // Write DXF
+
 
 private:
     QList<jpsRoom *> roomlist;

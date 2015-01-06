@@ -409,18 +409,18 @@ jpsGraphicsView * jpsDatamanager::get_view()
     return mView;
 }
 
-void jpsDatamanager::readDXF(std::string filename)
+bool jpsDatamanager::readDXF(std::string filename)
 {
 
     DL_Dxf dxf;
     if (!dxf.in(filename, this))
     {
-        std::cerr << "drawing.dxf could not be opened.\n";
+        return false;
     }
-    //else
-    //{
-    //    dxf.in(filename, this);
-   // }
+    else
+    {
+        return true;
+    }
 
 }
 
