@@ -42,20 +42,27 @@ public:
     void remove_exit(jpsExit* exit);
     void change_exitName(jpsExit* exit, QString name);
     void remove_all_exits();
+
+    void remove_all();
+    void remove_marked_lines();
+    void set_view(jpsGraphicsView* view);
+    jpsGraphicsView* get_view();
     void writeXML(QFile &file);
     void writeHeader(QXmlStreamWriter *stream);
     void writeRooms(QXmlStreamWriter *stream);
     void writeCrossings(QXmlStreamWriter *stream);
     void writeTransitions(QXmlStreamWriter *stream);
     void writeObstacles(QXmlStreamWriter *stream, jpsObstacle *obs);
-    void remove_all();
-    void remove_marked_lines();
-    void set_view(jpsGraphicsView* view);
-    jpsGraphicsView* get_view();
     // Read DXF
     bool readDXF(std::string filename);
     virtual void addLine(const DL_LineData& d);
-    // Write DXF
+    //write DXF
+    void writeDXF(std::string filename);
+    void writeDXFHeader(DL_Dxf* dxf, DL_WriterA *dw);
+    void writeDXFTables(DL_Dxf* dxf, DL_WriterA *dw);
+    void writeDXFBlocks(DL_Dxf* dxf, DL_WriterA *dw);
+    void writeDXFEntities(DL_Dxf* dxf, DL_WriterA *dw);
+    void writeDXFObjects(DL_Dxf* dxf, DL_WriterA *dw);
 
 
 private:

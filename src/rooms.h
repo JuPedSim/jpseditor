@@ -18,8 +18,7 @@ public:
     QList<QPointF> get_vertices();
     void set_id(int id_room);
     int get_id();
-
-
+    QPointF get_center();
 private:
     int id;
     QString name;

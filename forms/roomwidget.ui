@@ -24,7 +24,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>20</y>
+      <y>10</y>
       <width>191</width>
       <height>31</height>
      </rect>
@@ -35,7 +35,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Room:</string>
+     <string>Rooms:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
@@ -55,9 +55,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>290</y>
+      <y>330</y>
       <width>291</width>
-      <height>211</height>
+      <height>171</height>
      </rect>
     </property>
    </widget>
@@ -104,7 +104,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>200</y>
+      <y>50</y>
       <width>112</width>
       <height>34</height>
      </rect>
@@ -117,7 +117,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>250</y>
+      <y>290</y>
       <width>191</width>
       <height>31</height>
      </rect>
@@ -135,9 +135,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>50</y>
+      <y>100</y>
       <width>291</width>
-      <height>81</height>
+      <height>91</height>
      </rect>
     </property>
    </widget>
@@ -145,7 +145,7 @@
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>200</y>
+      <y>50</y>
       <width>112</width>
       <height>34</height>
      </rect>
@@ -158,7 +158,7 @@
     <property name="geometry">
      <rect>
       <x>100</x>
-      <y>160</y>
+      <y>200</y>
       <width>113</width>
       <height>22</height>
      </rect>
@@ -168,7 +168,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>160</y>
+      <y>200</y>
       <width>91</width>
       <height>16</height>
      </rect>
@@ -186,7 +186,7 @@
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>160</y>
+      <y>200</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -198,14 +198,40 @@
    <widget class="Line" name="line_2">
     <property name="geometry">
      <rect>
-      <x>-20</x>
-      <y>240</y>
+      <x>-10</x>
+      <y>270</y>
       <width>341</width>
       <height>20</height>
      </rect>
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="caption">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>240</y>
+      <width>121</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Hide/Show Caption</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="highlight">
+    <property name="geometry">
+     <rect>
+      <x>202</x>
+      <y>240</y>
+      <width>101</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Highlight Room</string>
     </property>
    </widget>
   </widget>

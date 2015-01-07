@@ -7,6 +7,7 @@
 jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
 {
     current_line=0L;
+    current_caption=0L;
     //current_line_mark=0L;
     midbutton_hold=false;
     translation_x=0;
@@ -107,6 +108,12 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
         {
             //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
             line_vector[i]->get_line()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+
+        }
+        for (int i=0; i<caption_list.size(); i++)
+        {
+            //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
+            caption_list[i]->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
 
         }
         //if (current_line_mark!=0L)
@@ -428,8 +435,17 @@ void jpsGraphicsView::catch_lines()
 
 void jpsGraphicsView::select_line(jpsLineItem *mline)
 {
-    mline->get_line()->setPen(QPen(Qt::red,3*gl_scale_f));
-    marked_lines.push_back(mline);
+
+    if (!marked_lines.contains(mline))
+    {
+        mline->get_line()->setPen(QPen(Qt::red));
+        marked_lines.push_back(mline);
+    }
+    else
+    {
+        mline->get_line()->setPen(QPen(Qt::black));
+        marked_lines.removeOne(mline);
+    }
 }
 
 
@@ -491,6 +507,32 @@ void jpsGraphicsView::locate_intersection(jpsLineItem *item1, jpsLineItem *item2
         intersection_point=0L;
     }
 
+}
+
+void jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
+{
+    // if caption exits, it is supposed to be hided:
+    for (int i=0; i<caption_list.size(); i++)
+    {
+        if (caption_list[i]->toPlainText()==name)
+        {
+            delete caption_list[i];
+            caption_list.removeOne(caption_list[i]);
+            return;
+        }
+    }
+    // if caption does not exit yet:
+    current_caption=Scene->addText(name,QFont());
+
+    current_caption->setX(x+translation_x);
+    current_caption->setY(y+translation_y);
+    //current_caption->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+    //Since the scene itself is mirrored:
+    //current_caption->setTransform(QTransform::fromScale(1,-1));
+    current_caption->setTransform(QTransform::fromScale(gl_scale_f,-gl_scale_f));
+    current_caption->adjustSize();
+    caption_list.push_back(current_caption);
+    current_caption=0L;
 }
 
 

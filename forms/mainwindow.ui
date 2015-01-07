@@ -29,6 +29,7 @@
     </property>
     <addaction name="action_ffnen"/>
     <addaction name="actionSpeichern"/>
+    <addaction name="actionSpeichern_dxf"/>
     <addaction name="separator"/>
     <addaction name="actionBeenden"/>
    </widget>
@@ -326,6 +327,21 @@
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionSpeichern_dxf">
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/filesave.png</normaloff>:/filesave.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save as DXF</string>
+   </property>
+   <property name="toolTip">
+    <string>Save as DXF</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+S</string>
    </property>
   </action>
  </widget>

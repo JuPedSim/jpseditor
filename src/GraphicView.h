@@ -42,6 +42,8 @@ public:
     void disable_drawing();
     void addLineItem(qreal x1,qreal y1, qreal x2, qreal y2);
     void locate_intersection(jpsLineItem* item1, jpsLineItem* item2);
+    void show_hide_roomCaption(QString name, qreal x, qreal y);
+
 
 protected:
     virtual void mouseMoveEvent(QMouseEvent * mouseEvent);
@@ -77,6 +79,8 @@ private:
     QPen currentPen;
     qreal catch_line_distance;
     QList<jpsLineItem *> marked_lines;
+    QGraphicsTextItem* current_caption;
+    QList<QGraphicsTextItem* > caption_list;
     //qreal gl_min_x;
     //qreal gl_min_y;
 

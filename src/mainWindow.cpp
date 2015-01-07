@@ -50,6 +50,7 @@ MWindow :: MWindow() {
     connect(actionBeenden, SIGNAL(triggered(bool)),qApp,SLOT(quit()));
     connect(action_ffnen,SIGNAL(triggered(bool)),this,SLOT(openFile()));
     connect(actionSpeichern,SIGNAL(triggered(bool)),this,SLOT(saveFile()));
+    connect(actionSpeichern_dxf,SIGNAL(triggered(bool)),this,SLOT(saveAsDXF()));
     connect(action_ber,SIGNAL(triggered(bool)),this,SLOT(info()));
     connect(actiongridmode,SIGNAL(triggered(bool)),this,SLOT(gridmode()));
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
@@ -75,7 +76,7 @@ MWindow :: MWindow() {
 
 void MWindow::openFile(){
 
-    QString fileName=QFileDialog::getOpenFileName(this);
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Open DXF"),"",tr("DXF-Drawings (*.dxf)"));
     //QFile file(fileName);
     std::string fName= fileName.toStdString();
     if (!dmanager->readDXF(fName))
@@ -94,7 +95,7 @@ void MWindow::openFile(){
 }
 
 void MWindow::saveFile(){
-    QString fileName = QFileDialog::getSaveFileName(this);
+    QString fileName = QFileDialog::getSaveFileName(this,tr("Save XML"),"",tr("XML-Files (*.xml)"));
     if (fileName.isEmpty()) return;
     QFile file(fileName);
 
@@ -105,6 +106,23 @@ void MWindow::saveFile(){
         dmanager->writeXML(file);
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
+    }
+}
+
+
+void MWindow::saveAsDXF()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,tr("Save DXF"),"",tr("DXF-Drawings (*.dxf)"));
+    if (fileName.isEmpty()) return;
+    QFile file(fileName);
+
+    if(file.open(QIODevice::WriteOnly|QIODevice::Text))
+    {
+        //QString coord_string=mview->build_coordString();
+        std::string fName= fileName.toStdString();
+        dmanager->writeDXF(fName);
+        //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
+        statusBar()->showMessage(tr("DXF-File successfully saved!"),10000);
     }
 }
 

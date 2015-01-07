@@ -71,6 +71,24 @@ QList<QPointF> jpsRoom::get_vertices()
     return vertices;
 }
 
+QPointF jpsRoom::get_center()
+{
+    QList<QPointF> vertices = get_vertices();
+    qreal sum_x=0;
+    qreal sum_y=0;
+
+    for (int i=0; i<vertices.size(); i++)
+    {
+        sum_x+=vertices[i].x();
+        sum_y+=vertices[i].y();
+    }
+    QPointF mean;
+    mean.setX(sum_x/vertices.size());
+    mean.setY(sum_y/vertices.size());
+
+    return mean;
+}
+
 void jpsRoom::set_id(int id_room)
 {
     id=id_room;

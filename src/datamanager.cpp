@@ -409,6 +409,15 @@ jpsGraphicsView * jpsDatamanager::get_view()
     return mView;
 }
 
+
+
+
+
+
+
+
+
+
 bool jpsDatamanager::readDXF(std::string filename)
 {
 
@@ -432,7 +441,221 @@ void jpsDatamanager::addLine(const DL_LineData &d)
 }
 
 
+void jpsDatamanager::writeDXF(std::string filename)
+{
+    DL_Dxf* dxf = new DL_Dxf;
+    DL_Codes::version exportVersion = DL_Codes::AC1015;
+    DL_WriterA* dw = dxf->out(filename.c_str(), exportVersion);
+    if (dw==0L)
+    {
+        printf("Cannot open file 'myfile.dxf' \
+        for writing.");
+        // abort function e.g. with return
 
+    }
+    //Header
+    writeDXFHeader(dxf,dw);
+    // ....
+
+    writeDXFTables(dxf,dw);
+    //writeDXFBlocks(dxf,dw);
+    writeDXFEntities(dxf,dw);
+    //writeDXFObjects(dxf,dw);
+
+    dw->dxfEOF();
+    dw->close();
+    delete dw;
+    delete dxf;
+}
+
+void jpsDatamanager::writeDXFHeader(DL_Dxf *dxf, DL_WriterA *dw)
+{
+    dxf->writeHeader(*dw);
+    dw->sectionEnd();
+
+}
+
+void jpsDatamanager::writeDXFTables(DL_Dxf *dxf, DL_WriterA *dw)
+{
+    dxf->writeVPort(*dw);
+
+    // Linetypes
+    dw->tableLinetypes(25);
+
+    dxf->writeLinetype(*dw, DL_LinetypeData("BYBLOCK","", 0,0,0));
+    dxf->writeLinetype(*dw, DL_LinetypeData("BYLAYER","", 0,0,0));
+    dxf->writeLinetype(*dw,
+    DL_LinetypeData("CONTINUOUS","",0,0,0));
+    dxf->writeLinetype(*dw,
+    DL_LinetypeData("ACAD_ISO02W100","",0,0,0));
+    dxf->writeLinetype(*dw,
+    DL_LinetypeData("ACAD_ISO03W100","",0,0,0));
+    dxf->writeLinetype(*dw,
+    DL_LinetypeData("ACAD_ISO04W100","",0,0,0));
+    dxf->writeLinetype(*dw,
+    DL_LinetypeData("ACAD_ISO05W100","",0,0,0));
+    dxf->writeLinetype(*dw, DL_LinetypeData("BORDER","",0,0,0));
+    dxf->writeLinetype(*dw, DL_LinetypeData("BORDER2","",0,0,0));
+    dxf->writeLinetype(*dw, DL_LinetypeData("BORDERX2","",0,0,0));
+    dxf->writeLinetype(*dw, DL_LinetypeData("CENTER","",0,0,0));
+    dxf->writeLinetype(*dw, DL_LinetypeData("CENTER2","",0,0,0));
+    dxf->writeLinetype(*dw, DL_LinetypeData("CENTERX2","",0,0,0));
+    dxf->writeLinetype(*dw, DL_LinetypeData("DASHDOT","",0,0,0));
+    dxf->writeLinetype(*dw, DL_LinetypeData("DASHDOT2","",0,0,0));
+    dxf->writeLinetype(*dw,
+    DL_LinetypeData("DASHDOTX2","",0,0,0));
+    dxf->writeLinetype(*dw, DL_LinetypeData("DASHED","",0,0,0));
+    dxf->writeLinetype(*dw, DL_LinetypeData("DASHED2","",0,0,0));
+    dxf->writeLinetype(*dw, DL_LinetypeData("DASHEDX2","",0,0,0));
+    dxf->writeLinetype(*dw, DL_LinetypeData("DIVIDE","",0,0,0));
+    dxf->writeLinetype(*dw, DL_LinetypeData("DIVIDE2","",0,0,0));
+    dxf->writeLinetype(*dw,
+    DL_LinetypeData("DIVIDEX2","",0,0,0));
+    dxf->writeLinetype(*dw, DL_LinetypeData("DOT","",0,0,0));
+    dxf->writeLinetype(*dw, DL_LinetypeData("DOT2","",0,0,0));
+    dxf->writeLinetype(*dw, DL_LinetypeData("DOTX2","",0,0,0));
+    dw->tableEnd();
+
+    //Layers
+    int numberOfLayers = 3;
+    dw->tableLayers(numberOfLayers);
+    dxf->writeLayer(*dw,
+    DL_LayerData("0", 0),
+    DL_Attributes(
+    std::string(""),   //leave empty
+    0,   //default color
+    0,               //default color24
+    100,             //default width
+    "CONTINUOUS"));    //default line style
+
+    dxf->writeLayer(*dw,
+    DL_LayerData("mainlayer", 0),
+    DL_Attributes(
+    std::string(""),
+    2,
+    2,
+    100,
+    "CONTINUOUS"));
+
+    dxf->writeLayer(*dw,
+    DL_LayerData("anotherlayer", 0),
+    DL_Attributes(
+    std::string(""),
+    1,
+    1,
+    100,
+    "CONTINUOUS"));
+    dw->tableEnd();
+
+    //dxf->writeStyle(*dw,);
+    dxf->writeView(*dw);
+    dxf->writeUcs(*dw);
+    dw->tableAppid(1);
+    dw->tableAppidEntry(0x12);
+    dw->dxfString(2, "ACAD");
+    dw->dxfInt(70, 0);
+    dw->tableEnd();
+
+    /*
+    dxf->writeDimStyle(*dw,
+    arrowSize,
+    extensionLineExtension,
+    extensionLineOffset,
+    dimensionGap,
+    dimensionTextSize);
+    */
+    //blockrecords
+    dxf->writeBlockRecord(*dw);
+    dxf->writeBlockRecord(*dw, "myblock1");
+    dxf->writeBlockRecord(*dw, "myblock2");
+    dw->tableEnd();
+
+    //end tables
+    dw->sectionEnd();
+
+
+
+
+}
+
+void jpsDatamanager::writeDXFBlocks(DL_Dxf *dxf, DL_WriterA *dw)
+{
+    dw->sectionBlocks();
+    dxf->writeBlock(*dw,
+    DL_BlockData("*Model_Space", 0, 0.0, 0.0, 0.0));
+    dxf->writeEndBlock(*dw, "*Model_Space");
+    dxf->writeBlock(*dw,
+    DL_BlockData("*Paper_Space", 0, 0.0, 0.0, 0.0));
+    dxf->writeEndBlock(*dw, "*Paper_Space");
+    dxf->writeBlock(*dw,
+    DL_BlockData("*Paper_Space0", 0, 0.0, 0.0, 0.0));
+    dxf->writeEndBlock(*dw, "*Paper_Space0");
+    dxf->writeBlock(*dw,
+    DL_BlockData("myblock1", 0, 0.0, 0.0, 0.0));
+    // ...
+    // write block entities e.g. with dxf.writeLine(), ..
+    // ...
+    dxf->writeEndBlock(*dw, "myblock1");
+    dxf->writeBlock(*dw,
+    DL_BlockData("myblock2", 0, 0.0, 0.0, 0.0));
+    // ...
+    // write block entities e.g. with dxf.writeLine(), ..
+    // ...
+    dxf->writeEndBlock(*dw, "myblock2");
+    dw->sectionEnd();
+}
+
+void jpsDatamanager::writeDXFEntities(DL_Dxf *dxf, DL_WriterA *dw)
+{
+    dw->sectionEntities();
+    // write all your entities..
+
+    //dxf->writePoint(
+    //*dw,
+    //DL_PointData(10.0,
+    //45.0,
+    //0.0),
+    //DL_Attributes("mainlayer", 256, 256, -1, "BYLAYER"));
+
+
+    QList<jpsLineItem* > lines = mView->get_line_vector();
+
+    DL_Attributes attribute("mainlayer", 256, 256, -1, "BYLAYER");
+
+    for (int i=0; i<lines.size(); i++)
+    {
+        DL_LineData linedata(lines[i]->get_line()->line().x1(),
+                    lines[i]->get_line()->line().y1(),
+                    0.0,
+                    lines[i]->get_line()->line().x2(),
+                    lines[i]->get_line()->line().y2(),
+                    0.0);
+        dxf->writeLine(*dw,linedata,attribute);
+
+    }
+
+
+    /*
+    dxf->writeLine(
+    *dw,
+    DL_LineData(25.0,
+    // start point
+    30.0,
+    0.0,
+    100.0,
+    // end point
+    120.0,
+    0.0),
+    DL_Attributes("mainlayer", 256,256, -1, "BYLAYER"));
+    */
+    dw->sectionEnd();
+}
+
+void jpsDatamanager::writeDXFObjects(DL_Dxf *dxf, DL_WriterA *dw)
+{
+    dxf->writeObjects(*dw);
+    dxf->writeObjectsEnd(*dw);
+}
 
 
 

@@ -34,6 +34,7 @@ private:
 protected slots:
     void openFile();
     void saveFile();
+    void saveAsDXF();
     void info();
     void gridmode();
     void en_disableWall();
@@ -49,6 +50,7 @@ protected slots:
     void dis_selectMode();
     void lines_deleted();
     void remove_all_lines();
+
 
 };
 

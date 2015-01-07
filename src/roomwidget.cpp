@@ -33,6 +33,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->list_rooms,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(showWalls()));
     connect(ui->listWalls,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(selectWall()));
     connect(ui->remove_button,SIGNAL(clicked(bool)),this,SLOT(removeWall()));
+    connect(ui->caption,SIGNAL(clicked(bool)),this,SLOT(shhi_roomCaption()));
     //tab crossing
     connect(ui->addCrossingButton,SIGNAL(clicked(bool)),this,SLOT(new_crossing()));
     connect(ui->crossingList,SIGNAL(itemSelectionChanged()),this,SLOT(enable_roomSelectionCrossings()));
@@ -589,6 +590,17 @@ void roomWidget::disable_roomSelectionObs()
     ui->roomBox_obs->setEnabled(false);
     ui->is_in->setEnabled(false);
     ui->apply_room2obs->setEnabled(false);
+}
+
+void roomWidget::shhi_roomCaption()
+{
+    if (ui->list_rooms->currentItem()!=0L)
+    {
+        int cRow=ui->list_rooms->currentRow();
+        QString roomName = datamanager->get_roomlist()[cRow]->get_name();
+        QPointF roomCenter = datamanager->get_roomlist()[cRow]->get_center();
+        graphview->show_hide_roomCaption(roomName,roomCenter.x(),roomCenter.y());
+    }
 }
 
 
