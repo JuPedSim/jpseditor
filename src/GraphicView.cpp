@@ -572,26 +572,35 @@ void jpsGraphicsView::delete_marked_lines()
             for (int j=0; j<points.size(); j++)
             {
 
-                intersect_point_vector.removeOne(points[i]);
+                intersect_point_vector.removeOne(points[j]);
+
                 for (int k=0; k<marked_lines[i]->get_intersectLineVector().size(); k++)
                 {
                     // removing the intersectionPoint pointer from all lines which includes the point
-                    marked_lines[i]->get_intersectLineVector()[k]->remove_intersectionPoint(points[i]);
+                    marked_lines[i]->get_intersectLineVector()[k]->remove_intersectionPoint(points[j]);
+
                     // as marked_lines is removed it is has no intersections with any other line anymore
                     // so pointers of possible intersectionsLine have to be removed
-                    marked_lines[i]->get_intersectLineVector()[k]->remove_interLine(marked_lines[i]);
+
                 }
-                delete points[i];
+
+                delete points[j];
+            }
+
+            for (int k=0; k<marked_lines[i]->get_intersectLineVector().size(); k++)
+            {
+                marked_lines[i]->get_intersectLineVector()[k]->remove_interLine(marked_lines[i]);
             }
 
             line_vector.removeOne(marked_lines[i]);
 
             delete marked_lines[i]->get_line();
+            marked_lines[i]->set_line(0L);
             delete marked_lines[i];
             marked_lines.removeAt(i);
             i--;
         }
-        marked_lines.clear();
+        //marked_lines.clear();
         line_tracked=-1;
         emit lines_deleted();
         update();
