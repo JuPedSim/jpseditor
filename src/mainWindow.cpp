@@ -4,6 +4,7 @@
 #include "GraphicView.h"
 #include "roomwidget.h"
 #include <iostream>
+#include <memory>
 
 
 #include <QFileDialog>
@@ -103,6 +104,15 @@ void MWindow::saveFile(){
     {
         //QString coord_string=mview->build_coordString();
 
+        QString message = dmanager->check_printAbility();
+
+        if (message!="")
+        {
+            statusBar()->showMessage(message,10000);
+            QMessageBox::warning(this,"Warning!", message,
+                                 QMessageBox::Ok);
+            return;
+        }
         dmanager->writeXML(file);
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("XML-File successfully saved!"),10000);

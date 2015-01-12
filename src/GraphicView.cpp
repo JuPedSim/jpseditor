@@ -522,15 +522,19 @@ void jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
         }
     }
     // if caption does not exit yet:
-    current_caption=Scene->addText(name,QFont());
+    QFont font = QFont();
+    // adjust captionsize depending on roomsize
+    //font.setPointSizeF(0.5);
+    current_caption=Scene->addText(name,font);
 
     current_caption->setX(x+translation_x);
     current_caption->setY(y+translation_y);
     //current_caption->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
     //Since the scene itself is mirrored:
-    //current_caption->setTransform(QTransform::fromScale(1,-1));
-    current_caption->setTransform(QTransform::fromScale(gl_scale_f,-gl_scale_f));
-    current_caption->adjustSize();
+    current_caption->setTransform(QTransform::fromScale(1,-1));
+
+    //current_caption->setTransform(QTransform::fromScale(gl_scale_f,-gl_scale_f));
+    //current_caption->adjustSize();
     caption_list.push_back(current_caption);
     current_caption=0L;
 }

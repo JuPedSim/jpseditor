@@ -37,13 +37,14 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     //tab crossing
     connect(ui->addCrossingButton,SIGNAL(clicked(bool)),this,SLOT(new_crossing()));
     connect(ui->crossingList,SIGNAL(itemSelectionChanged()),this,SLOT(enable_roomSelectionCrossings()));
-    connect(ui->apply_room2Crossing,SIGNAL(clicked(bool)),this,SLOT(add_rooms_to_crossing()));
+    connect(ui->roomBox1,SIGNAL(activated(int)),this,SLOT(add_rooms_to_crossing()));
+    connect(ui->roomBox2,SIGNAL(activated(int)),this,SLOT(add_rooms_to_crossing()));
     connect(ui->removeCrossingButton,SIGNAL(clicked(bool)),this,SLOT(delete_crossing()));
     connect(ui->crossingList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(select_crossing()));
     //tab exit
     connect(ui->addExitButton,SIGNAL(clicked(bool)),this,SLOT(new_exit()));
     connect(ui->exitList,SIGNAL(itemSelectionChanged()),this,SLOT(enable_roomSelectionExits()));
-    connect(ui->apply_room2exit,SIGNAL(clicked(bool)),this,SLOT(add_rooms_to_exit()));
+    connect(ui->roomBox_exits,SIGNAL(activated(int)),this,SLOT(add_rooms_to_exit()));
     connect(ui->removeExitButton,SIGNAL(clicked(bool)),this,SLOT(delete_exit()));
     connect(ui->exitList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(select_exit()));
     //tab obstacles
@@ -93,6 +94,7 @@ void roomWidget::show_crossings()
         string.append(" y1:"+QString::number(crossingList[i]->get_cLine()->get_line()->line().y1()));
         string.append(" y2:"+QString::number(crossingList[i]->get_cLine()->get_line()->line().y2()));
         ui->crossingList->addItem(string);
+        ui->crossingList->setCurrentRow(crossingList.size()-1);
     }
 
 
@@ -113,6 +115,7 @@ void roomWidget::show_exits()
         string.append(" y1:"+QString::number(exitList[i]->get_cLine()->get_line()->line().y1()));
         string.append(" y2:"+QString::number(exitList[i]->get_cLine()->get_line()->line().y2()));
         ui->exitList->addItem(string);
+        ui->exitList->setCurrentRow(exitList.size()-1);
     }
 }
 
@@ -249,7 +252,6 @@ void roomWidget::enable_roomSelectionCrossings()
         ui->roomBox2->setEnabled(true);
         ui->crossing_between->setEnabled(true);
         ui->and_label->setEnabled(true);
-        ui->apply_room2Crossing->setEnabled(true);
         ui->roomBox1->clear();
         ui->roomBox2->clear();
         QList<QString> roomNameList;
@@ -257,19 +259,27 @@ void roomWidget::enable_roomSelectionCrossings()
         {
             roomNameList.push_back(datamanager->get_roomlist()[i]->get_name());
         }
-        ui->roomBox1->addItems(roomNameList);
-        ui->roomBox2->addItems(roomNameList);
-
-        int cCrossingRow=ui->crossingList->currentRow();
-        if (cCrossingRow!=-1) // -1 means there is no current item
+        if (!roomNameList.isEmpty())
         {
-            QList<jpsRoom*> cRoomlist = datamanager->get_crossingList()[cCrossingRow]->get_roomList();
-            if (cRoomlist.size()>0)
+            ui->roomBox1->addItems(roomNameList);
+            ui->roomBox2->addItems(roomNameList);
+
+
+            int cCrossingRow=ui->crossingList->currentRow();
+            if (cCrossingRow!=-1) // -1 means there is no current item
             {
-                int index = datamanager->get_roomlist().indexOf(cRoomlist[0]);
-                ui->roomBox1->setCurrentIndex(index);
-                index = datamanager->get_roomlist().indexOf(cRoomlist[1]);
-                ui->roomBox2->setCurrentIndex(index);
+                QList<jpsRoom*> cRoomlist = datamanager->get_crossingList()[cCrossingRow]->get_roomList();
+                if (cRoomlist.size()>0)
+                {
+                    int index = datamanager->get_roomlist().indexOf(cRoomlist[0]);
+                    ui->roomBox1->setCurrentIndex(index);
+                    index = datamanager->get_roomlist().indexOf(cRoomlist[1]);
+                    ui->roomBox2->setCurrentIndex(index);
+                }
+                else
+                {
+                    add_rooms_to_crossing();
+                }
             }
         }
     }
@@ -286,7 +296,7 @@ void roomWidget::disable_roomSelectionCrossings()
     ui->roomBox2->setEnabled(false);
     ui->crossing_between->setEnabled(false);
     ui->and_label->setEnabled(false);
-    ui->apply_room2Crossing->setEnabled(false);
+
 }
 
 void roomWidget::add_rooms_to_crossing()
@@ -294,10 +304,14 @@ void roomWidget::add_rooms_to_crossing()
     if (ui->crossingList->currentItem()!=0L)
     {
         int cCrossingRow=ui->crossingList->currentRow();
-        int cRoomRow1=ui->roomBox1->currentIndex();
-        int cRoomRow2=ui->roomBox2->currentIndex();
-        datamanager->get_crossingList()[cCrossingRow]->add_rooms(datamanager->get_roomlist()[cRoomRow1],\
+        if (ui->roomBox1->currentIndex()!=-1 && ui->roomBox2->currentIndex()!=-1)
+        {
+            int cRoomRow1=ui->roomBox1->currentIndex();
+            int cRoomRow2=ui->roomBox2->currentIndex();
+
+            datamanager->get_crossingList()[cCrossingRow]->add_rooms(datamanager->get_roomlist()[cRoomRow1],
                                                                  datamanager->get_roomlist()[cRoomRow2]);
+        }
 
     }
 }
@@ -347,7 +361,6 @@ void roomWidget::enable_roomSelectionExits()
         ui->exit_from->setEnabled(true);
         ui->to_label->setEnabled(true);
         ui->outside->setEnabled(true);
-        ui->apply_room2exit->setEnabled(true);
         ui->roomBox_exits->clear();
 
         QList<QString> roomNameList;
@@ -358,15 +371,20 @@ void roomWidget::enable_roomSelectionExits()
         if (roomNameList.isEmpty()==false)
         {
              ui->roomBox_exits->addItems(roomNameList);
-        }
-        if (ui->exitList->currentRow()!=-1)
-        {
-            int cExitRow=ui->exitList->currentRow();
-            QList<jpsRoom*> cRoomlist = datamanager->get_exitList()[cExitRow]->get_roomList();
-            if (cRoomlist.size()>0)
+
+            if (ui->exitList->currentRow()!=-1)
             {
-                int index = datamanager->get_roomlist().indexOf(cRoomlist[0]);
-                ui->roomBox_exits->setCurrentIndex(index);
+                int cExitRow=ui->exitList->currentRow();
+                QList<jpsRoom*> cRoomlist = datamanager->get_exitList()[cExitRow]->get_roomList();
+                if (cRoomlist.size()>0)
+                {
+                    int index = datamanager->get_roomlist().indexOf(cRoomlist[0]);
+                    ui->roomBox_exits->setCurrentIndex(index);
+                }
+                else
+                {
+                    add_rooms_to_exit();
+                }
             }
         }
     }
@@ -384,18 +402,22 @@ void roomWidget::disable_roomSelectionExits()
     ui->exit_from->setEnabled(false);
     ui->to_label->setEnabled(false);
     ui->outside->setEnabled(false);
-    ui->apply_room2exit->setEnabled(false);
+
 }
 
 void roomWidget::add_rooms_to_exit()
 {
+
     if (ui->exitList->currentItem()!=0L)
     {
         int cExitRow=ui->exitList->currentRow();
-        int cRoomRow=ui->roomBox_exits->currentIndex();
-        datamanager->get_exitList()[cExitRow]->add_rooms(datamanager->get_roomlist()[cRoomRow]);
-
+        if (ui->roomBox_exits->currentIndex()!=-1)
+        {
+            int cRoomRow=ui->roomBox_exits->currentIndex();
+            datamanager->get_exitList()[cExitRow]->add_rooms(datamanager->get_roomlist()[cRoomRow]);
+        }
     }
+
 }
 
 void roomWidget::delete_exit()

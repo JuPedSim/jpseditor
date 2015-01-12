@@ -29,6 +29,7 @@ void jpsExit::change_name(QString name)
 
 void jpsExit::add_rooms(jpsRoom *room1, jpsRoom *room2)
 {
+    roomList.clear();
     roomList.push_back(room1);
     if (room2!=0L)
     {

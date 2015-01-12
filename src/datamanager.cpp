@@ -155,6 +155,8 @@ void jpsDatamanager::remove_all_exits()
 
 void jpsDatamanager::writeXML(QFile &file)
 {
+
+
     QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
 
 
@@ -348,6 +350,8 @@ void jpsDatamanager::remove_all()
     remove_all_crossings();
     remove_all_exits();
     remove_all_obstacles();
+    room_id_counter=0;
+    obs_id_counter=0;
 }
 
 void jpsDatamanager::remove_marked_lines()
@@ -655,6 +659,43 @@ void jpsDatamanager::writeDXFObjects(DL_Dxf *dxf, DL_WriterA *dw)
 {
     dxf->writeObjects(*dw);
     dxf->writeObjectsEnd(*dw);
+}
+
+QString jpsDatamanager::check_printAbility()
+{
+    if (roomlist.size()<1)
+    {
+        QString string = "No rooms defined! Save XML-file not possible!";
+        return string;
+    }
+    for (int i=0; i<crossingList.size(); i++)
+    {
+        if (crossingList[i]->get_roomList().size() < 2)
+        {
+            QString string = "There are crossings which are not assigned to a room! Save XML-file not possible!";
+            return string;
+        }
+    }
+    for (int i=0; i<exitList.size(); i++)
+    {
+        if (exitList[i]->get_roomList().size() < 1)
+        {
+            QString string = "There are exits which are not assigned to a room! Save XML-file not possible!";
+            return string;
+        }
+
+    }
+    for (int i=0; i<obstaclelist.size(); i++)
+    {
+        if (obstaclelist[i]->get_room()==0L)
+        {
+            QString string = "There are obstacles which are not assigned to a room! Save XML-file not possible!";
+            return string;
+        }
+
+    }
+
+    return "";
 }
 
 

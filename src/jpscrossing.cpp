@@ -1,5 +1,6 @@
 #include "jpscrossing.h"
 
+
 jpsCrossing::jpsCrossing(jpsLineItem *line)
 {
     cLine=line;
@@ -38,9 +39,12 @@ void jpsCrossing::change_name(QString name)
 
 void jpsCrossing::add_rooms(jpsRoom *room1, jpsRoom *room2)
 {
+    roomList.clear();
     roomList.push_back(room1);
     if (room2!=0L)
     {
         roomList.push_back(room2);
     }
+
+
 }

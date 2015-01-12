@@ -63,7 +63,7 @@ public:
     void writeDXFBlocks(DL_Dxf* dxf, DL_WriterA *dw);
     void writeDXFEntities(DL_Dxf* dxf, DL_WriterA *dw);
     void writeDXFObjects(DL_Dxf* dxf, DL_WriterA *dw);
-
+    QString check_printAbility();
 
 private:
     QList<jpsRoom *> roomlist;
