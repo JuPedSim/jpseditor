@@ -18,7 +18,7 @@ class MWindow : public QMainWindow, private Ui::MainWindow {
     Q_OBJECT
 public:
     MWindow();
-    ~MWindow(){}
+    ~MWindow();
 
 private:
     roomWidget* rwidget;

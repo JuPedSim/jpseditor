@@ -75,6 +75,18 @@ MWindow :: MWindow() {
 
 }
 
+MWindow::~MWindow()
+{
+    mview->delete_all();
+    dmanager->remove_all();
+    delete mview;
+    delete dmanager;
+    delete length_edit;
+    delete label1;
+    delete label2;
+    delete infoLabel;
+}
+
 void MWindow::openFile(){
 
     QString fileName=QFileDialog::getOpenFileName(this,tr("Open DXF"),"",tr("DXF-Drawings (*.dxf)"));

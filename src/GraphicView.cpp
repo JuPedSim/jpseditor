@@ -306,6 +306,14 @@ void jpsGraphicsView::delete_all()
     //intersect_point_vector.erase(intersect_point_vector.begin(),intersect_point_vector.end());
     line_vector.clear();
 
+    for (int i=0; i<intersect_point_vector.size(); i++)
+    {
+
+        delete intersect_point_vector[i];
+
+    }
+
+
     intersect_point_vector.clear();
 
     line_tracked=-1;
