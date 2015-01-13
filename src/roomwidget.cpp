@@ -56,7 +56,8 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->listWallsObs,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(selectWallObs()));
     connect(ui->remove_button_obs,SIGNAL(clicked(bool)),this,SLOT(removeWallObs()));
     connect(ui->list_obstacles,SIGNAL(itemSelectionChanged()),this,SLOT(enable_roomSelectionObs()));
-    connect(ui->apply_room2obs,SIGNAL(clicked(bool)),this,SLOT(add_room_to_obs()));
+    connect(ui->roomBox_obs,SIGNAL(activated(int)),this,SLOT(add_room_to_obs()));
+
     //lines in graphview deleted
     connect(graphview,SIGNAL(lines_deleted()),this,SLOT(show_all()));
 
@@ -562,8 +563,10 @@ void roomWidget::add_room_to_obs()
     {
         int cObsRow=ui->list_obstacles->currentRow();
         int cRoomRow=ui->roomBox_obs->currentIndex();
-        datamanager->get_obstaclelist()[cObsRow]->set_room(datamanager->get_roomlist()[cRoomRow]);
-
+        if (cRoomRow!=-1)
+        {
+            datamanager->get_obstaclelist()[cObsRow]->set_room(datamanager->get_roomlist()[cRoomRow]);
+        }
     }
 
 }
@@ -576,8 +579,7 @@ void roomWidget::enable_roomSelectionObs()
     if (datamanager->get_obstaclelist().size()>0)
     {
         ui->roomBox_obs->setEnabled(true);
-        ui->is_in->setEnabled(true);
-        ui->apply_room2obs->setEnabled(true);
+        ui->is_in->setEnabled(true);      
         ui->roomBox_obs->clear();
 
         QList<QString> roomNameList;
@@ -598,6 +600,10 @@ void roomWidget::enable_roomSelectionObs()
                 int index = datamanager->get_roomlist().indexOf(cRoom);
                 ui->roomBox_obs->setCurrentIndex(index);
             }
+            else
+            {
+                add_room_to_obs();
+            }
         }
     }
     else
@@ -611,7 +617,6 @@ void roomWidget::disable_roomSelectionObs()
 {
     ui->roomBox_obs->setEnabled(false);
     ui->is_in->setEnabled(false);
-    ui->apply_room2obs->setEnabled(false);
 }
 
 void roomWidget::shhi_roomCaption()

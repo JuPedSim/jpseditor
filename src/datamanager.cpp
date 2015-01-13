@@ -695,6 +695,7 @@ QString jpsDatamanager::check_printAbility()
 
     }
 
+
     return "";
 }
 

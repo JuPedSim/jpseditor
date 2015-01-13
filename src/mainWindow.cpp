@@ -4,7 +4,7 @@
 #include "GraphicView.h"
 #include "roomwidget.h"
 #include <iostream>
-#include <memory>
+
 
 
 #include <QFileDialog>

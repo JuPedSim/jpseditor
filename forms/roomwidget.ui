@@ -14,7 +14,7 @@
    <string>TabWidget</string>
   </property>
   <property name="currentIndex">
-   <number>1</number>
+   <number>3</number>
   </property>
   <widget class="QWidget" name="widget">
    <attribute name="title">
@@ -786,9 +786,9 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>30</x>
       <y>250</y>
-      <width>201</width>
+      <width>61</width>
       <height>41</height>
      </rect>
     </property>
@@ -807,27 +807,11 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>90</x>
+      <x>110</x>
       <y>260</y>
       <width>101</width>
       <height>21</height>
      </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="apply_room2obs">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>200</x>
-      <y>260</y>
-      <width>111</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Apply</string>
     </property>
    </widget>
   </widget>
