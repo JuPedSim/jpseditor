@@ -42,7 +42,7 @@ public:
     void disable_drawing();
     void addLineItem(qreal x1,qreal y1, qreal x2, qreal y2);
     void locate_intersection(jpsLineItem* item1, jpsLineItem* item2);
-    void show_hide_roomCaption(QString name, qreal x, qreal y);
+    bool show_hide_roomCaption(QString name, qreal x, qreal y);
 
 
 protected:

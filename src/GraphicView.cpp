@@ -113,7 +113,10 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
         for (int i=0; i<caption_list.size(); i++)
         {
             //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
+            qreal scalef = caption_list[i]->data(0).toReal();
+            caption_list[i]->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
             caption_list[i]->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
+            caption_list[i]->setTransform(QTransform::fromScale(scalef,scalef),true);
 
         }
         //if (current_line_mark!=0L)
@@ -256,6 +259,11 @@ void jpsGraphicsView::wheelEvent(QWheelEvent *event)
         if(event->delta() > 0)
         {
             // Zoom in
+
+            // for (int i=0; i<caption_list.size(); i++)
+            // {
+            //    caption_list[i]->setTransform(QTransform::fromScale(1/gl_scale_f,1/gl_scale_f));
+            //}
             gl_scale_f*=1/1.15;
             scale(scaleFactor, scaleFactor);
             catch_radius=10*gl_scale_f;
@@ -263,10 +271,12 @@ void jpsGraphicsView::wheelEvent(QWheelEvent *event)
         } else
         {
             // Zooming out
+
             gl_scale_f*=1.15;
             scale(1.0 / scaleFactor, 1.0 / scaleFactor);
             catch_radius=10*gl_scale_f;
             catch_line_distance=10*gl_scale_f;
+
         }
     }
 }
@@ -517,7 +527,7 @@ void jpsGraphicsView::locate_intersection(jpsLineItem *item1, jpsLineItem *item2
 
 }
 
-void jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
+bool jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
 {
     // if caption exits, it is supposed to be hided:
     for (int i=0; i<caption_list.size(); i++)
@@ -526,25 +536,28 @@ void jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
         {
             delete caption_list[i];
             caption_list.removeOne(caption_list[i]);
-            return;
+            return false;
         }
     }
     // if caption does not exit yet:
-    QFont font = QFont();
-    // adjust captionsize depending on roomsize
-    //font.setPointSizeF(0.5);
-    current_caption=Scene->addText(name,font);
+
+
+    current_caption=Scene->addText(name);
 
     current_caption->setX(x+translation_x);
     current_caption->setY(y+translation_y);
-    //current_caption->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
-    //Since the scene itself is mirrored:
-    current_caption->setTransform(QTransform::fromScale(1,-1));
 
-    //current_caption->setTransform(QTransform::fromScale(gl_scale_f,-gl_scale_f));
+    //Since the scene itself is mirrored (scale=1, scale=-1):
+
+    // adjust captionsize depending on zoomgrade
+    current_caption->setData(0,gl_scale_f);
+    current_caption->setTransform(QTransform::fromScale(gl_scale_f,-gl_scale_f),true);
+
     //current_caption->adjustSize();
     caption_list.push_back(current_caption);
     current_caption=0L;
+
+    return true;
 }
 
 

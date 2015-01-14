@@ -28,6 +28,7 @@ public:
     QList<jpsLineItem* > get_intersectLineVector();
     void add_intersectLine(jpsLineItem * lineItem);
     void remove_interLine(jpsLineItem * lineItem);
+    QString get_defaultColor();
 
 
 
@@ -35,6 +36,7 @@ private:
     QGraphicsLineItem* mLine;
     int mId;
     QString mName;
+    QString defaultColor;
     bool wall;
     bool door;
     bool exit;

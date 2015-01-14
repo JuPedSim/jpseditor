@@ -159,11 +159,29 @@ void roomWidget::change_roomname()
 {
     if (ui->list_rooms->currentItem()!=0L)
     {
-        int crow=ui->list_rooms->currentRow();
+        // if there is a roomCaption it should be hided before the change of the name is done
+        if (shhi_roomCaption()==false)
+        {
+            int crow=ui->list_rooms->currentRow();
 
-            datamanager->get_roomlist()[crow]->change_name(ui->chname_edit->text());
+                datamanager->get_roomlist()[crow]->change_name(ui->chname_edit->text());
 
-        this->show_rooms();
+            shhi_roomCaption();
+            this->show_rooms();
+
+
+        }
+        else
+        {
+            shhi_roomCaption();
+
+            int crow=ui->list_rooms->currentRow();
+
+                datamanager->get_roomlist()[crow]->change_name(ui->chname_edit->text());
+
+            this->show_rooms();
+
+        }
     }
 }
 
@@ -619,14 +637,14 @@ void roomWidget::disable_roomSelectionObs()
     ui->is_in->setEnabled(false);
 }
 
-void roomWidget::shhi_roomCaption()
+bool roomWidget::shhi_roomCaption()
 {
     if (ui->list_rooms->currentItem()!=0L)
     {
         int cRow=ui->list_rooms->currentRow();
         QString roomName = datamanager->get_roomlist()[cRow]->get_name();
         QPointF roomCenter = datamanager->get_roomlist()[cRow]->get_center();
-        graphview->show_hide_roomCaption(roomName,roomCenter.x(),roomCenter.y());
+        return graphview->show_hide_roomCaption(roomName,roomCenter.x(),roomCenter.y());
     }
 }
 

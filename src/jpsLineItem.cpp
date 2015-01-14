@@ -62,6 +62,7 @@ void jpsLineItem::set_Wall()
     wall=true;
     door=false;
     exit=false;
+    defaultColor="black";
 }
 
 void jpsLineItem::set_Door()
@@ -69,13 +70,16 @@ void jpsLineItem::set_Door()
     door=true;
     wall=false;
     exit=false;
+    defaultColor="blue";
 }
 
 void jpsLineItem::set_Exit()
 {
     exit=true;
     wall=false;
-    exit=false;
+    door=false;
+    defaultColor="magenta";
+
 }
 
 bool jpsLineItem::is_Wall()
@@ -121,6 +125,11 @@ void jpsLineItem::add_intersectLine(jpsLineItem *lineItem)
 void jpsLineItem::remove_interLine(jpsLineItem *lineItem)
 {
     intersectLineVector.removeOne(lineItem);
+}
+
+QString jpsLineItem::get_defaultColor()
+{
+    return defaultColor;
 }
 
 
