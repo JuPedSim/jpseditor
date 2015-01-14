@@ -12,6 +12,7 @@ public:
     QGraphicsLineItem* get_line();
     void set_line(QGraphicsLineItem* line);
     int get_id();
+    QString get_defaultColor();
     QString get_name();
     void set_id(int id);
     void set_name(QString name);
@@ -19,6 +20,7 @@ public:
     void set_Wall();
     void set_Door();
     void set_Exit();
+    void set_defaultColor(QString color);
     bool is_Wall();
     bool is_Door();
     bool is_Exit();
@@ -28,7 +30,7 @@ public:
     QList<jpsLineItem* > get_intersectLineVector();
     void add_intersectLine(jpsLineItem * lineItem);
     void remove_interLine(jpsLineItem * lineItem);
-    QString get_defaultColor();
+
 
 
 

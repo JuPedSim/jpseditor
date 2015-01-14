@@ -9,6 +9,7 @@ jpsRoom::jpsRoom(int id_room)
     id=id_room;
     QString string="Room ";
     name=string.append(QString::number(id));
+    highlighted=false;
 
 }
 
@@ -87,6 +88,29 @@ QPointF jpsRoom::get_center()
     mean.setY(sum_y/vertices.size());
 
     return mean;
+}
+
+
+void jpsRoom::highlight()
+{
+    if (!highlighted)
+    {
+        for (int i=0; i<item_list.size(); i++)
+        {
+            item_list[i]->get_line()->setPen(QPen(Qt::darkGreen));
+            item_list[i]->set_defaultColor("darkGreen");
+        }
+        highlighted=true;
+    }
+    else
+    {
+        for (int i=0; i<item_list.size(); i++)
+        {
+            item_list[i]->get_line()->setPen(QPen(Qt::black));
+            item_list[i]->set_defaultColor("black");
+        }
+        highlighted=false;
+    }
 }
 
 void jpsRoom::set_id(int id_room)

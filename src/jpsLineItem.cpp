@@ -78,8 +78,13 @@ void jpsLineItem::set_Exit()
     exit=true;
     wall=false;
     door=false;
-    defaultColor="magenta";
+    defaultColor="darkMagenta";
 
+}
+
+void jpsLineItem::set_defaultColor(QString color)
+{
+    defaultColor=color;
 }
 
 bool jpsLineItem::is_Wall()

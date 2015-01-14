@@ -231,18 +231,9 @@ void jpsGraphicsView::unmark_all_lines()
 
     for (int i=0; i<marked_lines.size();i++)
     {
-        if (marked_lines[i]->is_Wall()==true)
-        {
-            marked_lines[i]->get_line()->setPen(QPen(Qt::black,0));
-        }
-        else if (marked_lines[i]->is_Door()==true)
-        {
-            marked_lines[i]->get_line()->setPen(QPen(Qt::blue,0));
-        }
-        else
-        {
-            marked_lines[i]->get_line()->setPen(QPen(Qt::darkMagenta,0));
-        }
+
+        marked_lines[i]->get_line()->setPen(QPen(QColor(marked_lines[i]->get_defaultColor()),0));
+
     }
     marked_lines.clear();
 }

@@ -19,8 +19,10 @@ public:
     void set_id(int id_room);
     int get_id();
     QPointF get_center();
+    void highlight();
 private:
     int id;
+    bool highlighted;
     QString name;
     QList<jpsLineItem*> item_list;
 };
