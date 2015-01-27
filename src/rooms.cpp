@@ -13,13 +13,18 @@ jpsRoom::jpsRoom(int id_room)
 
 }
 
-void jpsRoom::addWall(QList <jpsLineItem *> newWall)
+void jpsRoom::addWall(QList <jpsLineItem *> newWalls)
 {
-    for (int i=0; i<newWall.size(); i++)
+    for (int i=0; i<newWalls.size(); i++)
     {
-        item_list.push_back(newWall[i]);
+        item_list.push_back(newWalls[i]);
     }
 
+}
+
+void jpsRoom::addWall(jpsLineItem *newWall)
+{
+    item_list.push_back(newWall);
 }
 
 void jpsRoom::removeWall(QList <jpsLineItem *> wall)
@@ -97,7 +102,7 @@ void jpsRoom::highlight()
     {
         for (int i=0; i<item_list.size(); i++)
         {
-            item_list[i]->get_line()->setPen(QPen(Qt::darkGreen));
+            item_list[i]->get_line()->setPen(QPen(Qt::darkGreen,0));
             item_list[i]->set_defaultColor("darkGreen");
         }
         highlighted=true;
@@ -106,11 +111,21 @@ void jpsRoom::highlight()
     {
         for (int i=0; i<item_list.size(); i++)
         {
-            item_list[i]->get_line()->setPen(QPen(Qt::black));
+            item_list[i]->get_line()->setPen(QPen(Qt::black,0));
             item_list[i]->set_defaultColor("black");
         }
         highlighted=false;
     }
+}
+
+QString jpsRoom::get_type()
+{
+    return _type;
+}
+
+void jpsRoom::set_type(const QString &string)
+{
+    _type=string;
 }
 
 void jpsRoom::set_id(int id_room)

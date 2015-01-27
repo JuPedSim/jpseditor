@@ -50,6 +50,7 @@ MWindow :: MWindow() {
     //Signals and Slots
     connect(actionBeenden, SIGNAL(triggered(bool)),qApp,SLOT(quit()));
     connect(action_ffnen,SIGNAL(triggered(bool)),this,SLOT(openFile()));
+    connect(action_ffnen_xml,SIGNAL(triggered(bool)),this,SLOT(openFileXML()));
     connect(actionSpeichern,SIGNAL(triggered(bool)),this,SLOT(saveFile()));
     connect(actionSpeichern_dxf,SIGNAL(triggered(bool)),this,SLOT(saveAsDXF()));
     connect(action_ber,SIGNAL(triggered(bool)),this,SLOT(info()));
@@ -71,6 +72,7 @@ MWindow :: MWindow() {
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(mview,SIGNAL(remove_marked_lines()),this,SLOT(lines_deleted()));
     connect(mview,SIGNAL(remove_all()),this,SLOT(remove_all_lines()));
+
 
 
 }
@@ -105,6 +107,33 @@ void MWindow::openFile(){
 
         statusBar()->showMessage("DXF-File successfully loaded!",10000);
     }
+}
+
+void MWindow::openFileXML()
+{
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::critical(this,
+                              "QXSRExample::parseXML",
+                              "Couldn't open example.xml",
+                              QMessageBox::Ok);
+        return;
+    }
+
+
+    if (!dmanager->readXML(file))
+    {
+        statusBar()->showMessage("XML-File could not be parsed!",10000);
+    }
+
+    else
+    {
+
+        statusBar()->showMessage("XML-File successfully loaded!",10000);
+    }
+
 }
 
 void MWindow::saveFile(){

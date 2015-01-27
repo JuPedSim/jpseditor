@@ -33,6 +33,7 @@ private:
 
 protected slots:
     void openFile();
+    void openFileXML();
     void saveFile();
     void saveAsDXF();
     void info();

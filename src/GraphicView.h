@@ -15,7 +15,7 @@ class jpsGraphicsView: public QGraphicsView {
 
 public:
     jpsGraphicsView(QWidget* parent = 0L);
-    ~jpsGraphicsView(){}
+    ~jpsGraphicsView();
     void change_gridmode();
     bool get_gridmode();
     void use_gridmode();
@@ -40,9 +40,11 @@ public:
     void unmark_all_lines();
     void select_line(jpsLineItem *mline);
     void disable_drawing();
-    void addLineItem(qreal x1,qreal y1, qreal x2, qreal y2);
+    jpsLineItem *addLineItem(const qreal &x1, const qreal &y1, const qreal &x2, const qreal &y2, const QString &type="");
     void locate_intersection(jpsLineItem* item1, jpsLineItem* item2);
     bool show_hide_roomCaption(QString name, qreal x, qreal y);
+    //void create_grid();
+
 
 
 protected:
@@ -52,10 +54,12 @@ protected:
     virtual void wheelEvent(QWheelEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
 
+
 private:
     QGraphicsLineItem* current_line;
     //std::vector<jpsLineItem> line_vector;
     QList<QPointF *> intersect_point_vector;
+    QList<QGraphicsEllipseItem *> grid_point_vector;
     QList<jpsLineItem *> line_vector;
     //QList<QList<jpsLineItem*> *> mainlist;
     QPointF pos;
@@ -81,6 +85,7 @@ private:
     QList<jpsLineItem *> marked_lines;
     QGraphicsTextItem* current_caption;
     QList<QGraphicsTextItem* > caption_list;
+
     //qreal gl_min_x;
     //qreal gl_min_y;
 

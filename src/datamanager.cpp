@@ -413,12 +413,228 @@ jpsGraphicsView * jpsDatamanager::get_view()
     return mView;
 }
 
+bool jpsDatamanager::readXML(QFile &file)
+{
+
+    QXmlStreamReader xmlReader(&file);
+
+    while(!xmlReader.atEnd() && !xmlReader.hasError())
+    {
+        /* Read next element.*/
+        QXmlStreamReader::TokenType token = xmlReader.readNext();
+        /* If token is just StartDocument, we'll go to next.*/
+        if(token == QXmlStreamReader::StartDocument)
+        {
+            continue;
+        }
+
+        /* If token is StartElement, we'll see if we can read it.*/
+        if(token == QXmlStreamReader::StartElement)
+        {
+            /* If it's named rooms, we'll go to the next.*/
+            if(xmlReader.name() == "rooms")
+            {
+                continue;
+            }
+            /* If it's named room, we'll dig the information from there.*/
+            if(xmlReader.name() == "room")
+            {
+                continue;
+
+            }
+            if(xmlReader.name() == "crossings")
+            {
+                continue;
+            }
+            if(xmlReader.name() == "transitions")
+            {
+                continue;
+            }
+            if(xmlReader.name() == "subroom")
+            {
+                this->parseSubRoom(xmlReader);
+            }
+            if(xmlReader.name() == "crossing")
+            {
+                this->parseCrossings(xmlReader);
+            }
+            if(xmlReader.name() == "transition")
+            {
+                this->parseTransitions(xmlReader);
+            }
+
+        }
+
+    }
+
+    /* Error handling. */
+    if(xmlReader.hasError())
+    {
+        QMessageBox::critical(mView,
+                              "QXSRExample::parseXML",
+                              xmlReader.errorString(),
+                              QMessageBox::Ok);
+        return false;
+    }
+    /* Removes any device() or data from the reader
+     * and resets its internal state to the initial state. */
+    xmlReader.clear();
+
+    return true;
+}
+
+void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
+{
+    // new subroom
+    this->new_room();
+    /* Let's get the attributes for person */
+    QXmlStreamAttributes attributes = xmlReader.attributes();
+    /* Let's check that subroom has id attribute. */
+
+    /* We'll add it to the room. */
+    roomlist.last()->set_id(attributes.value("id").toInt());
+
+    /* We'll add it to the room. */
+    roomlist.last()->change_name(attributes.value("caption").toString());
+
+    if(attributes.hasAttribute("class"))
+    {
+        /* We'll add it to the room. */
+        roomlist.last()->set_type(attributes.value("class").toString());
+    }
+    this->parseWalls(xmlReader,roomlist.last());
+}
+
+void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, jpsRoom *room)
+{
+
+    while(!(xmlReader.tokenType() == QXmlStreamReader::EndElement &&
+                xmlReader.name() == "subroom"))
+    {
+        xmlReader.readNext();
+
+        if(xmlReader.name() == "polygon")
+        {
+            continue;
+        }
+        else if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
+                 xmlReader.name() == "vertex")
+        {
+
+            // get coords from vertices
+            qreal x1=xmlReader.attributes().value("px").toFloat();
+            qreal y1=xmlReader.attributes().value("py").toFloat();
+
+            // go to next vertex
+            xmlReader.readNext();
+            xmlReader.readNext();
+            xmlReader.readNext();
+
+            qreal x2=xmlReader.attributes().value("px").toFloat();
+            qreal y2=xmlReader.attributes().value("py").toFloat();
+            // add Line to graphview
+            jpsLineItem* lineItem = mView->addLineItem(x1,y1,x2,y2,"Wall");
+
+            room->addWall(lineItem);
+
+        }
+    }
+}
+
+void jpsDatamanager::parseCrossings(QXmlStreamReader &xmlReader)
+{
+    int id = xmlReader.attributes().value("id").toInt();
+    int room_id1 = xmlReader.attributes().value("subroom1_id").toInt();
+    int room_id2 = xmlReader.attributes().value("subroom2_id").toInt();
+
+    // go to first vertex
+    while(xmlReader.name() != "vertex")
+    {
+        xmlReader.readNext();
+    }
+
+    qreal x1=xmlReader.attributes().value("px").toFloat();
+    qreal y1=xmlReader.attributes().value("py").toFloat();
+
+    // go to next vertex
+    xmlReader.readNext();
+    xmlReader.readNext();
+    xmlReader.readNext();
+
+    qreal x2=xmlReader.attributes().value("px").toFloat();
+    qreal y2=xmlReader.attributes().value("py").toFloat();
+
+    jpsLineItem* lineItem = mView->addLineItem(x1,y1,x2,y2,"Door");
+
+    jpsCrossing* crossing = new jpsCrossing(lineItem);
+    crossing->set_id(id);
+
+
+    jpsRoom* room1 = nullptr;
+    jpsRoom* room2 = nullptr;
+
+    //find rooms which belong to crossing
+    for (int i=0; i<roomlist.size(); i++)
+    {
+        if (roomlist[i]->get_id()==room_id1)
+        {
+            room1 = roomlist[i];
+
+        }
+        else if (roomlist[i]->get_id()==room_id2)
+        {
+            room2 = roomlist[i];
+        }
+    }
+    crossing->add_rooms(room1,room2);
+    crossingList.push_back(crossing);
 
 
 
+}
 
+void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
+{
+    int id = xmlReader.attributes().value("id").toInt();
+    QString caption = xmlReader.attributes().value("caption").toString();
+    QString type = xmlReader.attributes().value("type").toString();
+    int room_id = xmlReader.attributes().value("subroom1_id").toInt();
 
+    // go to first vertex
+    while(xmlReader.name() != "vertex")
+    {
+        xmlReader.readNext();
+    }
 
+    qreal x1=xmlReader.attributes().value("px").toFloat();
+    qreal y1=xmlReader.attributes().value("py").toFloat();
+
+    // go to next vertex
+    xmlReader.readNext();
+    xmlReader.readNext();
+    xmlReader.readNext();
+
+    qreal x2=xmlReader.attributes().value("px").toFloat();
+    qreal y2=xmlReader.attributes().value("py").toFloat();
+
+    jpsLineItem* lineItem = mView->addLineItem(x1,y1,x2,y2,"Exit");
+
+    jpsExit* exit = new jpsExit(lineItem);
+    exit->set_id(id);
+    exit->change_name(caption);
+    exit->set_type(type);
+
+    for (int i=0; i<roomlist.size(); i++)
+    {
+        if (roomlist[i]->get_id()==room_id)
+        {
+            exit->add_rooms(roomlist[i]);
+        }
+    }
+
+    exitList.push_back(exit);
+
+}
 
 
 
@@ -462,9 +678,9 @@ void jpsDatamanager::writeDXF(std::string filename)
     // ....
 
     writeDXFTables(dxf,dw);
-    //writeDXFBlocks(dxf,dw);
+    writeDXFBlocks(dxf,dw);
     writeDXFEntities(dxf,dw);
-    //writeDXFObjects(dxf,dw);
+    writeDXFObjects(dxf,dw);
 
     dw->dxfEOF();
     dw->close();

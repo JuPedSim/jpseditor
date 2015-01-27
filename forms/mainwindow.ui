@@ -24,13 +24,14 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuDatei">
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="action_ffnen_xml"/>
     <addaction name="action_ffnen"/>
     <addaction name="actionSpeichern"/>
     <addaction name="actionSpeichern_dxf"/>
@@ -346,6 +347,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+S</string>
+   </property>
+  </action>
+  <action name="action_ffnen_xml">
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/open.png</normaloff>:/open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Load XML</string>
+   </property>
+   <property name="toolTip">
+    <string>Load XML</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+O</string>
    </property>
   </action>
  </widget>

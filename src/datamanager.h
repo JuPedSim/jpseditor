@@ -4,7 +4,7 @@
 #include<QtGui>
 #include <QApplication>
 #include <QGraphicsView>
-#include <QGraphicsLineItem>
+#include <QMessageBox>
 #include "rooms.h"
 #include "jpscrossing.h"
 #include "jpsLineItem.h"
@@ -47,12 +47,21 @@ public:
     void remove_marked_lines();
     void set_view(jpsGraphicsView* view);
     jpsGraphicsView* get_view();
+    // Read XML
+    bool readXML(QFile &file);
+    void parseSubRoom(QXmlStreamReader &xmlReader);
+    void parseWalls(QXmlStreamReader &xmlReader,jpsRoom *room);
+    void parseCrossings(QXmlStreamReader &xmlReader);
+    void parseTransitions(QXmlStreamReader &xmlReader);
+
+    // Write XML
     void writeXML(QFile &file);
     void writeHeader(QXmlStreamWriter *stream);
     void writeRooms(QXmlStreamWriter *stream);
     void writeCrossings(QXmlStreamWriter *stream);
     void writeTransitions(QXmlStreamWriter *stream);
     void writeObstacles(QXmlStreamWriter *stream, jpsObstacle *obs);
+
     // Read DXF
     bool readDXF(std::string filename);
     virtual void addLine(const DL_LineData& d);

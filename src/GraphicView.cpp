@@ -2,10 +2,12 @@
 #include <QtGui>
 #include "GraphicView.h"
 #include <iostream>
+#include <cmath>
 
 
 jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
 {
+
     current_line=0L;
     current_caption=0L;
     //current_line_mark=0L;
@@ -26,6 +28,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     statDoor=false;
     statExit=false;
     currentPen.setColor(Qt::black);
+    currentPen.setCosmetic(true);
     this->scale(1,-1);
 
     //gl_min_x=1e6;
@@ -36,6 +39,9 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
 
     setCacheMode(QGraphicsView::CacheBackground);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+
+
+    //setRenderHint(QPainter::NonCosmeticDefaultPen);
     // setRenderHint(QPainter::Antialiasing);
 
     //m_graphView->setAlignment(0L);
@@ -52,6 +58,15 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     setScene(Scene);
     setSceneRect(0, 0, 1920, 1080);
 
+
+
+
+
+}
+
+jpsGraphicsView::~jpsGraphicsView()
+{
+    delete Scene;
 }
 
 
@@ -284,6 +299,7 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 }
 
 
+
 QPointF jpsGraphicsView::return_Pos()
 {
     return translated_pos;
@@ -364,7 +380,7 @@ void jpsGraphicsView::catch_points()
             point_tracked=true;
             //QPen pen;
             //pen.setColor('red');
-            current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red));
+            current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
             // if a point was tracked there is no need to look for further points ( only one point can be tracked)
             break;
         }
@@ -376,7 +392,7 @@ void jpsGraphicsView::catch_points()
             translated_pos.setY(line_vector[i]->get_line()->line().y2());
             //cursor.setPos(mapToGlobal(QPoint(translate_back_x(line_vector[i].x2()),translate_back_y(line_vector[i].y2()))));
             point_tracked=true;
-            current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red));
+            current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
             break;
         }
         // if no point was tracked bool is set back to false
@@ -447,12 +463,12 @@ void jpsGraphicsView::select_line(jpsLineItem *mline)
 
     if (!marked_lines.contains(mline))
     {
-        mline->get_line()->setPen(QPen(Qt::red));
+        mline->get_line()->setPen(QPen(Qt::red,0));
         marked_lines.push_back(mline);
     }
     else
     {
-        mline->get_line()->setPen(QPen(Qt::black));
+        mline->get_line()->setPen(QPen(Qt::black,0));
         marked_lines.removeOne(mline);
     }
 }
@@ -473,11 +489,38 @@ void jpsGraphicsView::disable_drawing()
 
 }
 
-void jpsGraphicsView::addLineItem(qreal x1, qreal y1, qreal x2, qreal y2)
+jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const qreal &x2,const qreal &y2,const QString &type)
 {
+
     current_line=Scene->addLine(x1,y1,x2,y2);
     current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
     jpsLineItem* newLine = new jpsLineItem(current_line);
+
+    if (type=="Door")
+    {
+        newLine->set_Door();
+    }
+    else if (type=="Exit")
+    {
+        newLine->set_Exit();
+    }
+    else
+    {
+        newLine->set_Wall();
+    }
+
+    current_line->setPen(QPen(QColor(newLine->get_defaultColor()),0));
+    // if line has already been added before (from another room)
+
+    for (int i=0; i<line_vector.size(); i++)
+    {
+        if (newLine->get_line()->line()==line_vector[i]->get_line()->line())
+        {
+            delete current_line;
+            current_line=0L;
+            return line_vector[i];
+        }
+    }
     line_vector.push_back(newLine);
 
     for (int i=0; i<line_vector.size(); i++)
@@ -486,6 +529,8 @@ void jpsGraphicsView::addLineItem(qreal x1, qreal y1, qreal x2, qreal y2)
     }
 
     current_line=0L;
+
+    return newLine;
 
 }
 
@@ -550,6 +595,51 @@ bool jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
 
     return true;
 }
+/*
+void jpsGraphicsView::create_grid()
+{
+    //QPointF sceneViewBottomLeft = mapToScene(QPoint(this->sceneRect().bottomLeft()));
+    //QPointF sceneViewTopRight = mapToScene(QPoint(this->sceneRect().topRight()));
+    //QRectF rect = this->sceneRect();
+
+    //std::cout << rect.bottomRight().y() << std::endl;
+
+    QPointF leftdown = mapToScene(this->sceneRect().bottomLeft().x(),this->sceneRect().bottomLeft().y());
+    qreal leftdownx = leftdown.x();
+    qreal leftdowny = leftdown.y();
+
+    QPointF topRight = mapToScene(this->sceneRect().bottomRight().x(),this->sceneRect().bottomRight().y());
+    qreal rightupx = topRight.x();
+    qreal rightupy = -topRight.y();
+
+    std::cout << rightupx << std::endl;
+    std::cout << rightupy << std::endl;
+    int ileftdownx = std::floor(leftdownx);
+    int ileftdowny = std::floor(leftdowny);
+    int irightupx = std::floor(rightupx);
+    int irightupy = std::floor(rightupy);
+    //std::cout << ileftupx << std::endl;
+    //std::cout << rightdownx << std::endl;
+    //QGraphicsTextItem* point = Scene->addText("Hallo Welt");
+    //point->setX(ileftupx);
+    //point->setY(ileftupy);
+    //std::cout << ileftdownx << std::endl;
+    //std::cout << irightupy << std::endl;
+    for (int i=0; i<irightupx; i+=100)
+    {
+        for (int j=0; j<irightupy; j+=100)
+        {
+            //std::cout << rightdownx << std::endl;
+            QGraphicsEllipseItem* point = Scene->addEllipse(i,j,1,1,QPen(Qt::red));
+
+            //grid_point_vector.push_back(point);
+        }
+    }
+
+    //std::cout << leftup-translation_x << std::endl;
+}
+
+*/
 
 
 qreal jpsGraphicsView::calc_d_point(const QLineF &line,const qreal &x, const qreal &y)
