@@ -503,6 +503,7 @@ void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
         roomlist.last()->set_type(attributes.value("class").toString());
     }
     this->parseWalls(xmlReader,roomlist.last());
+    this->parseObstacles(xmlReader,roomlist.last());
 }
 
 void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, jpsRoom *room)
@@ -511,6 +512,51 @@ void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, jpsRoom *room)
     while(!(xmlReader.tokenType() == QXmlStreamReader::EndElement &&
                 xmlReader.name() == "subroom"))
     {
+
+        if (xmlReader.name()=="obstacle")
+        {
+            break;
+        }
+
+        xmlReader.readNext();
+
+
+        if(xmlReader.name() == "polygon")
+        {
+            continue;
+        }
+        else if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
+                 xmlReader.name() == "vertex")
+        {
+
+            // get coords from vertices
+            qreal x1=xmlReader.attributes().value("px").toFloat();
+            qreal y1=xmlReader.attributes().value("py").toFloat();
+
+            // go to next vertex
+            xmlReader.readNext();
+            xmlReader.readNext();
+            xmlReader.readNext();
+
+            qreal x2=xmlReader.attributes().value("px").toFloat();
+            qreal y2=xmlReader.attributes().value("py").toFloat();
+            // add Line to graphview
+            jpsLineItem* lineItem = mView->addLineItem(x1,y1,x2,y2,"Wall");
+
+            room->addWall(lineItem);
+
+        }
+    }
+}
+
+
+void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, jpsObstacle *room)
+{
+
+    while(!(xmlReader.tokenType() == QXmlStreamReader::EndElement &&
+                xmlReader.name() == "obstacle"))
+    {
+
         xmlReader.readNext();
 
         if(xmlReader.name() == "polygon")
@@ -541,6 +587,7 @@ void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, jpsRoom *room)
     }
 }
 
+
 void jpsDatamanager::parseCrossings(QXmlStreamReader &xmlReader)
 {
     int id = xmlReader.attributes().value("id").toInt();
@@ -570,8 +617,8 @@ void jpsDatamanager::parseCrossings(QXmlStreamReader &xmlReader)
     crossing->set_id(id);
 
 
-    jpsRoom* room1 = nullptr;
-    jpsRoom* room2 = nullptr;
+    jpsRoom* room1 = 0L;
+    jpsRoom* room2 = 0L;
 
     //find rooms which belong to crossing
     for (int i=0; i<roomlist.size(); i++)
@@ -633,6 +680,40 @@ void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
     }
 
     exitList.push_back(exit);
+
+}
+
+void jpsDatamanager::parseObstacles(QXmlStreamReader &xmlReader, jpsRoom *room)
+{
+
+    while(!(xmlReader.tokenType() == QXmlStreamReader::EndElement &&
+                xmlReader.name() == "subroom"))
+    {
+
+
+        if (xmlReader.tokenType() == QXmlStreamReader::StartElement && xmlReader.name()=="obstacle")
+        {
+            int id = xmlReader.attributes().value("id").toInt();
+            QString caption = xmlReader.attributes().value("caption").toString();
+            std::cout << caption.toStdString() << std::endl;
+            jpsObstacle* obs = new jpsObstacle(id);
+            obs->change_name(caption);
+            obs->set_room(room);
+
+           // while (xmlReader.name()=="obstacle")
+           // {
+            //    xmlReader.readNext();
+            //}
+            this->parseWalls(xmlReader,obs);
+
+            obstaclelist.push_back(obs);
+        }
+
+        xmlReader.readNext();
+
+
+
+    }
 
 }
 

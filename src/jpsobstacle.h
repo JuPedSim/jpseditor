@@ -7,7 +7,7 @@ class jpsObstacle: public jpsRoom
 {
 public:
     jpsObstacle(int cId);
-    void set_room(jpsRoom* croom);
+    void set_room(jpsRoom* room);
     jpsRoom* get_room();
 private:
     jpsRoom* _room;

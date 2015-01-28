@@ -50,9 +50,11 @@ public:
     // Read XML
     bool readXML(QFile &file);
     void parseSubRoom(QXmlStreamReader &xmlReader);
-    void parseWalls(QXmlStreamReader &xmlReader,jpsRoom *room);
+    void parseWalls(QXmlStreamReader &xmlReader,jpsRoom* room);
+    void parseWalls(QXmlStreamReader &xmlReader,jpsObstacle* room);
     void parseCrossings(QXmlStreamReader &xmlReader);
     void parseTransitions(QXmlStreamReader &xmlReader);
+    void parseObstacles(QXmlStreamReader &xmlReader, jpsRoom *room);
 
     // Write XML
     void writeXML(QFile &file);

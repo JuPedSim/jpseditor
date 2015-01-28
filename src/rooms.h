@@ -23,6 +23,8 @@ public:
     void highlight();
     QString get_type();
     void set_type(const QString &string);
+
+
 private:
     int id;
     bool highlighted;

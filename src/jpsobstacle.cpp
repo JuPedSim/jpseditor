@@ -8,9 +8,9 @@ jpsObstacle::jpsObstacle(int id):jpsRoom(id)
     _room=0L;
 }
 
-void jpsObstacle::set_room(jpsRoom *croom)
+void jpsObstacle::set_room(jpsRoom *room)
 {
-    _room=croom;
+    _room=room;
 }
 
 jpsRoom* jpsObstacle::get_room()

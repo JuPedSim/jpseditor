@@ -128,6 +128,8 @@ void jpsRoom::set_type(const QString &string)
     _type=string;
 }
 
+
+
 void jpsRoom::set_id(int id_room)
 {
     id=id_room;
