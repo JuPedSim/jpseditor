@@ -38,6 +38,7 @@ public:
     QList<jpsLineItem *> get_line_vector();
     qreal get_scale_f();
     void unmark_all_lines();
+
     void select_line(jpsLineItem *mline);
     void disable_drawing();
     jpsLineItem *addLineItem(const qreal &x1, const qreal &y1, const qreal &x2, const qreal &y2, const QString &type="");
@@ -66,6 +67,7 @@ private:
     //QPointF* intersection_point;
     QGraphicsScene* Scene;
     bool midbutton_hold;
+    bool leftbutton_hold;
     qreal translation_x;
     qreal translation_y;
     QPointF translated_pos;
@@ -77,6 +79,7 @@ private:
     qreal gl_scale_f;
     bool point_tracked;
     QGraphicsItem* current_rect;
+    QGraphicsRectItem* currentSelectRect;
     bool objectsnap;
     QPointF* intersection_point;
     int line_tracked;

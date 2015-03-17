@@ -695,7 +695,7 @@ void jpsDatamanager::parseObstacles(QXmlStreamReader &xmlReader, jpsRoom *room)
         {
             int id = xmlReader.attributes().value("id").toInt();
             QString caption = xmlReader.attributes().value("caption").toString();
-            std::cout << caption.toStdString() << std::endl;
+
             jpsObstacle* obs = new jpsObstacle(id);
             obs->change_name(caption);
             obs->set_room(room);

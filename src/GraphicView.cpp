@@ -23,6 +23,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     point_tracked=false;
     line_tracked=-1;
     current_rect=0L;
+    currentSelectRect=nullptr;
     objectsnap=false;
     statWall=false;
     statDoor=false;
@@ -143,6 +144,15 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
        // setDragMode(ScrollHandDrag);
 
     }
+    //
+    else if(leftbutton_hold==true)
+    {
+
+        currentSelectRect->setRect(QRectF(QPointF(currentSelectRect->rect().x(),currentSelectRect->rect().y())
+                                         ,QPointF(translated_pos.x(),translated_pos.y())));
+
+    }
+
 
     translated_pos.setX(pos.x()-translation_x);
     translated_pos.setY(pos.y()-translation_y);
@@ -220,15 +230,13 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
         }
         else //if statWall==false
         {
-
-            catch_lines();
+            currentSelectRect=Scene->addRect(translated_pos.x(),translated_pos.y(),0,0,QPen(Qt::blue,0));
+            currentSelectRect->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+            leftbutton_hold=true;
+            //catch_lines();
 
         }
-        //unmark selected line(s)
-        if (line_tracked==-1)
-        {
-            unmark_all_lines();
-        }
+
     }
     else if (mouseEvent->button()==Qt::MidButton)
     {
@@ -252,6 +260,8 @@ void jpsGraphicsView::unmark_all_lines()
     }
     marked_lines.clear();
 }
+
+
 
 
 void jpsGraphicsView::wheelEvent(QWheelEvent *event)
@@ -291,10 +301,26 @@ void jpsGraphicsView::wheelEvent(QWheelEvent *event)
 void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
 
-    if (event->button() == Qt::MidButton)
+    if (event->button() == Qt::LeftButton)
     {
-        midbutton_hold=false;
+        // Select lines that are located within the rectangle
+        if (!(statWall==true || statDoor==true || statExit==true))
+        {
+            leftbutton_hold=false;
+            catch_lines();
+            delete currentSelectRect;
+            currentSelectRect=nullptr;
+
+            //unmark selected line(s)
+            if (line_tracked==-1)
+            {
+                unmark_all_lines();
+            }
+        }
     }
+
+    if (event->button() == Qt::MidButton)
+        midbutton_hold=false;
 
 }
 
@@ -421,41 +447,18 @@ void jpsGraphicsView::catch_lines()
 {
     //catch lines (only possible if wall is disabled)
 
-    //std::vector<JPGeoLine> candidates;
-    qreal min=catch_line_distance;
-    int index=-1;
-    int current_d=0;
-    for (signed int i=0; i<line_vector.size(); i++)
+    line_tracked=-1;
+
+    for (auto &item:line_vector)
     {
-        if ((line_vector[i]->get_line()->line().x1()>=(translated_pos.x()-catch_line_distance) && line_vector[i]->get_line()->line().x2()<=(translated_pos.x()+catch_line_distance))
-                || (line_vector[i]->get_line()->line().x1()<=(translated_pos.x()+catch_line_distance) && line_vector[i]->get_line()->line().x2()>=(translated_pos.x()-catch_line_distance)))
+        if (currentSelectRect->contains(item->get_line()->line().p1())
+                && currentSelectRect->contains(item->get_line()->line().p2()))
         {
-            if ((line_vector[i]->get_line()->line().y1()>=(translated_pos.y()-catch_line_distance) && line_vector[i]->get_line()->line().y2()<=(translated_pos.y()+catch_line_distance))
-                    || (line_vector[i]->get_line()->line().y1()<=(translated_pos.y()+catch_line_distance) && line_vector[i]->get_line()->line().y2()>=(translated_pos.y()-catch_line_distance)))
-            {
-                //candidates.push_back(line_vector[i]);
-                    current_d=this->calc_d_point(line_vector[i]->get_line()->line(),translated_pos.x(),translated_pos.y());
-                if (current_d<min)
-                {
-                    min=current_d;
-                    index=i;
-                }
-            }
+            select_line(item);
+            line_tracked=1;
 
         }
     }
-    if (index>=0)
-    {
-        line_tracked=index;
-        select_line(line_vector[line_tracked]);
-
-    }
-    else
-    {
-        line_tracked=-1;
-
-    }
-
 }
 
 void jpsGraphicsView::select_line(jpsLineItem *mline)
@@ -660,6 +663,8 @@ qreal jpsGraphicsView::calc_d_point(const QLineF &line,const qreal &x, const qre
     }
 
 }
+
+
 
 
 // Delete single line
