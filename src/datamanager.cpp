@@ -21,11 +21,11 @@ void jpsDatamanager::new_room()
 
 void jpsDatamanager::remove_room(jpsRoom *room)
 {
-    if (roomlist.size()>0)
-    {
-        roomlist.removeOne(room);
-        delete room;
-    }
+    //if (roomlist.size()>0)
+    //{
+    roomlist.removeOne(room);
+    delete room;
+    //}
 }
 
 void jpsDatamanager::change_roomName(jpsRoom* room, QString name)
@@ -38,8 +38,10 @@ void jpsDatamanager::remove_all_rooms()
 
     for (int i=0; i<roomlist.size(); i++)
     {
-        remove_room(roomlist[i]);
+        delete roomlist[i];
     }
+    roomlist.clear();
+
 }
 
 QList<jpsRoom *> jpsDatamanager::get_roomlist()
@@ -75,8 +77,9 @@ void jpsDatamanager::remove_all_obstacles()
 
     for (int i=0; i<obstaclelist.size(); i++)
     {
-        remove_obstacle(obstaclelist[i]);
+        delete obstaclelist[i];
     }
+    obstaclelist.clear();
 }
 
 QList<jpsObstacle *> jpsDatamanager::get_obstaclelist()
@@ -93,8 +96,12 @@ void jpsDatamanager::new_crossing(QList <jpsLineItem *> newCrossings)
 {
     for (int i=0; i<newCrossings.size(); i++)
     {
-        jpsCrossing* newCrossing = new jpsCrossing(newCrossings[i]);
-        crossingList.push_back(newCrossing);
+        if (newCrossings[i]->is_Door())
+        {
+            jpsCrossing* newCrossing = new jpsCrossing(newCrossings[i]);
+            crossingList.push_back(newCrossing);
+        }
+
     }
 }
 
@@ -116,8 +123,9 @@ void jpsDatamanager::remove_all_crossings()
 {
     for (int i=0; i<crossingList.size(); i++)
     {
-        remove_crossing(crossingList[i]);
+        delete crossingList[i];
     }
+    crossingList.clear();
 }
 
 
@@ -130,8 +138,11 @@ void jpsDatamanager::new_exit(QList <jpsLineItem *> newExits)
 {
     for (int i=0; i<newExits.size(); i++)
     {
-        jpsExit* newExit = new jpsExit(newExits[i]);
-        exitList.push_back(newExit);
+        if (newExits[i]->is_Exit())
+        {
+            jpsExit* newExit = new jpsExit(newExits[i]);
+            exitList.push_back(newExit);
+        }
     }
 }
 
@@ -149,8 +160,9 @@ void jpsDatamanager::remove_all_exits()
 {
     for (int i=0; i<exitList.size(); i++)
     {
-        remove_exit(exitList[i]);
+        delete exitList[i];
     }
+    exitList.clear();
 }
 
 void jpsDatamanager::writeXML(QFile &file)
@@ -346,12 +358,14 @@ void jpsDatamanager::writeObstacles(QXmlStreamWriter *stream, jpsObstacle* obs)
 
 void jpsDatamanager::remove_all()
 {
-    remove_all_rooms();
+
     remove_all_crossings();
     remove_all_exits();
     remove_all_obstacles();
+    remove_all_rooms();
     room_id_counter=0;
     obs_id_counter=0;
+
 }
 
 void jpsDatamanager::remove_marked_lines()
@@ -411,6 +425,78 @@ void jpsDatamanager::set_view(jpsGraphicsView *view)
 jpsGraphicsView * jpsDatamanager::get_view()
 {
     return mView;
+}
+
+void jpsDatamanager::AutoAssignCrossings()
+{
+    for (jpsCrossing *crossing: crossingList)
+    {
+        int roomCounter =0;
+
+        for (jpsRoom *room: roomlist)
+        {
+            QList<jpsLineItem* > walls = room->get_listWalls();
+
+            int pointCounter = 0;
+
+            for (jpsLineItem* wall: walls)
+            {
+                if (wall->get_line()->line().p1()==crossing->get_cLine()->get_line()->line().p1() ||
+                       wall->get_line()->line().p1()==crossing->get_cLine()->get_line()->line().p2() ||
+                        wall->get_line()->line().p2()==crossing->get_cLine()->get_line()->line().p1() ||
+                        wall->get_line()->line().p2()==crossing->get_cLine()->get_line()->line().p2())
+                {
+                    pointCounter++;
+
+                }
+            }
+
+            if (pointCounter==2 && roomCounter==0)
+            {
+                crossing->add_rooms(room);
+                roomCounter++;
+
+            }
+            else if (pointCounter==2 && roomCounter==1)
+            {
+                crossing->add_rooms(crossing->get_roomList()[0],room);
+                break;
+            }
+
+        }
+    }
+
+}
+
+void jpsDatamanager::AutoAssignExits()
+{
+    for (jpsExit *exit: exitList)
+    {
+        for (jpsRoom *room: roomlist)
+        {
+            QList<jpsLineItem* > walls = room->get_listWalls();
+
+            int pointCounter = 0;
+
+            for (jpsLineItem* wall: walls)
+            {
+                if (wall->get_line()->line().p1()==exit->get_cLine()->get_line()->line().p1() ||
+                       wall->get_line()->line().p1()==exit->get_cLine()->get_line()->line().p2() ||
+                        wall->get_line()->line().p2()==exit->get_cLine()->get_line()->line().p1() ||
+                        wall->get_line()->line().p2()==exit->get_cLine()->get_line()->line().p2())
+                {
+                    pointCounter++;
+                }
+            }
+
+            if (pointCounter==2)
+            {
+                exit->add_rooms(room);
+                break;
+            }
+        }
+    }
+
 }
 
 bool jpsDatamanager::readXML(QFile &file)

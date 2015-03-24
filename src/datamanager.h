@@ -47,6 +47,13 @@ public:
     void remove_marked_lines();
     void set_view(jpsGraphicsView* view);
     jpsGraphicsView* get_view();
+
+
+    // Auto Assign
+    void AutoAssignCrossings();
+    void AutoAssignExits();
+
+
     // Read XML
     bool readXML(QFile &file);
     void parseSubRoom(QXmlStreamReader &xmlReader);
