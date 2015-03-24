@@ -530,16 +530,16 @@ void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, jpsRoom *room)
         {
 
             // get coords from vertices
-            qreal x1=xmlReader.attributes().value("px").toFloat();
-            qreal y1=xmlReader.attributes().value("py").toFloat();
+            qreal x1=xmlReader.attributes().value("px").toString().toFloat();
+            qreal y1=xmlReader.attributes().value("py").toString().toFloat();
 
             // go to next vertex
             xmlReader.readNext();
             xmlReader.readNext();
             xmlReader.readNext();
 
-            qreal x2=xmlReader.attributes().value("px").toFloat();
-            qreal y2=xmlReader.attributes().value("py").toFloat();
+            qreal x2=xmlReader.attributes().value("px").toString().toFloat();
+            qreal y2=xmlReader.attributes().value("py").toString().toFloat();
             // add Line to graphview
             jpsLineItem* lineItem = mView->addLineItem(x1,y1,x2,y2,"Wall");
 
@@ -568,16 +568,16 @@ void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, jpsObstacle *room)
         {
 
             // get coords from vertices
-            qreal x1=xmlReader.attributes().value("px").toFloat();
-            qreal y1=xmlReader.attributes().value("py").toFloat();
+            qreal x1=xmlReader.attributes().value("px").toString().toFloat();
+            qreal y1=xmlReader.attributes().value("py").toString().toFloat();
 
             // go to next vertex
             xmlReader.readNext();
             xmlReader.readNext();
             xmlReader.readNext();
 
-            qreal x2=xmlReader.attributes().value("px").toFloat();
-            qreal y2=xmlReader.attributes().value("py").toFloat();
+            qreal x2=xmlReader.attributes().value("px").toString().toFloat();
+            qreal y2=xmlReader.attributes().value("py").toString().toFloat();
             // add Line to graphview
             jpsLineItem* lineItem = mView->addLineItem(x1,y1,x2,y2,"Wall");
 
@@ -600,16 +600,16 @@ void jpsDatamanager::parseCrossings(QXmlStreamReader &xmlReader)
         xmlReader.readNext();
     }
 
-    qreal x1=xmlReader.attributes().value("px").toFloat();
-    qreal y1=xmlReader.attributes().value("py").toFloat();
+    qreal x1=xmlReader.attributes().value("px").toString().toFloat();
+    qreal y1=xmlReader.attributes().value("py").toString().toFloat();
 
     // go to next vertex
     xmlReader.readNext();
     xmlReader.readNext();
     xmlReader.readNext();
 
-    qreal x2=xmlReader.attributes().value("px").toFloat();
-    qreal y2=xmlReader.attributes().value("py").toFloat();
+    qreal x2=xmlReader.attributes().value("px").toString().toFloat();
+    qreal y2=xmlReader.attributes().value("py").toString().toFloat();
 
     jpsLineItem* lineItem = mView->addLineItem(x1,y1,x2,y2,"Door");
 
@@ -653,16 +653,16 @@ void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
         xmlReader.readNext();
     }
 
-    qreal x1=xmlReader.attributes().value("px").toFloat();
-    qreal y1=xmlReader.attributes().value("py").toFloat();
+    qreal x1=xmlReader.attributes().value("px").toString().toFloat();
+    qreal y1=xmlReader.attributes().value("py").toString().toFloat();
 
     // go to next vertex
     xmlReader.readNext();
     xmlReader.readNext();
     xmlReader.readNext();
 
-    qreal x2=xmlReader.attributes().value("px").toFloat();
-    qreal y2=xmlReader.attributes().value("py").toFloat();
+    qreal x2=xmlReader.attributes().value("px").toString().toFloat();
+    qreal y2=xmlReader.attributes().value("py").toString().toFloat();
 
     jpsLineItem* lineItem = mView->addLineItem(x1,y1,x2,y2,"Exit");
 
