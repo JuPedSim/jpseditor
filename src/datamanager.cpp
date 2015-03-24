@@ -492,7 +492,7 @@ void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
     /* Let's check that subroom has id attribute. */
 
     /* We'll add it to the room. */
-    roomlist.last()->set_id(attributes.value("id").toInt());
+    roomlist.last()->set_id(attributes.value("id").toString().toInt());
 
     /* We'll add it to the room. */
     roomlist.last()->change_name(attributes.value("caption").toString());
@@ -590,9 +590,9 @@ void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, jpsObstacle *room)
 
 void jpsDatamanager::parseCrossings(QXmlStreamReader &xmlReader)
 {
-    int id = xmlReader.attributes().value("id").toInt();
-    int room_id1 = xmlReader.attributes().value("subroom1_id").toInt();
-    int room_id2 = xmlReader.attributes().value("subroom2_id").toInt();
+    int id = xmlReader.attributes().value("id").toString().toInt();
+    int room_id1 = xmlReader.attributes().value("subroom1_id").toString().toInt();
+    int room_id2 = xmlReader.attributes().value("subroom2_id").toString().toInt();
 
     // go to first vertex
     while(xmlReader.name() != "vertex")
@@ -642,10 +642,10 @@ void jpsDatamanager::parseCrossings(QXmlStreamReader &xmlReader)
 
 void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
 {
-    int id = xmlReader.attributes().value("id").toInt();
+    int id = xmlReader.attributes().value("id").toString().toInt();
     QString caption = xmlReader.attributes().value("caption").toString();
     QString type = xmlReader.attributes().value("type").toString();
-    int room_id = xmlReader.attributes().value("subroom1_id").toInt();
+    int room_id = xmlReader.attributes().value("subroom1_id").toString().toInt();
 
     // go to first vertex
     while(xmlReader.name() != "vertex")
@@ -693,7 +693,7 @@ void jpsDatamanager::parseObstacles(QXmlStreamReader &xmlReader, jpsRoom *room)
 
         if (xmlReader.tokenType() == QXmlStreamReader::StartElement && xmlReader.name()=="obstacle")
         {
-            int id = xmlReader.attributes().value("id").toInt();
+          int id = xmlReader.attributes().value("id").toString().toInt();
             QString caption = xmlReader.attributes().value("caption").toString();
 
             jpsObstacle* obs = new jpsObstacle(id);
