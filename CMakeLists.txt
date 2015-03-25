@@ -12,9 +12,9 @@ cmake_minimum_required(VERSION 2.8)
 #set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/" ${CMAKE_MODULE_PATH})
 
 # set project's name
-project( JPSgui )
+project( JuPedSim )
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
+#list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 
 
 #------------------ set important directories --------------------
@@ -41,6 +41,10 @@ message( STATUS "JPSGUI_VERSION: " ${JPSGUI_VERSION} )
 # (CMAKE_BINARY_DIR holds a path to the build directory, while INCLUDE_DIRECTORIES() works just like INCLUDEPATH from qmake)
 INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+
+
+
+
 
 set( SAMPLE_SRCS
     src/mainWindow.cpp
@@ -140,14 +144,34 @@ elseif( ${QT5_INSTALLED} )
   qt5_wrap_ui(SAMPLE_UI_HDRS ${SAMPLE_UIS})
 endif() 
 
+IF(APPLE)
+  SET(MACOSX_BUNDLE_ICON_FILE jupedsim.icns)
+  SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/icons/jupedsim.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+  # include the icns file in the target
+  SET(SAMPLE_SRCS ${SAMPLE_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/icons/jupedsim.icns)
+ENDIF(APPLE)
+
 # here we instruct CMake to build JPSgui executable from all of the source files
-ADD_EXECUTABLE( JPSgui ${SAMPLE_SRCS} 
+ADD_EXECUTABLE( JuPedSim MACOSX_BUNDLE WIN32
+  ${SAMPLE_SRCS}
   ${SAMPLE_MOC_HDRS}
   ${SAMPLE_UI_HDRS} 
   ${SAMPLE_RESOURCES_RCS}
   )
 
-TARGET_LINK_LIBRARIES( JPSgui  ${VTK_LIBRARIES} ${QT_LIBRARIES})
+# QVTK is for VTK 5.x. For VTK 6, use ${VTK_LIBRARIES} instead
+if(VTK_LIBRARIES)
+  if(${VTK_VERSION} VERSION_LESS "6")
+    TARGET_LINK_LIBRARIES( JuPedSim ${QT_LIBRARIES} QVTK)
+  else()        
+    TARGET_LINK_LIBRARIES( JuPedSim  ${VTK_LIBRARIES} ${QT_LIBRARIES})
+  endif()
+else() # this else is not yet tested
+  target_link_libraries(JuPedSim vtkHybrid QVTK vtkViews ${QT_LIBRARIES})
+endif() 
+
+
+SET_TARGET_PROPERTIES( JuPedSim PROPERTIES MACOSX_BUNDLE TRUE)
 #----------------------------------------------------------------------
 # enable as many warnings as possible
 set(warning_flags "-Wall -Wextra")
@@ -194,3 +218,86 @@ endif(CMAKE_BUILD_TYPE MATCHES Debug)
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "PGI")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --c++11 -Minform=inform")	
 endif()
+
+
+#--------------------------------------------------------------------------------
+# Now the installation stuff below
+#--------------------------------------------------------------------------------
+SET(plugin_dest_dir bin)
+SET(qtconf_dest_dir bin)
+SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/JuPedSim")
+IF(APPLE)
+  SET(plugin_dest_dir JuPedSim.app/Contents/MacOS)
+  SET(qtconf_dest_dir JuPedSim.app/Contents/Resources)
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/JuPedSim.app")  
+ENDIF(APPLE)
+
+IF(WIN32)
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/JuPedSim.exe")
+ENDIF(WIN32)
+
+INSTALL(TARGETS JuPedSim
+  BUNDLE DESTINATION . COMPONENT Runtime
+  RUNTIME DESTINATION bin COMPONENT Runtime
+  
+  )
+
+#--------------------------------------------------------------------------------
+# Install needed Qt plugins by copying directories from the qt installation
+# One can cull what gets copied by using 'REGEX "..." EXCLUDE'
+INSTALL(DIRECTORY "${QT_PLUGINS_DIR}/imageformats" DESTINATION ${plugin_dest_dir}/plugins COMPONENT Runtime)
+
+#--------------------------------------------------------------------------------
+# install a qt.conf file
+# this inserts some cmake code into the install script to write the file
+INSTALL(CODE "
+    file(WRITE \"\${CMAKE_INSTALL_PREFIX}/${qtconf_dest_dir}/qt.conf\" \"\")
+    " COMPONENT Runtime)
+
+
+#--------------------------------------------------------------------------------
+# Use BundleUtilities to get all other dependencies for the application to work.
+# It takes a bundle or executable along with possible plugins and inspects it
+# for dependencies.  If they are not system dependencies, they are copied.
+
+# directories to look for dependencies
+SET(DIRS ${QT_LIBRARY_DIRS}) #  ${VTK_LIBRARIES}
+
+# Now the work of copying dependencies into the bundle/package
+# The quotes are escaped and variables to use at install time have their $ escaped
+# An alternative is the do a configure_file() on a script and use install(SCRIPT  ...).
+# Note that the image plugins depend on QtSvg and QtXml, and it got those copied
+# over.
+INSTALL(CODE "
+    file(GLOB_RECURSE QTPLUGINS
+      \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
+    include(BundleUtilities)
+    fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
+    " COMPONENT Runtime)
+
+
+
+
+#================================================ APPLE Stuff ======================
+
+IF(APPLE)
+  # set how it shows up in the Info.plist file
+  SET(MACOSX_GUI_ICON jupedsim.icns)
+  SET(MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2015 Forschungszentrum Juelich. All rights reserved.")
+  SET(MACOSX_BUNDLE_BUNDLE_NAME "JuPedSim")
+  SET(MACOSX_BUNDLE_BUNDLE_VERSION "${JPSGUI_VERSION}")
+  SET(MACOSX_BUNDLE_LONG_VERSION_STRING "version ${JPSGUI_VERSION}")
+  SET(MACOSX_BUNDLE_SHORT_VERSION_STRING "${JPSGUI_VERSION}")
+  SET(MACOSX_GUI_COPYRIGHT "Copyright (c) 2015 Forschungszentrum Juelich. All rights reserved.")
+  SET(MACOSX_BUNDLE_GUI_IDENTIFIER "www.jupedsim.org")
+  # set where in the bundle to put the icns file
+
+ENDIF(APPLE)
+
+# To Create a package, one can run "cpack -G DragNDrop CPackConfig.cmake" on Mac OS X
+# where CPackConfig.cmake is created by including CPack
+# And then there's ways to customize this as well
+set(CPACK_BINARY_DRAGNDROP ON)
+include(CPack)
+
+
