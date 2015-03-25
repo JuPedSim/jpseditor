@@ -56,6 +56,8 @@ protected slots:
     void disable_roomSelectionObs();
     bool shhi_roomCaption();
     void highlight_room();
+    void autoAssignDoors();
+    void autoAssignExits();
 
 
 private:

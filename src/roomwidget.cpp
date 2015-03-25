@@ -37,17 +37,19 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->highlight,SIGNAL(clicked(bool)),this,SLOT(highlight_room()));
     //tab crossing
     connect(ui->addCrossingButton,SIGNAL(clicked(bool)),this,SLOT(new_crossing()));
-    connect(ui->crossingList,SIGNAL(itemSelectionChanged()),this,SLOT(enable_roomSelectionCrossings()));
+    connect(ui->crossingList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(enable_roomSelectionCrossings()));
     connect(ui->roomBox1,SIGNAL(activated(int)),this,SLOT(add_rooms_to_crossing()));
     connect(ui->roomBox2,SIGNAL(activated(int)),this,SLOT(add_rooms_to_crossing()));
     connect(ui->removeCrossingButton,SIGNAL(clicked(bool)),this,SLOT(delete_crossing()));
     connect(ui->crossingList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(select_crossing()));
+    connect(ui->auto_assign_doors,SIGNAL(clicked(bool)),this,SLOT(autoAssignDoors()));
     //tab exit
     connect(ui->addExitButton,SIGNAL(clicked(bool)),this,SLOT(new_exit()));
-    connect(ui->exitList,SIGNAL(itemSelectionChanged()),this,SLOT(enable_roomSelectionExits()));
+    connect(ui->exitList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(enable_roomSelectionExits()));
     connect(ui->roomBox_exits,SIGNAL(activated(int)),this,SLOT(add_rooms_to_exit()));
     connect(ui->removeExitButton,SIGNAL(clicked(bool)),this,SLOT(delete_exit()));
     connect(ui->exitList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(select_exit()));
+    connect(ui->auto_assign_exits,SIGNAL(clicked(bool)),this,SLOT(autoAssignExits()));
     //tab obstacles
     connect(ui->new_obs_button,SIGNAL(clicked(bool)),this,SLOT(new_obstacle()));
     connect(ui->delete_obs,SIGNAL(clicked(bool)),this,SLOT(delete_obstacle()));
@@ -56,7 +58,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->list_obstacles,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(showWallsObs()));
     connect(ui->listWallsObs,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(selectWallObs()));
     connect(ui->remove_button_obs,SIGNAL(clicked(bool)),this,SLOT(removeWallObs()));
-    connect(ui->list_obstacles,SIGNAL(itemSelectionChanged()),this,SLOT(enable_roomSelectionObs()));
+    connect(ui->list_obstacles,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(enable_roomSelectionObs()));
     connect(ui->roomBox_obs,SIGNAL(activated(int)),this,SLOT(add_room_to_obs()));
     connect(ui->caption_obs,SIGNAL(clicked(bool)),this,SLOT(shhi_roomCaption()));
     connect(ui->highlight_obs,SIGNAL(clicked(bool)),this,SLOT(highlight_room()));
@@ -659,6 +661,21 @@ void roomWidget::highlight_room()
         int cRow=ui->list_rooms->currentRow();
         datamanager->get_roomlist()[cRow]->highlight();
     }
+
+}
+
+void roomWidget::autoAssignDoors()
+{
+    datamanager->AutoAssignCrossings();
+    show_all();
+    enable_roomSelectionCrossings();
+}
+
+void roomWidget::autoAssignExits()
+{
+    datamanager->AutoAssignExits();
+    show_all();
+    enable_roomSelectionExits();
 
 }
 

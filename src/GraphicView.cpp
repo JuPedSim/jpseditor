@@ -16,6 +16,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     translation_y=this->height();
     gridmode=false;
     gl_scale_f=1.0;
+    //scale(10,10);
     catch_radius=10*gl_scale_f;
     catch_line_distance=10*gl_scale_f;
     //Set-up the view
@@ -59,10 +60,6 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     setScene(Scene);
     setSceneRect(0, 0, 1920, 1080);
 
-
-
-
-
 }
 
 jpsGraphicsView::~jpsGraphicsView()
@@ -102,8 +99,6 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
         }
     }
-
-
 
     translated_pos.setX(pos.x()-translation_x);
     translated_pos.setY(pos.y()-translation_y);
@@ -360,7 +355,7 @@ void jpsGraphicsView::delete_all()
     intersect_point_vector.clear();
 
     line_tracked=-1;
-
+    emit lines_deleted();
     update();
 }
 
