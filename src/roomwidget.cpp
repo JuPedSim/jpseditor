@@ -293,7 +293,7 @@ void roomWidget::enable_roomSelectionCrossings()
             if (cCrossingRow!=-1) // -1 means there is no current item
             {
                 QList<jpsRoom*> cRoomlist = datamanager->get_crossingList()[cCrossingRow]->get_roomList();
-                if (cRoomlist.size()>0)
+                if (cRoomlist.size()>1)
                 {
                     int index = datamanager->get_roomlist().indexOf(cRoomlist[0]);
                     ui->roomBox1->setCurrentIndex(index);

@@ -13,7 +13,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     //current_line_mark=0L;
     midbutton_hold=false;
     translation_x=0;
-    translation_y=this->height();
+    translation_y=0;//this->height();
     gridmode=false;
     gl_scale_f=1.0;
     //scale(10,10);
@@ -31,7 +31,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     statExit=false;
     currentPen.setColor(Qt::black);
     currentPen.setCosmetic(true);
-    this->scale(1,-1);
+    //this->scale(1,-1);
 
     //gl_min_x=1e6;
     //gl_min_y=1e6;
@@ -60,6 +60,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     setScene(Scene);
     setSceneRect(0, 0, 1920, 1080);
 
+    //create_grid();
 }
 
 jpsGraphicsView::~jpsGraphicsView()
@@ -88,8 +89,6 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
     pos=mapToScene(mouseEvent->pos());
 
-
-
     if (current_line!=0L)
     {
         if (gridmode==true)
@@ -115,19 +114,25 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
         }
 
-        for (int i=0; i<line_vector.size(); i++)
+        for (int i=0; i<line_vector.size(); ++i)
         {
             //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
             line_vector[i]->get_line()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
 
         }
-        for (int i=0; i<caption_list.size(); i++)
+        for (int i=0; i<caption_list.size(); ++i)
         {
             //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
             qreal scalef = caption_list[i]->data(0).toReal();
             caption_list[i]->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
             caption_list[i]->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
             caption_list[i]->setTransform(QTransform::fromScale(scalef,scalef),true);
+
+        }
+        for (int i=0; i<grid_point_vector.size(); ++i)
+        {
+            //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
+            grid_point_vector[i]->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
 
         }
         //if (current_line_mark!=0L)
@@ -279,6 +284,7 @@ void jpsGraphicsView::wheelEvent(QWheelEvent *event)
             scale(scaleFactor, scaleFactor);
             catch_radius=10*gl_scale_f;
             catch_line_distance=10*gl_scale_f;
+            //create_grid();
         } else
         {
             // Zooming out
@@ -287,6 +293,7 @@ void jpsGraphicsView::wheelEvent(QWheelEvent *event)
             scale(1.0 / scaleFactor, 1.0 / scaleFactor);
             catch_radius=10*gl_scale_f;
             catch_line_distance=10*gl_scale_f;
+            //create_grid();
 
         }
     }
@@ -403,7 +410,7 @@ void jpsGraphicsView::catch_points()
             //pen.setColor('red');
             current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
             // if a point was tracked there is no need to look for further points ( only one point can be tracked)
-            break;
+            return;
         }
 
         //Searching for endpoints of all lines near the current cursor position
@@ -414,28 +421,47 @@ void jpsGraphicsView::catch_points()
             //cursor.setPos(mapToGlobal(QPoint(translate_back_x(line_vector[i].x2()),translate_back_y(line_vector[i].y2()))));
             point_tracked=true;
             current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
-            break;
+            return;
         }
         // if no point was tracked bool is set back to false
         point_tracked=false;
     }
     // if no start- or endpoint was tracked it is searched for intersections- Points
 
-    if (point_tracked==false)
+    // see above
+    for (int j=0; j<intersect_point_vector.size(); j++)
     {
-        // see above
-        for (int j=0; j<intersect_point_vector.size(); j++)
+        if (intersect_point_vector[j]->x()>=(translated_pos.x()-catch_radius) && intersect_point_vector[j]->x()<=(translated_pos.x()+catch_radius) && intersect_point_vector[j]->y()>=(translated_pos.y()-catch_radius) && intersect_point_vector[j]->y()<=(translated_pos.y()+catch_radius))
         {
-            if (intersect_point_vector[j]->x()>=(translated_pos.x()-catch_radius) && intersect_point_vector[j]->x()<=(translated_pos.x()+catch_radius) && intersect_point_vector[j]->y()>=(translated_pos.y()-catch_radius) && intersect_point_vector[j]->y()<=(translated_pos.y()+catch_radius))
-            {
-                translated_pos.setX(intersect_point_vector[j]->x());
-                translated_pos.setY(intersect_point_vector[j]->y());
-                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red));
-                point_tracked=true;
-                break;
-            }
+            translated_pos.setX(intersect_point_vector[j]->x());
+            translated_pos.setY(intersect_point_vector[j]->y());
+            current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+            point_tracked=true;
+            return;
         }
     }
+    //Look for gridpoints
+
+    for (QGraphicsLineItem *gridpoint: grid_point_vector)
+    {
+        qreal x = (gridpoint->line().x1()+gridpoint->line().x2())/2.0;
+        qreal y = (gridpoint->line().y1()+gridpoint->line().y2())/2.0;
+        if (x>=(translated_pos.x()-catch_radius)
+                && x<=(translated_pos.x()+catch_radius)
+                && y>=(translated_pos.y()-catch_radius)
+                && y<=(translated_pos.y()+catch_radius))
+        {
+
+            translated_pos.setX(x);
+            translated_pos.setY(y);
+            current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
+                                        translated_pos.y()+translation_y-10*gl_scale_f,
+                                        20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+            point_tracked=true;
+            return;
+        }
+    }
+    return;
 }
 
 void jpsGraphicsView::catch_lines()
@@ -593,29 +619,51 @@ bool jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
 
     return true;
 }
-/*
+
 void jpsGraphicsView::create_grid()
 {
     //QPointF sceneViewBottomLeft = mapToScene(QPoint(this->sceneRect().bottomLeft()));
     //QPointF sceneViewTopRight = mapToScene(QPoint(this->sceneRect().topRight()));
     //QRectF rect = this->sceneRect();
+    for (QGraphicsLineItem *gridpoint: grid_point_vector)
+    {
+        delete gridpoint;
+    }
+    grid_point_vector.clear();
 
     //std::cout << rect.bottomRight().y() << std::endl;
 
-    QPointF leftdown = mapToScene(this->sceneRect().bottomLeft().x(),this->sceneRect().bottomLeft().y());
-    qreal leftdownx = leftdown.x();
-    qreal leftdowny = leftdown.y();
+    //QPointF leftdown = mapToScene(this->sceneRect().bottomLeft().x(),this->sceneRect().bottomLeft().y());
 
-    QPointF topRight = mapToScene(this->sceneRect().bottomRight().x(),this->sceneRect().bottomRight().y());
-    qreal rightupx = topRight.x();
-    qreal rightupy = -topRight.y();
+    //QPointF leftup = mapToScene(Scene->sceneRect().bottomLeft().x(),Scene->sceneRect().bottomLeft().y());
+    //std::cout << leftup.x()-translation_x << std::endl;
+    qreal rightx = translated_pos.x()+1920*gl_scale_f;
+    qreal upy = translated_pos.y()+1080*gl_scale_f;
+    qreal leftx = translated_pos.x()-1920*gl_scale_f;
+    qreal downy = translated_pos.y()-1080*gl_scale_f;
+    //QGraphicsEllipseItem* point = Scene->addEllipse(0,0,10,10,QPen(Qt::red));
+    //point->setTransform(Scene->sceneRect().);
+    //point->setTransform(QTransform::fromTranslate(translation_x,translation_y));
+    //grid_point_vector.push_back(point);
+    //std::cout << translation_y << std::endl;
+    //std::cout << this->height() << std::endl;
+    //qreal leftdownx = leftdown.x();//+translation_x;
+    //qreal leftdowny = leftdown.y();//+translation_y;
 
-    std::cout << rightupx << std::endl;
-    std::cout << rightupy << std::endl;
-    int ileftdownx = std::floor(leftdownx);
-    int ileftdowny = std::floor(leftdowny);
-    int irightupx = std::floor(rightupx);
-    int irightupy = std::floor(rightupy);
+    //QPointF topRight = mapToScene(this->sceneRect().topRight().x(),this->sceneRect().topRight().y());
+    //qreal rightupx = topRight.x();//+translation_x;
+    //qreal rightupy = topRight.y();//+translation_y;
+
+    //std::cout << rightupx << std::endl;
+    //std::cout << rightupy << std::endl;
+    int intervall=100*gl_scale_f;
+    int ileftx = leftx/intervall;
+    ileftx*=intervall;
+    int idowny = downy/intervall;
+    idowny*=intervall;
+    //int ileftdowny = std::floor(leftdowny);
+    //int irightupx = std::floor(rightupx);
+    //int irightupy = std::floor(rightupy);
     //std::cout << ileftupx << std::endl;
     //std::cout << rightdownx << std::endl;
     //QGraphicsTextItem* point = Scene->addText("Hallo Welt");
@@ -623,21 +671,24 @@ void jpsGraphicsView::create_grid()
     //point->setY(ileftupy);
     //std::cout << ileftdownx << std::endl;
     //std::cout << irightupy << std::endl;
-    for (int i=0; i<irightupx; i+=100)
+
+    for (int i=ileftx; i<rightx; i+=intervall)
     {
-        for (int j=0; j<irightupy; j+=100)
+        for (int j=idowny; j<upy; j+=intervall)
         {
             //std::cout << rightdownx << std::endl;
-            QGraphicsEllipseItem* point = Scene->addEllipse(i,j,1,1,QPen(Qt::red));
 
-            //grid_point_vector.push_back(point);
+            QGraphicsLineItem* line1 = Scene->addLine(i,j-5*gl_scale_f,i,j+5*gl_scale_f,QPen(Qt::red,0));
+            line1->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+            grid_point_vector.push_back(line1);
+            QGraphicsLineItem* line2 = Scene->addLine(i-5*gl_scale_f,j,i+5*gl_scale_f,j,QPen(Qt::red,0));
+            line2->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+            grid_point_vector.push_back(line2);
         }
     }
 
     //std::cout << leftup-translation_x << std::endl;
 }
-
-*/
 
 
 qreal jpsGraphicsView::calc_d_point(const QLineF &line,const qreal &x, const qreal &y)
@@ -671,16 +722,14 @@ void jpsGraphicsView::delete_marked_lines()
     {
         emit remove_marked_lines();
 
-        for (int i=0; i<marked_lines.size(); i++)
+        for (int i=0; i<marked_lines.size(); ++i)
         {
             QList<QPointF *> points = marked_lines[i]->get_intersectionVector();
 
-            for (int j=0; j<points.size(); j++)
+            for (int j=0; j<points.size(); ++j)
             {
 
-                intersect_point_vector.removeOne(points[j]);
-
-                for (int k=0; k<marked_lines[i]->get_intersectLineVector().size(); k++)
+                for (int k=0; k<marked_lines[i]->get_intersectLineVector().size(); ++k)
                 {
                     // removing the intersectionPoint pointer from all lines which includes the point
                     marked_lines[i]->get_intersectLineVector()[k]->remove_intersectionPoint(points[j]);
@@ -693,20 +742,22 @@ void jpsGraphicsView::delete_marked_lines()
                 delete points[j];
             }
 
-            for (int k=0; k<marked_lines[i]->get_intersectLineVector().size(); k++)
+
+            for (int k=0; k<marked_lines[i]->get_intersectLineVector().size(); ++k)
             {
                 marked_lines[i]->get_intersectLineVector()[k]->remove_interLine(marked_lines[i]);
             }
 
-            line_vector.removeOne(marked_lines[i]);
 
             delete marked_lines[i]->get_line();
-            marked_lines[i]->set_line(0L);
+            //marked_lines[i]->set_line(0L);
             delete marked_lines[i];
-            marked_lines.removeAt(i);
-            i--;
+
+
         }
-        //marked_lines.clear();
+        marked_lines.clear();
+        line_vector.clear();
+        intersect_point_vector.clear();
         line_tracked=-1;
         emit lines_deleted();
         update();

@@ -396,7 +396,7 @@ void jpsDatamanager::remove_marked_lines()
             {
                 if (marked_lines[i]==cList[j]->get_cLine())
                 {
-                    this->remove_crossing(cList[i]);
+                    this->remove_crossing(cList[j]);
                     break;
                 }
             }
@@ -409,7 +409,7 @@ void jpsDatamanager::remove_marked_lines()
             {
                 if (marked_lines[i]==cList[j]->get_cLine())
                 {
-                    this->remove_exit(cList[i]);
+                    this->remove_exit(cList[j]);
                     break;
                 }
             }

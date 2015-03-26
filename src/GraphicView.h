@@ -44,7 +44,7 @@ public:
     jpsLineItem *addLineItem(const qreal &x1, const qreal &y1, const qreal &x2, const qreal &y2, const QString &type="");
     void locate_intersection(jpsLineItem* item1, jpsLineItem* item2);
     bool show_hide_roomCaption(QString name, qreal x, qreal y);
-    //void create_grid();
+    void create_grid();
 
 
 
@@ -60,7 +60,7 @@ private:
     QGraphicsLineItem* current_line;
     //std::vector<jpsLineItem> line_vector;
     QList<QPointF *> intersect_point_vector;
-    QList<QGraphicsEllipseItem *> grid_point_vector;
+    QList<QGraphicsLineItem *> grid_point_vector;
     QList<jpsLineItem *> line_vector;
     //QList<QList<jpsLineItem*> *> mainlist;
     QPointF pos;
