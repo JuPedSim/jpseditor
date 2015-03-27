@@ -60,7 +60,7 @@ private:
     QGraphicsLineItem* current_line;
     //std::vector<jpsLineItem> line_vector;
     QList<QPointF *> intersect_point_vector;
-    QList<QGraphicsLineItem *> grid_point_vector;
+    QList<QPointF> grid_point_vector;
     QList<jpsLineItem *> line_vector;
     //QList<QList<jpsLineItem*> *> mainlist;
     QPointF pos;

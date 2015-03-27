@@ -8,8 +8,8 @@
 jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
 {
 
-    current_line=0L;
-    current_caption=0L;
+    current_line=nullptr;
+    current_caption=nullptr;
     //current_line_mark=0L;
     midbutton_hold=false;
     translation_x=0;
@@ -23,7 +23,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     point_tracked=false;
     line_tracked=-1;
-    current_rect=0L;
+    current_rect=nullptr;
     currentSelectRect=nullptr;
     objectsnap=false;
     statWall=false;
@@ -31,7 +31,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     statExit=false;
     currentPen.setColor(Qt::black);
     currentPen.setCosmetic(true);
-    //this->scale(1,-1);
+    this->scale(1,-1);
 
     //gl_min_x=1e6;
     //gl_min_y=1e6;
@@ -60,7 +60,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     setScene(Scene);
     setSceneRect(0, 0, 1920, 1080);
 
-    //create_grid();
+    create_grid();
 }
 
 jpsGraphicsView::~jpsGraphicsView()
@@ -132,8 +132,9 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
         for (int i=0; i<grid_point_vector.size(); ++i)
         {
             //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
-            grid_point_vector[i]->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
-
+            //grid_point_vector[i]->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+            grid_point_vector[i].setX(pos.x());
+            grid_point_vector[i].setY(pos.y());
         }
         //if (current_line_mark!=0L)
         //{
@@ -284,7 +285,7 @@ void jpsGraphicsView::wheelEvent(QWheelEvent *event)
             scale(scaleFactor, scaleFactor);
             catch_radius=10*gl_scale_f;
             catch_line_distance=10*gl_scale_f;
-            //create_grid();
+            create_grid();
         } else
         {
             // Zooming out
@@ -293,7 +294,7 @@ void jpsGraphicsView::wheelEvent(QWheelEvent *event)
             scale(1.0 / scaleFactor, 1.0 / scaleFactor);
             catch_radius=10*gl_scale_f;
             catch_line_distance=10*gl_scale_f;
-            //create_grid();
+            create_grid();
 
         }
     }
@@ -442,10 +443,12 @@ void jpsGraphicsView::catch_points()
     }
     //Look for gridpoints
 
-    for (QGraphicsLineItem *gridpoint: grid_point_vector)
+    for (auto &gridpoint: grid_point_vector)
     {
-        qreal x = (gridpoint->line().x1()+gridpoint->line().x2())/2.0;
-        qreal y = (gridpoint->line().y1()+gridpoint->line().y2())/2.0;
+        //qreal x = (gridpoint->line().x1()+gridpoint->line().x2())/2.0;
+        //qreal y = (gridpoint->line().y1()+gridpoint->line().y2())/2.0;
+        qreal x = gridpoint.x();
+        qreal y = gridpoint.y();
         if (x>=(translated_pos.x()-catch_radius)
                 && x<=(translated_pos.x()+catch_radius)
                 && y>=(translated_pos.y()-catch_radius)
@@ -625,10 +628,10 @@ void jpsGraphicsView::create_grid()
     //QPointF sceneViewBottomLeft = mapToScene(QPoint(this->sceneRect().bottomLeft()));
     //QPointF sceneViewTopRight = mapToScene(QPoint(this->sceneRect().topRight()));
     //QRectF rect = this->sceneRect();
-    for (QGraphicsLineItem *gridpoint: grid_point_vector)
-    {
-        delete gridpoint;
-    }
+    //for (QGraphicsLineItem *gridpoint: grid_point_vector)
+    //{
+     //   delete gridpoint;
+    //}
     grid_point_vector.clear();
 
     //std::cout << rect.bottomRight().y() << std::endl;
@@ -677,13 +680,16 @@ void jpsGraphicsView::create_grid()
         for (int j=idowny; j<upy; j+=intervall)
         {
             //std::cout << rightdownx << std::endl;
-
+            /*
             QGraphicsLineItem* line1 = Scene->addLine(i,j-5*gl_scale_f,i,j+5*gl_scale_f,QPen(Qt::red,0));
             line1->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
             grid_point_vector.push_back(line1);
             QGraphicsLineItem* line2 = Scene->addLine(i-5*gl_scale_f,j,i+5*gl_scale_f,j,QPen(Qt::red,0));
             line2->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
             grid_point_vector.push_back(line2);
+            */
+            QPointF gridpoint(i,j);
+            grid_point_vector.push_back(gridpoint);
         }
     }
 
