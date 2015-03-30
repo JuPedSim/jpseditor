@@ -60,7 +60,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     setScene(Scene);
     setSceneRect(0, 0, 1920, 1080);
 
-    create_grid();
+    //create_grid();
 }
 
 jpsGraphicsView::~jpsGraphicsView()
@@ -285,7 +285,7 @@ void jpsGraphicsView::wheelEvent(QWheelEvent *event)
             scale(scaleFactor, scaleFactor);
             catch_radius=10*gl_scale_f;
             catch_line_distance=10*gl_scale_f;
-            create_grid();
+            //create_grid();
         } else
         {
             // Zooming out
@@ -294,7 +294,7 @@ void jpsGraphicsView::wheelEvent(QWheelEvent *event)
             scale(1.0 / scaleFactor, 1.0 / scaleFactor);
             catch_radius=10*gl_scale_f;
             catch_line_distance=10*gl_scale_f;
-            create_grid();
+            //create_grid();
 
         }
     }
