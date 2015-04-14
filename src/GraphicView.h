@@ -44,6 +44,8 @@ public:
     jpsLineItem *addLineItem(const qreal &x1, const qreal &y1, const qreal &x2, const qreal &y2, const QString &type="");
     void locate_intersection(jpsLineItem* item1, jpsLineItem* item2);
     bool show_hide_roomCaption(QString name, qreal x, qreal y);
+
+    void line_collision();
     void create_grid();
 
 
@@ -88,6 +90,8 @@ private:
     QList<jpsLineItem *> marked_lines;
     QGraphicsTextItem* current_caption;
     QList<QGraphicsTextItem* > caption_list;
+
+    bool lines_collided;
 
     //qreal gl_min_x;
     //qreal gl_min_y;

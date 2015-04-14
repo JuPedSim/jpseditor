@@ -3,6 +3,7 @@
 #include "GraphicView.h"
 #include <iostream>
 #include <cmath>
+#include <memory>
 
 
 jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
@@ -33,7 +34,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     currentPen.setCosmetic(true);
     this->scale(1,-1);
 
-
+    lines_collided=false;
     //gl_min_x=1e6;
     //gl_min_y=1e6;
 
@@ -178,6 +179,9 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
         }
     }
+    /// see if two lines collided
+    line_collision();
+
     emit mouse_moved();
     update();
 
@@ -638,6 +642,40 @@ bool jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
     current_caption=0L;
 
     return true;
+}
+
+void jpsGraphicsView::line_collision()
+{
+    /// if no lines collided yet
+    if (!lines_collided && current_line!=nullptr)
+    {
+        for (auto& line:line_vector)
+        {
+            /// if two lines collided
+            QPointF* intersectPoint = new QPointF();
+            if (current_line->line().intersect(line->get_line()->line(),intersectPoint)==1)
+            {
+                //lines_collided=true;
+                /// if cursor is in the nearer area of the intersection point
+                if (intersectPoint->x()>=(translated_pos.x()-catch_radius)
+                        && intersectPoint->x()<=(translated_pos.x()+catch_radius)
+                        && intersectPoint->y()>=(translated_pos.y()-catch_radius)
+                        && intersectPoint->y()<=(translated_pos.y()+catch_radius))
+                {
+                    /// set end point of line to intersection point
+                    current_line->setLine(current_line->line().x1(),current_line->line().y1(),
+                                          intersectPoint->x(),intersectPoint->y());
+                    current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
+                                                        translated_pos.y()+translation_y-10*gl_scale_f,
+                                                        20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+                }
+                break;
+
+
+            }
+
+        }
+    }
 }
 
 void jpsGraphicsView::create_grid()
