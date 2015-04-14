@@ -51,6 +51,7 @@ protected slots:
     void dis_selectMode();
     void lines_deleted();
     void remove_all_lines();
+    void rotate();
 
 
 };

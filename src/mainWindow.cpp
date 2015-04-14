@@ -47,31 +47,38 @@ MWindow :: MWindow() {
 
 
 
-    //Signals and Slots
+    ///Signals and Slots
+    /// Tab File
     connect(actionBeenden, SIGNAL(triggered(bool)),qApp,SLOT(quit()));
     connect(action_ffnen,SIGNAL(triggered(bool)),this,SLOT(openFile()));
     connect(action_ffnen_xml,SIGNAL(triggered(bool)),this,SLOT(openFileXML()));
     connect(actionSpeichern,SIGNAL(triggered(bool)),this,SLOT(saveFile()));
     connect(actionSpeichern_dxf,SIGNAL(triggered(bool)),this,SLOT(saveAsDXF()));
+    /// Tab Help
     connect(action_ber,SIGNAL(triggered(bool)),this,SLOT(info()));
+    /// Tab Tools
     connect(actiongridmode,SIGNAL(triggered(bool)),this,SLOT(gridmode()));
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
     connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(en_disableDoor()));
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(en_disableExit()));
     connect(actionObjectsnap,SIGNAL(triggered(bool)),this,SLOT(objectsnap()));
-    connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
     connect(actionDelete_lines,SIGNAL(triggered(bool)),this,SLOT(delete_lines()));
     connect(actionDelete_single_line,SIGNAL(triggered(bool)),this,SLOT(delete_marked_lines()));
-    connect(mview,SIGNAL(set_focus_textedit()),length_edit,SLOT(setFocus()));
-    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(send_length()));
     connect(actionRoom,SIGNAL(triggered(bool)),this,SLOT(define_room()));
     connect(actionSelect_Mode,SIGNAL(triggered(bool)),this,SLOT(en_selectMode()));
-    connect(mview,SIGNAL(no_drawing()),this,SLOT(en_selectMode()));
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
+    /// Tab View
+    connect(actionRotate_90_deg_clockwise,SIGNAL(triggered(bool)),this,SLOT(rotate()));
+    /// Length edit
+    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(send_length()));
+    /// mview
+    connect(mview,SIGNAL(no_drawing()),this,SLOT(en_selectMode()));
     connect(mview,SIGNAL(remove_marked_lines()),this,SLOT(lines_deleted()));
     connect(mview,SIGNAL(remove_all()),this,SLOT(remove_all_lines()));
+    connect(mview,SIGNAL(set_focus_textedit()),length_edit,SLOT(setFocus()));
+    connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
 
 
 
@@ -288,6 +295,11 @@ void MWindow::lines_deleted()
 void MWindow::remove_all_lines()
 {
     dmanager->remove_all();
+}
+
+void MWindow::rotate()
+{
+    mview->rotate(-90);
 }
 
 

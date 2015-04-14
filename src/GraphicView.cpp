@@ -33,6 +33,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     currentPen.setCosmetic(true);
     this->scale(1,-1);
 
+
     //gl_min_x=1e6;
     //gl_min_y=1e6;
 

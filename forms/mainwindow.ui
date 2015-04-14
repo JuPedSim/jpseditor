@@ -61,9 +61,16 @@
     <addaction name="separator"/>
     <addaction name="actionRoom"/>
    </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionRotate_90_deg_clockwise"/>
+   </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuHilfe"/>
    <addaction name="menuTools"/>
+   <addaction name="menuView"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -362,6 +369,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+O</string>
+   </property>
+  </action>
+  <action name="actionRotate_90_deg_clockwise">
+   <property name="text">
+    <string>Rotate (90 deg clockwise)</string>
    </property>
   </action>
  </widget>
