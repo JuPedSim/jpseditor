@@ -61,7 +61,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->list_obstacles,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(enable_roomSelectionObs()));
     connect(ui->roomBox_obs,SIGNAL(activated(int)),this,SLOT(add_room_to_obs()));
     connect(ui->caption_obs,SIGNAL(clicked(bool)),this,SLOT(shhi_roomCaption()));
-    connect(ui->highlight_obs,SIGNAL(clicked(bool)),this,SLOT(highlight_room()));
+    connect(ui->highlight_obs,SIGNAL(clicked(bool)),this,SLOT(highlight_obs()));
 
     //lines in graphview deleted
     connect(graphview,SIGNAL(lines_deleted()),this,SLOT(show_all()));
@@ -660,6 +660,16 @@ void roomWidget::highlight_room()
     {
         int cRow=ui->list_rooms->currentRow();
         datamanager->get_roomlist()[cRow]->highlight();
+    }
+
+}
+
+void roomWidget::highlight_obs()
+{
+    if (ui->list_obstacles->currentItem()!=0L)
+    {
+        int cRow=ui->list_obstacles->currentRow();
+        datamanager->get_obstaclelist()[cRow]->highlight();
     }
 
 }

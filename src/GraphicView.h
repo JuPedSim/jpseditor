@@ -14,7 +14,7 @@ class jpsGraphicsView: public QGraphicsView {
     Q_OBJECT
 
 public:
-    jpsGraphicsView(QWidget* parent = 0L);
+    jpsGraphicsView(QWidget* parent = nullptr);
     ~jpsGraphicsView();
     void change_gridmode();
     bool get_gridmode();

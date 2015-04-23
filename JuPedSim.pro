@@ -20,7 +20,8 @@ greaterThan(QT_MAJOR_VERSION, 4):QT += widgets
 
 TEMPLATE = app
 TARGET = JuPedSim
-CONFIG += qt xml gui
+CONFIG += qt xml gui;
+greaterThan(QT_MAJOR_VERSION, 4):CONFIG += c++11
 
 FORMS += \
     forms/mainwindow.ui \
