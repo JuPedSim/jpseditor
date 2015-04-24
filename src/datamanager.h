@@ -21,7 +21,7 @@ class jpsDatamanager: public DL_CreationAdapter
 {
 public:
     jpsDatamanager(QWidget* parent=0L, jpsGraphicsView* view=0L);
-    ~jpsDatamanager(){}
+    ~jpsDatamanager();
     QList<jpsRoom *> get_roomlist();
     void new_room();
     void remove_room(jpsRoom* room);

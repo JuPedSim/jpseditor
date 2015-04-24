@@ -12,6 +12,11 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 
 }
 
+jpsDatamanager::~jpsDatamanager()
+{
+    //remove_all(); vmiew->delete_all() does this work
+}
+
 void jpsDatamanager::new_room()
 {
     jpsRoom* new_room = new jpsRoom(this->room_id_counter);
@@ -25,6 +30,7 @@ void jpsDatamanager::remove_room(jpsRoom *room)
     //{
     roomlist.removeOne(room);
     delete room;
+    room_id_counter-=1;
     //}
 }
 
@@ -35,12 +41,13 @@ void jpsDatamanager::change_roomName(jpsRoom* room, QString name)
 
 void jpsDatamanager::remove_all_rooms()
 {
-
+    //std::cout << roomlist.first()->get_name().toStdString() << std::endl;
     for (int i=0; i<roomlist.size(); i++)
     {
         delete roomlist[i];
     }
     roomlist.clear();
+
 
 }
 
@@ -64,6 +71,7 @@ void jpsDatamanager::remove_obstacle(jpsObstacle *obs)
     {
         obstaclelist.removeOne(obs);
         delete obs;
+        obs_id_counter-=1;
     }
 }
 
@@ -198,7 +206,9 @@ void jpsDatamanager::writeHeader(QXmlStreamWriter *stream)
 
 void jpsDatamanager::writeRooms(QXmlStreamWriter *stream)
 {
-    //rooms
+    QList<jpsLineItem* > lines = mView->get_line_vector();
+
+    ///rooms
     stream->writeStartElement("rooms");
     stream->writeStartElement("room");
     stream->writeAttribute("id","0");
@@ -229,9 +239,10 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream)
             stream->writeEndElement(); //vertex
 
             stream->writeEndElement(); //polygon
+
+            ///remove wall from lines
+            lines.removeOne(wallList[j]);
         }
-
-
 
         //polygonzug
         /*
@@ -260,6 +271,34 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream)
         stream->writeEndElement();//subroom
     }
 
+    /// save lines which are not assigned to a room yet
+
+    stream->writeStartElement("subroom");
+    stream->writeAttribute("id",QString::number(-1));
+    stream->writeAttribute("caption","not assigned lines");
+    stream->writeAttribute("class","container");
+
+    for (int j=0; j<lines.size(); j++)
+    {
+        stream->writeStartElement("polygon");
+        stream->writeAttribute("caption","wall");
+
+        stream->writeStartElement("vertex");
+        stream->writeAttribute("px",QString::number(lines[j]->get_line()->line().x1()));
+        stream->writeAttribute("py",QString::number(lines[j]->get_line()->line().y1()));
+        stream->writeEndElement(); //vertex
+
+        stream->writeStartElement("vertex");
+        stream->writeAttribute("px",QString::number(lines[j]->get_line()->line().x2()));
+        stream->writeAttribute("py",QString::number(lines[j]->get_line()->line().y2()));
+        stream->writeEndElement(); //vertex
+
+        stream->writeEndElement(); //polygon
+    }
+
+    stream->writeEndElement();//subroom
+
+    ///Crossings
     writeCrossings(stream);
 
     stream->writeEndElement();//room
@@ -358,7 +397,6 @@ void jpsDatamanager::writeObstacles(QXmlStreamWriter *stream, jpsObstacle* obs)
 
 void jpsDatamanager::remove_all()
 {
-
     remove_all_crossings();
     remove_all_exits();
     remove_all_obstacles();
@@ -573,7 +611,7 @@ void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
 {
     // new subroom
     this->new_room();
-    /* Let's get the attributes for person */
+    /* Let's get the attributes for subroom */
     QXmlStreamAttributes attributes = xmlReader.attributes();
     /* Let's check that subroom has id attribute. */
 
@@ -590,6 +628,13 @@ void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
     }
     this->parseWalls(xmlReader,roomlist.last());
     this->parseObstacles(xmlReader,roomlist.last());
+
+    /* if room is container for not assigned lines */
+
+    if (roomlist.last()->get_id()==-1)
+    {
+        remove_room(roomlist.last());
+    }
 }
 
 void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, jpsRoom *room)
@@ -632,7 +677,9 @@ void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, jpsRoom *room)
             room->addWall(lineItem);
 
         }
+
     }
+
 }
 
 
@@ -796,14 +843,8 @@ void jpsDatamanager::parseObstacles(QXmlStreamReader &xmlReader, jpsRoom *room)
         }
 
         xmlReader.readNext();
-
-
-
     }
-
 }
-
-
 
 bool jpsDatamanager::readDXF(std::string filename)
 {

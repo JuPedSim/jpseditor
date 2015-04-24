@@ -20,6 +20,7 @@ public:
     MWindow();
     ~MWindow();
 
+
 private:
     roomWidget* rwidget;
     jpsDatamanager* dmanager;
@@ -29,6 +30,8 @@ private:
     QLabel* label1;
     QLabel* label2;
     QLabel* infoLabel;
+    QString _filename;
+    QTimer *timer;
 
 
 protected slots:
@@ -52,6 +55,7 @@ protected slots:
     void lines_deleted();
     void remove_all_lines();
     void rotate();
+    void AutoSave();
 
 
 };

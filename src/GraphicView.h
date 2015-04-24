@@ -48,8 +48,6 @@ public:
     void line_collision();
     void create_grid();
 
-
-
 protected:
     virtual void mouseMoveEvent(QMouseEvent * mouseEvent);
     //void paintEvent(QPaintEvent* event);

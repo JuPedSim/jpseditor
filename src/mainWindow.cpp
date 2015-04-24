@@ -34,6 +34,8 @@ MWindow :: MWindow() {
     infoLabel= new QLabel();
     infoLabel->setMinimumWidth(135);
 
+    ///filename of saved project
+    _filename="";
 
 
     setCentralWidget(mview);
@@ -44,6 +46,10 @@ MWindow :: MWindow() {
     statusBar()->addPermanentWidget(length_edit);
     statusBar()->addPermanentWidget(label2);
 
+
+    timer = new QTimer(this);
+    timer->setInterval(10000);
+    timer->start();
 
 
 
@@ -79,6 +85,8 @@ MWindow :: MWindow() {
     connect(mview,SIGNAL(remove_all()),this,SLOT(remove_all_lines()));
     connect(mview,SIGNAL(set_focus_textedit()),length_edit,SLOT(setFocus()));
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
+    ///Autosave
+    connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
 
 
 
@@ -86,14 +94,38 @@ MWindow :: MWindow() {
 
 MWindow::~MWindow()
 {
-    mview->delete_all();
-    dmanager->remove_all();
     delete mview;
     delete dmanager;
     delete length_edit;
     delete label1;
     delete label2;
     delete infoLabel;
+    delete timer;
+}
+
+void MWindow::AutoSave()
+{
+    QFile file("Name");
+    if (_filename!="")
+    {
+        QString fN="backup_"+_filename+".xml";
+        file.setFileName(fN);
+    }
+    else
+    {
+        QString fN="backup_untitled.xml";
+        file.setFileName(fN);
+    }
+
+
+    if(file.open(QIODevice::WriteOnly|QIODevice::Text))
+    {
+        //QString coord_string=mview->build_coordString();
+
+        dmanager->writeXML(file);
+        //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
+        statusBar()->showMessage(tr("Backup file generated!"),10000);
+    }
 }
 
 void MWindow::openFile(){
@@ -101,6 +133,7 @@ void MWindow::openFile(){
     QString fileName=QFileDialog::getOpenFileName(this,tr("Open DXF"),"",tr("DXF-Drawings (*.dxf)"));
     //QFile file(fileName);
     std::string fName= fileName.toStdString();
+
     if (!dmanager->readDXF(fName))
     {
         statusBar()->showMessage("DXF-File could not be parsed!",10000);
@@ -123,8 +156,8 @@ void MWindow::openFileXML()
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QMessageBox::critical(this,
-                              "QXSRExample::parseXML",
-                              "Couldn't open example.xml",
+                              "OpenFileXML",
+                              "Couldn't open xml-file",
                               QMessageBox::Ok);
         return;
     }
@@ -145,6 +178,7 @@ void MWindow::openFileXML()
 
 void MWindow::saveFile(){
     QString fileName = QFileDialog::getSaveFileName(this,tr("Save XML"),"",tr("XML-Files (*.xml)"));
+    _filename=fileName;
     if (fileName.isEmpty()) return;
     QFile file(fileName);
 

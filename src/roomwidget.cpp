@@ -89,7 +89,6 @@ void roomWidget::show_crossings()
 
     ui->crossingList->clear();
 
-
     QList<jpsCrossing *> crossingList=datamanager->get_crossingList();
 
     for (int i=0; i<crossingList.size(); i++)
@@ -228,16 +227,19 @@ void roomWidget::showWalls()
     {
         int crow=ui->list_rooms->currentRow();
 
-        QList<jpsLineItem *> walllist=datamanager->get_roomlist()[crow]->get_listWalls();
-
-        for (int i=0; i<walllist.size(); i++)
+        if (!datamanager->get_roomlist().isEmpty())
         {
-            QString string = "Wall ";
-            string.append("x1:"+QString::number(walllist[i]->get_line()->line().x1()));
-            string.append(" x2:"+QString::number(walllist[i]->get_line()->line().x2()));
-            string.append(" y1:"+QString::number(walllist[i]->get_line()->line().y1()));
-            string.append(" y2:"+QString::number(walllist[i]->get_line()->line().y2()));
-            ui->listWalls->addItem(string);
+            QList<jpsLineItem *> walllist=datamanager->get_roomlist()[crow]->get_listWalls();
+
+            for (int i=0; i<walllist.size(); i++)
+            {
+                QString string = "Wall ";
+                string.append("x1:"+QString::number(walllist[i]->get_line()->line().x1()));
+                string.append(" x2:"+QString::number(walllist[i]->get_line()->line().x2()));
+                string.append(" y1:"+QString::number(walllist[i]->get_line()->line().y1()));
+                string.append(" y2:"+QString::number(walllist[i]->get_line()->line().y2()));
+                ui->listWalls->addItem(string);
+            }
         }
     }
 }
@@ -474,6 +476,7 @@ void roomWidget::select_exit()
 
 void roomWidget::show_all()
 {
+    show_rooms();
     show_crossings();
     show_exits();
     show_obstacles();
@@ -550,16 +553,19 @@ void roomWidget::showWallsObs()
     {
         int crow=ui->list_obstacles->currentRow();
 
-        QList<jpsLineItem *> walllist=datamanager->get_obstaclelist()[crow]->get_listWalls();
-
-        for (int i=0; i<walllist.size(); i++)
+        if (!datamanager->get_obstaclelist().isEmpty())
         {
-            QString string = "Wall ";
-            string.append("x1:"+QString::number(walllist[i]->get_line()->line().x1()));
-            string.append(" x2:"+QString::number(walllist[i]->get_line()->line().x2()));
-            string.append(" y1:"+QString::number(walllist[i]->get_line()->line().y1()));
-            string.append(" y2:"+QString::number(walllist[i]->get_line()->line().y2()));
-            ui->listWallsObs->addItem(string);
+            QList<jpsLineItem *> walllist=datamanager->get_obstaclelist()[crow]->get_listWalls();
+
+            for (int i=0; i<walllist.size(); i++)
+            {
+                QString string = "Wall ";
+                string.append("x1:"+QString::number(walllist[i]->get_line()->line().x1()));
+                string.append(" x2:"+QString::number(walllist[i]->get_line()->line().x2()));
+                string.append(" y1:"+QString::number(walllist[i]->get_line()->line().y1()));
+                string.append(" y2:"+QString::number(walllist[i]->get_line()->line().y2()));
+                ui->listWallsObs->addItem(string);
+            }
         }
     }
 }

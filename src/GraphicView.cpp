@@ -65,6 +65,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
 
 jpsGraphicsView::~jpsGraphicsView()
 {
+    delete_all();
     delete Scene;
 }
 
@@ -74,14 +75,14 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
     QGraphicsView::mouseMoveEvent(mouseEvent);
 
-//    if (current_rect!=nullptr)
+    if (current_rect!=nullptr)
 
-//    {
+    {
 
-//       delete current_rect;
-//       current_rect=nullptr;
+       delete current_rect;
+       current_rect=nullptr;
 
-//    }
+    }
     //setMouseTracking(true);
     //setResizeAnchor(this->AnchorUnderMouse);
 
@@ -191,8 +192,6 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
     if (mouseEvent->button() == Qt::LeftButton)
     {
 
-
-
         if (statWall==true || statDoor==true || statExit==true)
         {
             if (current_line==nullptr) /// if the mouse was pressed first of two times
@@ -259,8 +258,6 @@ void jpsGraphicsView::unmark_all_lines()
     }
     marked_lines.clear();
 }
-
-
 
 
 void jpsGraphicsView::wheelEvent(QWheelEvent *event)
@@ -341,7 +338,7 @@ void jpsGraphicsView::delete_all()
 {
     emit remove_all();
 
-    // Delete all lines
+    /// Delete all lines
 
     for (int i=0; i<line_vector.size(); i++)
     {
@@ -362,8 +359,8 @@ void jpsGraphicsView::delete_all()
 
     }
 
-
     intersect_point_vector.clear();
+    marked_lines.clear();
 
     line_tracked=-1;
     emit lines_deleted();
@@ -476,7 +473,7 @@ void jpsGraphicsView::catch_lines()
     /// if current rect was build up moving the cursor to the left ->
     /// whole line has to be within the rect to select the line
     line_tracked=-1;
-    if (currentSelectRect->rect().width()<=1)
+    if (currentSelectRect->rect().width()<=-1)
     {
     for (auto &item:line_vector)
     {
