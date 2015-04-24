@@ -46,11 +46,11 @@ MWindow :: MWindow() {
     statusBar()->addPermanentWidget(length_edit);
     statusBar()->addPermanentWidget(label2);
 
-
+    ///Timer needed for autosave function
+    /// timer will trigger autosave every 10th minute
     timer = new QTimer(this);
-    timer->setInterval(10000);
+    timer->setInterval(600000);
     timer->start();
-
 
 
     ///Signals and Slots
@@ -87,8 +87,6 @@ MWindow :: MWindow() {
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
     ///Autosave
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
-
-
 
 }
 
