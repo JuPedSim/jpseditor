@@ -66,10 +66,13 @@ public:
     // Write XML
     void writeXML(QFile &file);
     void writeHeader(QXmlStreamWriter *stream);
-    void writeRooms(QXmlStreamWriter *stream);
-    void writeCrossings(QXmlStreamWriter *stream);
-    void writeTransitions(QXmlStreamWriter *stream);
-    void writeObstacles(QXmlStreamWriter *stream, jpsObstacle *obs);
+    void writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
+    void writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
+    void writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
+    void writeObstacles(QXmlStreamWriter *stream, jpsObstacle *obs, QList<jpsLineItem *> &lines);
+    void writeNotAssignedWalls(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
+    void writeNotAssignedDoors(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
+    void writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
 
     // Read DXF
     bool readDXF(std::string filename);

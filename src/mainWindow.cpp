@@ -47,9 +47,9 @@ MWindow :: MWindow() {
     statusBar()->addPermanentWidget(label2);
 
     ///Timer needed for autosave function
-    /// timer will trigger autosave every 10th minute
+    /// timer will trigger autosave every 5th minute
     timer = new QTimer(this);
-    timer->setInterval(600000);
+    timer->setInterval(300000);
     timer->start();
 
 
