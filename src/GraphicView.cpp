@@ -473,7 +473,7 @@ void jpsGraphicsView::catch_lines()
     /// if current rect was build up moving the cursor to the left ->
     /// whole line has to be within the rect to select the line
     line_tracked=-1;
-    if (currentSelectRect->rect().width()<=-1)
+    if (currentSelectRect->rect().width()<0)
     {
     for (auto &item:line_vector)
     {
@@ -489,7 +489,7 @@ void jpsGraphicsView::catch_lines()
     }
     /// if current rect was build up moving the cursor to the right ->
     /// throwing the select rect only over a part of a line is sufficent to select it
-    else if (currentSelectRect->rect().width()>=1)
+    else if (currentSelectRect->rect().width()>0)
     {
         for (auto &item:line_vector)
         {

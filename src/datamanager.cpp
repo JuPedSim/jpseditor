@@ -273,7 +273,7 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
     }
     /// Not assigned lines
     writeNotAssignedWalls(stream,lines);
-    stream->writeEndElement();//subroom
+
     ///Crossings
     writeCrossings(stream,lines);
     writeNotAssignedDoors(stream,lines);
@@ -384,34 +384,44 @@ void jpsDatamanager::writeObstacles(QXmlStreamWriter *stream, jpsObstacle* obs, 
 void jpsDatamanager::writeNotAssignedWalls(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
     /// save lines which are not assigned to a room yet
+    QList<jpsLineItem *> walls;
+    for (jpsLineItem* line:lines)
+    {
+        if (line->is_Wall())
+        {
+            walls.push_back(line);
+        }
+    }
+    if (walls.isEmpty())
+        return;
 
     stream->writeStartElement("subroom");
     stream->writeAttribute("id",QString::number(-1));
     stream->writeAttribute("caption","not assigned lines");
     stream->writeAttribute("class","container");
 
-    for (jpsLineItem* line:lines)
+    for (jpsLineItem* line:walls)
     {
-        if (line->is_Wall())
-        {
-            stream->writeStartElement("polygon");
-            stream->writeAttribute("caption","wall");
+        stream->writeStartElement("polygon");
+        stream->writeAttribute("caption","wall");
 
-            stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(line->get_line()->line().x1()));
-            stream->writeAttribute("py",QString::number(line->get_line()->line().y1()));
-            stream->writeEndElement(); //vertex
+        stream->writeStartElement("vertex");
+        stream->writeAttribute("px",QString::number(line->get_line()->line().x1()));
+        stream->writeAttribute("py",QString::number(line->get_line()->line().y1()));
+        stream->writeEndElement(); //vertex
 
-            stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(line->get_line()->line().x2()));
-            stream->writeAttribute("py",QString::number(line->get_line()->line().y2()));
-            stream->writeEndElement(); //vertex
+        stream->writeStartElement("vertex");
+        stream->writeAttribute("px",QString::number(line->get_line()->line().x2()));
+        stream->writeAttribute("py",QString::number(line->get_line()->line().y2()));
+        stream->writeEndElement(); //vertex
 
-            stream->writeEndElement(); //polygon
+        stream->writeEndElement(); //polygon
 
-            lines.removeOne(line);
-        }
+        lines.removeOne(line);
+
     }
+
+    stream->writeEndElement();//subroom
 
 
 }
