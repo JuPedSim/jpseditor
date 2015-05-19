@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+ #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 
@@ -44,6 +44,8 @@ protected slots:
     void en_disableWall();
     void en_disableDoor();
     void en_disableExit();
+    void en_disableLandmark();
+    void disableDrawing();
     void objectsnap();
     void show_coords();
     void delete_lines();

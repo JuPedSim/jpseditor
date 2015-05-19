@@ -98,6 +98,8 @@
    <addaction name="actionDelete_single_line"/>
    <addaction name="separator"/>
    <addaction name="actionRoom"/>
+   <addaction name="separator"/>
+   <addaction name="actionLandmark"/>
   </widget>
   <action name="action_ffnen">
    <property name="icon">
@@ -374,6 +376,24 @@
   <action name="actionRotate_90_deg_clockwise">
    <property name="text">
     <string>Rotate (90 deg clockwise)</string>
+   </property>
+  </action>
+  <action name="actionLandmark">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/statue.jpg</normaloff>:/statue.jpg</iconset>
+   </property>
+   <property name="text">
+    <string>Landmark</string>
+   </property>
+   <property name="toolTip">
+    <string>Landmark</string>
    </property>
   </action>
  </widget>

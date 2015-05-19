@@ -87,6 +87,9 @@ MWindow :: MWindow() {
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
     ///Autosave
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
+    ///Landmarks
+    connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
+    connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
 
 }
 
@@ -230,24 +233,40 @@ void MWindow::gridmode()
 
 void MWindow::en_disableWall()
 {
+    this->disableDrawing();
+    actionWall->setChecked(true);
     mview->en_disableWall();
-    this->actionDoor->setChecked(false);
-    this->actionExit->setChecked(false);
+
 }
 
 void MWindow::en_disableDoor()
 {
+    this->disableDrawing();
+    actionDoor->setChecked(true);
     mview->en_disableDoor();
-    this->actionWall->setChecked(false);
-    this->actionExit->setChecked(false);
 
 }
 
 void MWindow::en_disableExit()
 {
+    this->disableDrawing();
+    actionExit->setChecked(true);
     mview->en_disableExit();
+}
+
+void MWindow::en_disableLandmark()
+{
+    this->disableDrawing();
+    actionLandmark->setChecked(true);
+    mview->en_disableLandmark();
+}
+
+void MWindow::disableDrawing()
+{
     this->actionWall->setChecked(false);
     this->actionDoor->setChecked(false);
+    this->actionExit->setChecked(false);
+    this->actionLandmark->setChecked(false);
 }
 
 void MWindow::objectsnap()
@@ -274,6 +293,7 @@ void MWindow::delete_lines()
 void MWindow::delete_marked_lines()
 {
     mview->delete_marked_lines();
+    mview->delete_landmark();
 }
 
 void MWindow::send_length()
@@ -308,12 +328,14 @@ void MWindow::en_selectMode()
     actionWall->setChecked(false);
     actionDoor->setChecked(false);
     actionExit->setChecked(false);
+    actionLandmark->setChecked(false);
     length_edit->clearFocus();
 }
 
 void MWindow::dis_selectMode()
 {
-    if (actionWall->isChecked()==true || actionDoor->isChecked()==true || actionExit->isChecked()==true)
+    if (actionWall->isChecked()==true || actionDoor->isChecked()==true || actionExit->isChecked()==true
+            || actionLandmark->isChecked()==true)
     {
         actionSelect_Mode->setChecked(false);
     }

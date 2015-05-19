@@ -6,7 +6,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsLineItem>
 #include "jpsLineItem.h"
-
+#include "jpslandmark.h"
 
 
 class jpsGraphicsView: public QGraphicsView {
@@ -28,11 +28,25 @@ public:
     void en_disableDoor();
     bool statusExit();
     void en_disableExit();
+    bool statusLandmark();
+    void en_disableLandmark();
     QPointF return_Pos();
-    void delete_all();
+    void delete_all(bool final=false);
+
+    ///Line operations
     void catch_lines();
+    void drawLine();
     qreal calc_d_point(const QLineF &line, const qreal &x, const qreal &y);
     void delete_marked_lines();
+
+    /// Landmark
+    void delete_landmark();
+    void catch_landmark();
+    void select_landmark(jpsLandmark *landmark);
+    void addLandmark();
+    void unmarkLandmark();
+    ///
+
     void take_l_from_lineEdit(const qreal &length);
     QList<jpsLineItem *> get_markedLines();
     QList<jpsLineItem *> get_line_vector();
@@ -47,6 +61,10 @@ public:
 
     void line_collision();
     void create_grid();
+
+    ///View
+    void zoom(int delta);
+    void translations(QPointF old_pos);
 
 protected:
     virtual void mouseMoveEvent(QMouseEvent * mouseEvent);
@@ -75,6 +93,7 @@ private:
     bool statWall;
     bool statDoor;
     bool statExit;
+    bool statLandmark;
     qreal catch_radius;
     qreal gl_scale_f;
     bool point_tracked;
@@ -88,6 +107,9 @@ private:
     QList<jpsLineItem *> marked_lines;
     QGraphicsTextItem* current_caption;
     QList<QGraphicsTextItem* > caption_list;
+    QList<jpsLandmark* > LLandmarks;
+    jpsLandmark* markedLandmark;
+    QGraphicsRectItem* currentLandmarkRect;
 
     bool lines_collided;
 

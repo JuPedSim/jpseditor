@@ -4,6 +4,8 @@
 #include <iostream>
 #include <cmath>
 #include <memory>
+#include <QMessageBox>
+
 
 
 jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
@@ -16,7 +18,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     translation_x=0;
     translation_y=0;//this->height();
     gridmode=false;
-    gl_scale_f=1.0;
+    gl_scale_f=.01;
     //scale(10,10);
     catch_radius=10*gl_scale_f;
     catch_line_distance=10*gl_scale_f;
@@ -30,9 +32,12 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     statWall=false;
     statDoor=false;
     statExit=false;
+    statLandmark=false;
+    markedLandmark=nullptr;
+    currentLandmarkRect=nullptr;
     currentPen.setColor(Qt::black);
     currentPen.setCosmetic(true);
-    this->scale(1,-1);
+    this->scale(1/gl_scale_f,-1/gl_scale_f);
 
     lines_collided=false;
     //gl_min_x=1e6;
@@ -65,7 +70,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
 
 jpsGraphicsView::~jpsGraphicsView()
 {
-    delete_all();
+    delete_all(true);
     delete Scene;
 }
 
@@ -76,16 +81,11 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
     QGraphicsView::mouseMoveEvent(mouseEvent);
 
     if (current_rect!=nullptr)
-
     {
-
        delete current_rect;
        current_rect=nullptr;
 
     }
-    //setMouseTracking(true);
-    //setResizeAnchor(this->AnchorUnderMouse);
-
     QPointF old_pos=pos;
 
     pos=mapToScene(mouseEvent->pos());
@@ -94,65 +94,19 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
     {
         if (gridmode==true)
         {
-                // gridmode
             use_gridmode();
-
         }
     }
-
-    translated_pos.setX(pos.x()-translation_x);
-    translated_pos.setY(pos.y()-translation_y);
 
     if (midbutton_hold==true)
     {
-        translation_x+=pos.x()-old_pos.x();
-        translation_y+=pos.y()-old_pos.y();
-
-        if (current_line!=nullptr)
-        {
-            //current_line->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
-            current_line->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
-
-        }
-
-        for (int i=0; i<line_vector.size(); ++i)
-        {
-            //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
-            line_vector[i]->get_line()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
-
-        }
-        for (int i=0; i<caption_list.size(); ++i)
-        {
-            //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
-            qreal scalef = caption_list[i]->data(0).toReal();
-            caption_list[i]->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
-            caption_list[i]->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
-            caption_list[i]->setTransform(QTransform::fromScale(scalef,scalef),true);
-
-        }
-        for (int i=0; i<grid_point_vector.size(); ++i)
-        {
-            //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
-            //grid_point_vector[i]->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
-            grid_point_vector[i].setX(pos.x());
-            grid_point_vector[i].setY(pos.y());
-        }
-        //if (current_line_mark!=nullptr)
-        //{
-        //    current_line_mark->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
-        //}
-        //setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-        //translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
-       // setDragMode(ScrollHandDrag);
-
+        translations(old_pos);
     }
-    //
+
     else if(leftbutton_hold==true)
     {
-
         currentSelectRect->setRect(QRectF(QPointF(currentSelectRect->rect().x(),currentSelectRect->rect().y())
                                          ,QPointF(translated_pos.x(),translated_pos.y())));
-
     }
 
     translated_pos.setX(pos.x()-translation_x);
@@ -160,14 +114,11 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
     if (objectsnap==true)
     {
-
         catch_points();
-
     }
 
     if (current_line!=nullptr)
     {
-
         if (statWall==true || statDoor==true || statExit==true)
         {
             emit set_focus_textedit();
@@ -187,53 +138,22 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
 {
 
-    //pos=mapToScene(mouseEvent->pos());
-
     if (mouseEvent->button() == Qt::LeftButton)
     {
-
         if (statWall==true || statDoor==true || statExit==true)
         {
-            if (current_line==nullptr) /// if the mouse was pressed first of two times
-            {
-                /// all two points of the line are inited with the cursorcoordinates
-                current_line = Scene->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),currentPen);
-                //current_line->translate(translation_x,translation_y);
-                current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
-
-            }
-
-            // if the mouse was pressed secondly of two times
-            else
-            {
-                jpsLineItem* lineItem= new jpsLineItem(current_line);
-
-                // if there is already a drawn line
-                if (line_vector.size()>=1)
-                {
-                    // Searching for intersection of the current line with all already drawn lines
-                    for (int i=0; i<line_vector.size(); i++)
-                    {
-                        // locate possible intersection between lines
-                        // if there are some, intersectionPoint will be added to container
-                        locate_intersection(lineItem,line_vector[i]);
-                    }
-                }
-
-                lineItem->set_type(statWall,statDoor,statExit);
-                line_vector.push_back(lineItem);
-
-                // pointer "current_line" is reset
-                current_line=nullptr;
-            }
+            drawLine();
         }
-        else //if statWall==false
+        else if (statLandmark==true)
         {
+            addLandmark();
+        }
+        else
+        {
+            ///Select_mode
             currentSelectRect=Scene->addRect(translated_pos.x(),translated_pos.y(),0,0,QPen(Qt::blue,0));
             currentSelectRect->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
             leftbutton_hold=true;
-            //catch_lines();
-
         }
 
     }
@@ -252,46 +172,49 @@ void jpsGraphicsView::unmark_all_lines()
 
     for (int i=0; i<marked_lines.size();i++)
     {
-
         marked_lines[i]->get_line()->setPen(QPen(QColor(marked_lines[i]->get_defaultColor()),0));
-
     }
     marked_lines.clear();
 }
+
+void jpsGraphicsView::addLandmark()
+{
+    QPixmap pixmap("../jupedsim/forms/statue.jpg");
+
+    QGraphicsPixmapItem* pixmapItem = Scene->addPixmap(pixmap);
+    pixmapItem->setScale(0.002);
+    pixmapItem->setTransform(QTransform::fromTranslate(this->translated_pos.x()-pixmap.width()/1000.,this->translated_pos.y()
+                          +pixmap.height()/1000.));
+    pixmapItem->setTransform(QTransform::fromScale(1,-1),true);
+    pixmapItem->setTransform(QTransform::fromTranslate(translation_x,-translation_y), true);
+
+    jpsLandmark* landmark = new jpsLandmark(pixmapItem,LLandmarks.size(),pixmapItem->scenePos());
+
+    LLandmarks.push_back(landmark);
+
+
+
+}
+
+void jpsGraphicsView::unmarkLandmark()
+{
+
+    if (markedLandmark!=nullptr)
+    {
+        delete currentLandmarkRect;
+        currentLandmarkRect=nullptr;
+        markedLandmark=nullptr;
+    }
+
+}
+
 
 
 void jpsGraphicsView::wheelEvent(QWheelEvent *event)
 {
     if (midbutton_hold==false)
     {
-        setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-
-        // Scale the view / do the zoom
-        double scaleFactor = 1.15;
-        if(event->delta() > 0)
-        {
-            // Zoom in
-
-            // for (int i=0; i<caption_list.size(); i++)
-            // {
-            //    caption_list[i]->setTransform(QTransform::fromScale(1/gl_scale_f,1/gl_scale_f));
-            //}
-            gl_scale_f*=1/1.15;
-            scale(scaleFactor, scaleFactor);
-            catch_radius=10*gl_scale_f;
-            catch_line_distance=10*gl_scale_f;
-            //create_grid();
-        } else
-        {
-            // Zooming out
-
-            gl_scale_f*=1.15;
-            scale(1.0 / scaleFactor, 1.0 / scaleFactor);
-            catch_radius=10*gl_scale_f;
-            catch_line_distance=10*gl_scale_f;
-            //create_grid();
-
-        }
+        zoom(event->delta());
     }
 }
 
@@ -301,7 +224,7 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 
     if (event->button() == Qt::LeftButton)
     {
-        // Select lines that are located within the rectangle
+        /// Select lines that are located within the rectangle
         if (!(statWall==true || statDoor==true || statExit==true))
         {
             leftbutton_hold=false;
@@ -310,11 +233,17 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
             {
                 /// Select lines by creating a rect with the cursor
                 catch_lines();
+
+                /// unmark Landmark is possible
+                unmarkLandmark();
+                /// Look for landmarks with position is the currentSelectRect
+                catch_landmark();
+
                 delete currentSelectRect;
                 currentSelectRect=nullptr;
             }
 
-            //unmark selected line(s)
+            ///unmark selected line(s)
             if (line_tracked==-1)
             {
                 unmark_all_lines();
@@ -334,8 +263,17 @@ QPointF jpsGraphicsView::return_Pos()
     return translated_pos;
 }
 
-void jpsGraphicsView::delete_all()
+void jpsGraphicsView::delete_all(bool final)
 {
+    if (!final)
+    {
+        int ret = QMessageBox::warning(this,"Delete?", "Do you really want to delete all elements?", QMessageBox::Yes | QMessageBox::No);
+
+        if (ret == QMessageBox::No)
+        {
+            return;
+        }
+    }
     emit remove_all();
 
     /// Delete all lines
@@ -359,8 +297,15 @@ void jpsGraphicsView::delete_all()
 
     }
 
+    for (jpsLandmark* landmark:LLandmarks)
+    {
+        delete landmark->get_pixmap();
+        delete landmark;
+    }
+
     intersect_point_vector.clear();
     marked_lines.clear();
+    LLandmarks.clear();
 
     line_tracked=-1;
     emit lines_deleted();
@@ -503,6 +448,44 @@ void jpsGraphicsView::catch_lines()
     }
 }
 
+void jpsGraphicsView::drawLine()
+{
+    if (current_line==nullptr) /// if the mouse was pressed first of two times
+    {
+        ///Determining first point of line
+
+        /// all two points of the line are inited with the cursorcoordinates
+        current_line = Scene->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),currentPen);
+        //current_line->translate(translation_x,translation_y);
+        current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+
+    }
+
+    // if the mouse was pressed secondly of two times
+    else
+    {
+        jpsLineItem* lineItem= new jpsLineItem(current_line);
+
+        // if there is already a drawn line
+        if (line_vector.size()>=1)
+        {
+            // Searching for intersection of the current line with all already drawn lines
+            for (int i=0; i<line_vector.size(); i++)
+            {
+                // locate possible intersection between lines
+                // if there are some, intersectionPoint will be added to container
+                locate_intersection(lineItem,line_vector[i]);
+            }
+        }
+
+        lineItem->set_type(statWall,statDoor,statExit);
+        line_vector.push_back(lineItem);
+
+        // pointer "current_line" is reset
+        current_line=nullptr;
+    }
+}
+
 void jpsGraphicsView::select_line(jpsLineItem *mline)
 {
 
@@ -524,10 +507,11 @@ void jpsGraphicsView::disable_drawing()
     statWall=false;
     statDoor=false;
     statExit=false;
-    // if drawing was canceled by pushing ESC
+    statLandmark=false;
+    /// if drawing was canceled by pushing ESC
     if (current_line!=nullptr)
     {
-        //not completed line will be deleted
+        ///not completed line will be deleted
         delete current_line;
         current_line=nullptr;
     }
@@ -675,7 +659,7 @@ void jpsGraphicsView::line_collision() ///FIX ME!!!
     }
 }
 
-void jpsGraphicsView::create_grid()
+void jpsGraphicsView::create_grid() /// FIX ME!!!!
 {
     //QPointF sceneViewBottomLeft = mapToScene(QPoint(this->sceneRect().bottomLeft()));
     //QPointF sceneViewTopRight = mapToScene(QPoint(this->sceneRect().topRight()));
@@ -746,6 +730,87 @@ void jpsGraphicsView::create_grid()
     }
 
     //std::cout << leftup-translation_x << std::endl;
+}
+
+void jpsGraphicsView::zoom(int delta)
+{
+
+    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+
+    // Scale the view / do the zoom
+    double scaleFactor = 1.15;
+    if(delta > 0)
+    {
+        // Zoom in
+
+        // for (int i=0; i<caption_list.size(); i++)
+        // {
+        //    caption_list[i]->setTransform(QTransform::fromScale(1/gl_scale_f,1/gl_scale_f));
+        //}
+        gl_scale_f*=1/1.15;
+        scale(scaleFactor, scaleFactor);
+        catch_radius=10*gl_scale_f;
+        catch_line_distance=10*gl_scale_f;
+        //create_grid();
+    }
+    else
+    {
+        // Zooming out
+
+        gl_scale_f*=1.15;
+        scale(1.0 / scaleFactor, 1.0 / scaleFactor);
+        catch_radius=10*gl_scale_f;
+        catch_line_distance=10*gl_scale_f;
+        //create_grid();
+    }
+
+}
+
+void jpsGraphicsView::translations(QPointF old_pos)
+{
+    translation_x+=pos.x()-old_pos.x();
+    translation_y+=pos.y()-old_pos.y();
+
+    if (current_line!=nullptr)
+    {
+        //current_line->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
+        current_line->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+
+    }
+
+    for (int i=0; i<line_vector.size(); ++i)
+    {
+        //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
+        line_vector[i]->get_line()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+
+    }
+    for (int i=0; i<caption_list.size(); ++i)
+    {
+        //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
+        qreal scalef = caption_list[i]->data(0).toReal();
+        caption_list[i]->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
+        caption_list[i]->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
+        caption_list[i]->setTransform(QTransform::fromScale(scalef,scalef),true);
+
+    }
+    for (int i=0; i<grid_point_vector.size(); ++i)
+    {
+        //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
+        //grid_point_vector[i]->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+        grid_point_vector[i].setX(pos.x());
+        grid_point_vector[i].setY(pos.y());
+    }
+
+    for (jpsLandmark* landmark:LLandmarks)
+    {
+        landmark->get_pixmap()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
+
+    }
+    if (currentLandmarkRect!=nullptr)
+    {
+        currentLandmarkRect->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
+
 }
 
 
@@ -824,6 +889,43 @@ void jpsGraphicsView::delete_marked_lines()
 
 }
 
+void jpsGraphicsView::delete_landmark()
+{
+    if (markedLandmark!=nullptr)
+    {
+        LLandmarks.removeOne(markedLandmark);
+        delete markedLandmark->get_pixmap();
+        delete markedLandmark;
+        markedLandmark=nullptr;
+        delete currentLandmarkRect;
+        currentLandmarkRect=nullptr;
+    }
+
+}
+
+void jpsGraphicsView::catch_landmark()
+{
+    if (currentSelectRect!=nullptr)
+    {
+        for (jpsLandmark* landmark:LLandmarks)
+        {
+            if (currentSelectRect->contains(QPointF(landmark->get_pixmap()->scenePos().x()-translation_x,
+                                                    landmark->get_pixmap()->scenePos().y()-translation_y)))
+            {
+                select_landmark(landmark);
+                return;
+            }
+        }
+    }
+}
+
+void jpsGraphicsView::select_landmark(jpsLandmark* landmark)
+{
+    currentLandmarkRect=Scene->addRect(
+                landmark->get_pixmap()->mapRectToScene(landmark->get_pixmap()->pixmap().rect()),QPen(Qt::red,0));
+    markedLandmark=landmark;
+}
+
 void jpsGraphicsView::take_l_from_lineEdit(const qreal &length)
 {
     if (current_line!=nullptr)
@@ -871,6 +973,7 @@ void jpsGraphicsView::en_disableWall()
     statWall=!statWall;
     statDoor=false;
     statExit=false;
+    statLandmark=false;
     if (statWall==false)
     {
         emit no_drawing();
@@ -902,6 +1005,7 @@ void jpsGraphicsView::en_disableDoor()
     statDoor=!statDoor;
     statExit=false;
     statWall=false;
+    statLandmark=false;
     if (statDoor==false)
     {
         emit no_drawing();
@@ -923,6 +1027,7 @@ void jpsGraphicsView::en_disableExit()
     statExit=!statExit;
     statDoor=false;
     statWall=false;
+    statLandmark=false;
     if (statExit==false)
     {
         emit no_drawing();
@@ -930,6 +1035,23 @@ void jpsGraphicsView::en_disableExit()
     else
     {
         currentPen.setColor(Qt::darkMagenta);
+    }
+}
+
+bool jpsGraphicsView::statusLandmark()
+{
+    return statLandmark;
+}
+
+void jpsGraphicsView::en_disableLandmark()
+{
+    statLandmark=!statLandmark;
+    statDoor=false;
+    statWall=false;
+    statExit=false;
+    if (statLandmark==false)
+    {
+        emit no_drawing();
     }
 }
 
