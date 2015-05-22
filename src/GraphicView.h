@@ -14,12 +14,16 @@ class jpsGraphicsView: public QGraphicsView {
     Q_OBJECT
 
 public:
+    ///Constructor
     jpsGraphicsView(QWidget* parent = nullptr);
+
+    ///Destructor
     ~jpsGraphicsView();
+
+    ///Change modes
     void change_gridmode();
     bool get_gridmode();
-    void use_gridmode();
-    void catch_points();
+    bool use_gridmode(QGraphicsLineItem *currentline, int accuracy);
     void change_objectsnap();
     bool get_objectsnap();
     bool statusWall();
@@ -30,7 +34,14 @@ public:
     void en_disableExit();
     bool statusLandmark();
     void en_disableLandmark();
+
+    ///Pos
     QPointF return_Pos();
+
+    ///Catch points
+    void catch_points();
+
+    ///Delete all
     void delete_all(bool final=false);
 
     ///Line operations
@@ -45,18 +56,25 @@ public:
     void select_landmark(jpsLandmark *landmark);
     void addLandmark();
     void unmarkLandmark();
-    ///
+    QList<jpsLandmark *> get_landmarks();
 
+    ///Waypoints
+    QGraphicsRectItem* GetCurrentSelectRect();
+    void ShowWaypoints(QList<jpsWaypoint* > waypoints);
+
+    /// Lines
     void take_l_from_lineEdit(const qreal &length);
     QList<jpsLineItem *> get_markedLines();
     QList<jpsLineItem *> get_line_vector();
     qreal get_scale_f();
     void unmark_all_lines();
-
     void select_line(jpsLineItem *mline);
     void disable_drawing();
     jpsLineItem *addLineItem(const qreal &x1, const qreal &y1, const qreal &x2, const qreal &y2, const QString &type="");
     void locate_intersection(jpsLineItem* item1, jpsLineItem* item2);
+    void SetVLine();
+
+    ///RoomCaption
     bool show_hide_roomCaption(QString name, qreal x, qreal y);
 
     void line_collision();
@@ -66,13 +84,17 @@ public:
     void zoom(int delta);
     void translations(QPointF old_pos);
 
+public slots:
+    ///Waypoints
+    void StatAssoDef();
+    void ClearWaypoints();
+
 protected:
     virtual void mouseMoveEvent(QMouseEvent * mouseEvent);
     //void paintEvent(QPaintEvent* event);
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void wheelEvent(QWheelEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
-
 
 private:
     QGraphicsLineItem* current_line;
@@ -110,8 +132,11 @@ private:
     QList<jpsLandmark* > LLandmarks;
     jpsLandmark* markedLandmark;
     QGraphicsRectItem* currentLandmarkRect;
+    QList<QGraphicsEllipseItem* > _waypoints;
+    QGraphicsLineItem* _currentVLine;
 
     bool lines_collided;
+    bool _assoDef;
 
     //qreal gl_min_x;
     //qreal gl_min_y;
@@ -123,6 +148,8 @@ signals:
     void no_drawing();
     void remove_marked_lines();
     void remove_all();
+    void landmark_added();
+    void AssoDefCompleted();
 
 
 

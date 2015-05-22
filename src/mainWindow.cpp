@@ -2,7 +2,6 @@
 
 #include "mainWindow.h"
 #include "GraphicView.h"
-#include "roomwidget.h"
 #include <iostream>
 
 
@@ -20,8 +19,10 @@ MWindow :: MWindow() {
     mview = new jpsGraphicsView(this);
     dmanager = new jpsDatamanager(this,mview);
 
-
-    rwidget=0L;
+    ///Roomwidget
+    rwidget=nullptr;
+    ///Landmarkwidget
+    lwidget=nullptr;
 
     length_edit = new QLineEdit();
     length_edit->setMaximumWidth(55);
@@ -85,11 +86,14 @@ MWindow :: MWindow() {
     connect(mview,SIGNAL(remove_all()),this,SLOT(remove_all_lines()));
     connect(mview,SIGNAL(set_focus_textedit()),length_edit,SLOT(setFocus()));
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
+    connect(mview,SIGNAL(landmark_added()),this,SLOT(add_landmark()));
     ///Autosave
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
     ///Landmarks
     connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
     connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
+    ///Landmark specifications
+    connect(actionLandmarkWidget,SIGNAL(triggered(bool)),this,SLOT(define_landmark()));
 
 }
 
@@ -127,6 +131,12 @@ void MWindow::AutoSave()
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("Backup file generated!"),10000);
     }
+}
+
+void MWindow::add_landmark()
+{
+    jpsLandmark* landmark = mview->get_landmarks().last();
+    dmanager->new_landmark(landmark);
 }
 
 void MWindow::openFile(){
@@ -317,6 +327,23 @@ void MWindow::define_room()
         rwidget->close();
         rwidget=0L;
         actionRoom->setChecked(false);
+    }
+}
+
+void MWindow::define_landmark()
+{
+    if (lwidget==0L)
+    {
+        lwidget = new widgetLandmark(this,this->dmanager,this->mview);
+        lwidget->setGeometry(QRect(QPoint(5,75), lwidget->size()));
+        lwidget->show();
+    }
+    else
+    {
+        lwidget->close();
+        mview->ClearWaypoints();
+        lwidget=nullptr;
+        actionLandmarkWidget->setChecked(false);
     }
 }
 

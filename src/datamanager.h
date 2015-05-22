@@ -22,39 +22,49 @@ class jpsDatamanager: public DL_CreationAdapter
 public:
     jpsDatamanager(QWidget* parent=0L, jpsGraphicsView* view=0L);
     ~jpsDatamanager();
+    ///Room
     QList<jpsRoom *> get_roomlist();
     void new_room();
     void remove_room(jpsRoom* room);
     void change_roomName(jpsRoom* room, QString name);
     void remove_all_rooms();
+    ///Obstacle
     QList<jpsObstacle *> get_obstaclelist();
     void new_obstacle();
     void remove_obstacle(jpsObstacle* obs);
     void change_obstacleName(jpsObstacle* obs, QString name);
     void remove_all_obstacles();
+    ///Crossing
     QList<jpsCrossing *> get_crossingList();
     void new_crossing(QList<jpsLineItem *> newCrossing);
     void remove_crossing(jpsCrossing* crossing);
     void change_crossingName(jpsCrossing* crossing, QString name);
     void remove_all_crossings();
+    ///Exit
     QList<jpsExit *> get_exitList();
     void new_exit(QList<jpsLineItem *> newExits);
     void remove_exit(jpsExit* exit);
     void change_exitName(jpsExit* exit, QString name);
     void remove_all_exits();
-
+    ///Landmark
+    QList<jpsLandmark *> get_landmarks();
+    void new_landmark(jpsLandmark * newlandmark);
+    void remove_landmark(jpsLandmark* landmark);
+    void change_LandmarkName(jpsLandmark* landmark, QString name);
+    void remove_all_landmarks();
+    ///
     void remove_all();
     void remove_marked_lines();
     void set_view(jpsGraphicsView* view);
     jpsGraphicsView* get_view();
 
 
-    // Auto Assign
+    /// Auto Assign
     void AutoAssignCrossings();
     void AutoAssignExits();
 
 
-    // Read XML
+    /// Read XML
     bool readXML(QFile &file);
     void parseSubRoom(QXmlStreamReader &xmlReader);
     void parseWalls(QXmlStreamReader &xmlReader,jpsRoom* room);
@@ -63,7 +73,7 @@ public:
     void parseTransitions(QXmlStreamReader &xmlReader);
     void parseObstacles(QXmlStreamReader &xmlReader, jpsRoom *room);
 
-    // Write XML
+    /// Write XML
     void writeXML(QFile &file);
     void writeHeader(QXmlStreamWriter *stream);
     void writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
@@ -74,10 +84,10 @@ public:
     void writeNotAssignedDoors(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
 
-    // Read DXF
+    /// Read DXF
     bool readDXF(std::string filename);
     virtual void addLine(const DL_LineData& d);
-    //write DXF
+    /// write DXF
     void writeDXF(std::string filename);
     void writeDXFHeader(DL_Dxf* dxf, DL_WriterA *dw);
     void writeDXFTables(DL_Dxf* dxf, DL_WriterA *dw);
@@ -91,6 +101,7 @@ private:
     QList<jpsObstacle *> obstaclelist;
     QList<jpsCrossing *> crossingList;
     QList<jpsExit *> exitList;
+    QList<jpsLandmark* > landmarks;
     int room_id_counter;
     int obs_id_counter;
     QWidget* parent_widget;

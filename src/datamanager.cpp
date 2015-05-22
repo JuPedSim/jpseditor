@@ -173,6 +173,31 @@ void jpsDatamanager::remove_all_exits()
     exitList.clear();
 }
 
+QList<jpsLandmark *> jpsDatamanager::get_landmarks()
+{
+    return landmarks;
+}
+
+void jpsDatamanager::new_landmark(jpsLandmark *newlandmark)
+{
+    landmarks.push_back(newlandmark);
+}
+
+void jpsDatamanager::remove_landmark(jpsLandmark *landmark)
+{
+    landmarks.removeOne(landmark);
+}
+
+void jpsDatamanager::change_LandmarkName(jpsLandmark *landmark, QString name)
+{
+    landmark->set_name(name);
+}
+
+void jpsDatamanager::remove_all_landmarks()
+{
+    landmarks.clear();
+}
+
 void jpsDatamanager::writeXML(QFile &file)
 {
 
@@ -491,6 +516,7 @@ void jpsDatamanager::remove_all()
     remove_all_exits();
     remove_all_obstacles();
     remove_all_rooms();
+    remove_all_landmarks();
     room_id_counter=0;
     obs_id_counter=0;
 

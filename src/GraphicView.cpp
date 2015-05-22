@@ -12,6 +12,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
 {
 
     current_line=nullptr;
+    _currentVLine=nullptr;
     current_caption=nullptr;
     //current_line_mark=nullptr;
     midbutton_hold=false;
@@ -40,6 +41,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     this->scale(1/gl_scale_f,-1/gl_scale_f);
 
     lines_collided=false;
+    _assoDef=false;
     //gl_min_x=1e6;
     //gl_min_y=1e6;
 
@@ -90,13 +92,25 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
     pos=mapToScene(mouseEvent->pos());
 
-    if (current_line!=nullptr)
+    if (gridmode==true)
     {
-        if (gridmode==true)
+        if (current_line!=nullptr)
         {
-            use_gridmode();
+            use_gridmode(current_line,5);
         }
     }
+
+    if (_currentVLine!=nullptr)
+    {
+        /// vline will be deleted if it is not thrown horizontally or vertically
+        if(!use_gridmode(_currentVLine,15))
+        {
+            delete _currentVLine;
+            _currentVLine=nullptr;
+        }
+
+    }
+
 
     if (midbutton_hold==true)
     {
@@ -115,6 +129,12 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
     if (objectsnap==true)
     {
         catch_points();
+
+        ///VLine
+        if (point_tracked && (statWall==true || statDoor==true || statExit==true))
+        {
+            SetVLine();
+        }
     }
 
     if (current_line!=nullptr)
@@ -126,6 +146,12 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
         }
     }
+    if (_currentVLine!=nullptr)
+    {
+        //emit set_focus_textedit();
+        _currentVLine->setLine(_currentVLine->line().x1(),_currentVLine->line().y1(),translated_pos.x(),translated_pos.y());
+    }
+
     /// see if two lines collided FIX ME!!!
     //line_collision();
 
@@ -187,12 +213,12 @@ void jpsGraphicsView::addLandmark()
                           +pixmap.height()/1000.));
     pixmapItem->setTransform(QTransform::fromScale(1,-1),true);
     pixmapItem->setTransform(QTransform::fromTranslate(translation_x,-translation_y), true);
-
-    jpsLandmark* landmark = new jpsLandmark(pixmapItem,LLandmarks.size(),pixmapItem->scenePos());
+    QString name="Landmark"+QString::number(LLandmarks.size());
+    jpsLandmark* landmark = new jpsLandmark(pixmapItem,name,pixmapItem->scenePos());
 
     LLandmarks.push_back(landmark);
 
-
+    emit landmark_added();
 
 }
 
@@ -208,6 +234,41 @@ void jpsGraphicsView::unmarkLandmark()
 
 }
 
+QList<jpsLandmark* > jpsGraphicsView::get_landmarks()
+{
+    return LLandmarks;
+}
+
+QGraphicsRectItem *jpsGraphicsView::GetCurrentSelectRect()
+{
+    return currentSelectRect;
+}
+
+void jpsGraphicsView::ShowWaypoints(QList<jpsWaypoint *> waypoints)
+{
+    ClearWaypoints();
+
+    for (jpsWaypoint* waypoint:waypoints)
+    {
+        QGraphicsEllipseItem* ellipse = Scene->addEllipse(waypoint->GetRect(),QPen(Qt::blue,0));
+        ellipse->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+        _waypoints.push_back(ellipse);
+    }
+
+
+}
+
+void jpsGraphicsView::ClearWaypoints()
+{
+
+    ///Waypoints
+    for (QGraphicsEllipseItem* old_waypoint:_waypoints)
+    {
+        delete old_waypoint;
+    }
+    _waypoints.clear();
+
+}
 
 
 void jpsGraphicsView::wheelEvent(QWheelEvent *event)
@@ -225,22 +286,30 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton)
     {
         /// Select lines that are located within the rectangle
-        if (!(statWall==true || statDoor==true || statExit==true))
+        if (!(statWall==true || statDoor==true || statExit==true || statLandmark==true))
         {
             leftbutton_hold=false;
 
             if (currentSelectRect!=nullptr)
             {
-                /// Select lines by creating a rect with the cursor
-                catch_lines();
+                if (_assoDef)
+                {
+                    ///Waypoint definition
+                    emit AssoDefCompleted();
+                }
+                else
+                {
+                    /// Select lines by creating a rect with the cursor
+                    catch_lines();
 
-                /// unmark Landmark is possible
-                unmarkLandmark();
-                /// Look for landmarks with position is the currentSelectRect
-                catch_landmark();
-
+                    /// unmark Landmark is possible
+                    unmarkLandmark();
+                    /// Look for landmarks with position in the currentSelectRect
+                    catch_landmark();
+                }
                 delete currentSelectRect;
                 currentSelectRect=nullptr;
+
             }
 
             ///unmark selected line(s)
@@ -312,36 +381,41 @@ void jpsGraphicsView::delete_all(bool final)
     update();
 }
 
-void jpsGraphicsView::use_gridmode()
+bool jpsGraphicsView::use_gridmode(QGraphicsLineItem* currentline, int accuracy)
 
 {
     // if a current line is in the drawing procedure (i. e. starting point is determined but not the ending point)
     // the angles 0,90,180,270 will be catched if the cursor leads the current line to an area nearby.
 
-    QLineF line(current_line->line().x1()+translation_x,current_line->line().y1()+translation_y,pos.x(),pos.y());
+    QLineF line(currentline->line().x1()+translation_x,currentline->line().y1()+translation_y,pos.x(),pos.y());
 
-    if (line.angle()<=185 && line.angle()>=175){
+    if (line.angle()<=(180+accuracy) && line.angle()>=(180-accuracy)){
 
-        pos.setY(current_line->line().y1()+translation_y);
+        pos.setY(currentline->line().y1()+translation_y);
+        return true;
     }
 
-    else if (line.angle()<=5 || line.angle()>=355){
+    else if (line.angle()<=(0+accuracy) || line.angle()>=(360-accuracy)){
 
-        pos.setY(current_line->line().y1()+translation_y);
+        pos.setY(currentline->line().y1()+translation_y);
+        return true;
     }
-    else if (line.angle()<=95 && line.angle()>=85){
+    else if (line.angle()<=(90+accuracy) && line.angle()>=(90-accuracy)){
 
-        pos.setX(current_line->line().x1()+translation_x);
+        pos.setX(currentline->line().x1()+translation_x);
+        return true;
     }
-    else if (line.angle()<=275 && line.angle()>=265){
+    else if (line.angle()<=(270+accuracy) && line.angle()>=(270-accuracy)){
 
-        pos.setX(current_line->line().x1()+translation_x);
+        pos.setX(currentline->line().x1()+translation_x);
+        return true;
     }
+    return false;
 }
 
 void jpsGraphicsView::catch_points()
 {
-    //Searching for startpoints of all lines near the current cursor position
+    ///Searching for startpoints of all lines near the current cursor position
     for (signed int i=0; i<line_vector.size(); i++){
 
         // range chosen: 10 (-5:5) (has to be changed soon)
@@ -359,7 +433,7 @@ void jpsGraphicsView::catch_points()
             return;
         }
 
-        //Searching for endpoints of all lines near the current cursor position
+        ///Searching for endpoints of all lines near the current cursor position
         else if (line_vector[i]->get_line()->line().x2()>=(translated_pos.x()-catch_radius) && line_vector[i]->get_line()->line().x2()<=(translated_pos.x()+catch_radius) && line_vector[i]->get_line()->line().y2()>=(translated_pos.y()-catch_radius) && line_vector[i]->get_line()->line().y2()<=(translated_pos.y()+catch_radius)){
             // see above
             translated_pos.setX(line_vector[i]->get_line()->line().x2());
@@ -369,12 +443,10 @@ void jpsGraphicsView::catch_points()
             current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
             return;
         }
-        // if no point was tracked bool is set back to false
-        point_tracked=false;
     }
-    // if no start- or endpoint was tracked it is searched for intersections- Points
+    /// if no start- or endpoint was tracked it is searched for intersections- Points
 
-    // see above
+    /// see above
     for (int j=0; j<intersect_point_vector.size(); j++)
     {
         if (intersect_point_vector[j]->x()>=(translated_pos.x()-catch_radius) && intersect_point_vector[j]->x()<=(translated_pos.x()+catch_radius) && intersect_point_vector[j]->y()>=(translated_pos.y()-catch_radius) && intersect_point_vector[j]->y()<=(translated_pos.y()+catch_radius))
@@ -388,27 +460,30 @@ void jpsGraphicsView::catch_points()
     }
     //Look for gridpoints
 
-    for (auto &gridpoint: grid_point_vector)
-    {
-        //qreal x = (gridpoint->line().x1()+gridpoint->line().x2())/2.0;
-        //qreal y = (gridpoint->line().y1()+gridpoint->line().y2())/2.0;
-        qreal x = gridpoint.x();
-        qreal y = gridpoint.y();
-        if (x>=(translated_pos.x()-catch_radius)
-                && x<=(translated_pos.x()+catch_radius)
-                && y>=(translated_pos.y()-catch_radius)
-                && y<=(translated_pos.y()+catch_radius))
-        {
+//    for (auto &gridpoint: grid_point_vector)
+//    {
+//        //qreal x = (gridpoint->line().x1()+gridpoint->line().x2())/2.0;
+//        //qreal y = (gridpoint->line().y1()+gridpoint->line().y2())/2.0;
+//        qreal x = gridpoint.x();
+//        qreal y = gridpoint.y();
+//        if (x>=(translated_pos.x()-catch_radius)
+//                && x<=(translated_pos.x()+catch_radius)
+//                && y>=(translated_pos.y()-catch_radius)
+//                && y<=(translated_pos.y()+catch_radius))
+//        {
 
-            translated_pos.setX(x);
-            translated_pos.setY(y);
-            current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
-                                        translated_pos.y()+translation_y-10*gl_scale_f,
-                                        20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
-            point_tracked=true;
-            return;
-        }
-    }
+//            translated_pos.setX(x);
+//            translated_pos.setY(y);
+//            current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
+//                                        translated_pos.y()+translation_y-10*gl_scale_f,
+//                                        20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+//            point_tracked=true;
+//            return;
+//        }
+//    }
+
+    /// if no point was tracked bool is set back to false
+    point_tracked=false;
     return;
 }
 
@@ -483,7 +558,16 @@ void jpsGraphicsView::drawLine()
 
         // pointer "current_line" is reset
         current_line=nullptr;
+        drawLine();
     }
+
+    ///Vline
+    if (_currentVLine!=nullptr)
+    {
+        delete _currentVLine;
+        _currentVLine=nullptr;
+    }
+
 }
 
 void jpsGraphicsView::select_line(jpsLineItem *mline)
@@ -514,6 +598,12 @@ void jpsGraphicsView::disable_drawing()
         ///not completed line will be deleted
         delete current_line;
         current_line=nullptr;
+    }
+    if (_currentVLine!=nullptr)
+    {
+        ///VLine will be deleted
+        delete _currentVLine;
+        _currentVLine=nullptr;
     }
 
 }
@@ -590,6 +680,25 @@ void jpsGraphicsView::locate_intersection(jpsLineItem *item1, jpsLineItem *item2
         intersection_point=nullptr;
     }
 
+}
+
+void jpsGraphicsView::SetVLine()
+{
+    if (_currentVLine==nullptr)
+    {
+        if (current_line==nullptr)
+        {
+            _currentVLine=Scene->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),
+                                         QPen(Qt::black,0,Qt::DashLine));
+            _currentVLine->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+        }
+        else if (current_line->line().p1()!=translated_pos)
+        {
+            _currentVLine=Scene->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),
+                                         QPen(Qt::black,0,Qt::DashLine));
+            _currentVLine->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+        }
+    }
 }
 
 bool jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
@@ -777,6 +886,12 @@ void jpsGraphicsView::translations(QPointF old_pos)
         current_line->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
 
     }
+    if (_currentVLine!=nullptr)
+    {
+        //current_line->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
+        _currentVLine->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+
+    }
 
     for (int i=0; i<line_vector.size(); ++i)
     {
@@ -810,8 +925,18 @@ void jpsGraphicsView::translations(QPointF old_pos)
     {
         currentLandmarkRect->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
+    for (QGraphicsEllipseItem* ellipse:_waypoints)
+    {
+        ellipse->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
 
 }
+
+void jpsGraphicsView::StatAssoDef()
+{
+   _assoDef=!_assoDef;
+}
+
 
 
 qreal jpsGraphicsView::calc_d_point(const QLineF &line,const qreal &x, const qreal &y)

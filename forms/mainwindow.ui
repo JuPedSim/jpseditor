@@ -88,6 +88,7 @@
    <addaction name="actionWall"/>
    <addaction name="actionDoor"/>
    <addaction name="actionExit"/>
+   <addaction name="actionLandmark"/>
    <addaction name="separator"/>
    <addaction name="actiongridmode"/>
    <addaction name="separator"/>
@@ -99,7 +100,7 @@
    <addaction name="separator"/>
    <addaction name="actionRoom"/>
    <addaction name="separator"/>
-   <addaction name="actionLandmark"/>
+   <addaction name="actionLandmarkWidget"/>
   </widget>
   <action name="action_ffnen">
    <property name="icon">
@@ -394,6 +395,24 @@
    </property>
    <property name="toolTip">
     <string>Landmark</string>
+   </property>
+  </action>
+  <action name="actionLandmarkWidget">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/statue_specs.jpg</normaloff>:/statue_specs.jpg</iconset>
+   </property>
+   <property name="text">
+    <string>LandmarkSpecs</string>
+   </property>
+   <property name="toolTip">
+    <string>LandmarkSpecs</string>
    </property>
   </action>
  </widget>

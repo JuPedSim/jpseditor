@@ -26,7 +26,7 @@ greaterThan(QT_MAJOR_VERSION, 4):CONFIG += c++11
 FORMS += \
     forms/mainwindow.ui \
     forms/roomwidget.ui \
-    tabwidgetlandmark.ui
+    forms/widgetlandmark.ui
 
 HEADERS += \
     src/mainWindow.h \
@@ -50,7 +50,8 @@ HEADERS += \
     dxflib/src/dl_creationadapter.h \
     dxflib/src/dl_codes.h \
     dxflib/src/dl_attributes.h \
-    tabwidgetlandmark.h
+    src/widgetlandmark.h \
+    src/jpswaypoint.h
 
 
 SOURCES += \
@@ -67,7 +68,8 @@ SOURCES += \
     src/jpslandmark.cpp \
     dxflib/src/dl_writer_ascii.cpp \
     dxflib/src/dl_dxf.cpp \
-    tabwidgetlandmark.cpp
+    src/widgetlandmark.cpp \
+    src/jpswaypoint.cpp
 
 
 RESOURCES += \

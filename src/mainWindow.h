@@ -8,6 +8,7 @@
 #include <QLineEdit>
 #include "ui_mainwindow.h"
 #include "roomwidget.h"
+#include "widgetlandmark.h"
 #include "GraphicView.h"
 #include "datamanager.h"
 #include "rooms.h"
@@ -23,6 +24,7 @@ public:
 
 private:
     roomWidget* rwidget;
+    widgetLandmark* lwidget;
     jpsDatamanager* dmanager;
     jpsGraphicsView* mview;
     //QVBoxLayout* VBox;
@@ -52,12 +54,14 @@ protected slots:
     void delete_marked_lines();
     void send_length();
     void define_room();
+    void define_landmark();
     void en_selectMode();
     void dis_selectMode();
     void lines_deleted();
     void remove_all_lines();
     void rotate();
     void AutoSave();
+    void add_landmark();
 
 
 };

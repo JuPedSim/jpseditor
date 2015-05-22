@@ -37,5 +37,6 @@
         <file>Room.png</file>
         <file>jupedsim.png</file>
         <file>statue.jpg</file>
+        <file>statue_specs.jpg</file>
     </qresource>
 </RCC>
