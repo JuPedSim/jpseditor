@@ -57,6 +57,9 @@ set( SAMPLE_SRCS
     src/jpsLineItem.cpp  
     src/jpsexit.cpp
     src/jpsobstacle.cpp 
+	src/jpslandmark.cpp
+	src/jpswaypoint.cpp
+	src/widgetlandmark.cpp
     dxflib/src/dl_writer_ascii.cpp
     dxflib/src/dl_dxf.cpp
   )  
@@ -71,6 +74,9 @@ set( SAMPLE_HDR
     src/jpsLineItem.h  
     src/jpsexit.h     
     src/jpsobstacle.h
+	src/jpslandmark.h
+	src/jpswaypoint.h
+	src/widgetlandmark.h
     dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h
     dxflib/src/dl_global.h
@@ -89,6 +95,7 @@ set( SAMPLE_HDR
 set( SAMPLE_UIS
     forms/mainwindow.ui
     forms/roomwidget.ui
+	forms/widgetlandmark.ui
   )
 
 # and finally a resource file
@@ -108,10 +115,10 @@ FIND_PROGRAM(QT_QMAKE_EXECUTABLE NAMES qmake  REQUIRED)
 FIND_PACKAGE(Qt COMPONENTS QtXml QT_USE_QTNETWORK QtXmlPatterns REQUIRED)
 
 if("${DESIRED_QT_VERSION}" STREQUAL "")
-  set(DESIRED_QT_VERSION "4")
+  set(DESIRED_QT_VERSION "5")
 endif()
 
-if( ${DESIRED_QT_VERSION} VERSION_GREATER "4" OR ${DESIRED_QT_VERSION} VERSION_LESS "3")
+if( ${DESIRED_QT_VERSION} VERSION_GREATER "5" OR ${DESIRED_QT_VERSION} VERSION_LESS "3")
   message(WARNING "QT version: " ${DESIRED_QT_VERSION} " not supported")
 endif()
 
