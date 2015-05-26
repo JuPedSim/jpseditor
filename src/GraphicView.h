@@ -62,6 +62,7 @@ public:
     QGraphicsRectItem* GetCurrentSelectRect();
     void ShowWaypoints(QList<jpsWaypoint* > waypoints);
 
+
     /// Lines
     void take_l_from_lineEdit(const qreal &length);
     QList<jpsLineItem *> get_markedLines();
@@ -88,6 +89,7 @@ public slots:
     ///Waypoints
     void StatAssoDef();
     void ClearWaypoints();
+
 
 protected:
     virtual void mouseMoveEvent(QMouseEvent * mouseEvent);

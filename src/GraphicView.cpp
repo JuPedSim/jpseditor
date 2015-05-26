@@ -139,16 +139,16 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
     if (current_line!=nullptr)
     {
-        if (statWall==true || statDoor==true || statExit==true)
-        {
-            emit set_focus_textedit();
-            current_line->setLine(current_line->line().x1(),current_line->line().y1(),translated_pos.x(),translated_pos.y());
+        //if (statWall==true || statDoor==true || statExit==true)
+        //{
+        //emit set_focus_textedit();
+        current_line->setLine(current_line->line().x1(),current_line->line().y1(),translated_pos.x(),translated_pos.y());
 
-        }
+        //}
     }
     if (_currentVLine!=nullptr)
     {
-        //emit set_focus_textedit();
+        emit set_focus_textedit();
         _currentVLine->setLine(_currentVLine->line().x1(),_currentVLine->line().y1(),translated_pos.x(),translated_pos.y());
     }
 
@@ -257,6 +257,8 @@ void jpsGraphicsView::ShowWaypoints(QList<jpsWaypoint *> waypoints)
 
 
 }
+
+
 
 void jpsGraphicsView::ClearWaypoints()
 {
@@ -371,10 +373,27 @@ void jpsGraphicsView::delete_all(bool final)
         delete landmark->get_pixmap();
         delete landmark;
     }
+    for (QGraphicsEllipseItem* waypoint:_waypoints)
+    {
+        delete waypoint;
+    }
 
     intersect_point_vector.clear();
     marked_lines.clear();
     LLandmarks.clear();
+
+
+    if (current_line!=nullptr)
+    {
+        delete current_line;
+        current_line=nullptr;
+    }
+
+    if (_currentVLine!=nullptr)
+    {
+        delete _currentVLine;
+        _currentVLine=nullptr;
+    }
 
     line_tracked=-1;
     emit lines_deleted();
@@ -533,6 +552,7 @@ void jpsGraphicsView::drawLine()
         current_line = Scene->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),currentPen);
         //current_line->translate(translation_x,translation_y);
         current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+        emit set_focus_textedit();
 
     }
 
@@ -1062,6 +1082,24 @@ void jpsGraphicsView::take_l_from_lineEdit(const qreal &length)
         jpsline->set_type(statWall,statDoor,statExit);
         line_vector.push_back(jpsline);
         current_line=nullptr;
+    }
+    else if (_currentVLine!=nullptr)
+    {
+        QLineF line(_currentVLine->line());
+        line.setLength(length);
+        _currentVLine->setLine(line);
+        //jpsLineItem* jpsline = new jpsLineItem(current_line);
+        //jpsline->set_type(statWall,statDoor,statExit);
+        //line_vector.push_back(jpsline);
+        translated_pos.setX(_currentVLine->line().p2().x());
+        translated_pos.setY(_currentVLine->line().p2().y());
+        current_line = Scene->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),currentPen);
+        current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+        emit set_focus_textedit();
+        //translated_pos.setX(_currentVLine->line().p2().x());
+        //translated_pos.setY(_currentVLine->line().p2().y());
+        delete _currentVLine;
+        _currentVLine=nullptr;
     }
 }
 

@@ -206,12 +206,18 @@ void jpsDatamanager::writeXML(QFile &file)
     QList<jpsLineItem* > lines = mView->get_line_vector();
 
     writeHeader(stream);
+    stream->writeStartElement("rooms");
     writeRooms(stream,lines);
     stream->writeEndElement();//rooms
 
+    stream->writeStartElement("transitions");
     writeTransitions(stream,lines);
     writeNotAssignedExits(stream,lines);
-    stream->writeEndElement();//Transitions
+    stream->writeEndElement();//transitions
+
+    stream->writeStartElement("landmarks");
+    writeLandmarks(stream,landmarks);
+    stream->writeEndElement();//landmarks
 
     stream->writeEndElement();//geometry
 
@@ -235,10 +241,7 @@ void jpsDatamanager::writeHeader(QXmlStreamWriter *stream)
 
 void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
-
-
     ///rooms
-    stream->writeStartElement("rooms");
     stream->writeStartElement("room");
     stream->writeAttribute("id","0");
     stream->writeAttribute("caption","hall");
@@ -342,14 +345,14 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
 
 void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
-    stream->writeStartElement("transitions");
+
 
     for (int i=0; i<exitList.size(); i++)
     {
         stream->writeStartElement("transition");
 
         stream->writeAttribute("id",QString::number(i));
-        stream->writeAttribute("caption","notassigned");
+        stream->writeAttribute("caption","NaN");
         stream->writeAttribute("type","NaN");
         stream->writeAttribute("room1_id","0");
         stream->writeAttribute("subroom1_id",QString::number(exitList[i]->get_roomList()[0]->get_id()));
@@ -483,7 +486,6 @@ void jpsDatamanager::writeNotAssignedDoors(QXmlStreamWriter *stream, QList<jpsLi
 void jpsDatamanager::writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
 
-
     for (jpsLineItem* line:lines)
     {
         stream->writeStartElement("transition");
@@ -507,6 +509,45 @@ void jpsDatamanager::writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLi
         stream->writeEndElement();//transition
     }
 
+
+}
+
+void jpsDatamanager::writeLandmarks(QXmlStreamWriter *stream, QList<jpsLandmark *> &landmarks)
+{
+    int m=0;
+    int n=0;
+    for (jpsLandmark* landmark:landmarks)
+    {
+        stream->writeStartElement("landmark");
+
+        stream->writeAttribute("id",QString::number(n));
+        stream->writeAttribute("caption",landmark->get_name());
+        stream->writeAttribute("type","NaN");
+        stream->writeAttribute("room1_id","0");
+        stream->writeAttribute("subroom1_id",QString::number(landmark->get_room()->get_id()));
+        stream->writeStartElement("position");
+        stream->writeAttribute("px",QString::number(landmark->get_pos().x()));
+        stream->writeAttribute("py",QString::number(landmark->get_pos().y()));
+        stream->writeEndElement(); //position
+        stream->writeStartElement("associations");
+        m=0;
+        for (jpsWaypoint* waypoint:landmark->GetWaypoints())
+        {
+            stream->writeStartElement("association");
+            stream->writeAttribute("id",QString::number(m));
+            stream->writeAttribute("caption","Waypoint");
+            stream->writeAttribute("type","NaN");
+            stream->writeAttribute("px",QString::number(waypoint->GetPos().x()));
+            stream->writeAttribute("py",QString::number(waypoint->GetPos().y()));
+            stream->writeAttribute("a",QString::number(waypoint->GetA()));
+            stream->writeAttribute("b",QString::number(waypoint->GetB()));
+            stream->writeEndElement();//association
+            m++;
+        }
+        stream->writeEndElement();//associations
+        stream->writeEndElement();//landmark
+        n++;
+    }
 
 }
 

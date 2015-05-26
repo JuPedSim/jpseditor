@@ -83,6 +83,7 @@ public:
     void writeNotAssignedWalls(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeNotAssignedDoors(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
+    void writeLandmarks(QXmlStreamWriter *stream, QList<jpsLandmark* > &landmarks);
 
     /// Read DXF
     bool readDXF(std::string filename);
