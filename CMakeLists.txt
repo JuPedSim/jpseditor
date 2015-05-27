@@ -166,6 +166,19 @@ ADD_EXECUTABLE( JuPedSim MACOSX_BUNDLE WIN32
   ${SAMPLE_RESOURCES_RCS}
   )
 
+
+find_package(VTK REQUIRED)
+
+if(VTK_FOUND)
+  message(STATUS "found VTK. Version: " ${VTK_VERSION} " |  VTK_DIR: " ${VTK_DIR})
+  message(STATUS "VTK_QT_Version: " ${VTK_QT_VERSION})
+else(VTK_FOUND)
+  message(FATAL_ERROR
+    "Cannot build the executable without VTK. Please set the
+VTK_DIR")
+endif(VTK_FOUND)
+
+
 # QVTK is for VTK 5.x. For VTK 6, use ${VTK_LIBRARIES} instead
 if(VTK_LIBRARIES)
   if(${VTK_VERSION} VERSION_LESS "6")
