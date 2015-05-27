@@ -166,29 +166,7 @@ ADD_EXECUTABLE( JuPedSim MACOSX_BUNDLE WIN32
   ${SAMPLE_RESOURCES_RCS}
   )
 
-
-find_package(VTK REQUIRED)
-
-if(VTK_FOUND)
-  message(STATUS "found VTK. Version: " ${VTK_VERSION} " |  VTK_DIR: " ${VTK_DIR})
-  message(STATUS "VTK_QT_Version: " ${VTK_QT_VERSION})
-else(VTK_FOUND)
-  message(FATAL_ERROR
-    "Cannot build the executable without VTK. Please set the
-VTK_DIR")
-endif(VTK_FOUND)
-
-
-# QVTK is for VTK 5.x. For VTK 6, use ${VTK_LIBRARIES} instead
-if(VTK_LIBRARIES)
-  if(${VTK_VERSION} VERSION_LESS "6")
-    TARGET_LINK_LIBRARIES( JuPedSim ${QT_LIBRARIES} QVTK)
-  else()        
-    TARGET_LINK_LIBRARIES( JuPedSim  ${VTK_LIBRARIES} ${QT_LIBRARIES})
-  endif()
-else() # this else is not yet tested
-  target_link_libraries(JuPedSim vtkHybrid QVTK vtkViews ${QT_LIBRARIES})
-endif() 
+TARGET_LINK_LIBRARIES( JuPedSim ${QT_LIBRARIES})
 
 
 SET_TARGET_PROPERTIES( JuPedSim PROPERTIES MACOSX_BUNDLE TRUE)
@@ -281,7 +259,7 @@ INSTALL(CODE "
 # for dependencies.  If they are not system dependencies, they are copied.
 
 # directories to look for dependencies
-SET(DIRS ${QT_LIBRARY_DIRS}) #  ${VTK_LIBRARIES}
+SET(DIRS ${QT_LIBRARY_DIRS})
 
 # Now the work of copying dependencies into the bundle/package
 # The quotes are escaped and variables to use at install time have their $ escaped
