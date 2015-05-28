@@ -524,11 +524,12 @@ void jpsDatamanager::writeLandmarks(QXmlStreamWriter *stream, QList<jpsLandmark 
         stream->writeAttribute("caption",landmark->get_name());
         stream->writeAttribute("type","NaN");
         stream->writeAttribute("room1_id","0");
-        stream->writeAttribute("subroom1_id",QString::number(landmark->get_room()->get_id()));
-        stream->writeStartElement("position");
+        if (landmark->get_room()!=nullptr)
+            stream->writeAttribute("subroom1_id",QString::number(landmark->get_room()->get_id()));
+        else
+            stream->writeAttribute("subroom1_id","NaN");
         stream->writeAttribute("px",QString::number(landmark->get_pos().x()));
         stream->writeAttribute("py",QString::number(landmark->get_pos().y()));
-        stream->writeEndElement(); //position
         stream->writeStartElement("associations");
         m=0;
         for (jpsWaypoint* waypoint:landmark->GetWaypoints())
