@@ -50,7 +50,7 @@ MWindow :: MWindow() {
     ///Timer needed for autosave function
     /// timer will trigger autosave every 5th minute
     timer = new QTimer(this);
-    timer->setInterval(300000);
+    timer->setInterval(10000);
     timer->start();
 
 
