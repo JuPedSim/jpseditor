@@ -191,6 +191,13 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
     update();
 }
 
+void jpsGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if (event->button()==Qt::LeftButton)
+        emit DoubleClick();
+
+}
+
 
 
 void jpsGraphicsView::unmark_all_lines()
@@ -949,6 +956,11 @@ void jpsGraphicsView::translations(QPointF old_pos)
     {
         ellipse->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
+
+}
+
+void jpsGraphicsView::AutoZoom()
+{
 
 }
 

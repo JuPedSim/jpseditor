@@ -17,7 +17,7 @@ void jpsRoom::addWall(QList <jpsLineItem *> newWalls)
 {
     for (int i=0; i<newWalls.size(); i++)
     {
-        if (newWalls[i]->is_Wall())
+        if (newWalls[i]->is_Wall() && !item_list.contains(newWalls[i]))
             item_list.push_back(newWalls[i]);
     }
 

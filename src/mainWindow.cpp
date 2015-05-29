@@ -50,7 +50,7 @@ MWindow :: MWindow() {
     ///Timer needed for autosave function
     /// timer will trigger autosave every 5th minute
     timer = new QTimer(this);
-    timer->setInterval(10000);
+    timer->setInterval(300000);
     timer->start();
 
 
@@ -87,6 +87,7 @@ MWindow :: MWindow() {
     connect(mview,SIGNAL(set_focus_textedit()),length_edit,SLOT(setFocus()));
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
     connect(mview,SIGNAL(landmark_added()),this,SLOT(add_landmark()));
+    connect(mview,SIGNAL(DoubleClick()),this,SLOT(en_selectMode()));
     ///Autosave
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
     ///Landmarks

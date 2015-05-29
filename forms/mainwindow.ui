@@ -68,9 +68,9 @@
     <addaction name="actionRotate_90_deg_clockwise"/>
    </widget>
    <addaction name="menuDatei"/>
-   <addaction name="menuHilfe"/>
    <addaction name="menuTools"/>
    <addaction name="menuView"/>
+   <addaction name="menuHilfe"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -154,6 +154,9 @@
    <property name="toolTip">
     <string>About</string>
    </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
   </action>
   <action name="actiongridmode">
    <property name="checkable">
@@ -173,7 +176,7 @@
     <string>Gridmode</string>
    </property>
    <property name="shortcut">
-    <string>H, Ctrl+S</string>
+    <string>Ctrl+G</string>
    </property>
   </action>
   <action name="actionWall">
@@ -377,6 +380,9 @@
   <action name="actionRotate_90_deg_clockwise">
    <property name="text">
     <string>Rotate (90 deg clockwise)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionLandmark">

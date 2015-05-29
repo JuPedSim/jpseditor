@@ -84,6 +84,7 @@ public:
     ///View
     void zoom(int delta);
     void translations(QPointF old_pos);
+    void AutoZoom();
 
 public slots:
     ///Waypoints
@@ -95,6 +96,7 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent * mouseEvent);
     //void paintEvent(QPaintEvent* event);
     virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseDoubleClickEvent(QMouseEvent *event);
     virtual void wheelEvent(QWheelEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
 
@@ -152,6 +154,7 @@ signals:
     void remove_all();
     void landmark_added();
     void AssoDefCompleted();
+    void DoubleClick();
 
 
 

@@ -81,6 +81,7 @@ void roomWidget::show_rooms()
     {
         ui->list_rooms->addItem(roomlist[i]->get_name());
     }
+    ui->list_rooms->setCurrentRow(roomlist.size()-1);
 
 }
 
@@ -99,8 +100,9 @@ void roomWidget::show_crossings()
         string.append(" y1:"+QString::number(crossingList[i]->get_cLine()->get_line()->line().y1()));
         string.append(" y2:"+QString::number(crossingList[i]->get_cLine()->get_line()->line().y2()));
         ui->crossingList->addItem(string);
-        ui->crossingList->setCurrentRow(crossingList.size()-1);
+
     }
+    ui->crossingList->setCurrentRow(crossingList.size()-1);
 
 
 
@@ -120,8 +122,9 @@ void roomWidget::show_exits()
         string.append(" y1:"+QString::number(exitList[i]->get_cLine()->get_line()->line().y1()));
         string.append(" y2:"+QString::number(exitList[i]->get_cLine()->get_line()->line().y2()));
         ui->exitList->addItem(string);
-        ui->exitList->setCurrentRow(exitList.size()-1);
+
     }
+    ui->exitList->setCurrentRow(exitList.size()-1);
 }
 
 void roomWidget::show_obstacles()
@@ -132,6 +135,7 @@ void roomWidget::show_obstacles()
     {
         ui->list_obstacles->addItem(obslist[i]->get_name());
     }
+    ui->list_obstacles->setCurrentRow(obslist.size()-1);
 
 }
 
