@@ -762,6 +762,9 @@ bool jpsDatamanager::readXML(QFile &file)
      * and resets its internal state to the initial state. */
     xmlReader.clear();
 
+    ///AutoZoom to drawing
+    mView->AutoZoom();
+
     return true;
 }
 
@@ -1018,6 +1021,8 @@ bool jpsDatamanager::readDXF(std::string filename)
     }
     else
     {
+        ///AutoZoom to contents (items of Scene)
+        mView->AutoZoom();
         return true;
     }
 

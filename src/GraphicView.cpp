@@ -961,6 +961,69 @@ void jpsGraphicsView::translations(QPointF old_pos)
 
 void jpsGraphicsView::AutoZoom()
 {
+    QPointF min(line_vector[0]->get_line()->line().p1().x(),
+            line_vector[0]->get_line()->line().p1().y());
+    QPointF max(line_vector[0]->get_line()->line().p1().x(),
+            line_vector[0]->get_line()->line().p1().y());
+    for (jpsLineItem* line:line_vector)
+    {
+        ///x
+        ///p1
+        if (line->get_line()->line().p1().x()<min.x())
+        {
+            min.setX(line->get_line()->line().p1().x());
+        }
+        else if (line->get_line()->line().p1().x()>max.x())
+        {
+            max.setX(line->get_line()->line().p1().x());
+        }
+
+        ///p2
+        if (line->get_line()->line().p2().x()<min.x())
+        {
+            min.setX(line->get_line()->line().p2().x());
+        }
+        else if (line->get_line()->line().p2().x()>max.x())
+        {
+            max.setX(line->get_line()->line().p2().x());
+        }
+
+        ///y
+        ///p1
+        if (line->get_line()->line().p1().y()<min.y())
+        {
+            min.setY(line->get_line()->line().p1().y());
+        }
+        else if (line->get_line()->line().p1().y()>max.y())
+        {
+            max.setY(line->get_line()->line().p1().y());
+        }
+
+        ///p2
+        if (line->get_line()->line().p2().y()<min.y())
+        {
+            min.setY(line->get_line()->line().p2().y());
+        }
+        else if (line->get_line()->line().p2().y()>max.y())
+        {
+            max.setY(line->get_line()->line().p2().y());
+        }
+    }
+    QPointF center((min.x()+max.x())/2.0,(min.y()+max.y())/2.0);
+
+
+    ///scaling
+    qreal width = (max.x()-min.x());
+    qreal height = (max.y()-min.y());
+    this->fitInView(min.x(),min.y(),width,height,Qt::KeepAspectRatio);
+    ///adapting gl_scale_f
+    gl_scale_f=1/this->transform().m11();
+
+    ///translations
+    QPointF old_pos;
+    old_pos.setX(pos.x()+translation_x);
+    old_pos.setY(pos.y()+translation_y);
+    translations(old_pos);
 
 }
 
