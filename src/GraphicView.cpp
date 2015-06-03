@@ -39,6 +39,8 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     currentPen.setColor(Qt::black);
     currentPen.setCosmetic(true);
     this->scale(1/gl_scale_f,-1/gl_scale_f);
+    _currentTrackedPoint=nullptr;
+    _statLineEdit=false;
 
     lines_collided=false;
     _assoDef=false;
@@ -166,6 +168,7 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
 
     if (mouseEvent->button() == Qt::LeftButton)
     {
+
         if (statWall==true || statDoor==true || statExit==true)
         {
             drawLine();
@@ -176,10 +179,21 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
         }
         else
         {
-            ///Select_mode
-            currentSelectRect=Scene->addRect(translated_pos.x(),translated_pos.y(),0,0,QPen(Qt::blue,0));
-            currentSelectRect->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
-            leftbutton_hold=true;
+            ///LineEdit
+            if (_currentTrackedPoint!=nullptr)
+            {
+                EditLine(_currentTrackedPoint);
+                _currentTrackedPoint=nullptr;
+                line_tracked=-1;
+            }
+            else
+            {
+                ///Select_mode
+                currentSelectRect=Scene->addRect(translated_pos.x(),translated_pos.y(),0,0,QPen(Qt::blue,0));
+                currentSelectRect->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+                leftbutton_hold=true;
+            }
+
         }
 
     }
@@ -194,7 +208,7 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
 void jpsGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if (event->button()==Qt::LeftButton)
-        emit DoubleClick();
+        emit no_drawing();
 
 }
 
@@ -352,6 +366,7 @@ void jpsGraphicsView::delete_all(bool final)
             return;
         }
     }
+
     emit remove_all();
 
     /// Delete all lines
@@ -446,16 +461,18 @@ void jpsGraphicsView::catch_points()
 
         // range chosen: 10 (-5:5) (has to be changed soon)
         if (line_vector[i]->get_line()->line().x1()>=(translated_pos.x()-catch_radius) && line_vector[i]->get_line()->line().x1()<=(translated_pos.x()+catch_radius) && line_vector[i]->get_line()->line().y1()>=(translated_pos.y()-catch_radius) && line_vector[i]->get_line()->line().y1()<=(translated_pos.y()+catch_radius)){
-            // in this case the cursor is working with global coordinates. So the method 'mapToGlobal' must be used
+            /// in this case the cursor is working with global coordinates. So the method 'mapToGlobal' must be used
             translated_pos.setX(line_vector[i]->get_line()->line().x1());
             translated_pos.setY(line_vector[i]->get_line()->line().y1());
             //cursor.setPos(mapToGlobal(QPoint(translate_back_x(line_vector[i].x1()),translate_back_y(line_vector[i].y1()))));
-            //bool is used to tell paint device to draw a red rect if a point was tracked
+            ///bool is used to tell paint device to draw a red rect if a point was tracked
             point_tracked=true;
+            _currentTrackedPoint= &translated_pos;
             //QPen pen;
             //pen.setColor('red');
             current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
-            // if a point was tracked there is no need to look for further points ( only one point can be tracked)
+            /// if a point was tracked there is no need to look for further points ( only one point can be tracked)
+
             return;
         }
 
@@ -466,7 +483,8 @@ void jpsGraphicsView::catch_points()
             translated_pos.setY(line_vector[i]->get_line()->line().y2());
             //cursor.setPos(mapToGlobal(QPoint(translate_back_x(line_vector[i].x2()),translate_back_y(line_vector[i].y2()))));
             point_tracked=true;
-            current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+            current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));            
+            _currentTrackedPoint= &translated_pos;
             return;
         }
     }
@@ -583,9 +601,21 @@ void jpsGraphicsView::drawLine()
         lineItem->set_type(statWall,statDoor,statExit);
         line_vector.push_back(lineItem);
 
-        // pointer "current_line" is reset
+        ///reset pointer
         current_line=nullptr;
-        drawLine();
+
+        if (_statLineEdit)
+        {
+
+            select_line(lineItem);
+            _statLineEdit=false;
+            line_tracked=1;
+            emit no_drawing();
+        }
+        else
+            drawLine();
+
+
     }
 
     ///Vline
@@ -619,6 +649,7 @@ void jpsGraphicsView::disable_drawing()
     statDoor=false;
     statExit=false;
     statLandmark=false;
+    _statLineEdit=false;
     /// if drawing was canceled by pushing ESC
     if (current_line!=nullptr)
     {
@@ -725,6 +756,38 @@ void jpsGraphicsView::SetVLine()
                                          QPen(Qt::black,0,Qt::DashLine));
             _currentVLine->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
         }
+    }
+}
+
+void jpsGraphicsView::EditLine(QPointF* point)
+{
+    if (marked_lines.size()==1)
+    {
+
+        if (marked_lines.first()->get_line()->line().p1()==*point)
+        {
+            current_line=Scene->addLine(marked_lines[0]->get_line()->line().p2().x(),
+                    marked_lines[0]->get_line()->line().p2().y(),translated_pos.x(),translated_pos.y(),QPen(Qt::red,0));
+            current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+            emit set_focus_textedit();
+        }
+
+        else if (marked_lines.first()->get_line()->line().p2()==*point)
+        {
+            current_line=Scene->addLine(marked_lines[0]->get_line()->line().p1().x(),
+                    marked_lines[0]->get_line()->line().p1().y(),translated_pos.x(),translated_pos.y(),QPen(Qt::red,0));
+            current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+            emit set_focus_textedit();
+        }
+
+        else
+            return;
+
+        //line_tracked=1;
+        _statLineEdit=true;
+        delete_marked_lines();
+        en_disableWall();
+
     }
 }
 
@@ -1071,7 +1134,8 @@ void jpsGraphicsView::delete_marked_lines()
 
             for (int j=0; j<points.size(); ++j)
             {
-
+                delete points[j];
+                intersect_point_vector.removeOne(points[j]);
                 for (int k=0; k<marked_lines[i]->get_intersectLineVector().size(); ++k)
                 {
                     // removing the intersectionPoint pointer from all lines which includes the point
@@ -1082,7 +1146,7 @@ void jpsGraphicsView::delete_marked_lines()
 
                 }
 
-                delete points[j];
+
             }
 
 

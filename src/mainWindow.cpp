@@ -87,7 +87,7 @@ MWindow :: MWindow() {
     connect(mview,SIGNAL(set_focus_textedit()),length_edit,SLOT(setFocus()));
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
     connect(mview,SIGNAL(landmark_added()),this,SLOT(add_landmark()));
-    connect(mview,SIGNAL(DoubleClick()),this,SLOT(en_selectMode()));
+    //connect(mview,SIGNAL(DoubleClick()),this,SLOT(en_selectMode()));
     ///Autosave
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
     ///Landmarks
