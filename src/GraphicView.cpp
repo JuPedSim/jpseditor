@@ -180,7 +180,7 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
         else
         {
             ///LineEdit
-            if (_currentTrackedPoint!=nullptr)
+            if (_currentTrackedPoint!=nullptr && line_tracked==1)
             {
                 EditLine(_currentTrackedPoint);
                 _currentTrackedPoint=nullptr;
