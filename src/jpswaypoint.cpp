@@ -9,8 +9,8 @@ jpsWaypoint::jpsWaypoint(QRectF rect)
 {
     _rect=rect;
     _pos=_rect.center();
-    _a=_rect.width();
-    _b=_rect.height();
+    _a=std::abs(_rect.width()/2.0);
+    _b=std::abs(_rect.height()/2.0);
     _ellipseItem=nullptr;
 }
 

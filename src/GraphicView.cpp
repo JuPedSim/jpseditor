@@ -185,6 +185,7 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                 EditLine(_currentTrackedPoint);
                 _currentTrackedPoint=nullptr;
                 line_tracked=-1;
+                qDebug() << line_tracked;
             }
             else
             {
@@ -1072,13 +1073,16 @@ void jpsGraphicsView::AutoZoom()
             max.setY(line->get_line()->line().p2().y());
         }
     }
-    QPointF center((min.x()+max.x())/2.0,(min.y()+max.y())/2.0);
+    //QPointF center((min.x()+max.x())/2.0,(min.y()+max.y())/2.0);
 
 
     ///scaling
     qreal width = (max.x()-min.x());
     qreal height = (max.y()-min.y());
+    /// To ensure the functionality of fitInView
+    this->setSceneRect(min.x(),min.y(),width,height);
     this->fitInView(min.x(),min.y(),width,height,Qt::KeepAspectRatio);
+
     ///adapting gl_scale_f
     gl_scale_f=1/this->transform().m11();
 

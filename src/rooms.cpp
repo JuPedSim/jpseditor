@@ -1,3 +1,4 @@
+
 #include "rooms.h"
 #include <QtGui>
 #include <iostream>
@@ -127,6 +128,61 @@ QString jpsRoom::get_type()
 void jpsRoom::set_type(const QString &string)
 {
     _type=string;
+}
+
+QList<QPointF> jpsRoom::GetDoorVertices() const
+{
+    QList<QPointF> vertices;
+
+    for (int i=0; i<item_list.size(); i++)
+    {
+        int counterP1=0;
+        int counterP2=0;
+        for (int j=0; j<item_list.size(); j++)
+        {
+
+            if (j!=i)
+            {
+                if (item_list[i]->get_line()->line().p1()==item_list[j]->get_line()->line().p1()
+                        || item_list[i]->get_line()->line().p1()==item_list[j]->get_line()->line().p2())
+                {
+                    counterP1++;
+                }
+                else if (item_list[i]->get_line()->line().p2()==item_list[j]->get_line()->line().p1()
+                        || item_list[i]->get_line()->line().p2()==item_list[j]->get_line()->line().p2())
+                {
+                    counterP2++;
+                }
+            }
+        }
+        if (counterP1==0)
+        {
+            if (!vertices.contains(item_list[i]->get_line()->line().p1()))
+            vertices.push_back(item_list[i]->get_line()->line().p1());
+        }
+        else if (counterP2==0)
+        {
+            if (!vertices.contains(item_list[i]->get_line()->line().p2()))
+            vertices.push_back(item_list[i]->get_line()->line().p2());
+        }
+    }
+
+    return vertices;
+}
+
+bool jpsRoom::ContainsDoor(jpsLineItem *lineItem) const
+{
+    QList<QPointF> vertices = GetDoorVertices();
+
+    for (QPointF vertex:vertices)
+    {
+        if (lineItem->get_line()->contains(vertex))
+        {
+            return true;
+        }
+    }
+    return false;
+
 }
 
 

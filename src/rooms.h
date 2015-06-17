@@ -23,6 +23,8 @@ public:
     void highlight();
     QString get_type();
     void set_type(const QString &string);
+    QList<QPointF> GetDoorVertices() const;
+    bool ContainsDoor(jpsLineItem* lineItem) const;
 
 
 private:

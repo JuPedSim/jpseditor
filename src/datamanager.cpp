@@ -625,42 +625,69 @@ jpsGraphicsView * jpsDatamanager::get_view()
 
 void jpsDatamanager::AutoAssignCrossings()
 {
-    for (jpsCrossing *crossing: crossingList)
+    QList<jpsCrossing* > crossings = crossingList;
+
+    for (jpsCrossing *crossing: crossings)
     {
-        int roomCounter =0;
-
-        for (jpsRoom *room: roomlist)
+        int roomCounter=0;
+        for (jpsRoom *room : roomlist)
         {
-            QList<jpsLineItem* > walls = room->get_listWalls();
-
-            int pointCounter = 0;
-
-            for (jpsLineItem* wall: walls)
-            {
-                if (wall->get_line()->line().p1()==crossing->get_cLine()->get_line()->line().p1() ||
-                       wall->get_line()->line().p1()==crossing->get_cLine()->get_line()->line().p2() ||
-                        wall->get_line()->line().p2()==crossing->get_cLine()->get_line()->line().p1() ||
-                        wall->get_line()->line().p2()==crossing->get_cLine()->get_line()->line().p2())
-                {
-                    pointCounter++;
-
-                }
-            }
-
-            if (pointCounter==2 && roomCounter==0)
+            if (room->ContainsDoor(crossing->get_cLine()) && roomCounter==0)
             {
                 crossing->add_rooms(room);
                 roomCounter++;
 
             }
-            else if (pointCounter==2 && roomCounter==1)
+            else if (room->ContainsDoor(crossing->get_cLine()) && roomCounter==1)
             {
                 crossing->add_rooms(crossing->get_roomList()[0],room);
+                crossings.removeOne(crossing);
                 break;
             }
-
         }
     }
+
+
+
+//    for (jpsCrossing *crossing: crossings)
+//    {
+//        int roomCounter =0;
+
+//        for (jpsRoom *room: roomlist)
+//        {
+//            QList<jpsLineItem* > walls = room->get_listWalls();
+
+//            int pointCounter = 0;
+
+//            for (jpsLineItem* wall: walls)
+//            {
+//                if (wall->get_line()->line().p1()==crossing->get_cLine()->get_line()->line().p1() ||
+//                       wall->get_line()->line().p1()==crossing->get_cLine()->get_line()->line().p2() ||
+//                        wall->get_line()->line().p2()==crossing->get_cLine()->get_line()->line().p1() ||
+//                        wall->get_line()->line().p2()==crossing->get_cLine()->get_line()->line().p2())
+//                {
+//                    pointCounter++;
+
+//                }
+//            }
+
+//            if (pointCounter==2 && roomCounter==0)
+//            {
+//                crossing->add_rooms(room);
+//                roomCounter++;
+
+//            }
+//            else if (pointCounter==2 && roomCounter==1)
+//            {
+//                crossing->add_rooms(crossing->get_roomList()[0],room);
+//                crossings.removeOne(crossing);
+//                break;
+//            }
+
+//        }
+//    }
+
+
 
 }
 
