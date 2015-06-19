@@ -14,7 +14,7 @@
    <string>TabWidget</string>
   </property>
   <property name="currentIndex">
-   <number>3</number>
+   <number>0</number>
   </property>
   <widget class="QWidget" name="widget">
    <attribute name="title">
@@ -237,7 +237,7 @@
   </widget>
   <widget class="QWidget" name="tab">
    <attribute name="title">
-    <string>Crossings</string>
+    <string>Doors</string>
    </attribute>
    <widget class="QListWidget" name="crossingList">
     <property name="geometry">
@@ -264,7 +264,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Crossings/Doors:</string>
+     <string>Doors:</string>
     </property>
    </widget>
    <widget class="QPushButton" name="addCrossingButton">
@@ -324,7 +324,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Crossing between</string>
+     <string>Door between</string>
     </property>
    </widget>
    <widget class="QLabel" name="and_label">
@@ -405,193 +405,6 @@
      <rect>
       <x>110</x>
       <y>330</y>
-      <width>93</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Auto Assign</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QWidget" name="tab_2">
-   <attribute name="title">
-    <string>Exits</string>
-   </attribute>
-   <widget class="QLabel" name="label_6">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>171</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Exits:</string>
-    </property>
-   </widget>
-   <widget class="Line" name="line_4">
-    <property name="geometry">
-     <rect>
-      <x>-30</x>
-      <y>370</y>
-      <width>411</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
-   <widget class="QLabel" name="to_label">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>300</y>
-      <width>41</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>to</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="closeButton_3">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>400</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Close</string>
-    </property>
-   </widget>
-   <widget class="QListWidget" name="exitList">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>60</y>
-      <width>291</width>
-      <height>111</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="Line" name="line_5">
-    <property name="geometry">
-     <rect>
-      <x>-20</x>
-      <y>229</y>
-      <width>341</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="roomBox_exits">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>300</y>
-      <width>101</width>
-      <height>21</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="removeExitButton">
-    <property name="geometry">
-     <rect>
-      <x>190</x>
-      <y>190</y>
-      <width>93</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Remove</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="exit_from">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>250</y>
-      <width>201</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Exit from</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="addExitButton">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>190</y>
-      <width>93</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Add</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="outside">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>190</x>
-      <y>290</y>
-      <width>201</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>outside</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="auto_assign_exits">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>340</y>
       <width>93</width>
       <height>28</height>
      </rect>

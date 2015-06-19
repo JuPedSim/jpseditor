@@ -15,6 +15,8 @@ public:
     jpsLineItem *get_cLine();
     void change_name(QString name);
     void add_rooms(jpsRoom* room1, jpsRoom* room2=0L);
+    void SetStatExit(bool stat);
+    bool IsExit();
 
 
 private:
@@ -22,6 +24,7 @@ private:
     QString cName;
     jpsLineItem *cLine;
     int cId;
+    bool _isExit;
 
 };
 

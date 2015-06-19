@@ -52,7 +52,6 @@
     <addaction name="separator"/>
     <addaction name="actionWall"/>
     <addaction name="actionDoor"/>
-    <addaction name="actionExit"/>
     <addaction name="separator"/>
     <addaction name="actiongridmode"/>
     <addaction name="actionObjectsnap"/>
@@ -87,8 +86,6 @@
    <addaction name="separator"/>
    <addaction name="actionWall"/>
    <addaction name="actionDoor"/>
-   <addaction name="actionExit"/>
-   <addaction name="actionLandmark"/>
    <addaction name="separator"/>
    <addaction name="actiongridmode"/>
    <addaction name="separator"/>
@@ -100,7 +97,6 @@
    <addaction name="separator"/>
    <addaction name="actionRoom"/>
    <addaction name="separator"/>
-   <addaction name="actionLandmarkWidget"/>
   </widget>
   <action name="action_ffnen">
    <property name="icon">

@@ -37,12 +37,14 @@ public:
     ///Crossing
     QList<jpsCrossing *> get_crossingList();
     void new_crossing(QList<jpsLineItem *> newCrossing);
+    void new_crossing(jpsLineItem* newCrossing);
     void remove_crossing(jpsCrossing* crossing);
     void change_crossingName(jpsCrossing* crossing, QString name);
     void remove_all_crossings();
     ///Exit
     QList<jpsExit *> get_exitList();
     void new_exit(QList<jpsLineItem *> newExits);
+    void new_exit(jpsLineItem* newExit);
     void remove_exit(jpsExit* exit);
     void change_exitName(jpsExit* exit, QString name);
     void remove_all_exits();
@@ -95,6 +97,7 @@ public:
     void writeDXFBlocks(DL_Dxf* dxf, DL_WriterA *dw);
     void writeDXFEntities(DL_Dxf* dxf, DL_WriterA *dw);
     void writeDXFObjects(DL_Dxf* dxf, DL_WriterA *dw);
+
     QString check_printAbility();
 
 private:

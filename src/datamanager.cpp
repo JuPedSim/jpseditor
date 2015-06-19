@@ -113,6 +113,15 @@ void jpsDatamanager::new_crossing(QList <jpsLineItem *> newCrossings)
     }
 }
 
+void jpsDatamanager::new_crossing(jpsLineItem *newCrossing)
+{
+    if (newCrossing->is_Door())
+    {
+        jpsCrossing* newCros = new jpsCrossing(newCrossing);
+        crossingList.push_back(newCros);
+    }
+}
+
 void jpsDatamanager::remove_crossing(jpsCrossing *crossing)
 {
     if (crossingList.size()>0)
@@ -146,12 +155,18 @@ void jpsDatamanager::new_exit(QList <jpsLineItem *> newExits)
 {
     for (int i=0; i<newExits.size(); i++)
     {
-        if (newExits[i]->is_Exit())
-        {
-            jpsExit* newExit = new jpsExit(newExits[i]);
-            exitList.push_back(newExit);
-        }
+        //if (newExits[i]->is_Exit())
+        //{
+        jpsExit* newExit = new jpsExit(newExits[i]);
+        exitList.push_back(newExit);
+        //}
     }
+}
+
+void jpsDatamanager::new_exit(jpsLineItem *newExit)
+{
+    jpsExit* newEx = new jpsExit(newExit);
+    exitList.push_back(newEx);
 }
 
 void jpsDatamanager::remove_exit(jpsExit *exit)
@@ -213,6 +228,7 @@ void jpsDatamanager::writeXML(QFile &file)
     stream->writeStartElement("transitions");
     writeTransitions(stream,lines);
     writeNotAssignedExits(stream,lines);
+    exitList.clear();
     stream->writeEndElement();//transitions
 
     stream->writeStartElement("landmarks");
@@ -316,9 +332,10 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
 {
     stream->writeStartElement("crossings");
 
+
     for (int i=0; i<crossingList.size(); i++)
     {
-        if (crossingList[i]->get_cLine()->is_Door())
+        if (crossingList[i]->IsExit()==false)
         {
             stream->writeStartElement("crossing");
 
@@ -336,9 +353,16 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
 
             stream->writeEndElement();//crossing
 
-            lines.removeOne(crossingList[i]->get_cLine());
+
         }
+        else
+        {
+            this->new_exit(crossingList[i]->get_cLine());
+            exitList.back()->add_rooms(crossingList[i]->get_roomList()[0]);
+        }
+        lines.removeOne(crossingList[i]->get_cLine());
     }
+
 
 
 }
@@ -508,6 +532,7 @@ void jpsDatamanager::writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLi
 
         stream->writeEndElement();//transition
     }
+
 
 
 }
@@ -990,10 +1015,10 @@ void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
     jpsLineItem* lineItem = mView->addLineItem(x1,y1,x2,y2,"Exit");
     if (id!=-2)
     {
-        jpsExit* exit = new jpsExit(lineItem);
+        jpsCrossing* exit = new jpsCrossing(lineItem);
         exit->set_id(id);
         exit->change_name(caption);
-        exit->set_type(type);
+        //exit->set_type(type);
 
         for (int i=0; i<roomlist.size(); i++)
         {
@@ -1002,8 +1027,8 @@ void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
                 exit->add_rooms(roomlist[i]);
             }
         }
-
-        exitList.push_back(exit);
+        exit->SetStatExit(true);
+        crossingList.push_back(exit);
     }
 
 }
@@ -1288,7 +1313,7 @@ QString jpsDatamanager::check_printAbility()
     }
     for (int i=0; i<crossingList.size(); i++)
     {
-        if (crossingList[i]->get_roomList().size() < 2)
+        if (crossingList[i]->get_roomList().size() < 2 && !crossingList[i]->IsExit())
         {
             QString string = "There are crossings which are not assigned to a room! Save XML-file not possible!";
             return string;

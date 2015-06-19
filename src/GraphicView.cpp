@@ -185,7 +185,6 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                 EditLine(_currentTrackedPoint);
                 _currentTrackedPoint=nullptr;
                 line_tracked=-1;
-                qDebug() << line_tracked;
             }
             else
             {

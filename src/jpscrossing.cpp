@@ -4,6 +4,7 @@
 jpsCrossing::jpsCrossing(jpsLineItem *line)
 {
     cLine=line;
+    _isExit=false;
 }
 
 QList<jpsRoom *> jpsCrossing::get_roomList()
@@ -47,4 +48,14 @@ void jpsCrossing::add_rooms(jpsRoom *room1, jpsRoom *room2)
     }
 
 
+}
+
+void jpsCrossing::SetStatExit(bool stat)
+{
+    _isExit=stat;
+}
+
+bool jpsCrossing::IsExit()
+{
+    return _isExit;
 }
