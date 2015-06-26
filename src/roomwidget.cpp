@@ -38,6 +38,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->apply_name_button,SIGNAL(clicked(bool)),this,SLOT(change_roomname()));
     connect(ui->add_button,SIGNAL(clicked(bool)),this,SLOT(addWall()));
     connect(ui->list_rooms,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(showWalls()));
+    connect(ui->list_rooms,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showWalls()));
     connect(ui->listWalls,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(selectWall()));
     connect(ui->remove_button,SIGNAL(clicked(bool)),this,SLOT(removeWall()));
     connect(ui->caption,SIGNAL(clicked(bool)),this,SLOT(shhi_roomCaption()));

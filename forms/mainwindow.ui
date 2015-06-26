@@ -53,7 +53,7 @@
     <addaction name="actionWall"/>
     <addaction name="actionDoor"/>
     <addaction name="separator"/>
-    <addaction name="actiongridmode"/>
+    <addaction name="actionanglesnap"/>
     <addaction name="actionObjectsnap"/>
     <addaction name="actionDelete_lines"/>
     <addaction name="actionDelete_single_line"/>
@@ -87,7 +87,7 @@
    <addaction name="actionWall"/>
    <addaction name="actionDoor"/>
    <addaction name="separator"/>
-   <addaction name="actiongridmode"/>
+   <addaction name="actionanglesnap"/>
    <addaction name="separator"/>
    <addaction name="actionObjectsnap"/>
    <addaction name="separator"/>
@@ -154,7 +154,7 @@
     <string>F1</string>
    </property>
   </action>
-  <action name="actiongridmode">
+  <action name="actionanglesnap">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -166,10 +166,10 @@
      <normaloff>:/Grid.png</normaloff>:/Grid.png</iconset>
    </property>
    <property name="text">
-    <string>Gridmode</string>
+    <string>Angle snap</string>
    </property>
    <property name="toolTip">
-    <string>Gridmode</string>
+    <string>Angle snap</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+G</string>
@@ -208,10 +208,10 @@
      <normaloff>:/snap.png</normaloff>:/snap.png</iconset>
    </property>
    <property name="text">
-    <string>Objectsnap</string>
+    <string>Object snap</string>
    </property>
    <property name="toolTip">
-    <string>Objectsnap</string>
+    <string>Object snap</string>
    </property>
    <property name="shortcut">
     <string>O</string>
@@ -238,7 +238,10 @@
      <normaloff>:/Delete.png</normaloff>:/Delete.png</iconset>
    </property>
    <property name="text">
-    <string>Delete_single_line</string>
+    <string>Delete selected lines</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete selected lines</string>
    </property>
    <property name="shortcut">
     <string>Del</string>

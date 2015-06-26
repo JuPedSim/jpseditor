@@ -51,8 +51,8 @@ HEADERS += \
     dxflib/src/dl_creationadapter.h \
     dxflib/src/dl_codes.h \
     dxflib/src/dl_attributes.h \
-    src/widgetlandmark.h \
-    src/jpswaypoint.h
+    src/jpswaypoint.h \
+    src/widgetlandmark.h
 
 
 SOURCES += \
@@ -69,8 +69,8 @@ SOURCES += \
     src/jpslandmark.cpp \
     dxflib/src/dl_writer_ascii.cpp \
     dxflib/src/dl_dxf.cpp \
-    src/widgetlandmark.cpp \
-    src/jpswaypoint.cpp
+    src/jpswaypoint.cpp \
+    src/widgetlandmark.cpp
 
 
 RESOURCES += \

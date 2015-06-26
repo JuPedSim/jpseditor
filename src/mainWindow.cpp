@@ -64,7 +64,7 @@ MWindow :: MWindow() {
     /// Tab Help
     connect(action_ber,SIGNAL(triggered(bool)),this,SLOT(info()));
     /// Tab Tools
-    connect(actiongridmode,SIGNAL(triggered(bool)),this,SLOT(gridmode()));
+    connect(actionanglesnap,SIGNAL(triggered(bool)),this,SLOT(gridmode()));
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
     connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(en_disableDoor()));
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(en_disableExit()));
@@ -128,7 +128,7 @@ void MWindow::AutoSave()
     {
         //QString coord_string=mview->build_coordString();
 
-        dmanager->writeXML(file);
+        dmanager->AutoSaveXML(file);
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("Backup file generated!"),10000);
     }
@@ -234,7 +234,7 @@ void MWindow::saveAsDXF()
 void MWindow::info(){
 
     QMessageBox::information(
-                0,tr("About..."),tr("jpsGui; Interface for generating and editing geometry(XML)-files necessary for using JuPedSim; Manual and tutorial coming soon!"));
+                0,tr("About..."),tr("JuPedSim; Interface for generating and editing geometry(XML)-files necessary for using JPScore; Manual and tutorial coming soon!"));
 }
 
 void MWindow::gridmode()

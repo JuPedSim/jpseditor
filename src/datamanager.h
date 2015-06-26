@@ -77,8 +77,10 @@ public:
 
     /// Write XML
     void writeXML(QFile &file);
+    void AutoSaveXML(QFile &file);
     void writeHeader(QXmlStreamWriter *stream);
     void writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
+    void AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeObstacles(QXmlStreamWriter *stream, jpsObstacle *obs, QList<jpsLineItem *> &lines);

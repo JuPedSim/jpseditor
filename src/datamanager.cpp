@@ -215,8 +215,6 @@ void jpsDatamanager::remove_all_landmarks()
 
 void jpsDatamanager::writeXML(QFile &file)
 {
-
-
     QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
     QList<jpsLineItem* > lines = mView->get_line_vector();
 
@@ -227,13 +225,39 @@ void jpsDatamanager::writeXML(QFile &file)
 
     stream->writeStartElement("transitions");
     writeTransitions(stream,lines);
+    exitList.clear();
+    stream->writeEndElement();//transitions
+
+    //stream->writeStartElement("landmarks");
+    //writeLandmarks(stream,landmarks);
+    //stream->writeEndElement();//landmarks
+
+    stream->writeEndElement();//geometry
+
+    stream->writeEndDocument();
+
+    delete stream;
+}
+
+void jpsDatamanager::AutoSaveXML(QFile &file)
+{
+    QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
+    QList<jpsLineItem* > lines = mView->get_line_vector();
+
+    writeHeader(stream);
+    stream->writeStartElement("rooms");
+    AutoSaveRooms(stream,lines);
+    stream->writeEndElement();//rooms
+
+    stream->writeStartElement("transitions");
+    writeTransitions(stream,lines);
     writeNotAssignedExits(stream,lines);
     exitList.clear();
     stream->writeEndElement();//transitions
 
-    stream->writeStartElement("landmarks");
-    writeLandmarks(stream,landmarks);
-    stream->writeEndElement();//landmarks
+    //stream->writeStartElement("landmarks");
+    //writeLandmarks(stream,landmarks);
+    //stream->writeEndElement();//landmarks
 
     stream->writeEndElement();//geometry
 
@@ -256,6 +280,64 @@ void jpsDatamanager::writeHeader(QXmlStreamWriter *stream)
 }
 
 void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
+{
+    ///rooms
+    stream->writeStartElement("room");
+    stream->writeAttribute("id","0");
+    stream->writeAttribute("caption","hall");
+
+    for (int i=0; i<roomlist.size(); i++)
+    {
+        stream->writeStartElement("subroom");
+        stream->writeAttribute("id",QString::number(roomlist[i]->get_id()));
+        stream->writeAttribute("caption",roomlist[i]->get_name());
+        stream->writeAttribute("class","subroom");
+
+        //walls
+        QList<jpsLineItem* > wallList=roomlist[i]->get_listWalls();
+        for (int j=0; j<wallList.size(); j++)
+        {
+            stream->writeStartElement("polygon");
+            stream->writeAttribute("caption","wall");
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x1()));
+            stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y1()));
+            stream->writeEndElement(); //vertex
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x2()));
+            stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y2()));
+            stream->writeEndElement(); //vertex
+
+            stream->writeEndElement(); //polygon
+
+        }
+
+
+        for (int k=0; k<obstaclelist.size(); k++)
+        {
+            if (roomlist[i]==obstaclelist[k]->get_room())
+            {
+                writeObstacles(stream ,obstaclelist[k],lines);
+            }
+        }
+
+        stream->writeEndElement();//subroom
+    }
+
+
+    ///Crossings
+    writeCrossings(stream,lines);
+
+    stream->writeEndElement();//crossings
+
+    stream->writeEndElement();//room
+
+
+}
+
+void jpsDatamanager::AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
     ///rooms
     stream->writeStartElement("room");
@@ -324,7 +406,6 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
     stream->writeEndElement();//crossings
 
     stream->writeEndElement();//room
-
 
 }
 
@@ -610,7 +691,7 @@ void jpsDatamanager::remove_marked_lines()
             }
         }
 
-        else if (marked_lines[i]->is_Door()==true)
+        else
         {
             QList<jpsCrossing* > cList= this->get_crossingList();
             for (int j=0; j<cList.size(); j++)
@@ -623,18 +704,7 @@ void jpsDatamanager::remove_marked_lines()
             }
 
         }
-        else
-        {
-            QList<jpsExit* > cList= this->get_exitList();
-            for (int j=0; j<cList.size(); j++)
-            {
-                if (marked_lines[i]==cList[j]->get_cLine())
-                {
-                    this->remove_exit(cList[j]);
-                    break;
-                }
-            }
-        }
+
     }
 }
 
