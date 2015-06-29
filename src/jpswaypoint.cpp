@@ -27,7 +27,7 @@
  **/
 
 #include "jpswaypoint.h"
-
+#include <cmath>
 jpsWaypoint::jpsWaypoint()
 {
 
