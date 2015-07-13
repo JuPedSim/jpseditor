@@ -141,12 +141,12 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
     }
 
 
-    if (midbutton_hold==true)
+    if (midbutton_hold)
     {
         translations(old_pos);
     }
 
-    else if(leftbutton_hold==true)
+    else if(leftbutton_hold && currentSelectRect)
     {
         currentSelectRect->setRect(QRectF(QPointF(currentSelectRect->rect().x(),currentSelectRect->rect().y())
                                          ,QPointF(translated_pos.x(),translated_pos.y())));
@@ -155,7 +155,7 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
     translated_pos.setX(pos.x()-translation_x);
     translated_pos.setY(pos.y()-translation_y);
 
-    if (objectsnap==true)
+    if (objectsnap)
     {
         catch_points();
 
