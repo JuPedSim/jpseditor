@@ -31,7 +31,7 @@ message( STATUS "CMAKE_VERBOSE_MAKEFILE: " ${CMAKE_VERBOSE_MAKEFILE} )
 message (STATUS "MODULE_PATH: " ${CMAKE_MODULE_PATH})
 set(CMAKE_COLOR_MAKEFILE ON)
 set(JPSGUI_MAJOR_VERSION 0)
-set(JPSGUI_MINOR_VERSION 1)
+set(JPSGUI_MINOR_VERSION 7)
 set(JPSGUI_PATCH_VERSION 0)
 set(JPSGUI_VERSION
   ${JPSGUI_MAJOR_VERSION}.${JPSGUI_MINOR_VERSION}.${JPSGUI_PATCH_VERSION})
@@ -108,6 +108,10 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
+
+IF (WIN32)
+    SET (QT_USE_QTMAIN TRUE)
+ENDIF (WIN32)
 
 #--------------- here comes QT. Version problem (4 or 5?)
 
@@ -217,7 +221,7 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "PGI")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --c++11 -Minform=inform")	
 endif()
 
-
+message(STATUS "INSTALL_PREFIX: " ${CMAKE_INSTALL_PREFIX})
 #--------------------------------------------------------------------------------
 # Now the installation stuff below
 #--------------------------------------------------------------------------------
