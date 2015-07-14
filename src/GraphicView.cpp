@@ -91,12 +91,18 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     this->setCursor(Qt::CrossCursor);
 
 
+
     //Set-up the scene
     Scene = new QGraphicsScene(this);
     setScene(Scene);
     setSceneRect(0, 0, 1920, 1080);
 
     //create_grid();
+
+    ///Origin
+
+    //origin.push_back(Scene->addLine(1,1,1/gl_scale_f*0.02,1,QPen(Qt::black,0)));
+    //origin.push_back(Scene->addLine(1,1,1,1/gl_scale_f*0.02,QPen(Qt::black,0)));
 }
 
 jpsGraphicsView::~jpsGraphicsView()

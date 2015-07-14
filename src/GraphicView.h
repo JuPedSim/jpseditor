@@ -134,6 +134,7 @@ private:
     QList<QPointF *> intersect_point_vector;
     QList<QPointF> grid_point_vector;
     QList<jpsLineItem *> line_vector;
+    QList<QGraphicsLineItem *> origin;
     //QList<QList<jpsLineItem*> *> mainlist;
     QPointF pos;
     //QPointF* intersection_point;
