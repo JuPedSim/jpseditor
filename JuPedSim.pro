@@ -73,7 +73,11 @@ SOURCES += \
     src/widgetlandmark.cpp
 
 
-RESOURCES += \
-    forms/Ressource.qrc
+RESOURCES +=  forms/Ressource.qrc
+
+RC_FILE = icons/jpseditor.rc
+#osx fix
+macx:ICON = icons/jupedsim.icns
+
 
 
