@@ -97,6 +97,8 @@
    <addaction name="separator"/>
    <addaction name="actionRoom"/>
    <addaction name="separator"/>
+   <addaction name="actionLandmark"/>
+   <addaction name="actionLandmarkWidget"/>
   </widget>
   <action name="action_ffnen">
    <property name="icon">
