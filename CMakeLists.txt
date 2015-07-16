@@ -307,7 +307,7 @@ IF(WIN32)
 ENDIF(WIN32)
 
 INSTALL(TARGETS JPSeditor
-  BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX} COMPONENT Runtime
+  BUNDLE DESTINATION . COMPONENT Runtime
   RUNTIME DESTINATION bin COMPONENT Runtime
   # PERMISSIONS OWNER_EXECUTE 600
   )
@@ -316,8 +316,6 @@ INSTALL(TARGETS JPSeditor
 # Install needed Qt plugins by copying directories from the qt installation
 # One can cull what gets copied by using 'REGEX "..." EXCLUDE'
 # todo should we check qt version here?
-FILE(MAKE_DIRECTORY ${plugin_dest_dir})
-FILE(MAKE_DIRECTORY ${plugin_dest_dir}/plugins)
 INSTALL(DIRECTORY "${QT_PLUGINS_DIR}/imageformats" DESTINATION ${plugin_dest_dir}/plugins
   # DIRECTORY_PERMISSIONS
   # OWNER_WRITE OWNER_READ  OWNER_EXECUTE
@@ -403,7 +401,7 @@ if(WIN32) # todo test this for windows
 #    set(CPACK_NSIS_MENU_LINKS "${LICENSE_FILE}" "License" "${README_FILE}" "Readme")
  #   set(CPACK_NSIS_MUI_FINISHPAGE_RUN "${CPACK_NSIS_INSTALLED_ICON_NAME}")
 elseif(APPLE) # todo test this for apple
-     #set(CMAKE_INSTALL_PREFIX "~/Applications/")
+     set(CMAKE_INSTALL_PREFIX "/Applications/")
      set(CPACK_GENERATOR "DragNDrop")
      set(CPACK_DMG_FORMAT "UDBZ")
      set(CPACK_DMG_VOLUME_NAME "${PROJECT_NAME}")
@@ -420,7 +418,7 @@ endif()
 include(CPack)
 
 
-
+message (STATUS "bin ins" ${BIN_INSTALL_DIR})
 set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "${BIN_INSTALL_DIR}")
 include(InstallRequiredSystemLibraries)
 
