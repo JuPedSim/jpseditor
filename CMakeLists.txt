@@ -12,18 +12,18 @@ IF (POLICY CMP0048) # in CMake 3.0.0+
   CMAKE_POLICY (SET CMP0048 OLD) # keep PROJECT() from clearing VERSION variables
 ENDIF (POLICY CMP0048)
 
-project(jpsedit)
+project(JPSeditor)
 cmake_minimum_required(VERSION 2.8.9)
 
 
 set(README_FILE "${CMAKE_SOURCE_DIR}/README.md")
 set(CMAKE_COLOR_MAKEFILE ON)
-set(JPSEDIT_MAJOR_VERSION 0)
-set(JPSEDIT_MINOR_VERSION 7)
-set(JPSEDIT_PATCH_VERSION 0)
-set(JPSEDIT_VERSION
-  ${JPSEDIT_MAJOR_VERSION}.${JPSEDIT_MINOR_VERSION}.${JPSEDIT_PATCH_VERSION})
-message( STATUS "JPSEDIT_VERSION: " ${JPSEDIT_VERSION} )
+set(JPSEDITOR_MAJOR_VERSION 0)
+set(JPSEDITOR_MINOR_VERSION 7)
+set(JPSEDITOR_PATCH_VERSION 0)
+set(JPSEDITOR_VERSION
+  ${JPSEDITOR_MAJOR_VERSION}.${JPSEDITOR_MINOR_VERSION}.${JPSEDITOR_PATCH_VERSION})
+message( STATUS "JPSEDITOR_VERSION: " ${JPSEDITOR_VERSION} )
 
 
 # ------------------------- Begin Generic CMake Variable Logging ------------------
@@ -62,7 +62,7 @@ include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
 
 
 if(APPLE AND CMAKE_INSTALL_PREFIX MATCHES "/usr/local")
-	set(CMAKE_INSTALL_PREFIX "~/Applications")
+	set(CMAKE_INSTALL_PREFIX "/Applications")
 endif()
 message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
 
@@ -208,56 +208,55 @@ endif()
 # (Keeps code compatible with Qt/Mac/64bit)
 if(APPLE)
   ADD_DEFINITIONS(-DQT_NO_CAST_TO_ASCII)
+  # include the icns file in the target
+  SET(SRCS ${SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/icons/jupedsim.icns)
 endif()
 
 # this command will generate rules that will run rcc on all files from RCS
 # in result RC_SRCS variable will contain paths to files produced by rcc
 if(${QT4_INSTALLED})
   message(STATUS "Working with Qt4")
-  #QT4_ADD_RESOURCES( RC_SRCS ${RCS} )
   # and finally this will run moc:
   QT4_WRAP_CPP( MOC_HDRS ${MOC_HDRS} )
   # this will run uic on .ui files:
   QT4_WRAP_UI( UI_HDRS ${UIS} )
-  QT4_ADD_RESOURCES( RESOURCES_RCS ${RCS} )
+  QT4_ADD_RESOURCES( RCS ${RCS} )
   include( ${QT_USE_FILE} )
-  ADD_EXECUTABLE( jpsedit MACOSX_BUNDLE WIN32
+  ADD_EXECUTABLE( JPSeditor MACOSX_BUNDLE WIN32
   ${SRCS}
   ${MOC_HDRS}
   ${UI_HDRS} 
-  ${RESOURCES_RCS}
+  ${RCS}
   )
-  TARGET_LINK_LIBRARIES( jpsedit ${QT_LIBRARIES})
+  TARGET_LINK_LIBRARIES( JPSeditor ${QT_LIBRARIES})
 elseif( ${QT5_INSTALLED})
   message(STATUS "Working with Qt5")
   # http://www.kdab.com/using-cmake-with-qt-5/
   set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}" ) 
   
   qt5_wrap_ui( UI_HDRS ${UIS} )
-  qt5_add_resources( RESOURCES_RCS ${RCS} )
-  #qt5_use_package(jpsedit Widgets)
+  qt5_add_resources( RCS ${RCS} )
+  #qt5_use_package(JPSeditor Widgets)
 
-  ADD_EXECUTABLE( jpsedit MACOSX_BUNDLE WIN32
+  ADD_EXECUTABLE( JPSeditor MACOSX_BUNDLE WIN32
   ${SRCS}
   ${MOC_HDRS}
   ${UI_HDRS} 
-  ${RESOURCES_RCS}
+  ${RCS}
   )
- qt5_use_modules(jpsedit Widgets)
- target_link_libraries(jpsedit ${Qt5Widgets_LIBRARIES})
+ qt5_use_modules(JPSeditor Widgets)
+ target_link_libraries(JPSeditor ${Qt5Widgets_LIBRARIES})
 else()
-  message(FATAL_ERROR "QT NOT FOUND - ABORT")
+  message(FATAL_ERROR "QT NOT BE FOUND - ABORT")
 endif() 
 
 IF(APPLE)
   SET(MACOSX_BUNDLE_ICON_FILE jupedsim.icns)
   SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/icons/jupedsim.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
-  # include the icns file in the target
-  SET(SRCS ${SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/icons/jupedsim.icns)
 ENDIF(APPLE)
 
 
-SET_TARGET_PROPERTIES( jpsedit PROPERTIES MACOSX_BUNDLE TRUE)
+SET_TARGET_PROPERTIES( JPSeditor PROPERTIES MACOSX_BUNDLE TRUE)
 #----------------------------------------------------------------------
 # enable as many warnings as possible
 set(warning_flags "-Wall -Wextra")
@@ -293,34 +292,40 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "PGI")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --c++11 -Minform=inform")	
 endif()
 message(STATUS "Building ${PROJECT_NAME} in ${CMAKE_BUILD_TYPE} mode")
-message(STATUS "INSTALL_DIR: " ${CMAKE_INSTALL_PREFIX})
 #--------------------------------------------------------------------------------
 # Now the installation stuff below
 #--------------------------------------------------------------------------------
 SET(plugin_dest_dir bin)
 SET(qtconf_dest_dir bin)
-SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/jpsedit")
+SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/JPSeditor")
 IF(APPLE)
-  SET(plugin_dest_dir jpsedit.app/Contents/MacOS)
-  SET(qtconf_dest_dir jpsedit.app/Contents/Resources)
-  SET(APPS "\${CMAKE_INSTALL_PREFIX}/jpsedit.app")  
+  SET(plugin_dest_dir JPSeditor.app/Contents/MacOS)
+  SET(qtconf_dest_dir JPSeditor.app/Contents/Resources)
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/JPSeditor.app")  
 ENDIF(APPLE)
 
 IF(WIN32)
-  SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/jpsedit.exe")
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/JPSeditor.exe")
 ENDIF(WIN32)
 
-INSTALL(TARGETS jpsedit
-  BUNDLE DESTINATION . COMPONENT Runtime
+INSTALL(TARGETS JPSeditor
+  BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX} COMPONENT Runtime
   RUNTIME DESTINATION bin COMPONENT Runtime
-  
+  # PERMISSIONS OWNER_EXECUTE 600
   )
 
 #--------------------------------------------------------------------------------
 # Install needed Qt plugins by copying directories from the qt installation
 # One can cull what gets copied by using 'REGEX "..." EXCLUDE'
 # todo should we check qt version here?
-INSTALL(DIRECTORY "${QT_PLUGINS_DIR}/imageformats" DESTINATION ${plugin_dest_dir}/plugins COMPONENT Runtime)
+FILE(MAKE_DIRECTORY ${plugin_dest_dir})
+FILE(MAKE_DIRECTORY ${plugin_dest_dir}/plugins)
+INSTALL(DIRECTORY "${QT_PLUGINS_DIR}/imageformats" DESTINATION ${plugin_dest_dir}/plugins
+  # DIRECTORY_PERMISSIONS
+  # OWNER_WRITE OWNER_READ  OWNER_EXECUTE
+  # GROUP_WRITE GROUP_READ  GROUP_EXECUTE
+  # WORLD_WRITE WORLD_READ WORLD_EXECUTE
+  COMPONENT Runtime)
 
 #--------------------------------------------------------------------------------
 # install a qt.conf file
@@ -363,12 +368,12 @@ INSTALL(CODE "
 IF(APPLE)
   # set how it shows up in the Info.plist file
   SET(MACOSX_EDIT_ICON jupedsim.icns)
+  set_target_properties(JPSeditor PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Resources/Info.plist.in)
   SET(MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2015 Forschungszentrum Juelich. All rights reserved.")
-  SET(MACOSX_BUNDLE_BUNDLE_NAME "jpsedit")
-  SET(MACOSX_BUNDLE_BUNDLE_VERSION "${JPSEDIT_VERSION}")
-  SET(MACOSX_BUNDLE_LONG_VERSION_STRING "version ${JPSEDIT_VERSION}")
-  SET(MACOSX_BUNDLE_SHORT_VERSION_STRING "${JPSEDIT
-_VERSION}")
+  SET(MACOSX_BUNDLE_BUNDLE_NAME "JPSeditor")
+  SET(MACOSX_BUNDLE_BUNDLE_VERSION "${JPSEDITOR_VERSION}")
+  SET(MACOSX_BUNDLE_LONG_VERSION_STRING "version ${JPSEDITOR_VERSION}")
+  SET(MACOSX_BUNDLE_SHORT_VERSION_STRING "${JPSEDITOR_VERSION}")
   SET(MACOSX_EDIT_COPYRIGHT "Copyright (c) 2015 Forschungszentrum Juelich. All rights reserved.")
   SET(MACOSX_BUNDLE_EDIT_IDENTIFIER "www.jupedsim.org")
   # set where in the bundle to put the icns file
@@ -381,17 +386,17 @@ ENDIF(APPLE)
 # https://github.com/mikemcquaid/Fabula
 set(CPACK_BINARY_DRAGNDROP ON)
 set(CPACK_GENERATOR "TBZ2")
-set(CPACK_PACKAGE_VERSION_MAJOR "${JPSEDIT_VERSION_MAJOR}")
-set(CPACK_PACKAGE_VERSION_MINOR "${JPSEDIT_VERSION_MINOR}")
-set(CPACK_PACKAGE_VERSION_PATCH "${JPSEDIT_version_patch}")
-set(CPACK_PACKAGE_VERSION "${JPSEDIT_VERSION}")
-set(CPACK_PACKAGE_VENDOR "${JPSEDIT_VENDOR}")
+set(CPACK_PACKAGE_VERSION_MAJOR "${JPSEDITOR_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${JPSEDITOR_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${JPSEDITOR_version_patch}")
+set(CPACK_PACKAGE_VERSION "${JPSEDITOR_VERSION}")
+set(CPACK_PACKAGE_VENDOR "${JPSEDITOR_VENDOR}")
 set(CPACK_RESOURCE_FILE_README "${README_FILE}")
 if(WIN32) # todo test this for windows
     set(CPACK_GENERATOR "NSIS")
     set(CPACK_PACKAGE_EXECUTABLES "${PROJECT_NAME}" "${PROJECT_NAME}")
     set(CPACK_PACKAGE_INSTALL_DIRECTORY "${PROJECT_NAME}")
-    set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME} ${PROJECT_VERSION}")
+    set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME} ${JPSEDITOR_VERSION}")
     set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/${LICENSE_FILE}")
     set(CPACK_NSIS_EXECUTABLES_DIRECTORY "${BIN_INSTALL_DIR}")
     #set(CPACK_NSIS_MUI_ICON "${PROJECT_ICONS_DIRECTORY}/NSIS.ico")
@@ -400,12 +405,12 @@ if(WIN32) # todo test this for windows
 #    set(CPACK_NSIS_MENU_LINKS "${LICENSE_FILE}" "License" "${README_FILE}" "Readme")
  #   set(CPACK_NSIS_MUI_FINISHPAGE_RUN "${CPACK_NSIS_INSTALLED_ICON_NAME}")
 elseif(APPLE) # todo test this for apple
-     set(CMAKE_INSTALL_PREFIX "~/Applications")
+     #set(CMAKE_INSTALL_PREFIX "~/Applications/")
      set(CPACK_GENERATOR "DragNDrop")
      set(CPACK_DMG_FORMAT "UDBZ")
      set(CPACK_DMG_VOLUME_NAME "${PROJECT_NAME}")
      set(CPACK_SYSTEM_NAME "OSX")
-     set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${PROJECT_VERSION}")
+     set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${JPSEDITOR_VERSION}")
      #set(CPACK_PACKAGE_ICON "${ICONS_DIR}/DMG.icns")
      #set(CPACK_DMG_DS_STORE "${ICONS_DIR}/DMGDSStore")
      #set(CPACK_DMG_BACKGROUND_IMAGE "${ICONS_DIR}/DMGBackground.png")
