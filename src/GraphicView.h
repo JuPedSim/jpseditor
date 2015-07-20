@@ -76,6 +76,7 @@ public:
     void drawLine();
     qreal calc_d_point(const QLineF &line, const qreal &x, const qreal &y);
     void delete_marked_lines();
+    void RemoveIntersections(jpsLineItem* lineItem);
 
     /// Landmark
     void delete_landmark();

@@ -68,6 +68,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     this->scale(1/gl_scale_f,-1/gl_scale_f);
     _currentTrackedPoint=nullptr;
     _statLineEdit=false;
+    intersection_point=nullptr;
 
     lines_collided=false;
     _assoDef=false;
@@ -241,7 +242,13 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
 void jpsGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if (event->button()==Qt::LeftButton)
+    {   /// To avoid deleting of edited line
+        if (line_tracked==1)
+        {
+            current_line=nullptr;
+        }
         emit no_drawing();
+    }
 
 }
 
@@ -495,6 +502,13 @@ void jpsGraphicsView::catch_points()
         // range chosen: 10 (-5:5) (has to be changed soon)
         if (line_vector[i]->get_line()->line().x1()>=(translated_pos.x()-catch_radius) && line_vector[i]->get_line()->line().x1()<=(translated_pos.x()+catch_radius) && line_vector[i]->get_line()->line().y1()>=(translated_pos.y()-catch_radius) && line_vector[i]->get_line()->line().y1()<=(translated_pos.y()+catch_radius)){
             /// in this case the cursor is working with global coordinates. So the method 'mapToGlobal' must be used
+
+            ///to avoid the tracking of the coords of an edited line
+            if (line_vector[i]->get_line()==current_line)
+            {
+                continue;
+            }
+
             translated_pos.setX(line_vector[i]->get_line()->line().x1());
             translated_pos.setY(line_vector[i]->get_line()->line().y1());
             //cursor.setPos(mapToGlobal(QPoint(translate_back_x(line_vector[i].x1()),translate_back_y(line_vector[i].y1()))));
@@ -512,6 +526,14 @@ void jpsGraphicsView::catch_points()
         ///Searching for endpoints of all lines near the current cursor position
         else if (line_vector[i]->get_line()->line().x2()>=(translated_pos.x()-catch_radius) && line_vector[i]->get_line()->line().x2()<=(translated_pos.x()+catch_radius) && line_vector[i]->get_line()->line().y2()>=(translated_pos.y()-catch_radius) && line_vector[i]->get_line()->line().y2()<=(translated_pos.y()+catch_radius)){
             // see above
+
+            ///to avoid the tracking of the coords of an edited line
+            if (line_vector[i]->get_line()==current_line)
+            {
+                continue;
+            }
+
+
             translated_pos.setX(line_vector[i]->get_line()->line().x2());
             translated_pos.setY(line_vector[i]->get_line()->line().y2());
             //cursor.setPos(mapToGlobal(QPoint(translate_back_x(line_vector[i].x2()),translate_back_y(line_vector[i].y2()))));
@@ -572,17 +594,17 @@ void jpsGraphicsView::catch_lines()
     line_tracked=-1;
     if (currentSelectRect->rect().width()<0)
     {
-    for (auto &item:line_vector)
-    {
-        if (currentSelectRect->contains(item->get_line()->line().p1())
-                && currentSelectRect->contains(item->get_line()->line().p2()))
+        for (auto &item:line_vector)
         {
-            select_line(item);
-            line_tracked=1;
+            if (currentSelectRect->contains(item->get_line()->line().p1())
+                    && currentSelectRect->contains(item->get_line()->line().p2()))
+            {
+                select_line(item);
+                line_tracked=1;
 
 
+            }
         }
-    }
     }
     /// if current rect was build up moving the cursor to the right ->
     /// throwing the select rect only over a part of a line is sufficent to select it
@@ -617,37 +639,43 @@ void jpsGraphicsView::drawLine()
     // if the mouse was pressed secondly of two times
     else
     {
-        jpsLineItem* lineItem= new jpsLineItem(current_line);
-
-        // if there is already a drawn line
-        if (line_vector.size()>=1)
-        {
-            // Searching for intersection of the current line with all already drawn lines
-            for (int i=0; i<line_vector.size(); i++)
-            {
-                // locate possible intersection between lines
-                // if there are some, intersectionPoint will be added to container
-                locate_intersection(lineItem,line_vector[i]);
-            }
-        }
-
-        lineItem->set_type(statWall,statDoor,statExit);
-        line_vector.push_back(lineItem);
-
-        ///reset pointer
-        current_line=nullptr;
-
+        /// If line is edited currently
         if (_statLineEdit)
         {
 
-            select_line(lineItem);
+            //select_line(lineItem);
+            current_line=nullptr;
             _statLineEdit=false;
             line_tracked=1;
             emit no_drawing();
         }
+
         else
+        {
+
+            jpsLineItem* lineItem= new jpsLineItem(current_line);
+
+            // if there is already a drawn line
+            if (line_vector.size()>=1)
+            {
+                // Searching for intersection of the current line with all already drawn lines
+                for (int i=0; i<line_vector.size(); i++)
+                {
+                    // locate possible intersection between lines
+                    // if there are some, intersectionPoint will be added to container
+                    locate_intersection(lineItem,line_vector[i]);
+                }
+            }
+
+            lineItem->set_type(statWall,statDoor,statExit);
+            line_vector.push_back(lineItem);
+
+            ///reset pointer
+            current_line=nullptr;
+
             drawLine();
 
+        }
 
     }
 
@@ -797,19 +825,29 @@ void jpsGraphicsView::EditLine(QPointF* point)
     if (marked_lines.size()==1)
     {
 
+        delete current_rect;
+        current_rect=nullptr;
+
+        point_tracked=false;
+
         if (marked_lines.first()->get_line()->line().p1()==*point)
         {
-            current_line=Scene->addLine(marked_lines[0]->get_line()->line().p2().x(),
-                    marked_lines[0]->get_line()->line().p2().y(),translated_pos.x(),translated_pos.y(),QPen(Qt::red,0));
-            current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+            current_line=marked_lines[0]->get_line();
+            marked_lines[0]->get_line()->setLine(marked_lines[0]->get_line()->line().x2(),marked_lines[0]->get_line()->line().y2(),translated_pos.x(),translated_pos.y());
+            //current_line=Scene->addLine(marked_lines[0]->get_line()->line().p2().x(),
+             //       marked_lines[0]->get_line()->line().p2().y(),translated_pos.x(),translated_pos.y(),QPen(Qt::red,0));
+            //current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
             emit set_focus_textedit();
         }
 
         else if (marked_lines.first()->get_line()->line().p2()==*point)
         {
-            current_line=Scene->addLine(marked_lines[0]->get_line()->line().p1().x(),
-                    marked_lines[0]->get_line()->line().p1().y(),translated_pos.x(),translated_pos.y(),QPen(Qt::red,0));
-            current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+            current_line=marked_lines[0]->get_line();
+            marked_lines[0]->get_line()->setLine(marked_lines[0]->get_line()->line().x1(),marked_lines[0]->get_line()->line().y1(),translated_pos.x(),translated_pos.y());
+
+                    //->get_line()->line().p1().x(),
+                    //marked_lines[0]->get_line()->line().p1().y(),translated_pos.x(),translated_pos.y(),QPen(Qt::red,0);
+            //current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
             emit set_focus_textedit();
         }
 
@@ -817,8 +855,9 @@ void jpsGraphicsView::EditLine(QPointF* point)
             return;
 
         //line_tracked=1;
+        RemoveIntersections(marked_lines.first());
         _statLineEdit=true;
-        delete_marked_lines();
+        //delete_marked_lines();
         en_disableWall();
 
     }
@@ -1019,6 +1058,11 @@ void jpsGraphicsView::translations(QPointF old_pos)
     for (int i=0; i<line_vector.size(); ++i)
     {
         //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
+        /// To avoid double sized translation of edited line
+        if (current_line==line_vector[i]->get_line())
+        {
+            continue;
+        }
         line_vector[i]->get_line()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
 
     }
@@ -1166,31 +1210,9 @@ void jpsGraphicsView::delete_marked_lines()
 
         for (int i=0; i<marked_lines.size(); ++i)
         {
-            QList<QPointF *> points = marked_lines[i]->get_intersectionVector();
-
-            for (int j=0; j<points.size(); ++j)
-            {
-                delete points[j];
-                intersect_point_vector.removeOne(points[j]);
-                for (int k=0; k<marked_lines[i]->get_intersectLineVector().size(); ++k)
-                {
-                    // removing the intersectionPoint pointer from all lines which includes the point
-                    marked_lines[i]->get_intersectLineVector()[k]->remove_intersectionPoint(points[j]);
-
-                    // as marked_lines is removed it is has no intersections with any other line anymore
-                    // so pointers of possible intersectionsLine have to be removed
-
-                }
 
 
-            }
-
-
-            for (int k=0; k<marked_lines[i]->get_intersectLineVector().size(); ++k)
-            {
-                marked_lines[i]->get_intersectLineVector()[k]->remove_interLine(marked_lines[i]);
-            }
-
+            RemoveIntersections(marked_lines[i]);
 
             delete marked_lines[i]->get_line();
             //marked_lines[i]->set_line(nullptr);
@@ -1207,6 +1229,32 @@ void jpsGraphicsView::delete_marked_lines()
         update();
     }
 
+}
+
+void jpsGraphicsView::RemoveIntersections(jpsLineItem *lineItem)
+{
+    QList<QPointF *> points = lineItem->get_intersectionVector();
+
+    for (int j=0; j<points.size(); ++j)
+    {
+        delete points[j];
+        intersect_point_vector.removeOne(points[j]);
+        for (int k=0; k<lineItem->get_intersectLineVector().size(); ++k)
+        {
+            // removing the intersectionPoint pointer from all lines which includes the point
+            lineItem->get_intersectLineVector()[k]->remove_intersectionPoint(points[j]);
+
+            // as marked_lines is removed it has no intersections with any other line anymore
+            // so pointers of possible intersectionsLine have to be removed
+
+        }
+    }
+
+
+    for (int k=0; k<lineItem->get_intersectLineVector().size(); ++k)
+    {
+        lineItem->get_intersectLineVector()[k]->remove_interLine(lineItem);
+    }
 }
 
 void jpsGraphicsView::delete_landmark()

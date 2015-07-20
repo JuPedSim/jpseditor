@@ -257,9 +257,9 @@ void jpsDatamanager::writeXML(QFile &file)
     exitList.clear();
     stream->writeEndElement();//transitions
 
-    //stream->writeStartElement("landmarks");
-    //writeLandmarks(stream,landmarks);
-    //stream->writeEndElement();//landmarks
+    stream->writeStartElement("landmarks");
+    writeLandmarks(stream,landmarks);
+    stream->writeEndElement();//landmarks
 
     stream->writeEndElement();//geometry
 
@@ -284,9 +284,9 @@ void jpsDatamanager::AutoSaveXML(QFile &file)
     exitList.clear();
     stream->writeEndElement();//transitions
 
-    //stream->writeStartElement("landmarks");
-    //writeLandmarks(stream,landmarks);
-    //stream->writeEndElement();//landmarks
+    stream->writeStartElement("landmarks");
+    writeLandmarks(stream,landmarks);
+    stream->writeEndElement();//landmarks
 
     stream->writeEndElement();//geometry
 
