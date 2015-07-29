@@ -92,7 +92,7 @@ MWindow :: MWindow() {
     /// Tab Help
     connect(action_ber,SIGNAL(triggered(bool)),this,SLOT(info()));
     /// Tab Tools
-    connect(actionanglesnap,SIGNAL(triggered(bool)),this,SLOT(gridmode()));
+    connect(actionanglesnap,SIGNAL(triggered(bool)),this,SLOT(anglesnap()));
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
     connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(en_disableDoor()));
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(en_disableExit()));
@@ -265,9 +265,9 @@ void MWindow::info(){
                 0,tr("About..."),tr("JuPedSim; Interface for generating and editing geometry(XML)-files necessary for using JPScore; Manual and tutorial coming soon!"));
 }
 
-void MWindow::gridmode()
+void MWindow::anglesnap()
 {
-   mview->change_gridmode();
+   mview->change_stat_anglesnap();
 }
 
 void MWindow::en_disableWall()

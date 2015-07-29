@@ -48,9 +48,8 @@ public:
     ~jpsGraphicsView();
 
     ///Change modes
-    void change_gridmode();
-    bool get_gridmode();
-    bool use_gridmode(QGraphicsLineItem *currentline, int accuracy);
+    void change_stat_anglesnap();
+    bool get_stat_anglesnap();
     void change_objectsnap();
     bool get_objectsnap();
     bool statusWall();
@@ -62,21 +61,42 @@ public:
     bool statusLandmark();
     void en_disableLandmark();
 
+    /// global functions
+    qreal get_scale_f();
+    void take_l_from_lineEdit(const qreal &length);
+    void disable_drawing();
+    bool use_anglesnap(QGraphicsLineItem *currentline, int accuracy);
+    void use_gridmode();
+    ///View
+    void zoom(int delta);
+    void translations(QPointF old_pos);
+    void AutoZoom();
+
     ///Pos
     QPointF return_Pos();
 
-    ///Catch points
+    ///Catch lines, points and intersections
     void catch_points();
+    void locate_intersection(jpsLineItem* item1, jpsLineItem* item2);
+    void line_collision();
+    void catch_lines();
 
     ///Delete all
     void delete_all(bool final=false);
 
     ///Line operations
-    void catch_lines();
     void drawLine();
     qreal calc_d_point(const QLineF &line, const qreal &x, const qreal &y);
     void delete_marked_lines();
     void RemoveIntersections(jpsLineItem* lineItem);
+    /// lines read from dxf-file
+    jpsLineItem *addLineItem(const qreal &x1, const qreal &y1, const qreal &x2, const qreal &y2, const QString &type="");
+    QList<jpsLineItem *> get_markedLines();
+    QList<jpsLineItem *> get_line_vector();
+    void unmark_all_lines();
+    void select_line(jpsLineItem *mline);
+    void SetVLine();
+    void EditLine(QPointF* point);
 
     /// Landmark
     void delete_landmark();
@@ -90,30 +110,13 @@ public:
     QGraphicsRectItem* GetCurrentSelectRect();
     void ShowWaypoints(QList<jpsWaypoint* > waypoints);
 
-
-    /// Lines
-    void take_l_from_lineEdit(const qreal &length);
-    QList<jpsLineItem *> get_markedLines();
-    QList<jpsLineItem *> get_line_vector();
-    qreal get_scale_f();
-    void unmark_all_lines();
-    void select_line(jpsLineItem *mline);
-    void disable_drawing();
-    jpsLineItem *addLineItem(const qreal &x1, const qreal &y1, const qreal &x2, const qreal &y2, const QString &type="");
-    void locate_intersection(jpsLineItem* item1, jpsLineItem* item2);
-    void SetVLine();
-    void EditLine(QPointF* point);
-
     ///RoomCaption
     bool show_hide_roomCaption(QString name, qreal x, qreal y);
 
-    void line_collision();
+    ///backgroundgrid
     void create_grid();
 
-    ///View
-    void zoom(int delta);
-    void translations(QPointF old_pos);
-    void AutoZoom();
+
 
 public slots:
     ///Waypoints
@@ -122,6 +125,7 @@ public slots:
 
 
 protected:
+    ///Mouse events
     virtual void mouseMoveEvent(QMouseEvent * mouseEvent);
     //void paintEvent(QPaintEvent* event);
     virtual void mousePressEvent(QMouseEvent *event);
@@ -133,7 +137,7 @@ private:
     QGraphicsLineItem* current_line;
     //std::vector<jpsLineItem> line_vector;
     QList<QPointF *> intersect_point_vector;
-    QList<QPointF> grid_point_vector;
+    //QList<QPointF> grid_point_vector;
     QList<jpsLineItem *> line_vector;
     QList<QGraphicsLineItem *> origin;
     //QList<QList<jpsLineItem*> *> mainlist;
@@ -145,7 +149,7 @@ private:
     qreal translation_x;
     qreal translation_y;
     QPointF translated_pos;
-    bool gridmode;
+    bool anglesnap;
     bool statWall;
     bool statDoor;
     bool statExit;
@@ -169,9 +173,8 @@ private:
     QList<QGraphicsEllipseItem* > _waypoints;
     QGraphicsLineItem* _currentVLine;
     QPointF* _currentTrackedPoint;
-
+    QGraphicsPixmapItem* gridmap;
     bool _statLineEdit;
-
     bool lines_collided;
     bool _assoDef;
 
@@ -188,9 +191,6 @@ signals:
     void landmark_added();
     void AssoDefCompleted();
     //void DoubleClick();
-
-
-
 
 };
 

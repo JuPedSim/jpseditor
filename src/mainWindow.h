@@ -70,7 +70,7 @@ protected slots:
     void saveFile();
     void saveAsDXF();
     void info();
-    void gridmode();
+    void anglesnap();
     void en_disableWall();
     void en_disableDoor();
     void en_disableExit();
