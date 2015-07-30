@@ -30,7 +30,8 @@
 
 
 #include <QGraphicsView>
-#include <QGraphicsSceneMouseEvent>
+//#include <QGraphicsSceneMouseEvent>
+#include "graphicscene.h"
 #include <QGraphicsLineItem>
 #include "jpsLineItem.h"
 #include "jpslandmark.h"
@@ -52,6 +53,7 @@ public:
     bool get_stat_anglesnap();
     void change_objectsnap();
     bool get_objectsnap();
+    void change_gridmode();
     bool statusWall();
     void en_disableWall();
     bool statusDoor();
@@ -113,9 +115,6 @@ public:
     ///RoomCaption
     bool show_hide_roomCaption(QString name, qreal x, qreal y);
 
-    ///backgroundgrid
-    void create_grid();
-
 
 
 public slots:
@@ -143,7 +142,7 @@ private:
     //QList<QList<jpsLineItem*> *> mainlist;
     QPointF pos;
     //QPointF* intersection_point;
-    QGraphicsScene* Scene;
+    GraphicScene* Scene;
     bool midbutton_hold;
     bool leftbutton_hold;
     qreal translation_x;
@@ -177,6 +176,7 @@ private:
     bool _statLineEdit;
     bool lines_collided;
     bool _assoDef;
+    bool _gridmode;
 
     //qreal gl_min_x;
     //qreal gl_min_y;

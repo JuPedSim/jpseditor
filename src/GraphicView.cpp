@@ -58,6 +58,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     currentSelectRect=nullptr;
     gridmap=nullptr;
     objectsnap=false;
+    _gridmode=false;
     statWall=false;
     statDoor=false;
     statExit=false;
@@ -79,7 +80,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     //m_graphView->setFixedSize(1600, 900);
     //m_graphView->setScene(m_graphScen);
 
-    setCacheMode(QGraphicsView::CacheBackground);
+    //setCacheMode(QGraphicsView::CacheBackground);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
 
@@ -95,11 +96,12 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
 
 
     //Set-up the scene
-    Scene = new QGraphicsScene(this);
+    Scene = new GraphicScene(this);
+
     setScene(Scene);
     setSceneRect(0, 0, 1920, 1080);
 
-    create_grid();
+    //create_grid();
 
     ///Origin
 
@@ -950,85 +952,6 @@ void jpsGraphicsView::line_collision() ///FIX ME!!!
     }
 }
 
-void jpsGraphicsView::create_grid() /// FIX ME!!!!
-{
-    //QPointF sceneViewBottomLeft = mapToScene(QPoint(this->sceneRect().bottomLeft()));
-    //QPointF sceneViewTopRight = mapToScene(QPoint(this->sceneRect().topRight()));
-    //QRectF rect = this->sceneRect();
-    //for (QGraphicsLineItem *gridpoint: grid_point_vector)
-    //{
-     //   delete gridpoint;
-    //}
-    //grid_point_vector.clear();
-
-    QPixmap pixmap("../jupedsim/forms/backgroundgridpoints.png");
-
-    gridmap = Scene->addPixmap(pixmap);
-
-    gridmap->setScale(0.0269);
-    gridmap->setTransform(QTransform::fromTranslate(-0.96,-0.05), true);
-
-    //std::cout << rect.bottomRight().y() << std::endl;
-
-    //QPointF leftdown = mapToScene(this->sceneRect().bottomLeft().x(),this->sceneRect().bottomLeft().y());
-
-    //QPointF leftup = mapToScene(Scene->sceneRect().bottomLeft().x(),Scene->sceneRect().bottomLeft().y());
-    //std::cout << leftup.x()-translation_x << std::endl;
-//    qreal rightx = translated_pos.x()+1920*gl_scale_f;
-//    qreal upy = translated_pos.y()+1080*gl_scale_f;
-//    qreal leftx = translated_pos.x()-1920*gl_scale_f;
-//    qreal downy = translated_pos.y()-1080*gl_scale_f;
-//    //QGraphicsEllipseItem* point = Scene->addEllipse(0,0,10,10,QPen(Qt::red));
-//    //point->setTransform(Scene->sceneRect().);
-//    //point->setTransform(QTransform::fromTranslate(translation_x,translation_y));
-//    //grid_point_vector.push_back(point);
-//    //std::cout << translation_y << std::endl;
-//    //std::cout << this->height() << std::endl;
-//    //qreal leftdownx = leftdown.x();//+translation_x;
-//    //qreal leftdowny = leftdown.y();//+translation_y;
-
-//    //QPointF topRight = mapToScene(this->sceneRect().topRight().x(),this->sceneRect().topRight().y());
-//    //qreal rightupx = topRight.x();//+translation_x;
-//    //qreal rightupy = topRight.y();//+translation_y;
-
-//    //std::cout << rightupx << std::endl;
-//    //std::cout << rightupy << std::endl;
-//    int intervall=100*gl_scale_f;
-//    int ileftx = leftx/intervall;
-//    ileftx*=intervall;
-//    int idowny = downy/intervall;
-//    idowny*=intervall;
-    //int ileftdowny = std::floor(leftdowny);
-    //int irightupx = std::floor(rightupx);
-    //int irightupy = std::floor(rightupy);
-    //std::cout << ileftupx << std::endl;
-    //std::cout << rightdownx << std::endl;
-    //QGraphicsTextItem* point = Scene->addText("Hallo Welt");
-    //point->setX(ileftupx);
-    //point->setY(ileftupy);
-    //std::cout << ileftdownx << std::endl;
-    //std::cout << irightupy << std::endl;
-
-//    for (int i=ileftx; i<rightx; i+=intervall)
-//    {
-//        for (int j=idowny; j<upy; j+=intervall)
-//        {
-//            //std::cout << rightdownx << std::endl;
-//            /*
-//            QGraphicsLineItem* line1 = Scene->addLine(i,j-5*gl_scale_f,i,j+5*gl_scale_f,QPen(Qt::red,0));
-//            line1->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
-//            grid_point_vector.push_back(line1);
-//            QGraphicsLineItem* line2 = Scene->addLine(i-5*gl_scale_f,j,i+5*gl_scale_f,j,QPen(Qt::red,0));
-//            line2->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
-//            grid_point_vector.push_back(line2);
-//            */
-//            QPointF gridpoint(i,j);
-//            grid_point_vector.push_back(gridpoint);
-//        }
-//    }
-
-    //std::cout << leftup-translation_x << std::endl;
-}
 
 void jpsGraphicsView::zoom(int delta)
 {
@@ -1068,6 +991,9 @@ void jpsGraphicsView::translations(QPointF old_pos)
 {
     translation_x+=pos.x()-old_pos.x();
     translation_y+=pos.y()-old_pos.y();
+
+    /// translate the background grid
+    Scene->ChangeTranslation(translation_x,translation_y);
 
     if (current_line!=nullptr)
     {
@@ -1380,6 +1306,13 @@ void jpsGraphicsView::change_objectsnap()
 bool jpsGraphicsView::get_objectsnap()
 {
     return objectsnap;
+}
+
+void jpsGraphicsView::change_gridmode()
+{
+    _gridmode=!_gridmode;
+    Scene->ChangeGridmode(_gridmode);
+    Scene->update();
 }
 
 void jpsGraphicsView::en_disableWall()

@@ -52,7 +52,8 @@ HEADERS += \
     dxflib/src/dl_codes.h \
     dxflib/src/dl_attributes.h \
     src/jpswaypoint.h \
-    src/widgetlandmark.h
+    src/widgetlandmark.h \
+    src/graphicscene.h
 
 
 SOURCES += \
@@ -70,7 +71,8 @@ SOURCES += \
     dxflib/src/dl_writer_ascii.cpp \
     dxflib/src/dl_dxf.cpp \
     src/jpswaypoint.cpp \
-    src/widgetlandmark.cpp
+    src/widgetlandmark.cpp \
+    src/graphicscene.cpp
 
 
 RESOURCES +=  forms/Ressource.qrc

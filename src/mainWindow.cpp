@@ -310,7 +310,8 @@ void MWindow::disableDrawing()
 
 void MWindow::objectsnap()
 {
-    mview->change_objectsnap();
+    //mview->change_objectsnap();
+    mview->change_gridmode();
 }
 
 void MWindow::show_coords()
