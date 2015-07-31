@@ -93,6 +93,7 @@ MWindow :: MWindow() {
     connect(action_ber,SIGNAL(triggered(bool)),this,SLOT(info()));
     /// Tab Tools
     connect(actionanglesnap,SIGNAL(triggered(bool)),this,SLOT(anglesnap()));
+    connect(actiongridmode,SIGNAL(triggered(bool)),this,SLOT(gridmode()));
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
     connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(en_disableDoor()));
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(en_disableExit()));
@@ -310,7 +311,11 @@ void MWindow::disableDrawing()
 
 void MWindow::objectsnap()
 {
-    //mview->change_objectsnap();
+    mview->change_objectsnap();
+}
+
+void MWindow::gridmode()
+{
     mview->change_gridmode();
 }
 

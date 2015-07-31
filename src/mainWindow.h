@@ -77,6 +77,7 @@ protected slots:
     void en_disableLandmark();
     void disableDrawing();
     void objectsnap();
+    void gridmode();
     void show_coords();
     void delete_lines();
     void delete_marked_lines();

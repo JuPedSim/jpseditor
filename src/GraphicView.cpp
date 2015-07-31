@@ -165,13 +165,15 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
     translated_pos.setX(pos.x()-translation_x);
     translated_pos.setY(pos.y()-translation_y);
 
+    if (_gridmode)
+        use_gridmode();
 
     if (objectsnap)
     {
 
         catch_points();
 
-        use_gridmode();
+
 
         ///VLine
         if (point_tracked && (statWall==true || statDoor==true || statExit==true))
@@ -516,11 +518,17 @@ bool jpsGraphicsView::use_anglesnap(QGraphicsLineItem* currentline, int accuracy
 
 void jpsGraphicsView::use_gridmode()
 {
-    if ((std::fmod(translated_pos.x(),1.0)<=0.1 || std::fmod(translated_pos.x(),1.0)>=0.9) &&
-         (std::fmod(translated_pos.y(),1.0)<=0.1 || std::fmod(translated_pos.y(),1.0)>=0.9))
+    if ((std::fmod(std::fabs(translated_pos.x()),1.0)<=0.1 || std::fmod(std::fabs(translated_pos.x()),1.0)>=0.9) &&
+         (std::fmod(std::fabs(translated_pos.y()),1.0)<=0.1 || std::fmod(std::fabs(translated_pos.y()),1.0)>=0.9))
     {
-        translated_pos.setX(int(translated_pos.x()+0.5));
-        translated_pos.setY(int(translated_pos.y()+0.5));
+        if (translated_pos.x()<0)
+            translated_pos.setX(int(translated_pos.x()-0.5));
+        else
+            translated_pos.setX(int(translated_pos.x()+0.5));
+        if (translated_pos.y()<0)
+            translated_pos.setY(int(translated_pos.y()-0.5));
+        else
+            translated_pos.setY(int(translated_pos.y()+0.5));
         current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
         point_tracked=true;
         _currentTrackedPoint= &translated_pos;
@@ -552,7 +560,8 @@ void jpsGraphicsView::catch_points()
             _currentTrackedPoint= &translated_pos;
             //QPen pen;
             //pen.setColor('red');
-            current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+            if (current_rect==nullptr)
+                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
             /// if a point was tracked there is no need to look for further points ( only one point can be tracked)
 
             return;
@@ -573,7 +582,8 @@ void jpsGraphicsView::catch_points()
             translated_pos.setY(line_vector[i]->get_line()->line().y2());
             //cursor.setPos(mapToGlobal(QPoint(translate_back_x(line_vector[i].x2()),translate_back_y(line_vector[i].y2()))));
             point_tracked=true;
-            current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));            
+            if (current_rect==nullptr)
+                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
             _currentTrackedPoint= &translated_pos;
             return;
         }
@@ -587,8 +597,9 @@ void jpsGraphicsView::catch_points()
         {
             translated_pos.setX(intersect_point_vector[j]->x());
             translated_pos.setY(intersect_point_vector[j]->y());
+            if (current_rect==nullptr)
             current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
-            point_tracked=true;
+                point_tracked=true;
             return;
         }
     }
