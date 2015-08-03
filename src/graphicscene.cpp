@@ -1,10 +1,6 @@
 #include "graphicscene.h"
 #include <iostream>
 
-GraphicScene::GraphicScene()
-{
-
-}
 
 GraphicScene::GraphicScene(QObject *parent) : QGraphicsScene(parent)
 {

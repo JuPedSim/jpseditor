@@ -9,8 +9,8 @@ class GraphicScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    GraphicScene();
-    GraphicScene(QObject* parent=0);
+
+    GraphicScene(QObject* parent=nullptr);
     GraphicScene(qreal x, qreal y, qreal w, qreal h)
         : QGraphicsScene(x, y, w, h)
     { }
@@ -20,7 +20,7 @@ public:
     void ChangeTranslation(qreal x, qreal y);
 
 protected:
-    void drawBackground(QPainter *painter, const QRectF &rect);
+    void drawBackground(QPainter *painter, const QRectF &rect) override;
 private:
     bool _gridmode;
     qreal _translationX;

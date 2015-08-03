@@ -96,7 +96,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
 
 
     //Set-up the scene
-    Scene = new GraphicScene(this);
+    Scene = new GraphicScene(qobject_cast<QObject*>(this));
 
     setScene(Scene);
     setSceneRect(0, 0, 1920, 1080);

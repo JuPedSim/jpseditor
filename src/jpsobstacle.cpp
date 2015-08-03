@@ -44,3 +44,4 @@ jpsRoom* jpsObstacle::get_room()
 {
     return _room;
 }
+
