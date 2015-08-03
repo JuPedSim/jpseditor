@@ -98,7 +98,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     //Set-up the scene
     Scene = new GraphicScene(this);
 
-    setScene(qobject_cast<QGraphicsScene*>(Scene));
+    setScene(Scene);
     setSceneRect(0, 0, 1920, 1080);
 
     //create_grid();
