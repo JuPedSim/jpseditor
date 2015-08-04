@@ -95,6 +95,7 @@ set( SRCS
 	src/jpslandmark.cpp
 	src/jpswaypoint.cpp
 	src/widgetlandmark.cpp
+	src/widgetsettings.cpp
     dxflib/src/dl_writer_ascii.cpp
     dxflib/src/dl_dxf.cpp
   )  
@@ -113,6 +114,7 @@ set( HDR
 	src/jpslandmark.h
 	src/jpswaypoint.h
 	src/widgetlandmark.h
+	src/widgetsettings.h
     dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h
     dxflib/src/dl_global.h
@@ -132,6 +134,7 @@ set( UIS
     forms/mainwindow.ui
     forms/roomwidget.ui
 	forms/widgetlandmark.ui
+	forms/widgetsettings.ui
   )
 
 # and finally a resource file

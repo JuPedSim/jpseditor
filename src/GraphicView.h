@@ -69,10 +69,12 @@ public:
     void disable_drawing();
     bool use_anglesnap(QGraphicsLineItem *currentline, int accuracy);
     void use_gridmode();
+
     ///View
     void zoom(int delta);
     void translations(QPointF old_pos);
     void AutoZoom();
+    qreal CalcGridSize();
 
     ///Pos
     QPointF return_Pos();
@@ -118,9 +120,12 @@ public:
 
 
 public slots:
-    ///Waypoints
+    //Waypoints
     void StatAssoDef();
     void ClearWaypoints();
+    //GridSettings
+    void ActivateLineGrid();
+    void ActivatePointGrid();
 
 
 protected:
@@ -154,7 +159,9 @@ private:
     bool statExit;
     bool statLandmark;
     qreal catch_radius;
+    qreal _scaleFactor;
     qreal gl_scale_f;
+    qreal _gridSize;
     bool point_tracked;
     QGraphicsItem* current_rect;
     QGraphicsRectItem* currentSelectRect;

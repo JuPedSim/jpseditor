@@ -27,7 +27,8 @@ QMAKE_CXXFLAGS += -std=c++11
 FORMS += \
     forms/mainwindow.ui \
     forms/roomwidget.ui \
-    forms/widgetlandmark.ui
+    forms/widgetlandmark.ui \
+    forms/widgetsettings.ui
 
 HEADERS += \
     src/mainWindow.h \
@@ -53,7 +54,8 @@ HEADERS += \
     dxflib/src/dl_attributes.h \
     src/jpswaypoint.h \
     src/widgetlandmark.h \
-    src/graphicscene.h
+    src/graphicscene.h \
+    src/widgetsettings.h
 
 
 SOURCES += \
@@ -72,7 +74,8 @@ SOURCES += \
     dxflib/src/dl_dxf.cpp \
     src/jpswaypoint.cpp \
     src/widgetlandmark.cpp \
-    src/graphicscene.cpp
+    src/graphicscene.cpp \
+    src/widgetsettings.cpp
 
 
 RESOURCES +=  forms/Ressource.qrc

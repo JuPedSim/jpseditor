@@ -46,7 +46,9 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     translation_x=0;
     translation_y=0;//this->height();
     anglesnap=false;
-    gl_scale_f=.01;
+    _scaleFactor=1.0;
+    _gridSize=1.0;
+    gl_scale_f=.01*_scaleFactor;
     //scale(10,10);
     catch_radius=10*gl_scale_f;
     catch_line_distance=10*gl_scale_f;
@@ -170,10 +172,7 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
     if (objectsnap)
     {
-
         catch_points();
-
-
 
         ///VLine
         if (point_tracked && (statWall==true || statDoor==true || statExit==true))
@@ -355,6 +354,18 @@ void jpsGraphicsView::ClearWaypoints()
 
 }
 
+void jpsGraphicsView::ActivateLineGrid()
+{
+    Scene->SetGrid("Line");
+
+}
+
+void jpsGraphicsView::ActivatePointGrid()
+{
+    Scene->SetGrid("Point");
+
+}
+
 
 void jpsGraphicsView::wheelEvent(QWheelEvent *event)
 {
@@ -518,17 +529,20 @@ bool jpsGraphicsView::use_anglesnap(QGraphicsLineItem* currentline, int accuracy
 
 void jpsGraphicsView::use_gridmode()
 {
-    if ((std::fmod(std::fabs(translated_pos.x()),1.0)<=0.1 || std::fmod(std::fabs(translated_pos.x()),1.0)>=0.9) &&
-         (std::fmod(std::fabs(translated_pos.y()),1.0)<=0.1 || std::fmod(std::fabs(translated_pos.y()),1.0)>=0.9))
+    if ((std::fmod(std::fabs(translated_pos.x()),_gridSize)<=_gridSize*0.1 || std::fmod(std::fabs(translated_pos.x()),_gridSize)>=_gridSize*0.9) &&
+         (std::fmod(std::fabs(translated_pos.y()),_gridSize)<=_gridSize*0.1 || std::fmod(std::fabs(translated_pos.y()),_gridSize)>=_gridSize*0.9))
     {
-        if (translated_pos.x()<0)
-            translated_pos.setX(int(translated_pos.x()-0.5));
+        if (std::fmod(std::fabs(translated_pos.x()),_gridSize)<=_gridSize*0.1)
+            translated_pos.setX(translated_pos.x()-std::fmod(translated_pos.x(),_gridSize));
         else
-            translated_pos.setX(int(translated_pos.x()+0.5));
-        if (translated_pos.y()<0)
-            translated_pos.setY(int(translated_pos.y()-0.5));
+            translated_pos.setX(translated_pos.x()+(_gridSize-std::fmod(translated_pos.x(),_gridSize)));
+
+        if (std::fmod(std::fabs(translated_pos.y()),_gridSize)<=_gridSize*0.1)
+            translated_pos.setY(translated_pos.y()-std::fmod(translated_pos.y(),_gridSize));
         else
-            translated_pos.setY(int(translated_pos.y()+0.5));
+            translated_pos.setY(translated_pos.y()+(_gridSize-std::fmod(translated_pos.y(),_gridSize)));
+
+
         current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
         point_tracked=true;
         _currentTrackedPoint= &translated_pos;
@@ -540,7 +554,7 @@ void jpsGraphicsView::use_gridmode()
 void jpsGraphicsView::catch_points()
 {
     ///Searching for startpoints of all lines near the current cursor position
-    for (signed int i=0; i<line_vector.size(); i++){
+    for (int i=0; i<line_vector.size(); ++i){
 
         // range chosen: 10 (-5:5) (has to be changed soon)
         if (line_vector[i]->get_line()->line().x1()>=(translated_pos.x()-catch_radius) && line_vector[i]->get_line()->line().x1()<=(translated_pos.x()+catch_radius) && line_vector[i]->get_line()->line().y1()>=(translated_pos.y()-catch_radius) && line_vector[i]->get_line()->line().y1()<=(translated_pos.y()+catch_radius)){
@@ -979,20 +993,24 @@ void jpsGraphicsView::zoom(int delta)
         // {
         //    caption_list[i]->setTransform(QTransform::fromScale(1/gl_scale_f,1/gl_scale_f));
         //}
+        _scaleFactor*=1/1.15;
         gl_scale_f*=1/1.15;
         scale(scaleFactor, scaleFactor);
         catch_radius=10*gl_scale_f;
         catch_line_distance=10*gl_scale_f;
+        Scene->ChangeGridSize(this->CalcGridSize());
         //create_grid();
     }
     else
     {
         // Zooming out
 
+        _scaleFactor*=1.15;
         gl_scale_f*=1.15;
         scale(1.0 / scaleFactor, 1.0 / scaleFactor);
         catch_radius=10*gl_scale_f;
         catch_line_distance=10*gl_scale_f;
+        Scene->ChangeGridSize(this->CalcGridSize());
         //create_grid();
     }
 
@@ -1135,6 +1153,32 @@ void jpsGraphicsView::AutoZoom()
     old_pos.setX(pos.x()+translation_x);
     old_pos.setY(pos.y()+translation_y);
     translations(old_pos);
+
+}
+
+qreal jpsGraphicsView::CalcGridSize()
+{
+    int cFactor;
+    if (_scaleFactor<1.0)
+    {
+        cFactor = std::round(1/_scaleFactor);//std::round(_scaleFactor);
+    }
+    else
+        cFactor = std::round(_scaleFactor);
+
+    int n=0;
+    while (cFactor>std::pow(2,n))
+    {
+        n++;
+    }
+    qreal gridSize;
+    if (_scaleFactor<1.0)
+        gridSize=1/std::pow(2,n);
+    else
+        gridSize=std::pow(2,n);
+
+    _gridSize=gridSize;
+    return gridSize;
 
 }
 

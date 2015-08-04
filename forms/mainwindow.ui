@@ -14,7 +14,7 @@
    <string>JuPedSim</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="Ressource.qrc">
+   <iconset>
     <normaloff>:/jupedsim.png</normaloff>:/jupedsim.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget"/>
@@ -36,6 +36,8 @@
     <addaction name="actionSpeichern"/>
     <addaction name="actionSpeichern_dxf"/>
     <addaction name="separator"/>
+    <addaction name="actionSettings"/>
+    <addaction name="separator"/>
     <addaction name="actionBeenden"/>
    </widget>
    <widget class="QMenu" name="menuHilfe">
@@ -55,6 +57,7 @@
     <addaction name="separator"/>
     <addaction name="actiongridmode"/>
     <addaction name="actionObjectsnap"/>
+    <addaction name="actionanglesnap"/>
     <addaction name="actionDelete_lines"/>
     <addaction name="actionDelete_single_line"/>
     <addaction name="separator"/>
@@ -104,7 +107,7 @@
   </widget>
   <action name="action_ffnen">
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/open.png</normaloff>:/open.png</iconset>
    </property>
    <property name="text">
@@ -119,7 +122,7 @@
   </action>
   <action name="actionSpeichern">
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/filesave.png</normaloff>:/filesave.png</iconset>
    </property>
    <property name="text">
@@ -134,7 +137,7 @@
   </action>
   <action name="actionBeenden">
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/man-gimp1.png</normaloff>:/man-gimp1.png</iconset>
    </property>
    <property name="text">
@@ -166,7 +169,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/Grid.png</normaloff>:/Grid.png</iconset>
    </property>
    <property name="text">
@@ -187,7 +190,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/Wall.png</normaloff>:/Wall.png</iconset>
    </property>
    <property name="text">
@@ -208,7 +211,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/snap.png</normaloff>:/snap.png</iconset>
    </property>
    <property name="text">
@@ -223,7 +226,7 @@
   </action>
   <action name="actionDelete_lines">
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/DeleteAll.png</normaloff>:/DeleteAll.png</iconset>
    </property>
    <property name="text">
@@ -238,7 +241,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/Delete.png</normaloff>:/Delete.png</iconset>
    </property>
    <property name="text">
@@ -259,7 +262,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/Door.png</normaloff>:/Door.png</iconset>
    </property>
    <property name="text">
@@ -283,7 +286,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/Exit.png</normaloff>:/Exit.png</iconset>
    </property>
    <property name="text">
@@ -307,7 +310,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/Room.png</normaloff>:/Room.png</iconset>
    </property>
    <property name="text">
@@ -334,7 +337,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/basicCursor.png</normaloff>:/basicCursor.png</iconset>
    </property>
    <property name="text">
@@ -352,7 +355,7 @@
   </action>
   <action name="actionSpeichern_dxf">
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/filesave.png</normaloff>:/filesave.png</iconset>
    </property>
    <property name="text">
@@ -367,7 +370,7 @@
   </action>
   <action name="action_ffnen_xml">
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/open.png</normaloff>:/open.png</iconset>
    </property>
    <property name="text">
@@ -396,7 +399,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/statue.jpg</normaloff>:/statue.jpg</iconset>
    </property>
    <property name="text">
@@ -414,7 +417,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/statue_specs.jpg</normaloff>:/statue_specs.jpg</iconset>
    </property>
    <property name="text">
@@ -432,7 +435,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/anglesnap.PNG</normaloff>:/anglesnap.PNG</iconset>
    </property>
    <property name="text">
@@ -445,9 +448,21 @@
     <string>Ctrl+H</string>
    </property>
   </action>
+  <action name="actionSettings">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Settings</string>
+   </property>
+   <property name="toolTip">
+    <string>Settings</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
  </widget>
- <resources>
-  <include location="Ressource.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -47,10 +47,12 @@ MWindow :: MWindow() {
     mview = new jpsGraphicsView(this);
     dmanager = new jpsDatamanager(this,mview);
 
-    ///Roomwidget
+    //Roomwidget
     rwidget=nullptr;
-    ///Landmarkwidget
+    //Landmarkwidget
     lwidget=nullptr;
+    //WidgetSettings
+    _settings=nullptr;
 
     length_edit = new QLineEdit();
     length_edit->setMaximumWidth(55);
@@ -63,7 +65,7 @@ MWindow :: MWindow() {
     infoLabel= new QLabel();
     infoLabel->setMinimumWidth(135);
 
-    ///filename of saved project
+    //filename of saved project
     _filename="";
 
 
@@ -75,23 +77,24 @@ MWindow :: MWindow() {
     statusBar()->addPermanentWidget(length_edit);
     statusBar()->addPermanentWidget(label2);
 
-    ///Timer needed for autosave function
-    /// timer will trigger autosave every 5th minute
+    //Timer needed for autosave function
+    // timer will trigger autosave every 5th minute
     timer = new QTimer(this);
     timer->setInterval(300000);
     timer->start();
 
 
-    ///Signals and Slots
-    /// Tab File
+    //Signals and Slots
+    // Tab File
     connect(actionBeenden, SIGNAL(triggered(bool)),qApp,SLOT(quit()));
     connect(action_ffnen,SIGNAL(triggered(bool)),this,SLOT(openFile()));
     connect(action_ffnen_xml,SIGNAL(triggered(bool)),this,SLOT(openFileXML()));
     connect(actionSpeichern,SIGNAL(triggered(bool)),this,SLOT(saveFile()));
     connect(actionSpeichern_dxf,SIGNAL(triggered(bool)),this,SLOT(saveAsDXF()));
-    /// Tab Help
+    connect(actionSettings,SIGNAL(triggered(bool)),this,SLOT(Settings()));
+    // Tab Help
     connect(action_ber,SIGNAL(triggered(bool)),this,SLOT(info()));
-    /// Tab Tools
+    // Tab Tools
     connect(actionanglesnap,SIGNAL(triggered(bool)),this,SLOT(anglesnap()));
     connect(actiongridmode,SIGNAL(triggered(bool)),this,SLOT(gridmode()));
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
@@ -105,11 +108,11 @@ MWindow :: MWindow() {
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
-    /// Tab View
+    // Tab View
     connect(actionRotate_90_deg_clockwise,SIGNAL(triggered(bool)),this,SLOT(rotate()));
-    /// Length edit
+    // Length edit
     connect(length_edit,SIGNAL(returnPressed()),this,SLOT(send_length()));
-    /// mview
+    // mview
     connect(mview,SIGNAL(no_drawing()),this,SLOT(en_selectMode()));
     connect(mview,SIGNAL(remove_marked_lines()),this,SLOT(lines_deleted()));
     connect(mview,SIGNAL(remove_all()),this,SLOT(remove_all_lines()));
@@ -117,13 +120,18 @@ MWindow :: MWindow() {
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
     connect(mview,SIGNAL(landmark_added()),this,SLOT(add_landmark()));
     //connect(mview,SIGNAL(DoubleClick()),this,SLOT(en_selectMode()));
-    ///Autosave
+    // Autosave
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
     ///Landmarks
     connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
     connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
-    ///Landmark specifications
+    // Landmark specifications
     connect(actionLandmarkWidget,SIGNAL(triggered(bool)),this,SLOT(define_landmark()));
+
+
+
+
+
 
 }
 
@@ -167,6 +175,24 @@ void MWindow::add_landmark()
 {
     jpsLandmark* landmark = mview->get_landmarks().last();
     dmanager->new_landmark(landmark);
+}
+
+void MWindow::Settings()
+{
+    if (_settings==nullptr)
+    {
+        _settings = new WidgetSettings(this,mview);
+        _settings->setAttribute(Qt::WA_DeleteOnClose);
+        _settings->setGeometry(QRect(QPoint(5,75), _settings->size()));
+        _settings->show();
+    }
+
+    else
+    {
+        _settings->close();
+        _settings=nullptr;
+    }
+
 }
 
 void MWindow::openFile(){
@@ -351,26 +377,29 @@ void MWindow::send_length()
 
 void MWindow::define_room()
 {
-    if (rwidget==0L)
+    if (rwidget==nullptr)
     {
         rwidget = new roomWidget(this,this->dmanager,this->mview);
         rwidget->setGeometry(QRect(QPoint(5,75), rwidget->size()));
+        rwidget->setAttribute(Qt::WA_DeleteOnClose);
         rwidget->show();
+
     }
     else
     {
         rwidget->close();
-        rwidget=0L;
+        rwidget=nullptr;
         actionRoom->setChecked(false);
     }
 }
 
 void MWindow::define_landmark()
 {
-    if (lwidget==0L)
+    if (lwidget==nullptr)
     {
         lwidget = new widgetLandmark(this,this->dmanager,this->mview);
         lwidget->setGeometry(QRect(QPoint(5,75), lwidget->size()));
+        lwidget->setAttribute(Qt::WA_DeleteOnClose);
         lwidget->show();
     }
     else

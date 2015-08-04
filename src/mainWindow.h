@@ -37,6 +37,7 @@
 #include "ui_mainwindow.h"
 #include "roomwidget.h"
 #include "widgetlandmark.h"
+#include "widgetsettings.h"
 #include "GraphicView.h"
 #include "datamanager.h"
 #include "rooms.h"
@@ -53,6 +54,7 @@ public:
 private:
     roomWidget* rwidget;
     widgetLandmark* lwidget;
+    WidgetSettings* _settings;
     jpsDatamanager* dmanager;
     jpsGraphicsView* mview;
     //QVBoxLayout* VBox;
@@ -91,6 +93,7 @@ protected slots:
     void rotate();
     void AutoSave();
     void add_landmark();
+    void Settings();
 
 
 };
