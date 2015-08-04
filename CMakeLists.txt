@@ -84,6 +84,7 @@ set( SRCS
     src/mainWindow.cpp
     src/main.cpp 
     src/GraphicView.cpp
+	src/graphicscene.cpp
     src/roomwidget.cpp
     src/rooms.cpp
     src/datamanager.cpp  
@@ -101,6 +102,7 @@ set( SRCS
 set( HDR
     src/mainWindow.h 
     src/GraphicView.h
+	src/graphicscene.h
     src/roomwidget.h
     src/rooms.h
     src/datamanager.h  
