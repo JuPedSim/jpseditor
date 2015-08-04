@@ -532,20 +532,41 @@ void jpsGraphicsView::use_gridmode()
     if ((std::fmod(std::fabs(translated_pos.x()),_gridSize)<=_gridSize*0.1 || std::fmod(std::fabs(translated_pos.x()),_gridSize)>=_gridSize*0.9) &&
          (std::fmod(std::fabs(translated_pos.y()),_gridSize)<=_gridSize*0.1 || std::fmod(std::fabs(translated_pos.y()),_gridSize)>=_gridSize*0.9))
     {
-        if (std::fmod(std::fabs(translated_pos.x()),_gridSize)<=_gridSize*0.1)
+        bool posx_positiv=true;
+        bool posy_positiv=true;
+        if (translated_pos.x()<0)
+        {
+            translated_pos.setX(std::fabs(translated_pos.x()));
+            posx_positiv=false;
+        }
+
+        if (translated_pos.y()<0)
+        {
+            translated_pos.setY(std::fabs(translated_pos.y()));
+            posy_positiv=false;
+        }
+
+        if (std::fmod(translated_pos.x(),_gridSize)<=_gridSize*0.1)
             translated_pos.setX(translated_pos.x()-std::fmod(translated_pos.x(),_gridSize));
         else
             translated_pos.setX(translated_pos.x()+(_gridSize-std::fmod(translated_pos.x(),_gridSize)));
 
-        if (std::fmod(std::fabs(translated_pos.y()),_gridSize)<=_gridSize*0.1)
+        if (std::fmod(translated_pos.y(),_gridSize)<=_gridSize*0.1)
             translated_pos.setY(translated_pos.y()-std::fmod(translated_pos.y(),_gridSize));
         else
             translated_pos.setY(translated_pos.y()+(_gridSize-std::fmod(translated_pos.y(),_gridSize)));
 
+        if (!posx_positiv)
+            translated_pos.setX(translated_pos.x()*(-1));
+
+        if (!posy_positiv)
+            translated_pos.setY(translated_pos.y()*(-1));
 
         current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
         point_tracked=true;
         _currentTrackedPoint= &translated_pos;
+
+
     }
     else
         point_tracked=false;
