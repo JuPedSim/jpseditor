@@ -1,5 +1,5 @@
 #include "graphicscene.h"
-#include <iostream>
+#include <QVarLengthArray>
 
 
 GraphicScene::GraphicScene(QObject *parent) : QGraphicsScene(parent)
