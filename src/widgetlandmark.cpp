@@ -40,6 +40,7 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     ui->setupUi(this);
     _dmanager=dmanager;
     _gview=gview;
+    _waypointIDCounter=0;
 
     show_landmarks();
 
@@ -162,8 +163,10 @@ void widgetLandmark::AddAssociation()
     {
         int cLanRow=ui->list_landmarks->currentIndex();
 
-        _dmanager->get_landmarks()[cLanRow]->AddWaypoint(new jpsWaypoint(_gview->GetCurrentSelectRect()->rect()));
+        _dmanager->get_landmarks()[cLanRow]->AddWaypoint(new jpsWaypoint(_gview->GetCurrentSelectRect()->rect(),_waypointIDCounter));
+
         ShowAssociations();
+        _waypointIDCounter++;
     }
 }
 

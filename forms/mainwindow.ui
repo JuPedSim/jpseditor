@@ -14,7 +14,7 @@
    <string>JuPedSim</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="Ressource.qrc">
     <normaloff>:/jupedsim.png</normaloff>:/jupedsim.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget"/>
@@ -35,6 +35,7 @@
     <addaction name="action_ffnen"/>
     <addaction name="actionSpeichern"/>
     <addaction name="actionSpeichern_dxf"/>
+    <addaction name="separator"/>
     <addaction name="separator"/>
     <addaction name="actionSettings"/>
     <addaction name="separator"/>
@@ -69,10 +70,18 @@
     </property>
     <addaction name="actionRotate_90_deg_clockwise"/>
    </widget>
+   <widget class="QMenu" name="menuCognitive_Map">
+    <property name="title">
+     <string>Cognitive Map</string>
+    </property>
+    <addaction name="action_ffnen_CogMap"/>
+    <addaction name="actionRun_visualisation"/>
+   </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuTools"/>
    <addaction name="menuView"/>
    <addaction name="menuHilfe"/>
+   <addaction name="menuCognitive_Map"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -102,12 +111,12 @@
    <addaction name="separator"/>
    <addaction name="actionRoom"/>
    <addaction name="separator"/>
-   <addaction name="actionLandmark"/>
    <addaction name="actionLandmarkWidget"/>
+   <addaction name="actionLandmark"/>
   </widget>
   <action name="action_ffnen">
    <property name="icon">
-    <iconset>
+    <iconset resource="Ressource.qrc">
      <normaloff>:/open.png</normaloff>:/open.png</iconset>
    </property>
    <property name="text">
@@ -122,7 +131,7 @@
   </action>
   <action name="actionSpeichern">
    <property name="icon">
-    <iconset>
+    <iconset resource="Ressource.qrc">
      <normaloff>:/filesave.png</normaloff>:/filesave.png</iconset>
    </property>
    <property name="text">
@@ -137,7 +146,7 @@
   </action>
   <action name="actionBeenden">
    <property name="icon">
-    <iconset>
+    <iconset resource="Ressource.qrc">
      <normaloff>:/man-gimp1.png</normaloff>:/man-gimp1.png</iconset>
    </property>
    <property name="text">
@@ -169,7 +178,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="Ressource.qrc">
      <normaloff>:/Grid.png</normaloff>:/Grid.png</iconset>
    </property>
    <property name="text">
@@ -190,7 +199,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="Ressource.qrc">
      <normaloff>:/Wall.png</normaloff>:/Wall.png</iconset>
    </property>
    <property name="text">
@@ -211,7 +220,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="Ressource.qrc">
      <normaloff>:/snap.png</normaloff>:/snap.png</iconset>
    </property>
    <property name="text">
@@ -226,7 +235,7 @@
   </action>
   <action name="actionDelete_lines">
    <property name="icon">
-    <iconset>
+    <iconset resource="Ressource.qrc">
      <normaloff>:/DeleteAll.png</normaloff>:/DeleteAll.png</iconset>
    </property>
    <property name="text">
@@ -241,7 +250,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="Ressource.qrc">
      <normaloff>:/Delete.png</normaloff>:/Delete.png</iconset>
    </property>
    <property name="text">
@@ -262,7 +271,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="Ressource.qrc">
      <normaloff>:/Door.png</normaloff>:/Door.png</iconset>
    </property>
    <property name="text">
@@ -286,7 +295,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="Ressource.qrc">
      <normaloff>:/Exit.png</normaloff>:/Exit.png</iconset>
    </property>
    <property name="text">
@@ -310,7 +319,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="Ressource.qrc">
      <normaloff>:/Room.png</normaloff>:/Room.png</iconset>
    </property>
    <property name="text">
@@ -337,7 +346,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="Ressource.qrc">
      <normaloff>:/basicCursor.png</normaloff>:/basicCursor.png</iconset>
    </property>
    <property name="text">
@@ -355,7 +364,7 @@
   </action>
   <action name="actionSpeichern_dxf">
    <property name="icon">
-    <iconset>
+    <iconset resource="Ressource.qrc">
      <normaloff>:/filesave.png</normaloff>:/filesave.png</iconset>
    </property>
    <property name="text">
@@ -370,7 +379,7 @@
   </action>
   <action name="action_ffnen_xml">
    <property name="icon">
-    <iconset>
+    <iconset resource="Ressource.qrc">
      <normaloff>:/open.png</normaloff>:/open.png</iconset>
    </property>
    <property name="text">
@@ -399,7 +408,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="Ressource.qrc">
      <normaloff>:/statue.jpg</normaloff>:/statue.jpg</iconset>
    </property>
    <property name="text">
@@ -417,7 +426,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="Ressource.qrc">
      <normaloff>:/statue_specs.jpg</normaloff>:/statue_specs.jpg</iconset>
    </property>
    <property name="text">
@@ -435,7 +444,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="Ressource.qrc">
      <normaloff>:/anglesnap.PNG</normaloff>:/anglesnap.PNG</iconset>
    </property>
    <property name="text">
@@ -462,7 +471,26 @@
     <string>Ctrl+E</string>
    </property>
   </action>
+  <action name="action_ffnen_CogMap">
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/open.png</normaloff>:/open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Load CognitiveMap</string>
+   </property>
+   <property name="toolTip">
+    <string>Load CognitiveMap</string>
+   </property>
+  </action>
+  <action name="actionRun_visualisation">
+   <property name="text">
+    <string>Run visualisation</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="Ressource.qrc"/>
+ </resources>
  <connections/>
 </ui>

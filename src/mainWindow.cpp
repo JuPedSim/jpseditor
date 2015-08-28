@@ -83,6 +83,8 @@ MWindow :: MWindow() {
     timer->setInterval(300000);
     timer->start();
 
+    _cMapTimer = new QTimer(this);
+    //_cMapTimer=nullptr;
 
     //Signals and Slots
     // Tab File
@@ -92,6 +94,7 @@ MWindow :: MWindow() {
     connect(actionSpeichern,SIGNAL(triggered(bool)),this,SLOT(saveFile()));
     connect(actionSpeichern_dxf,SIGNAL(triggered(bool)),this,SLOT(saveAsDXF()));
     connect(actionSettings,SIGNAL(triggered(bool)),this,SLOT(Settings()));
+    connect(action_ffnen_CogMap,SIGNAL(triggered(bool)),this,SLOT(openFileCMap()));
     // Tab Help
     connect(action_ber,SIGNAL(triggered(bool)),this,SLOT(info()));
     // Tab Tools
@@ -122,16 +125,14 @@ MWindow :: MWindow() {
     //connect(mview,SIGNAL(DoubleClick()),this,SLOT(en_selectMode()));
     // Autosave
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
-    ///Landmarks
+    //Landmarks
     connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
     connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     // Landmark specifications
     connect(actionLandmarkWidget,SIGNAL(triggered(bool)),this,SLOT(define_landmark()));
-
-
-
-
-
+    //CMap
+    connect(actionRun_visualisation,SIGNAL(triggered(bool)),this,SLOT(RunCMap()));
+    connect(_cMapTimer,SIGNAL(timeout()),this,SLOT(UpdateCMap()));
 
 }
 
@@ -144,6 +145,7 @@ MWindow::~MWindow()
     delete label2;
     delete infoLabel;
     delete timer;
+    delete _cMapTimer;
 }
 
 void MWindow::AutoSave()
@@ -169,6 +171,32 @@ void MWindow::AutoSave()
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("Backup file generated!"),10000);
     }
+}
+
+void MWindow::RunCMap()
+{
+
+    double frameRate = dmanager->GetCMapFrameRate();
+    _cMapFrame=1;
+    if (frameRate==0)
+    {
+        statusBar()->showMessage(tr("No cognitive map has been loaded!"),10000);
+        return;
+    }
+    _cMapTimer->setInterval(1/frameRate*1000);
+    _cMapTimer->start();
+}
+
+void MWindow::UpdateCMap()
+{
+    _cMapFrame++;
+    if (_cMapFrame>dmanager->GetLastCMapFrame())
+    {
+        _cMapTimer->stop();
+        dmanager->ShowCMapFrame(1);
+        return;
+    }
+    dmanager->ShowCMapFrame(_cMapFrame);
 }
 
 void MWindow::add_landmark()
@@ -241,6 +269,33 @@ void MWindow::openFileXML()
         statusBar()->showMessage("XML-File successfully loaded!",10000);
     }
 
+}
+
+void MWindow::openFileCMap()
+{
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::critical(this,
+                              "OpenFileXML",
+                              "Couldn't open xml-file",
+                              QMessageBox::Ok);
+        return;
+    }
+
+
+    if (!dmanager->ParseCogMap(file))
+    {
+        statusBar()->showMessage("XML-File could not be parsed!",10000);
+    }
+
+    else
+    {
+
+        statusBar()->showMessage("Cognitive map successfully loaded!",10000);
+        dmanager->ShowCMapFrame(1);
+    }
 }
 
 void MWindow::saveFile(){

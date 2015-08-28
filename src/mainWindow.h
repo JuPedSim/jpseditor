@@ -65,13 +65,24 @@ private:
     QString _filename;
     QTimer *timer;
 
+    //CMap
+    QTimer *_cMapTimer;
+    int _cMapFrame;
+
 
 protected slots:
+    
+    //parseFiles
     void openFile();
     void openFileXML();
+    void openFileCMap();
     void saveFile();
     void saveAsDXF();
+    
+    //about
     void info();
+    
+    //drawing options
     void anglesnap();
     void en_disableWall();
     void en_disableDoor();
@@ -79,21 +90,33 @@ protected slots:
     void en_disableLandmark();
     void disableDrawing();
     void objectsnap();
-    void gridmode();
+
+    //Line operations
     void show_coords();
     void delete_lines();
     void delete_marked_lines();
     void send_length();
-    void define_room();
-    void define_landmark();
     void en_selectMode();
     void dis_selectMode();
     void lines_deleted();
     void remove_all_lines();
-    void rotate();
-    void AutoSave();
+    
+    //Room and landmark def
+    void define_room();
+    void define_landmark();
     void add_landmark();
+    
+    //view options
+    void gridmode();
+    void rotate();
     void Settings();
+    
+    //autosave
+    void AutoSave();
+    
+    //CMap
+    void RunCMap();
+    void UpdateCMap();
 
 
 };

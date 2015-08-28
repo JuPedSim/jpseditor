@@ -38,6 +38,8 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
     mView=view;
     room_id_counter=0;
     obs_id_counter=0;
+    _yahPointer=nullptr;
+    _frameRate=0;
 
 }
 
@@ -1439,6 +1441,209 @@ QString jpsDatamanager::check_printAbility()
 
 
     return "";
+}
+
+bool jpsDatamanager::ParseCogMap(QFile &file)
+{
+    QXmlStreamReader xmlReader(&file);
+
+    while(!xmlReader.atEnd() && !xmlReader.hasError())
+    {
+        /* Read next element.*/
+        QXmlStreamReader::TokenType token = xmlReader.readNext();
+        /* If token is just StartDocument, we'll go to next.*/
+        if(token == QXmlStreamReader::StartDocument)
+        {
+            continue;
+        }
+
+        /* If token is StartElement, we'll see if we can read it.*/
+        if(token == QXmlStreamReader::StartElement)
+        {
+            /* If it's named rooms, we'll go to the next.*/
+            if(xmlReader.name() == "cognitiveMap")
+            {
+                continue;
+            }
+            if(xmlReader.name() == "header")
+            {
+                continue;
+            }
+            if(xmlReader.name() == "frameRate")
+            {
+                _frameRate=xmlReader.readElementText().toFloat();
+            }
+            if(xmlReader.name() == "frame")
+            {
+                ParseFrames(xmlReader);
+            }
+        }
+    }
+    /* Error handling. */
+    if(xmlReader.hasError())
+    {
+        QMessageBox::critical(mView,
+                              "QXSRExample::parseXML",
+                              xmlReader.errorString(),
+                              QMessageBox::Ok);
+        return false;
+    }
+    /* Removes any device() or data from the reader
+     * and resets its internal state to the initial state. */
+
+
+    xmlReader.clear();
+    return true;
+}
+
+void jpsDatamanager::ParseFrames(QXmlStreamReader &xmlReader)
+{
+    int frameID= xmlReader.attributes().value("ID").toInt();
+
+    while(!(xmlReader.tokenType() == QXmlStreamReader::EndElement &&
+                xmlReader.name() == "frame"))
+    {
+        if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
+                         xmlReader.name() == "YAHPointer")
+        {
+            ParseYAHPointer(xmlReader, frameID);
+        }
+        else if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
+                    xmlReader.name() == "landmark")
+        {
+            ParseLandmarksInCMap(xmlReader, frameID);
+        }
+        else if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
+                    xmlReader.name() == "waypoint")
+        {
+            ParseWaypointInCMap(xmlReader, frameID);
+        }
+        xmlReader.readNext();
+    }
+
+    _lastCMapFrame=frameID;
+}
+
+void jpsDatamanager::ParseYAHPointer(QXmlStreamReader &xmlReader, const int& frame)
+{
+    qreal x = xmlReader.attributes().value("x").toFloat();
+    qreal y = xmlReader.attributes().value("y").toFloat();
+    qreal angle = xmlReader.attributes().value("dir").toFloat();
+    if (_yahPointer==nullptr)
+    {
+        _yahPointer = new jpsYAHPointer(x,y,angle);
+        _yahPointer->SetFirstFrame(frame);
+        _yahPointer->SetLastFrame(frame);
+    }
+    else
+    {
+        _yahPointer->SetPos(QPointF(x,y));
+        _yahPointer->SetDirection(angle);
+        _yahPointer->SetLastFrame(frame);
+    }
+
+}
+
+void jpsDatamanager::ParseLandmarksInCMap(QXmlStreamReader &xmlReader, const int& frame)
+{
+
+    bool wayPInList=false;
+
+    int id = xmlReader.attributes().value("ID").toInt();
+    qreal x = xmlReader.attributes().value("x").toFloat();
+    qreal y = xmlReader.attributes().value("y").toFloat();
+    qreal rA = xmlReader.attributes().value("rA").toFloat();
+    qreal rB = xmlReader.attributes().value("rB").toFloat();
+
+    for (jpsWaypoint* waypoint:_waypointsInCMap)
+    {
+        if (waypoint->GetId()==id && waypoint->GetCaption()=="Landmark")
+        {
+            wayPInList = true;
+            waypoint->SetLastFrame(frame);
+        }
+    }
+
+    if (!wayPInList)
+    {
+        _waypointsInCMap.push_back(new jpsWaypoint(QPointF(x,y),rA,rB,id,"Landmark"));
+        _waypointsInCMap.back()->SetFirstFrame(frame);
+        _waypointsInCMap.back()->SetLastFrame(frame);
+    }
+}
+
+void jpsDatamanager::ParseWaypointInCMap(QXmlStreamReader &xmlReader, const int& frame)
+{
+    bool wayPInList=false;
+
+    int id = xmlReader.attributes().value("ID").toInt();
+    qreal x = xmlReader.attributes().value("x").toFloat();
+    qreal y = xmlReader.attributes().value("y").toFloat();
+    qreal rA = xmlReader.attributes().value("rA").toFloat();
+    qreal rB = xmlReader.attributes().value("rB").toFloat();
+    bool current = xmlReader.attributes().value("current").toInt();
+
+    for (jpsWaypoint* waypoint:_waypointsInCMap)
+    {
+        if (waypoint->GetId()==id && waypoint->GetCaption()=="Waypoint")
+        {
+            wayPInList = true;
+            waypoint->SetLastFrame(frame);
+
+            if (current!=waypoint->IsCurrent())
+            {
+                waypoint->ChangeCurrentness(frame);
+
+            }
+
+        }
+    }
+
+
+    if (!wayPInList)
+    {
+        _waypointsInCMap.push_back(new jpsWaypoint(QPointF(x,y),rA,rB,id,"Waypoint"));
+        _waypointsInCMap.back()->SetFirstFrame(frame);
+        _waypointsInCMap.back()->SetLastFrame(frame);
+        _waypointsInCMap.back()->SetCurrentness(current,frame);
+
+    }
+}
+
+void jpsDatamanager::ShowCMapFrame(const int& frame) const
+{
+    mView->ShowYAHPointer(_yahPointer->GetPosWhenFrame(frame),_yahPointer->GetDirWhenFrame(frame));
+
+    QList<jpsWaypoint* > wayPCandidates;
+
+    for (jpsWaypoint* waypoint:_waypointsInCMap)
+    {
+        if (waypoint->OccursInFrame(frame))
+        {
+            wayPCandidates.push_back(waypoint);
+
+            if (waypoint->IsCurrentInFrame(frame))
+                waypoint->SetText("Next target");
+            else if (waypoint->Visited(frame))
+                waypoint->SetText("Already visited");
+            else
+                waypoint->SetText("");
+
+        }
+    }
+    mView->ShowWaypoints(wayPCandidates);
+
+}
+
+
+const double &jpsDatamanager::GetCMapFrameRate() const
+{
+    return _frameRate;
+}
+
+const int &jpsDatamanager::GetLastCMapFrame() const
+{
+    return _lastCMapFrame;
 }
 
 

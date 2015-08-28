@@ -60,6 +60,7 @@ private:
     Ui::widgetLandmark *ui;
     jpsDatamanager* _dmanager;
     jpsGraphicsView* _gview;
+    int _waypointIDCounter;
 };
 
 #endif // WIDGETLANDMARK_H

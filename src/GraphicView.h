@@ -42,13 +42,13 @@ class jpsGraphicsView: public QGraphicsView {
     Q_OBJECT
 
 public:
-    ///Constructor
+    //Constructor
     jpsGraphicsView(QWidget* parent = nullptr);
 
-    ///Destructor
+    //Destructor
     ~jpsGraphicsView();
 
-    ///Change modes
+    //Change modes
     void change_stat_anglesnap();
     bool get_stat_anglesnap();
     void change_objectsnap();
@@ -63,37 +63,37 @@ public:
     bool statusLandmark();
     void en_disableLandmark();
 
-    /// global functions
+    // global functions
     qreal get_scale_f();
     void take_l_from_lineEdit(const qreal &length);
     void disable_drawing();
     bool use_anglesnap(QGraphicsLineItem *currentline, int accuracy);
     void use_gridmode();
 
-    ///View
+    //View
     void zoom(int delta);
     void translations(QPointF old_pos);
     void AutoZoom();
     qreal CalcGridSize();
 
-    ///Pos
+    //Pos
     QPointF return_Pos();
 
-    ///Catch lines, points and intersections
+    //Catch lines, points and intersections
     void catch_points();
     void locate_intersection(jpsLineItem* item1, jpsLineItem* item2);
     void line_collision();
     void catch_lines();
 
-    ///Delete all
+    //Delete all
     void delete_all(bool final=false);
 
-    ///Line operations
+    //Line operations
     void drawLine();
     qreal calc_d_point(const QLineF &line, const qreal &x, const qreal &y);
     void delete_marked_lines();
     void RemoveIntersections(jpsLineItem* lineItem);
-    /// lines read from dxf-file
+    // lines read from dxf-file
     jpsLineItem *addLineItem(const qreal &x1, const qreal &y1, const qreal &x2, const qreal &y2, const QString &type="");
     QList<jpsLineItem *> get_markedLines();
     QList<jpsLineItem *> get_line_vector();
@@ -102,7 +102,7 @@ public:
     void SetVLine();
     void EditLine(QPointF* point);
 
-    /// Landmark
+    // Landmark
     void delete_landmark();
     void catch_landmark();
     void select_landmark(jpsLandmark *landmark);
@@ -110,11 +110,13 @@ public:
     void unmarkLandmark();
     QList<jpsLandmark *> get_landmarks();
 
-    ///Waypoints
+    //Waypoints and YAHPointer
     QGraphicsRectItem* GetCurrentSelectRect();
     void ShowWaypoints(QList<jpsWaypoint* > waypoints);
+    void ShowYAHPointer(const QPointF& pos, const qreal& dir);
+    void ClearWaypointLabels();
 
-    ///RoomCaption
+    //RoomCaption
     bool show_hide_roomCaption(QString name, qreal x, qreal y);
 
 
@@ -129,7 +131,7 @@ public slots:
 
 
 protected:
-    ///Mouse events
+    //Mouse events
     virtual void mouseMoveEvent(QMouseEvent * mouseEvent);
     //void paintEvent(QPaintEvent* event);
     virtual void mousePressEvent(QMouseEvent *event);
@@ -173,10 +175,15 @@ private:
     QList<jpsLineItem *> marked_lines;
     QGraphicsTextItem* current_caption;
     QList<QGraphicsTextItem* > caption_list;
+
+    //Landmark and waypoints
     QList<jpsLandmark* > LLandmarks;
     jpsLandmark* markedLandmark;
     QGraphicsRectItem* currentLandmarkRect;
     QList<QGraphicsEllipseItem* > _waypoints;
+    QList<QGraphicsLineItem* > _yahPointer;
+    QList<QGraphicsTextItem* > _waypointLabels;
+
     QGraphicsLineItem* _currentVLine;
     QPointF* _currentTrackedPoint;
     QGraphicsPixmapItem* gridmap;
@@ -184,9 +191,6 @@ private:
     bool lines_collided;
     bool _assoDef;
     bool _gridmode;
-
-    //qreal gl_min_x;
-    //qreal gl_min_y;
 
 signals:
     void mouse_moved();

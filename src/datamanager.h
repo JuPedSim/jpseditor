@@ -40,6 +40,7 @@
 #include "jpsexit.h"
 #include "jpsobstacle.h"
 #include "GraphicView.h"
+#include "jpsyahpointer.h"
 
 
 #include "../dxflib/src/dl_creationadapter.h"
@@ -51,51 +52,51 @@ class jpsDatamanager: public DL_CreationAdapter
 public:
     jpsDatamanager(QWidget* parent=0L, jpsGraphicsView* view=0L);
     ~jpsDatamanager();
-    ///Room
+    //Room
     QList<jpsRoom *> get_roomlist();
     void new_room();
     void remove_room(jpsRoom* room);
     void change_roomName(jpsRoom* room, QString name);
     void remove_all_rooms();
-    ///Obstacle
+    //Obstacle
     QList<jpsObstacle *> get_obstaclelist();
     void new_obstacle();
     void remove_obstacle(jpsObstacle* obs);
     void change_obstacleName(jpsObstacle* obs, QString name);
     void remove_all_obstacles();
-    ///Crossing
+    //Crossing
     QList<jpsCrossing *> get_crossingList();
     void new_crossing(QList<jpsLineItem *> newCrossing);
     void new_crossing(jpsLineItem* newCrossing);
     void remove_crossing(jpsCrossing* crossing);
     void change_crossingName(jpsCrossing* crossing, QString name);
     void remove_all_crossings();
-    ///Exit
+    //Exit
     QList<jpsExit *> get_exitList();
     void new_exit(QList<jpsLineItem *> newExits);
     void new_exit(jpsLineItem* newExit);
     void remove_exit(jpsExit* exit);
     void change_exitName(jpsExit* exit, QString name);
     void remove_all_exits();
-    ///Landmark
+    //Landmark
     QList<jpsLandmark *> get_landmarks();
     void new_landmark(jpsLandmark * newlandmark);
     void remove_landmark(jpsLandmark* landmark);
     void change_LandmarkName(jpsLandmark* landmark, QString name);
     void remove_all_landmarks();
-    ///
+    //
     void remove_all();
     void remove_marked_lines();
     void set_view(jpsGraphicsView* view);
     jpsGraphicsView* get_view();
 
 
-    /// Auto Assign
+    // Auto Assign
     void AutoAssignCrossings();
     void AutoAssignExits();
 
 
-    /// Read XML
+    // Read XML
     bool readXML(QFile &file);
     void parseSubRoom(QXmlStreamReader &xmlReader);
     void parseWalls(QXmlStreamReader &xmlReader,jpsRoom* room);
@@ -104,7 +105,7 @@ public:
     void parseTransitions(QXmlStreamReader &xmlReader);
     void parseObstacles(QXmlStreamReader &xmlReader, jpsRoom *room);
 
-    /// Write XML
+    // Write XML
     void writeXML(QFile &file);
     void AutoSaveXML(QFile &file);
     void writeHeader(QXmlStreamWriter *stream);
@@ -118,10 +119,10 @@ public:
     void writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeLandmarks(QXmlStreamWriter *stream, QList<jpsLandmark* > &landmarks);
 
-    /// Read DXF
+    // Read DXF
     bool readDXF(std::string filename);
     virtual void addLine(const DL_LineData& d);
-    /// write DXF
+    // write DXF
     void writeDXF(std::string filename);
     void writeDXFHeader(DL_Dxf* dxf, DL_WriterA *dw);
     void writeDXFTables(DL_Dxf* dxf, DL_WriterA *dw);
@@ -131,7 +132,20 @@ public:
 
     QString check_printAbility();
 
+    //Parse Cognitive Map
+    bool ParseCogMap(QFile &file);
+    void ParseFrames(QXmlStreamReader &xmlReader);
+    void ParseYAHPointer(QXmlStreamReader &xmlReader, const int &frame);
+    void ParseLandmarksInCMap(QXmlStreamReader &xmlReader, const int &frame);
+    void ParseWaypointInCMap(QXmlStreamReader &xmlReader, const int &frame);
+
+    //Show Cognitive Map
+    void ShowCMapFrame(const int& frame) const;
+    const double& GetCMapFrameRate() const;
+    const int& GetLastCMapFrame() const;
+
 private:
+    //Geometry
     QList<jpsRoom *> roomlist;
     QList<jpsObstacle *> obstaclelist;
     QList<jpsCrossing *> crossingList;
@@ -142,7 +156,12 @@ private:
     QWidget* parent_widget;
     jpsGraphicsView* mView;
 
-
+    //CognitiveMap
+    QList<jpsLandmark* > _landmarksInCMap;
+    QList<jpsWaypoint* > _waypointsInCMap;
+    jpsYAHPointer* _yahPointer;
+    double _frameRate;
+    int _lastCMapFrame;
 
 };
 

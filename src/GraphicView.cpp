@@ -76,8 +76,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
 
     lines_collided=false;
     _assoDef=false;
-    //gl_min_x=1e6;
-    //gl_min_y=1e6;
+
 
     //m_graphView->setFixedSize(1600, 900);
     //m_graphView->setScene(m_graphScen);
@@ -334,10 +333,46 @@ void jpsGraphicsView::ShowWaypoints(QList<jpsWaypoint *> waypoints)
     {
         QGraphicsEllipseItem* ellipse = Scene->addEllipse(waypoint->GetRect(),QPen(Qt::blue,0));
         ellipse->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+        QString string = waypoint->GetCaption()+ "\n" + waypoint->GetText();
+        QGraphicsTextItem* text = Scene->addText(string);
+        text->setPos(waypoint->GetPos().x()+translation_x,waypoint->GetPos().y()+translation_y);
+        //text->setScale(gl_scale_f);
+        text->setData(0,gl_scale_f);
+        text->setTransform(QTransform::fromScale(gl_scale_f,-gl_scale_f),true);
         _waypoints.push_back(ellipse);
+        _waypointLabels.push_back(text);
     }
 
 
+}
+
+void jpsGraphicsView::ShowYAHPointer(const QPointF &pos, const qreal &dir)
+{
+    for (QGraphicsLineItem* lineItem:_yahPointer)
+    {
+        delete lineItem;
+    }
+    _yahPointer.clear();
+
+    _yahPointer.push_back(Scene->addLine(pos.x(),pos.y(),pos.x()+0.5*std::cos(dir),pos.y()+0.5*std::sin(dir),QPen(Qt::blue,0)));
+    _yahPointer.push_back(Scene->addLine(pos.x()+0.5*std::cos(dir),pos.y()+0.5*std::sin(dir),pos.x()+0.2*std::cos(dir+M_PI/4.0),pos.y()+0.2*std::sin(dir+M_PI/4.0),QPen(Qt::blue,0)));
+    _yahPointer.push_back(Scene->addLine(pos.x()+0.5*std::cos(dir),pos.y()+0.5*std::sin(dir),pos.x()+0.2*std::cos(dir-M_PI/4.0),pos.y()+0.2*std::sin(dir-M_PI/4.0),QPen(Qt::blue,0)));
+
+    for (QGraphicsLineItem* lineItem:_yahPointer)
+    {
+        lineItem->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+    }
+
+
+}
+
+void jpsGraphicsView::ClearWaypointLabels()
+{
+    for (QGraphicsTextItem* label:_waypointLabels)
+    {
+        delete label;
+    }
+    _waypointLabels.clear();
 }
 
 
@@ -345,12 +380,14 @@ void jpsGraphicsView::ShowWaypoints(QList<jpsWaypoint *> waypoints)
 void jpsGraphicsView::ClearWaypoints()
 {
 
-    ///Waypoints
+    //Waypoints
     for (QGraphicsEllipseItem* old_waypoint:_waypoints)
     {
         delete old_waypoint;
     }
     _waypoints.clear();
+
+    ClearWaypointLabels();
 
 }
 
@@ -381,7 +418,7 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 
     if (event->button() == Qt::LeftButton)
     {
-        /// Select lines that are located within the rectangle
+        // Select lines that are located within the rectangle
         if (!(statWall==true || statDoor==true || statExit==true || statLandmark==true))
         {
             leftbutton_hold=false;
@@ -390,17 +427,17 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
             {
                 if (_assoDef)
                 {
-                    ///Waypoint definition
+                    //Waypoint definition
                     emit AssoDefCompleted();
                 }
                 else
                 {
-                    /// Select lines by creating a rect with the cursor
+                    // Select lines by creating a rect with the cursor
                     catch_lines();
 
-                    /// unmark Landmark is possible
+                    // unmark Landmark is possible
                     unmarkLandmark();
-                    /// Look for landmarks with position in the currentSelectRect
+                    // Look for landmarks with position in the currentSelectRect
                     catch_landmark();
                 }
                 delete currentSelectRect;
@@ -408,7 +445,7 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 
             }
 
-            ///unmark selected line(s)
+            //unmark selected line(s)
             if (line_tracked==-1)
             {
                 unmark_all_lines();
@@ -1102,6 +1139,17 @@ void jpsGraphicsView::translations(QPointF old_pos)
     for (QGraphicsEllipseItem* ellipse:_waypoints)
     {
         ellipse->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
+    for (QGraphicsLineItem* lineItem:_yahPointer)
+    {
+        lineItem->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
+    for (QGraphicsTextItem* item:_waypointLabels)
+    {
+        qreal scalef = item->data(0).toReal();
+        item->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
+        item->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
+        item->setTransform(QTransform::fromScale(scalef,scalef),true);
     }
 
 }
