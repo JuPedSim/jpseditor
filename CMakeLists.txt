@@ -96,6 +96,7 @@ set( SRCS
 	src/jpswaypoint.cpp
 	src/widgetlandmark.cpp
 	src/widgetsettings.cpp
+	src/jpsyahpointer.cpp
     dxflib/src/dl_writer_ascii.cpp
     dxflib/src/dl_dxf.cpp
   )  
@@ -115,6 +116,7 @@ set( HDR
 	src/jpswaypoint.h
 	src/widgetlandmark.h
 	src/widgetsettings.h
+	src/jpsyahpointer.h
     dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h
     dxflib/src/dl_global.h
