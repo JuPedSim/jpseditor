@@ -107,7 +107,7 @@ public:
     void catch_landmark();
     void select_landmark(jpsLandmark *landmark);
     void addLandmark();
-    void unmarkLandmark();
+    // unmark Landmarks see slots
     QList<jpsLandmark *> get_landmarks();
 
     //Waypoints and YAHPointer
@@ -128,6 +128,8 @@ public slots:
     //GridSettings
     void ActivateLineGrid();
     void ActivatePointGrid();
+    //Landmarks
+    void unmarkLandmark();
 
 
 protected:

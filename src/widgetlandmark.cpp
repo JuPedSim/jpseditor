@@ -48,6 +48,7 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     connect(ui->apply_name_button,SIGNAL(clicked(bool)),this,SLOT(change_name()));
     connect(ui->closeButton,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_landmark()));
     connect(ui->list_landmarks,SIGNAL(activated(int)),this,SLOT(enable_room_selection()));
+    connect(ui->list_landmarks,SIGNAL(currentIndexChanged(int)),_gview,SLOT(unmarkLandmark()));
     connect(ui->roomBox_landmarks,SIGNAL(activated(int)),this,SLOT(add_room_to_landmark()));
     connect(ui->add_button,SIGNAL(clicked(bool)),_gview,SLOT(StatAssoDef()));
     connect(_gview,SIGNAL(AssoDefCompleted()),this,SLOT(AddAssociation()));
@@ -167,6 +168,7 @@ void widgetLandmark::AddAssociation()
 
         ShowAssociations();
         _waypointIDCounter++;
+        ui->add_button->setChecked(false);
     }
 }
 

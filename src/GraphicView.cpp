@@ -104,7 +104,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
 
     //create_grid();
 
-    ///Origin
+    //Origin
 
     //origin.push_back(Scene->addLine(1,1,1/gl_scale_f*0.02,1,QPen(Qt::black,0)));
     //origin.push_back(Scene->addLine(1,1,1,1/gl_scale_f*0.02,QPen(Qt::black,0)));
@@ -142,7 +142,7 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
     if (_currentVLine!=nullptr)
     {
-        /// vline will be deleted if it is not thrown horizontally or vertically
+        // vline will be deleted if it is not thrown horizontally or vertically
         if(!use_anglesnap(_currentVLine,15))
         {
             delete _currentVLine;
@@ -173,7 +173,7 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
     {
         catch_points();
 
-        ///VLine
+        //VLine
         if (point_tracked && (statWall==true || statDoor==true || statExit==true))
         {
             SetVLine();
@@ -195,7 +195,7 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
         _currentVLine->setLine(_currentVLine->line().x1(),_currentVLine->line().y1(),translated_pos.x(),translated_pos.y());
     }
 
-    /// see if two lines collided FIX ME!!!
+    // see if two lines collided FIX ME!!!
     //line_collision();
 
     emit mouse_moved();
@@ -429,6 +429,7 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
                 {
                     //Waypoint definition
                     emit AssoDefCompleted();
+                    _assoDef=false;
                 }
                 else
                 {
