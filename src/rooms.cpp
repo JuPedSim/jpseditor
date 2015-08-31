@@ -38,6 +38,7 @@ jpsRoom::jpsRoom(int id_room)
     QString string="Room ";
     name=string.append(QString::number(id));
     highlighted=false;
+    _type="Not specified";
 
 }
 

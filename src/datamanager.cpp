@@ -322,7 +322,7 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
         stream->writeStartElement("subroom");
         stream->writeAttribute("id",QString::number(roomlist[i]->get_id()));
         stream->writeAttribute("caption",roomlist[i]->get_name());
-        stream->writeAttribute("class","subroom");
+        stream->writeAttribute("class",roomlist[i]->get_type());
 
         //walls
         QList<jpsLineItem* > wallList=roomlist[i]->get_listWalls();
@@ -668,7 +668,7 @@ void jpsDatamanager::writeLandmarks(QXmlStreamWriter *stream, QList<jpsLandmark 
         stream->writeAttribute("px",QString::number(landmark->get_pos().x()));
         stream->writeAttribute("py",QString::number(landmark->get_pos().y()));
         stream->writeStartElement("associations");
-        m=0;
+
         for (jpsWaypoint* waypoint:landmark->GetWaypoints())
         {
             stream->writeStartElement("association");
@@ -937,8 +937,10 @@ void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
 
     if(attributes.hasAttribute("class"))
     {
-        /* We'll add it to the room. */
-        roomlist.last()->set_type(attributes.value("class").toString());
+        if (attributes.value("class").toString()=="subroom")
+            roomlist.last()->set_type("Not specified");
+        else
+            roomlist.last()->set_type(attributes.value("class").toString());
     }
     this->parseWalls(xmlReader,roomlist.last());
     this->parseObstacles(xmlReader,roomlist.last());

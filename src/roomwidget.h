@@ -57,7 +57,7 @@ protected slots:
     void change_roomname();
     void addWall();
     void removeWall();
-    void showWalls();
+    void showWallsAndType();
     void selectWall();
     void new_crossing();
     void enable_roomSelectionCrossings();
@@ -87,12 +87,16 @@ protected slots:
     void highlight_obs();
     void autoAssignDoors();
     void autoAssignExits();
+    void ChangeRoomType();
 
 
 private:
     Ui::roomWidget *ui;
     jpsDatamanager *datamanager;
     jpsGraphicsView *graphview;
+
+    //
+    void ShowRoomType(int &cRow) const;
 
 };
 
