@@ -100,27 +100,27 @@ int jpsLandmark::get_visibility()
     return _visibility;
 }
 
-void jpsLandmark::AddWaypoint(jpsWaypoint *waypoint)
+void jpsLandmark::AddWaypoint(ptrWaypoint waypoint)
 {
     _waypoints.push_back(waypoint);
 }
 
-void jpsLandmark::RemoveWaypoint(jpsWaypoint *waypoint)
+void jpsLandmark::RemoveWaypoint(ptrWaypoint waypoint)
 {
-    delete waypoint;
+    delete waypoint.get();
     _waypoints.removeOne(waypoint);
 }
 
-QList<jpsWaypoint *> jpsLandmark::GetWaypoints()
+QList<ptrWaypoint> jpsLandmark::GetWaypoints()
 {
     return _waypoints;
 }
 
 void jpsLandmark::RemoveAllWaypoints()
 {
-    for (jpsWaypoint* waypoint:_waypoints)
+    for (ptrWaypoint waypoint:_waypoints)
     {
-        delete waypoint;
+        delete waypoint.get();
     }
     _waypoints.clear();
 }

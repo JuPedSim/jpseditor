@@ -35,7 +35,7 @@ class jpsWaypoint
 {
 public:
     jpsWaypoint();
-    jpsWaypoint(const QPointF& point,const qreal& rA, const qreal& rB, const int& id=0, const QString& caption="Waypoint");
+    jpsWaypoint(const QPointF& point,const qreal& rA, const qreal& rB, const int& id=0, const QString& type="Waypoint");
     jpsWaypoint(QRectF rect, const int& id=0);
     jpsWaypoint(QGraphicsEllipseItem* ellipseItem, const int& id=0);
     ~jpsWaypoint();
@@ -47,6 +47,7 @@ public:
     const int& GetId() const;
     QGraphicsEllipseItem* GetEllipseItem();
     const QString& GetCaption() const;
+    const QString& GetType() const;
 
     //Setter
     void SetPos(QPointF point);
@@ -54,6 +55,7 @@ public:
     void SetEllipseItem(QGraphicsEllipseItem* ellipseItem);
     void SetId(const int& id);
     void SetCaption(const QString& string);
+    void SetType(const QString& type);
 
     //Occurence
     const int& GetFirstFrame() const;
@@ -83,6 +85,7 @@ private:
     double _b;
     int _id;
     QString _caption;
+    QString _type;
 
     //Occurence
     int _firstFrame;

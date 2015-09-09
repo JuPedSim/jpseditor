@@ -325,15 +325,15 @@ QGraphicsRectItem *jpsGraphicsView::GetCurrentSelectRect()
     return currentSelectRect;
 }
 
-void jpsGraphicsView::ShowWaypoints(QList<jpsWaypoint *> waypoints)
+void jpsGraphicsView::ShowWaypoints(QList<ptrWaypoint> waypoints)
 {
     ClearWaypoints();
 
-    for (jpsWaypoint* waypoint:waypoints)
+    for (ptrWaypoint waypoint:waypoints)
     {
         QGraphicsEllipseItem* ellipse = Scene->addEllipse(waypoint->GetRect(),QPen(Qt::blue,0));
         ellipse->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
-        QString string = waypoint->GetCaption()+ "\n" + waypoint->GetText();
+        QString string = waypoint->GetType() + "\n" + waypoint->GetCaption()+ "\n" + waypoint->GetText();
         QGraphicsTextItem* text = Scene->addText(string);
         text->setPos(waypoint->GetPos().x()+translation_x,waypoint->GetPos().y()+translation_y);
         //text->setScale(gl_scale_f);
@@ -373,6 +373,30 @@ void jpsGraphicsView::ClearWaypointLabels()
         delete label;
     }
     _waypointLabels.clear();
+}
+
+void jpsGraphicsView::ShowConnections(QList<ptrConnection> cons)
+{
+    ClearConnections();
+    for (ptrConnection con:cons)
+    {
+        QGraphicsLineItem* line = Scene->addLine(QLineF(con->GetWaypoints().first->GetPos(),con->GetWaypoints().second->GetPos()),QPen(Qt::blue,0));
+        _connections.push_back(line);
+
+
+        line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+
+
+    }
+}
+
+void jpsGraphicsView::ClearConnections()
+{
+    for (QGraphicsLineItem* line:_connections)
+    {
+        delete line;
+    }
+    _connections.clear();
 }
 
 
@@ -1151,6 +1175,11 @@ void jpsGraphicsView::translations(QPointF old_pos)
         item->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
         item->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
         item->setTransform(QTransform::fromScale(scalef,scalef),true);
+    }
+
+    for (QGraphicsLineItem* lineItem:_connections)
+    {
+        lineItem->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
 
 }

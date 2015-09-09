@@ -71,6 +71,9 @@
     <addaction name="actionRotate_90_deg_clockwise"/>
    </widget>
    <widget class="QMenu" name="menuCognitive_Map">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="title">
      <string>Cognitive Map</string>
     </property>
@@ -405,7 +408,7 @@
     <bool>true</bool>
    </property>
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="Ressource.qrc">
@@ -417,13 +420,16 @@
    <property name="toolTip">
     <string>Landmark</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionLandmarkWidget">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="Ressource.qrc">
@@ -434,6 +440,9 @@
    </property>
    <property name="toolTip">
     <string>LandmarkSpecs</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionanglesnap">

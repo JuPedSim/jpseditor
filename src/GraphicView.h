@@ -35,7 +35,8 @@
 #include <QGraphicsLineItem>
 #include "jpsLineItem.h"
 #include "jpslandmark.h"
-
+#include "jpsconnection.h"
+using ptrConnection = std::shared_ptr<jpsConnection>;
 
 class jpsGraphicsView: public QGraphicsView {
 
@@ -110,11 +111,13 @@ public:
     // unmark Landmarks see slots
     QList<jpsLandmark *> get_landmarks();
 
-    //Waypoints and YAHPointer
+    //Waypoints/Connections and YAHPointer
     QGraphicsRectItem* GetCurrentSelectRect();
-    void ShowWaypoints(QList<jpsWaypoint* > waypoints);
+    void ShowWaypoints(QList<ptrWaypoint > waypoints);
     void ShowYAHPointer(const QPointF& pos, const qreal& dir);
     void ClearWaypointLabels();
+    void ShowConnections(QList<ptrConnection> cons);
+    void ClearConnections();
 
     //RoomCaption
     bool show_hide_roomCaption(QString name, qreal x, qreal y);
@@ -183,6 +186,7 @@ private:
     jpsLandmark* markedLandmark;
     QGraphicsRectItem* currentLandmarkRect;
     QList<QGraphicsEllipseItem* > _waypoints;
+    QList<QGraphicsLineItem* > _connections;
     QList<QGraphicsLineItem* > _yahPointer;
     QList<QGraphicsTextItem* > _waypointLabels;
 

@@ -41,10 +41,15 @@
 #include "jpsobstacle.h"
 #include "GraphicView.h"
 #include "jpsyahpointer.h"
+#include "jpsconnection.h"
 
 
 #include "../dxflib/src/dl_creationadapter.h"
 #include "../dxflib/src/dl_dxf.h"
+
+
+using ptrConnection = std::shared_ptr<jpsConnection>;
+using ptrWaypoint = std::shared_ptr<jpsWaypoint>;
 
 
 class jpsDatamanager: public DL_CreationAdapter
@@ -138,6 +143,7 @@ public:
     void ParseYAHPointer(QXmlStreamReader &xmlReader, const int &frame);
     void ParseLandmarksInCMap(QXmlStreamReader &xmlReader, const int &frame);
     void ParseWaypointInCMap(QXmlStreamReader &xmlReader, const int &frame);
+    void ParseConnectionsInCMap(QXmlStreamReader &xmlReader, const int &frame);
 
     //Show Cognitive Map
     void ShowCMapFrame(const int& frame) const;
@@ -158,7 +164,8 @@ private:
 
     //CognitiveMap
     QList<jpsLandmark* > _landmarksInCMap;
-    QList<jpsWaypoint* > _waypointsInCMap;
+    QList<ptrWaypoint > _waypointsInCMap;
+    QList<ptrConnection> _connectionsInCMap;
     jpsYAHPointer* _yahPointer;
     double _frameRate;
     int _lastCMapFrame;

@@ -29,6 +29,7 @@
 
 #include "datamanager.h"
 #include <iostream>
+#include <utility>
 
 
 
@@ -669,7 +670,7 @@ void jpsDatamanager::writeLandmarks(QXmlStreamWriter *stream, QList<jpsLandmark 
         stream->writeAttribute("py",QString::number(landmark->get_pos().y()));
         stream->writeStartElement("associations");
 
-        for (jpsWaypoint* waypoint:landmark->GetWaypoints())
+        for (ptrWaypoint waypoint:landmark->GetWaypoints())
         {
             stream->writeStartElement("association");
             stream->writeAttribute("id",QString::number(m));
@@ -1520,7 +1521,13 @@ void jpsDatamanager::ParseFrames(QXmlStreamReader &xmlReader)
         {
             ParseWaypointInCMap(xmlReader, frameID);
         }
+        else if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
+                    xmlReader.name() == "connection")
+        {
+            ParseConnectionsInCMap(xmlReader, frameID);
+        }
         xmlReader.readNext();
+
     }
 
     _lastCMapFrame=frameID;
@@ -1556,10 +1563,11 @@ void jpsDatamanager::ParseLandmarksInCMap(QXmlStreamReader &xmlReader, const int
     qreal y = xmlReader.attributes().value("y").toFloat();
     qreal rA = xmlReader.attributes().value("rA").toFloat();
     qreal rB = xmlReader.attributes().value("rB").toFloat();
+    QString caption = xmlReader.attributes().value("caption").toString();
 
-    for (jpsWaypoint* waypoint:_waypointsInCMap)
+    for (ptrWaypoint waypoint:_waypointsInCMap)
     {
-        if (waypoint->GetId()==id && waypoint->GetCaption()=="Landmark")
+        if (waypoint->GetId()==id && waypoint->GetType()=="Landmark")
         {
             wayPInList = true;
             waypoint->SetLastFrame(frame);
@@ -1568,9 +1576,10 @@ void jpsDatamanager::ParseLandmarksInCMap(QXmlStreamReader &xmlReader, const int
 
     if (!wayPInList)
     {
-        _waypointsInCMap.push_back(new jpsWaypoint(QPointF(x,y),rA,rB,id,"Landmark"));
+        _waypointsInCMap.push_back(std::make_shared<jpsWaypoint>(QPointF(x,y),rA,rB,id,"Landmark"));
         _waypointsInCMap.back()->SetFirstFrame(frame);
         _waypointsInCMap.back()->SetLastFrame(frame);
+        _waypointsInCMap.back()->SetCaption(caption);
     }
 }
 
@@ -1583,11 +1592,12 @@ void jpsDatamanager::ParseWaypointInCMap(QXmlStreamReader &xmlReader, const int&
     qreal y = xmlReader.attributes().value("y").toFloat();
     qreal rA = xmlReader.attributes().value("rA").toFloat();
     qreal rB = xmlReader.attributes().value("rB").toFloat();
+    QString caption = xmlReader.attributes().value("caption").toString();
     bool current = xmlReader.attributes().value("current").toInt();
 
-    for (jpsWaypoint* waypoint:_waypointsInCMap)
+    for (ptrWaypoint waypoint:_waypointsInCMap)
     {
-        if (waypoint->GetId()==id && waypoint->GetCaption()=="Waypoint")
+        if (waypoint->GetId()==id && waypoint->GetType()=="Waypoint")
         {
             wayPInList = true;
             waypoint->SetLastFrame(frame);
@@ -1601,24 +1611,66 @@ void jpsDatamanager::ParseWaypointInCMap(QXmlStreamReader &xmlReader, const int&
         }
     }
 
-
     if (!wayPInList)
     {
-        _waypointsInCMap.push_back(new jpsWaypoint(QPointF(x,y),rA,rB,id,"Waypoint"));
+        _waypointsInCMap.push_back(std::make_shared<jpsWaypoint>(QPointF(x,y),rA,rB,id,"Waypoint"));
         _waypointsInCMap.back()->SetFirstFrame(frame);
         _waypointsInCMap.back()->SetLastFrame(frame);
         _waypointsInCMap.back()->SetCurrentness(current,frame);
+        _waypointsInCMap.back()->SetCaption(caption);
+    }
+
+}
+
+void jpsDatamanager::ParseConnectionsInCMap(QXmlStreamReader &xmlReader, const int &frame)
+{
+    int id1 = xmlReader.attributes().value("Landmark_WaypointID1").toInt();
+    int id2 = xmlReader.attributes().value("Landmark_WaypointID2").toInt();
+    std::shared_ptr<jpsWaypoint> waypoint1 = nullptr;
+    std::shared_ptr<jpsWaypoint> waypoint2 = nullptr;
+
+
+    for (ptrWaypoint waypoint:_waypointsInCMap)
+    {
+        if (waypoint->GetId()==id1)
+        {
+            waypoint1=waypoint;
+
+        }
+        else if (waypoint->GetId()==id2)
+        {
+            waypoint2=waypoint;
+
+        }
 
     }
+
+    ptrConnection con = std::make_shared<jpsConnection>(waypoint1,waypoint2,frame);
+    if (waypoint1!=nullptr && waypoint2!=nullptr)
+    {
+        for (ptrConnection conInMap : _connectionsInCMap)
+        {
+            if (con->operator ==(conInMap))
+            {
+                conInMap->SetLastFrame(frame);
+
+                return;
+            }
+        }
+
+        _connectionsInCMap.push_back(con);
+    }
+
+
 }
 
 void jpsDatamanager::ShowCMapFrame(const int& frame) const
 {
     mView->ShowYAHPointer(_yahPointer->GetPosWhenFrame(frame),_yahPointer->GetDirWhenFrame(frame));
 
-    QList<jpsWaypoint* > wayPCandidates;
+    QList<ptrWaypoint > wayPCandidates;
 
-    for (jpsWaypoint* waypoint:_waypointsInCMap)
+    for (ptrWaypoint waypoint:_waypointsInCMap)
     {
         if (waypoint->OccursInFrame(frame))
         {
@@ -1630,9 +1682,18 @@ void jpsDatamanager::ShowCMapFrame(const int& frame) const
                 waypoint->SetText("Already visited");
             else
                 waypoint->SetText("");
-
         }
     }
+    QList<ptrConnection> conCandidates;
+    for (ptrConnection connection:_connectionsInCMap)
+    {
+        if (connection->OccursInFrame(frame))
+        {
+            conCandidates.push_back(connection);
+        }
+    }
+
+    mView->ShowConnections(conCandidates);
     mView->ShowWaypoints(wayPCandidates);
 
 }

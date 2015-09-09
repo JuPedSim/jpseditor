@@ -34,19 +34,20 @@ jpsWaypoint::jpsWaypoint()
 
 }
 
-jpsWaypoint::jpsWaypoint(const QPointF &point, const qreal &rA, const qreal &rB, const int &id, const QString &caption)
+jpsWaypoint::jpsWaypoint(const QPointF &point, const qreal &rA, const qreal &rB, const int &id, const QString &type)
 {
     _pos=point;
     _a=rA;
     _b=rB;
     _id=id;
-    _caption=caption;
+    _type=type;
     _rect=QRectF(point.x()-rA,point.y()-rB,rA*2,rB*2);
     _currentness=false;
     _FFcurrentness=-1;
     _LFcurrentness=-1;
     _lastFrame=-1;
     _firstFrame=-1;
+    _caption="";
 }
 
 jpsWaypoint::jpsWaypoint(QRectF rect, const int &id)
@@ -120,6 +121,11 @@ const QString &jpsWaypoint::GetCaption() const
     return _caption;
 }
 
+const QString &jpsWaypoint::GetType() const
+{
+    return _type;
+}
+
 
 void jpsWaypoint::SetPos(QPointF point)
 {
@@ -150,6 +156,11 @@ void jpsWaypoint::SetCaption(const QString &string)
     _caption=string;
 }
 
+void jpsWaypoint::SetType(const QString &type)
+{
+    _type=type;
+}
+
 const int &jpsWaypoint::GetFirstFrame() const
 {
     return _firstFrame;
@@ -163,11 +174,13 @@ const int &jpsWaypoint::GetLastFrame() const
 void jpsWaypoint::SetFirstFrame(const int &frame)
 {
     _firstFrame=frame;
+
 }
 
 void jpsWaypoint::SetLastFrame(const int &frame)
 {
     _lastFrame=frame;
+
 }
 
 bool jpsWaypoint::OccursInFrame(const int &frame) const
@@ -230,7 +243,7 @@ void jpsWaypoint::SetText(const QString &text)
 
 bool jpsWaypoint::Visited(const int &frameID) const
 {
-    if (frameID > _LFcurrentness && _lastFrame!=-1)
+    if (frameID > _LFcurrentness && _LFcurrentness!=-1)
         return true;
 
     else

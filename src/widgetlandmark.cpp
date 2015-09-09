@@ -164,7 +164,7 @@ void widgetLandmark::AddAssociation()
     {
         int cLanRow=ui->list_landmarks->currentIndex();
 
-        _dmanager->get_landmarks()[cLanRow]->AddWaypoint(new jpsWaypoint(_gview->GetCurrentSelectRect()->rect(),_waypointIDCounter));
+        _dmanager->get_landmarks()[cLanRow]->AddWaypoint(std::make_shared<jpsWaypoint>(_gview->GetCurrentSelectRect()->rect(),_waypointIDCounter));
 
         ShowAssociations();
         _waypointIDCounter++;
@@ -178,9 +178,9 @@ void widgetLandmark::ShowAssociations()
     if (ui->list_landmarks->currentIndex()!=-1)
     {
         int cLanRow=ui->list_landmarks->currentIndex();
-        QList<jpsWaypoint *> waypoints = _dmanager->get_landmarks()[cLanRow]->GetWaypoints();
+        QList<ptrWaypoint> waypoints = _dmanager->get_landmarks()[cLanRow]->GetWaypoints();
 
-        for (jpsWaypoint* waypoint:waypoints)
+        for (ptrWaypoint waypoint:waypoints)
         {
             QPointF pos = waypoint->GetPos();
             QString name = "Waypoint: x: "+QString::number(pos.x())+"y: "+QString::number(pos.y());

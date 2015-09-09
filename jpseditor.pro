@@ -56,7 +56,8 @@ HEADERS += \
     src/widgetlandmark.h \
     src/graphicscene.h \
     src/widgetsettings.h \
-    src/jpsyahpointer.h
+    src/jpsyahpointer.h \
+    src/jpsconnection.h
 
 
 SOURCES += \
@@ -77,7 +78,8 @@ SOURCES += \
     src/widgetlandmark.cpp \
     src/graphicscene.cpp \
     src/widgetsettings.cpp \
-    src/jpsyahpointer.cpp
+    src/jpsyahpointer.cpp \
+    src/jpsconnection.cpp
 
 
 RESOURCES +=  forms/Ressource.qrc
