@@ -1501,7 +1501,7 @@ bool jpsDatamanager::ParseCogMap(QFile &file)
 
 void jpsDatamanager::ParseFrames(QXmlStreamReader &xmlReader)
 {
-    int frameID= xmlReader.attributes().value("ID").toInt();
+      int frameID= xmlReader.attributes().value("ID").toString().toInt();
 
     while(!(xmlReader.tokenType() == QXmlStreamReader::EndElement &&
                 xmlReader.name() == "frame"))
@@ -1535,9 +1535,9 @@ void jpsDatamanager::ParseFrames(QXmlStreamReader &xmlReader)
 
 void jpsDatamanager::ParseYAHPointer(QXmlStreamReader &xmlReader, const int& frame)
 {
-    qreal x = xmlReader.attributes().value("x").toFloat();
-    qreal y = xmlReader.attributes().value("y").toFloat();
-    qreal angle = xmlReader.attributes().value("dir").toFloat();
+    qreal x = xmlReader.attributes().value("x").toString().toFloat();
+    qreal y = xmlReader.attributes().value("y").toString().toFloat();
+    qreal angle = xmlReader.attributes().value("dir").toString().toFloat();
     if (_yahPointer==nullptr)
     {
         _yahPointer = new jpsYAHPointer(x,y,angle);
@@ -1558,11 +1558,11 @@ void jpsDatamanager::ParseLandmarksInCMap(QXmlStreamReader &xmlReader, const int
 
     bool wayPInList=false;
 
-    int id = xmlReader.attributes().value("ID").toInt();
-    qreal x = xmlReader.attributes().value("x").toFloat();
-    qreal y = xmlReader.attributes().value("y").toFloat();
-    qreal rA = xmlReader.attributes().value("rA").toFloat();
-    qreal rB = xmlReader.attributes().value("rB").toFloat();
+    int id = xmlReader.attributes().value("ID").toString().toInt();
+    qreal x = xmlReader.attributes().value("x").toString().toFloat();
+    qreal y = xmlReader.attributes().value("y").toString().toFloat();
+    qreal rA = xmlReader.attributes().value("rA").toString().toFloat();
+    qreal rB = xmlReader.attributes().value("rB").toString().toFloat();
     QString caption = xmlReader.attributes().value("caption").toString();
 
     for (ptrWaypoint waypoint:_waypointsInCMap)
@@ -1587,13 +1587,13 @@ void jpsDatamanager::ParseWaypointInCMap(QXmlStreamReader &xmlReader, const int&
 {
     bool wayPInList=false;
 
-    int id = xmlReader.attributes().value("ID").toInt();
-    qreal x = xmlReader.attributes().value("x").toFloat();
-    qreal y = xmlReader.attributes().value("y").toFloat();
-    qreal rA = xmlReader.attributes().value("rA").toFloat();
-    qreal rB = xmlReader.attributes().value("rB").toFloat();
+    int id = xmlReader.attributes().value("ID").toString().toInt();
+    qreal x = xmlReader.attributes().value("x").toString().toFloat();
+    qreal y = xmlReader.attributes().value("y").toString().toFloat();
+    qreal rA = xmlReader.attributes().value("rA").toString().toFloat();
+    qreal rB = xmlReader.attributes().value("rB").toString().toFloat();
     QString caption = xmlReader.attributes().value("caption").toString();
-    bool current = xmlReader.attributes().value("current").toInt();
+    bool current = xmlReader.attributes().value("current").toString().toInt();
 
     for (ptrWaypoint waypoint:_waypointsInCMap)
     {
@@ -1624,8 +1624,8 @@ void jpsDatamanager::ParseWaypointInCMap(QXmlStreamReader &xmlReader, const int&
 
 void jpsDatamanager::ParseConnectionsInCMap(QXmlStreamReader &xmlReader, const int &frame)
 {
-    int id1 = xmlReader.attributes().value("Landmark_WaypointID1").toInt();
-    int id2 = xmlReader.attributes().value("Landmark_WaypointID2").toInt();
+    int id1 = xmlReader.attributes().value("Landmark_WaypointID1").toString().toInt();
+    int id2 = xmlReader.attributes().value("Landmark_WaypointID2").toString().toInt();
     std::shared_ptr<jpsWaypoint> waypoint1 = nullptr;
     std::shared_ptr<jpsWaypoint> waypoint2 = nullptr;
 
