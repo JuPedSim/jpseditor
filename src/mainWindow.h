@@ -118,6 +118,9 @@ protected slots:
     void RunCMap();
     void UpdateCMap();
 
+    //quit
+    void quit();
+
 
 };
 

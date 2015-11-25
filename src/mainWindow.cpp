@@ -88,7 +88,7 @@ MWindow :: MWindow() {
 
     //Signals and Slots
     // Tab File
-    connect(actionBeenden, SIGNAL(triggered(bool)),qApp,SLOT(quit()));
+    connect(actionBeenden, SIGNAL(triggered(bool)),this,SLOT(quit()));//qApp,SLOT(quit()));
     connect(action_ffnen,SIGNAL(triggered(bool)),this,SLOT(openFile()));
     connect(action_ffnen_xml,SIGNAL(triggered(bool)),this,SLOT(openFileXML()));
     connect(actionSpeichern,SIGNAL(triggered(bool)),this,SLOT(saveFile()));
@@ -197,6 +197,15 @@ void MWindow::UpdateCMap()
         return;
     }
     dmanager->ShowCMapFrame(_cMapFrame);
+}
+
+void MWindow::quit()
+{
+    //MessageBox
+    //Wenn ja.
+    qApp->quit();
+    //Wenn nein
+    //return to app
 }
 
 void MWindow::add_landmark()
