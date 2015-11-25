@@ -30,7 +30,7 @@
 #ifndef DATAMANAGER_H
 #define DATAMANAGER_H
 
-#include<QtGui>
+#include <QtGui>
 #include <QApplication>
 #include <QGraphicsView>
 #include <QMessageBox>

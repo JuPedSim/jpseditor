@@ -800,8 +800,7 @@ void roomWidget::ShowRoomType(int& cRow) const
 {
     QString type = datamanager->get_roomlist()[cRow]->get_type();
 
-    ui->classBox->setCurrentText(type);
-
+    // ui->classBox->setCurrentText(type);
 }
 
 

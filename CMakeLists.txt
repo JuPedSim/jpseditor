@@ -7,13 +7,17 @@
 #================
 # 1. CMAKE_BUILD_TYPE=Release (default Debug)
 # 2. DESIRED_QT_VERSION=5 (default 4)
+# example: >> cmake  -DDESIRED_QT_VERSION=5  -DCMAKE_PREFIX_PATH=~/Qt/5.5/clang_64 ..
 
+cmake_minimum_required(VERSION 2.8.9)
 IF (POLICY CMP0048) # in CMake 3.0.0+
   CMAKE_POLICY (SET CMP0048 OLD) # keep PROJECT() from clearing VERSION variables
 ENDIF (POLICY CMP0048)
-
+IF (POLICY CMP0043) # in CMake 3.0.0+
+  CMAKE_POLICY (SET CMP0043 OLD) # keep PROJECT() from clearing VERSION variables
+ENDIF (POLICY CMP0043)
 project(JPSeditor)
-cmake_minimum_required(VERSION 2.8.9)
+
 
 
 set(README_FILE "${CMAKE_SOURCE_DIR}/README.md")
@@ -84,7 +88,7 @@ set( SRCS
     src/mainWindow.cpp
     src/main.cpp 
     src/GraphicView.cpp
-	src/graphicscene.cpp
+    src/graphicscene.cpp
     src/roomwidget.cpp
     src/rooms.cpp
     src/datamanager.cpp  
@@ -92,12 +96,12 @@ set( SRCS
     src/jpsLineItem.cpp  
     src/jpsexit.cpp
     src/jpsobstacle.cpp 
-	src/jpslandmark.cpp
-	src/jpswaypoint.cpp
-	src/widgetlandmark.cpp
-	src/widgetsettings.cpp
-	src/jpsyahpointer.cpp
-	src/jpsconnection.cpp
+    src/jpslandmark.cpp
+    src/jpswaypoint.cpp
+    src/widgetlandmark.cpp
+    src/widgetsettings.cpp
+    src/jpsyahpointer.cpp
+    src/jpsconnection.cpp
     dxflib/src/dl_writer_ascii.cpp
     dxflib/src/dl_dxf.cpp
   )  
@@ -105,7 +109,7 @@ set( SRCS
 set( HDR
     src/mainWindow.h 
     src/GraphicView.h
-	src/graphicscene.h
+    src/graphicscene.h
     src/roomwidget.h
     src/rooms.h
     src/datamanager.h  
@@ -113,12 +117,12 @@ set( HDR
     src/jpsLineItem.h  
     src/jpsexit.h     
     src/jpsobstacle.h
-	src/jpslandmark.h
-	src/jpswaypoint.h
-	src/widgetlandmark.h
-	src/widgetsettings.h
-	src/jpsyahpointer.h
-	src/jpsconnection.h
+    src/jpslandmark.h
+    src/jpswaypoint.h
+    src/widgetlandmark.h
+    src/widgetsettings.h
+    src/jpsyahpointer.h
+    src/jpsconnection.h
     dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h
     dxflib/src/dl_global.h
@@ -137,8 +141,8 @@ set( HDR
 set( UIS
     forms/mainwindow.ui
     forms/roomwidget.ui
-	forms/widgetlandmark.ui
-	forms/widgetsettings.ui
+    forms/widgetlandmark.ui
+    forms/widgetsettings.ui
   )
 
 # and finally a resource file

@@ -1,7 +1,7 @@
 #ifndef JPSYAHPOINTER_H
 #define JPSYAHPOINTER_H
 #include <QPointF>
-
+#include <vector>
 class jpsYAHPointer
 {
 public:
