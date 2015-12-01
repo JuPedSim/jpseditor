@@ -110,6 +110,7 @@ protected slots:
     void gridmode();
     void rotate();
     void Settings();
+    void ShowOrigin();
     
     //autosave
     void AutoSave();

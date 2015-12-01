@@ -113,6 +113,7 @@ MWindow :: MWindow() {
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     // Tab View
     connect(actionRotate_90_deg_clockwise,SIGNAL(triggered(bool)),this,SLOT(rotate()));
+    connect(actionShow_Point_of_Origin,SIGNAL(triggered(bool)),this,SLOT(ShowOrigin()));
     // Length edit
     connect(length_edit,SIGNAL(returnPressed()),this,SLOT(send_length()));
     // mview
@@ -230,6 +231,11 @@ void MWindow::Settings()
         _settings=nullptr;
     }
 
+}
+
+void MWindow::ShowOrigin()
+{
+    mview->ShowOrigin();
 }
 
 void MWindow::openFile(){

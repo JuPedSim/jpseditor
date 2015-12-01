@@ -102,12 +102,6 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     setScene(Scene);
     setSceneRect(0, 0, 1920, 1080);
 
-    //create_grid();
-
-    //Origin
-
-    //origin.push_back(Scene->addLine(1,1,1/gl_scale_f*0.02,1,QPen(Qt::black,0)));
-    //origin.push_back(Scene->addLine(1,1,1,1/gl_scale_f*0.02,QPen(Qt::black,0)));
 }
 
 jpsGraphicsView::~jpsGraphicsView()
@@ -1066,6 +1060,9 @@ void jpsGraphicsView::zoom(int delta)
 
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 
+    //exclude origin from scaling
+    ShowOrigin();
+
     // Scale the view / do the zoom
     double scaleFactor = 1.15;
     if(delta > 0)
@@ -1096,6 +1093,9 @@ void jpsGraphicsView::zoom(int delta)
         Scene->ChangeGridSize(this->CalcGridSize());
         //create_grid();
     }
+
+    //set origin back to the scene
+    ShowOrigin();
 
 }
 
@@ -1182,6 +1182,10 @@ void jpsGraphicsView::translations(QPointF old_pos)
         lineItem->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
 
+    for (QGraphicsLineItem* lineItem:_origin)
+    {
+       lineItem->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
 }
 
 void jpsGraphicsView::AutoZoom()
@@ -1192,8 +1196,8 @@ void jpsGraphicsView::AutoZoom()
             line_vector[0]->get_line()->line().p1().y());
     for (jpsLineItem* line:line_vector)
     {
-        ///x
-        ///p1
+        //x
+        //p1
         if (line->get_line()->line().p1().x()<min.x())
         {
             min.setX(line->get_line()->line().p1().x());
@@ -1203,7 +1207,7 @@ void jpsGraphicsView::AutoZoom()
             max.setX(line->get_line()->line().p1().x());
         }
 
-        ///p2
+        //p2
         if (line->get_line()->line().p2().x()<min.x())
         {
             min.setX(line->get_line()->line().p2().x());
@@ -1213,8 +1217,8 @@ void jpsGraphicsView::AutoZoom()
             max.setX(line->get_line()->line().p2().x());
         }
 
-        ///y
-        ///p1
+        //y
+        //p1
         if (line->get_line()->line().p1().y()<min.y())
         {
             min.setY(line->get_line()->line().p1().y());
@@ -1237,17 +1241,17 @@ void jpsGraphicsView::AutoZoom()
     //QPointF center((min.x()+max.x())/2.0,(min.y()+max.y())/2.0);
 
 
-    ///scaling
+    //scaling
     qreal width = (max.x()-min.x());
     qreal height = (max.y()-min.y());
-    /// To ensure the functionality of fitInView
+    // To ensure the functionality of fitInView
     this->setSceneRect(min.x(),min.y(),width,height);
     this->fitInView(min.x(),min.y(),width,height,Qt::KeepAspectRatio);
 
-    ///adapting gl_scale_f
+    //adapting gl_scale_f
     gl_scale_f=1/this->transform().m11();
 
-    ///translations
+    //translations
     QPointF old_pos;
     old_pos.setX(pos.x()+translation_x);
     old_pos.setY(pos.y()+translation_y);
@@ -1279,6 +1283,40 @@ qreal jpsGraphicsView::CalcGridSize()
     _gridSize=gridSize;
     return gridSize;
 
+}
+
+void jpsGraphicsView::ShowOrigin()
+{
+    if (_origin.isEmpty())
+    {
+        _origin.push_back(Scene->addLine(1,1,1/gl_scale_f*0.02,1,QPen(Qt::black,0.025)));
+        _origin.push_back(Scene->addLine(1,1,1,1/gl_scale_f*0.02,QPen(Qt::black,0.025)));
+        _origin.push_back(Scene->addLine(1,1/gl_scale_f*0.02,1-1/gl_scale_f*0.001,1/gl_scale_f*0.02-1/gl_scale_f*0.001,QPen(Qt::black,0.025)));
+        _origin.push_back(Scene->addLine(1,1/gl_scale_f*0.02,1+1/gl_scale_f*0.001,1/gl_scale_f*0.02-1/gl_scale_f*0.001,QPen(Qt::black,0.025)));
+        _origin.push_back(Scene->addLine(1/gl_scale_f*0.02,1,1/gl_scale_f*0.02-1/gl_scale_f*0.001,1-1/gl_scale_f*0.001,QPen(Qt::black,0.025)));
+        _origin.push_back(Scene->addLine(1/gl_scale_f*0.02,1,1/gl_scale_f*0.02-1/gl_scale_f*0.001,1+1/gl_scale_f*0.001,QPen(Qt::black,0.025)));
+        _origin.push_back(Scene->addLine(1/gl_scale_f*0.02,1,1/gl_scale_f*0.02-1/gl_scale_f*0.001,1+1/gl_scale_f*0.001,QPen(Qt::black,0.025)));
+        //Y
+        _origin.push_back(Scene->addLine(1-1/gl_scale_f*0.001,1/gl_scale_f*0.015,1-1/gl_scale_f*0.0005,1/gl_scale_f*0.0155,QPen(Qt::black,0.025)));
+        _origin.push_back(Scene->addLine(1-1/gl_scale_f*0.001,1/gl_scale_f*0.015,1-1/gl_scale_f*0.0015,1/gl_scale_f*0.0155,QPen(Qt::black,0.025)));
+        _origin.push_back(Scene->addLine(1-1/gl_scale_f*0.001,1/gl_scale_f*0.015,1-1/gl_scale_f*0.001,1/gl_scale_f*0.014,QPen(Qt::black,0.025)));
+        //X
+        _origin.push_back(Scene->addLine(1/gl_scale_f*0.014,1-1/gl_scale_f*0.0017,1/gl_scale_f*0.015,1-1/gl_scale_f*0.0005,QPen(Qt::black,0.025)));
+        _origin.push_back(Scene->addLine(1/gl_scale_f*0.015,1-1/gl_scale_f*0.0017,1/gl_scale_f*0.014,1-1/gl_scale_f*0.0005,QPen(Qt::black,0.025)));
+
+        for (QGraphicsLineItem* lineItem:_origin)
+        {
+           lineItem->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+        }
+    }
+    else
+    {
+        for (QGraphicsLineItem* line:_origin)
+        {
+            delete line;
+        }
+        _origin.clear();
+    }
 }
 
 void jpsGraphicsView::StatAssoDef()

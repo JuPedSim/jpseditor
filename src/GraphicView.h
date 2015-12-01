@@ -76,6 +76,7 @@ public:
     void translations(QPointF old_pos);
     void AutoZoom();
     qreal CalcGridSize();
+    void ShowOrigin();
 
     //Pos
     QPointF return_Pos();
@@ -150,7 +151,7 @@ private:
     QList<QPointF *> intersect_point_vector;
     //QList<QPointF> grid_point_vector;
     QList<jpsLineItem *> line_vector;
-    QList<QGraphicsLineItem *> origin;
+    QList<QGraphicsLineItem *> _origin;
     //QList<QList<jpsLineItem*> *> mainlist;
     QPointF pos;
     //QPointF* intersection_point;

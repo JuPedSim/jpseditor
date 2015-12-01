@@ -69,6 +69,7 @@
      <string>View</string>
     </property>
     <addaction name="actionRotate_90_deg_clockwise"/>
+    <addaction name="actionShow_Point_of_Origin"/>
    </widget>
    <widget class="QMenu" name="menuCognitive_Map">
     <property name="enabled">
@@ -495,6 +496,11 @@
   <action name="actionRun_visualisation">
    <property name="text">
     <string>Run visualisation</string>
+   </property>
+  </action>
+  <action name="actionShow_Point_of_Origin">
+   <property name="text">
+    <string>Show Point of Origin</string>
    </property>
   </action>
  </widget>
