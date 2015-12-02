@@ -100,6 +100,7 @@ protected slots:
     void dis_selectMode();
     void lines_deleted();
     void remove_all_lines();
+    void ShowLineLength();
     
     //Room and landmark def
     void define_room();

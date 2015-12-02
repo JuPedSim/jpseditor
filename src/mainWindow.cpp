@@ -55,7 +55,7 @@ MWindow :: MWindow() {
     _settings=nullptr;
 
     length_edit = new QLineEdit();
-    length_edit->setMaximumWidth(55);
+    length_edit->setMaximumWidth(75);
     label1 = new QLabel();
     label1->setMinimumWidth(90);
     label1->setText("Length of Line :");
@@ -123,6 +123,7 @@ MWindow :: MWindow() {
     connect(mview,SIGNAL(set_focus_textedit()),length_edit,SLOT(setFocus()));
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
     connect(mview,SIGNAL(landmark_added()),this,SLOT(add_landmark()));
+    connect(mview,SIGNAL(LineLengthChanged()),this,SLOT(ShowLineLength()));
     //connect(mview,SIGNAL(DoubleClick()),this,SLOT(en_selectMode()));
     // Autosave
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
@@ -510,6 +511,11 @@ void MWindow::lines_deleted()
 void MWindow::remove_all_lines()
 {
     dmanager->remove_all();
+}
+
+void MWindow::ShowLineLength()
+{
+    length_edit->setText(QString::number(mview->ReturnLineLength()));
 }
 
 void MWindow::rotate()

@@ -103,6 +103,7 @@ public:
     void select_line(jpsLineItem *mline);
     void SetVLine();
     void EditLine(QPointF* point);
+    qreal ReturnLineLength();
 
     // Landmark
     void delete_landmark();
@@ -208,6 +209,7 @@ signals:
     void remove_all();
     void landmark_added();
     void AssoDefCompleted();
+    void LineLengthChanged();
     //void DoubleClick();
 
 };

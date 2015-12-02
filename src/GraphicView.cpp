@@ -182,6 +182,8 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
         current_line->setLine(current_line->line().x1(),current_line->line().y1(),translated_pos.x(),translated_pos.y());
 
         //}
+        //As line length has changed
+        emit LineLengthChanged();
     }
     if (_currentVLine!=nullptr)
     {
@@ -985,6 +987,11 @@ void jpsGraphicsView::EditLine(QPointF* point)
         en_disableWall();
 
     }
+}
+
+qreal jpsGraphicsView::ReturnLineLength()
+{
+    return current_line->line().length();
 }
 
 bool jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)

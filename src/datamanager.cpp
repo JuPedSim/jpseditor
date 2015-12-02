@@ -60,8 +60,14 @@ void jpsDatamanager::remove_room(jpsRoom *room)
 {
     //if (roomlist.size()>0)
     //{
+    int roomID=room->get_id();
     roomlist.removeOne(room);
     delete room;
+    //change IDs of other room with ID greater than roomID
+    for (jpsRoom* otherroom:roomlist)
+        if (otherroom->get_id()>roomID)
+            otherroom->set_id(otherroom->get_id()-1);
+
     room_id_counter-=1;
     //}
 }
