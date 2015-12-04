@@ -51,7 +51,7 @@ void GraphicScene::drawBackground(QPainter *painter, const QRectF &rect)
             DrawLineGrid(painter,rect);
         else
             DrawPointGrid(painter,rect);
-    }   
+    }
 }
 
 void GraphicScene::DrawLineGrid(QPainter *painter, const QRectF &rect)
@@ -92,4 +92,6 @@ void GraphicScene::DrawPointGrid(QPainter *painter, const QRectF &rect)
     painter->setPen(QPen(Qt::black,0));
     painter->drawPoints(points.data(), points.size());
 }
+
+
 

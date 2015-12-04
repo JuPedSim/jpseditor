@@ -632,14 +632,14 @@ void jpsGraphicsView::use_gridmode()
 
 void jpsGraphicsView::catch_points()
 {
-    ///Searching for startpoints of all lines near the current cursor position
+    //Searching for startpoints of all lines near the current cursor position
     for (int i=0; i<line_vector.size(); ++i){
 
         // range chosen: 10 (-5:5) (has to be changed soon)
         if (line_vector[i]->get_line()->line().x1()>=(translated_pos.x()-catch_radius) && line_vector[i]->get_line()->line().x1()<=(translated_pos.x()+catch_radius) && line_vector[i]->get_line()->line().y1()>=(translated_pos.y()-catch_radius) && line_vector[i]->get_line()->line().y1()<=(translated_pos.y()+catch_radius)){
-            /// in this case the cursor is working with global coordinates. So the method 'mapToGlobal' must be used
+            // in this case the cursor is working with global coordinates. So the method 'mapToGlobal' must be used
 
-            ///to avoid the tracking of the coords of an edited line
+            //to avoid the tracking of the coords of an edited line
             if (line_vector[i]->get_line()==current_line)
             {
                 continue;
@@ -648,23 +648,23 @@ void jpsGraphicsView::catch_points()
             translated_pos.setX(line_vector[i]->get_line()->line().x1());
             translated_pos.setY(line_vector[i]->get_line()->line().y1());
             //cursor.setPos(mapToGlobal(QPoint(translate_back_x(line_vector[i].x1()),translate_back_y(line_vector[i].y1()))));
-            ///bool is used to tell paint device to draw a red rect if a point was tracked
+            //bool is used to tell paint device to draw a red rect if a point was tracked
             point_tracked=true;
             _currentTrackedPoint= &translated_pos;
             //QPen pen;
             //pen.setColor('red');
             if (current_rect==nullptr)
                 current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
-            /// if a point was tracked there is no need to look for further points ( only one point can be tracked)
+            // if a point was tracked there is no need to look for further points ( only one point can be tracked)
 
             return;
         }
 
-        ///Searching for endpoints of all lines near the current cursor position
+        //Searching for endpoints of all lines near the current cursor position
         else if (line_vector[i]->get_line()->line().x2()>=(translated_pos.x()-catch_radius) && line_vector[i]->get_line()->line().x2()<=(translated_pos.x()+catch_radius) && line_vector[i]->get_line()->line().y2()>=(translated_pos.y()-catch_radius) && line_vector[i]->get_line()->line().y2()<=(translated_pos.y()+catch_radius)){
             // see above
 
-            ///to avoid the tracking of the coords of an edited line
+            //to avoid the tracking of the coords of an edited line
             if (line_vector[i]->get_line()==current_line)
             {
                 continue;
@@ -681,9 +681,9 @@ void jpsGraphicsView::catch_points()
             return;
         }
     }
-    /// if no start- or endpoint was tracked it is searched for intersections- Points
+    // if no start- or endpoint was tracked it is searched for intersections- Points
 
-    /// see above
+    // see above
     for (int j=0; j<intersect_point_vector.size(); j++)
     {
         if (intersect_point_vector[j]->x()>=(translated_pos.x()-catch_radius) && intersect_point_vector[j]->x()<=(translated_pos.x()+catch_radius) && intersect_point_vector[j]->y()>=(translated_pos.y()-catch_radius) && intersect_point_vector[j]->y()<=(translated_pos.y()+catch_radius))
@@ -696,6 +696,17 @@ void jpsGraphicsView::catch_points()
             return;
         }
     }
+
+    // Catch origin
+    if (!_origin.isEmpty())
+        if (std::fabs(translated_pos.x())<=catch_radius && std::fabs(translated_pos.y())<=catch_radius)
+        {
+            translated_pos.setX(0);
+            translated_pos.setY(0);
+            if (current_rect==nullptr)
+                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+
+        }
     //Look for gridpoints
 
 //    for (auto &gridpoint: grid_point_vector)
@@ -720,7 +731,7 @@ void jpsGraphicsView::catch_points()
 //        }
 //    }
 
-    /// if no point was tracked bool is set back to false
+    // if no point was tracked bool is set back to false
     point_tracked=false;
     return;
 }
@@ -1296,20 +1307,20 @@ void jpsGraphicsView::ShowOrigin()
 {
     if (_origin.isEmpty())
     {
-        _origin.push_back(Scene->addLine(1,1,1/gl_scale_f*0.02,1,QPen(Qt::black,0.025)));
-        _origin.push_back(Scene->addLine(1,1,1,1/gl_scale_f*0.02,QPen(Qt::black,0.025)));
-        _origin.push_back(Scene->addLine(1,1/gl_scale_f*0.02,1-1/gl_scale_f*0.001,1/gl_scale_f*0.02-1/gl_scale_f*0.001,QPen(Qt::black,0.025)));
-        _origin.push_back(Scene->addLine(1,1/gl_scale_f*0.02,1+1/gl_scale_f*0.001,1/gl_scale_f*0.02-1/gl_scale_f*0.001,QPen(Qt::black,0.025)));
-        _origin.push_back(Scene->addLine(1/gl_scale_f*0.02,1,1/gl_scale_f*0.02-1/gl_scale_f*0.001,1-1/gl_scale_f*0.001,QPen(Qt::black,0.025)));
-        _origin.push_back(Scene->addLine(1/gl_scale_f*0.02,1,1/gl_scale_f*0.02-1/gl_scale_f*0.001,1+1/gl_scale_f*0.001,QPen(Qt::black,0.025)));
-        _origin.push_back(Scene->addLine(1/gl_scale_f*0.02,1,1/gl_scale_f*0.02-1/gl_scale_f*0.001,1+1/gl_scale_f*0.001,QPen(Qt::black,0.025)));
+        //Scene->DrawOrigin();
+        _origin.push_back(Scene->addLine(0,0,0,0+gl_scale_f*100,QPen(Qt::black,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0,0+gl_scale_f*100,0-gl_scale_f*10,0+gl_scale_f*100-gl_scale_f*10,QPen(Qt::black,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0,0+gl_scale_f*100,0+gl_scale_f*10,0+gl_scale_f*100-gl_scale_f*10,QPen(Qt::black,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0,0,0+gl_scale_f*100,0,QPen(Qt::black,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0+gl_scale_f*100,0,gl_scale_f*100-gl_scale_f*10,-gl_scale_f*10,QPen(Qt::black,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0+gl_scale_f*100,0,gl_scale_f*100-gl_scale_f*10,+gl_scale_f*10,QPen(Qt::black,gl_scale_f*2)));
         //Y
-        _origin.push_back(Scene->addLine(1-1/gl_scale_f*0.001,1/gl_scale_f*0.015,1-1/gl_scale_f*0.0005,1/gl_scale_f*0.0155,QPen(Qt::black,0.025)));
-        _origin.push_back(Scene->addLine(1-1/gl_scale_f*0.001,1/gl_scale_f*0.015,1-1/gl_scale_f*0.0015,1/gl_scale_f*0.0155,QPen(Qt::black,0.025)));
-        _origin.push_back(Scene->addLine(1-1/gl_scale_f*0.001,1/gl_scale_f*0.015,1-1/gl_scale_f*0.001,1/gl_scale_f*0.014,QPen(Qt::black,0.025)));
+        _origin.push_back(Scene->addLine(0-gl_scale_f*10,gl_scale_f*100-gl_scale_f*50,0-gl_scale_f*5,gl_scale_f*100-gl_scale_f*45,QPen(Qt::black,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0-gl_scale_f*10,gl_scale_f*100-gl_scale_f*50,0-gl_scale_f*15,gl_scale_f*100-gl_scale_f*45,QPen(Qt::black,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0-gl_scale_f*10,gl_scale_f*100-gl_scale_f*50,0-gl_scale_f*10,gl_scale_f*100-gl_scale_f*60,QPen(Qt::black,gl_scale_f*2)));
         //X
-        _origin.push_back(Scene->addLine(1/gl_scale_f*0.014,1-1/gl_scale_f*0.0017,1/gl_scale_f*0.015,1-1/gl_scale_f*0.0005,QPen(Qt::black,0.025)));
-        _origin.push_back(Scene->addLine(1/gl_scale_f*0.015,1-1/gl_scale_f*0.0017,1/gl_scale_f*0.014,1-1/gl_scale_f*0.0005,QPen(Qt::black,0.025)));
+        _origin.push_back(Scene->addLine(0+gl_scale_f*40,0-gl_scale_f*15,gl_scale_f*50,-gl_scale_f*5,QPen(Qt::black,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0+gl_scale_f*40,0-gl_scale_f*5,gl_scale_f*50,-gl_scale_f*15,QPen(Qt::black,gl_scale_f*2)));
 
         for (QGraphicsLineItem* lineItem:_origin)
         {

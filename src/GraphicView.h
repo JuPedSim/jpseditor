@@ -124,8 +124,6 @@ public:
     //RoomCaption
     bool show_hide_roomCaption(QString name, qreal x, qreal y);
 
-
-
 public slots:
     //Waypoints
     void StatAssoDef();
@@ -135,7 +133,6 @@ public slots:
     void ActivatePointGrid();
     //Landmarks
     void unmarkLandmark();
-
 
 protected:
     //Mouse events
