@@ -1209,6 +1209,15 @@ void jpsGraphicsView::delete_marked_lines()
 
 }
 
+void jpsGraphicsView::SelectAllLines()
+{
+    marked_lines.clear();
+    for (jpsLineItem* line:line_vector)
+    {
+        select_line(line);
+    }
+}
+
 void jpsGraphicsView::delete_landmark()
 {
     if (markedLandmark!=nullptr)

@@ -32,12 +32,9 @@
 #include <QApplication>
 #include "GraphicView.h"
 #include <iostream>
-
-
-
 #include <QFileDialog>
 #include <QMessageBox>
-
+#include <QShortcut>
 MWindow :: MWindow() {
 
     setupUi(this);
@@ -116,6 +113,11 @@ MWindow :: MWindow() {
     connect(mview,SIGNAL(set_focus_textedit()),length_edit,SLOT(setFocus()));
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
     connect(mview,SIGNAL(landmark_added()),this,SLOT(add_landmark()));
+    /// Mark all lines
+    QAction *str_a = new QAction(this);
+    str_a->setShortcut(Qt::Key_A | Qt::CTRL);
+    connect(str_a, SIGNAL(triggered(bool)), mview, SLOT(SelectAllLines()));
+    this->addAction(str_a);
     //connect(mview,SIGNAL(DoubleClick()),this,SLOT(en_selectMode()));
     ///Autosave
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));

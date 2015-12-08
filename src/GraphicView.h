@@ -71,11 +71,8 @@ public:
     ///Delete all
     void delete_all(bool final=false);
 
-    ///Line operations
-    void catch_lines();
-    void drawLine();
-    qreal calc_d_point(const QLineF &line, const qreal &x, const qreal &y);
-    void delete_marked_lines();
+
+
 
     /// Landmark
     void delete_landmark();
@@ -90,7 +87,7 @@ public:
     void ShowWaypoints(QList<jpsWaypoint* > waypoints);
 
 
-    /// Lines
+    ///Line operations
     void take_l_from_lineEdit(const qreal &length);
     QList<jpsLineItem *> get_markedLines();
     QList<jpsLineItem *> get_line_vector();
@@ -102,6 +99,11 @@ public:
     void locate_intersection(jpsLineItem* item1, jpsLineItem* item2);
     void SetVLine();
     void EditLine(QPointF* point);
+    void catch_lines();
+    void drawLine();
+    qreal calc_d_point(const QLineF &line, const qreal &x, const qreal &y);
+    void delete_marked_lines();
+
 
     ///RoomCaption
     bool show_hide_roomCaption(QString name, qreal x, qreal y);
@@ -118,6 +120,9 @@ public slots:
     ///Waypoints
     void StatAssoDef();
     void ClearWaypoints();
+
+    ///Line operations
+    void SelectAllLines();
 
 
 protected:
