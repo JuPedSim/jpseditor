@@ -90,7 +90,6 @@ protected slots:
     void rotate();
     void AutoSave();
     void add_landmark();
-    void closeEvent(QCloseEvent *event);
 
 
 };
