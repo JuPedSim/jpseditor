@@ -36,6 +36,7 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QShortcut>
 
 MWindow :: MWindow() {
 
@@ -88,7 +89,7 @@ MWindow :: MWindow() {
 
     //Signals and Slots
     // Tab File
-    connect(actionBeenden, SIGNAL(triggered(bool)),this,SLOT(quit()));//qApp,SLOT(quit()));
+    connect(actionBeenden, SIGNAL(triggered(bool)),this,SLOT(close()));
     connect(action_ffnen,SIGNAL(triggered(bool)),this,SLOT(openFile()));
     connect(action_ffnen_xml,SIGNAL(triggered(bool)),this,SLOT(openFileXML()));
     connect(actionSpeichern,SIGNAL(triggered(bool)),this,SLOT(saveFile()));
@@ -124,6 +125,11 @@ MWindow :: MWindow() {
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
     connect(mview,SIGNAL(landmark_added()),this,SLOT(add_landmark()));
     connect(mview,SIGNAL(LineLengthChanged()),this,SLOT(ShowLineLength()));
+    // Mark all lines
+    QAction *str_a = new QAction(this);
+    str_a->setShortcut(Qt::Key_A | Qt::CTRL);
+    connect(str_a, SIGNAL(triggered(bool)), mview, SLOT(SelectAllLines()));
+    this->addAction(str_a);
     //connect(mview,SIGNAL(DoubleClick()),this,SLOT(en_selectMode()));
     // Autosave
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
@@ -199,15 +205,6 @@ void MWindow::UpdateCMap()
         return;
     }
     dmanager->ShowCMapFrame(_cMapFrame);
-}
-
-void MWindow::quit()
-{
-    //MessageBox
-    //Wenn ja.
-    qApp->quit();
-    //Wenn nein
-    //return to app
 }
 
 void MWindow::add_landmark()
@@ -521,6 +518,23 @@ void MWindow::ShowLineLength()
 void MWindow::rotate()
 {
     mview->rotate(-90);
+}
+
+void MWindow::closeEvent(QCloseEvent *event)
+{
+    int ret = QMessageBox::warning(
+                this, "Quit?",
+                "Do you really want to quit?",
+                QMessageBox::Yes | QMessageBox::No );
+
+    if (ret == QMessageBox::Yes)
+    {
+        QMainWindow::closeEvent(event);
+    }
+    else
+    {
+        event->ignore();
+    }
 }
 
 

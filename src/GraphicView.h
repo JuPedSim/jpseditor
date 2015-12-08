@@ -133,6 +133,8 @@ public slots:
     void ActivatePointGrid();
     //Landmarks
     void unmarkLandmark();
+    //Line operations
+    void SelectAllLines();
 
 protected:
     //Mouse events

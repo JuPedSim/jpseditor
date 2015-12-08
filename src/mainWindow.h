@@ -121,7 +121,7 @@ protected slots:
     void UpdateCMap();
 
     //quit
-    void quit();
+    void closeEvent(QCloseEvent *event);
 
 
 };
