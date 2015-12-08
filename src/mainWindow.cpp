@@ -29,6 +29,7 @@
 //mainWindow.cpp
 
 #include "mainWindow.h"
+#include <QApplication>
 #include "GraphicView.h"
 #include <iostream>
 
@@ -84,7 +85,7 @@ MWindow :: MWindow() {
 
     ///Signals and Slots
     /// Tab File
-    connect(actionBeenden, SIGNAL(triggered(bool)),qApp,SLOT(quit()));
+    connect(actionBeenden, SIGNAL(triggered(bool)),this,SLOT(close()));
     connect(action_ffnen,SIGNAL(triggered(bool)),this,SLOT(openFile()));
     connect(action_ffnen_xml,SIGNAL(triggered(bool)),this,SLOT(openFileXML()));
     connect(actionSpeichern,SIGNAL(triggered(bool)),this,SLOT(saveFile()));
@@ -413,14 +414,19 @@ void MWindow::rotate()
 }
 
 
+void MWindow::closeEvent(QCloseEvent *event)
+{
+    int ret = QMessageBox::warning(
+                this, "Quit?",
+                "Do you really want to quit?",
+                QMessageBox::Yes | QMessageBox::No );
 
-
-
-
-
-
-
-
-
-
-
+    if (ret == QMessageBox::Yes)
+    {
+        QMainWindow::closeEvent(event);
+    }
+    else
+    {
+        event->ignore();
+    }
+}
