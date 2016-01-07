@@ -69,6 +69,8 @@ MWindow :: MWindow() {
     //filename of saved project
     _filename="";
 
+    //WindowTitle
+    this->setWindowTitle("JPSeditor");
 
     setCentralWidget(mview);
     //this->setMaximumSize(1920,1080);

@@ -8,6 +8,7 @@
 # 1. CMAKE_BUILD_TYPE=Release (default Debug)
 # 2. DESIRED_QT_VERSION=5 (default 4)
 # example: >> cmake  -DDESIRED_QT_VERSION=5  -DCMAKE_PREFIX_PATH=~/Qt/5.5/clang_64 ..
+# Flags for VS: -G "Visual Studio ..." -DCMAKE_PREFIX_PATH=... -DCMAKE_C_FLAGS="-mwindows" 
 
 cmake_minimum_required(VERSION 2.8.9)
 IF (POLICY CMP0048) # in CMake 3.0.0+
@@ -70,6 +71,7 @@ message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
 
 
 #--------------------
+if (NOT MSVC)
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
@@ -81,7 +83,7 @@ else()
   message(AUTHOR_WARNING "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 message(STATUS "Checking for C++11 compiler - available")
-
+endif()
 #---------------------
 
 set( SRCS
@@ -166,7 +168,7 @@ ENDIF (WIN32)
 message(STATUS "QT_Qmake_executable " ${QT_QMAKE_EXECUTABLE})
 if($QT_QMAKE_EXECUTABLE STREQUAL "")
   FIND_PROGRAM(QT_QMAKE_EXECUTABLE NAMES qmake)
-  if (NOT QT_QMAKE_EXECUTABL)
+  if (NOT QT_QMAKE_EXECUTABLE)
     message(WARNING "QT not found - abort.")
   endif()
 endif()
@@ -199,7 +201,7 @@ elseif("${DESIRED_QT_VERSION}" STREQUAL "4")
   #   QT4_INSTALLED is set to TRUE if qt4 is found and
   #   QT3_INSTALLED is set to TRUE if qt3 is found.
   FIND_PACKAGE(Qt COMPONENTS QtXml QT_USE_QTNETWORK QtXmlPatterns REQUIRED)
-
+  set(QT4_INSTALLED TRUE)
 endif()
 
 
