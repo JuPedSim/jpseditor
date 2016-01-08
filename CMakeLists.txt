@@ -17,6 +17,8 @@ ENDIF (POLICY CMP0048)
 IF (POLICY CMP0043) # in CMake 3.0.0+
   CMAKE_POLICY (SET CMP0043 OLD) # keep PROJECT() from clearing VERSION variables
 ENDIF (POLICY CMP0043)
+CMAKE_POLICY (SET CMP0020 OLD) # keep old POLICY (2.8.10 and lower) The OLD behavior for this policy is not to link executables to
+							   #qtmain.lib automatically when they link to the QtCore IMPORTEDtarget 
 project(JPSeditor)
 
 
