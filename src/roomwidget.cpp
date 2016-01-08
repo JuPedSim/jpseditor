@@ -799,8 +799,9 @@ void roomWidget::ChangeRoomType()
 void roomWidget::ShowRoomType(int& cRow) const
 {
     QString type = datamanager->get_roomlist()[cRow]->get_type();
+    int itemindex = ui->classBox->findText(type);
+    ui->classBox->setCurrentIndex(itemindex);
 
-    // ui->classBox->setCurrentText(type);
 }
 
 
