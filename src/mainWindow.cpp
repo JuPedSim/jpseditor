@@ -265,16 +265,17 @@ void MWindow::openFileXML()
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        QMessageBox::critical(this,
-                              "OpenFileXML",
-                              "Couldn't open xml-file",
-                              QMessageBox::Ok);
+
         return;
     }
 
 
     if (!dmanager->readXML(file))
     {
+        QMessageBox::critical(this,
+                              "OpenFileXML",
+                              "Couldn't open xml-file",
+                              QMessageBox::Ok);
         statusBar()->showMessage("XML-File could not be parsed!",10000);
     }
 

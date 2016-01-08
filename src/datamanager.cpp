@@ -860,6 +860,14 @@ bool jpsDatamanager::readXML(QFile &file)
 
     QXmlStreamReader xmlReader(&file);
 
+    // skip header
+    xmlReader.readNext();
+    xmlReader.readNext();
+
+    // see if file starts with geometry
+    if (xmlReader.name() != "geometry")
+        return false;
+
     while(!xmlReader.atEnd() && !xmlReader.hasError())
     {
         /* Read next element.*/
