@@ -1200,9 +1200,11 @@ bool jpsDatamanager::readDXF(std::string filename)
 
 void jpsDatamanager::addLine(const DL_LineData &d)
 {
-
-    mView->addLineItem(d.x1,d.y1,d.x2,d.y2);
-
+    DL_Attributes attributes = DL_CreationInterface::getAttributes();
+    if (attributes.getLayer()=="Wall" || attributes.getLayer()=="Door")
+        mView->addLineItem(d.x1,d.y1,d.x2,d.y2,QString::fromStdString(attributes.getLayer()));
+    else
+        mView->addLineItem(d.x1,d.y1,d.x2,d.y2);
 }
 
 

@@ -124,6 +124,8 @@ public:
     //RoomCaption
     bool show_hide_roomCaption(QString name, qreal x, qreal y);
 
+
+
 public slots:
     //Waypoints
     void StatAssoDef();
@@ -198,6 +200,8 @@ private:
     bool lines_collided;
     bool _assoDef;
     bool _gridmode;
+
+
 
 signals:
     void mouse_moved();

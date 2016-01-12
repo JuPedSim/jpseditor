@@ -170,6 +170,8 @@ private:
     double _frameRate;
     int _lastCMapFrame;
 
+
+
 };
 
 

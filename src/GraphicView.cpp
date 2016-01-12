@@ -1039,6 +1039,7 @@ bool jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
     return true;
 }
 
+
 void jpsGraphicsView::line_collision() ///FIX ME!!!
 {
     /// if no lines collided yet
