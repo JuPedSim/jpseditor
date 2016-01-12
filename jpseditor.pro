@@ -57,7 +57,9 @@ HEADERS += \
     src/graphicscene.h \
     src/widgetsettings.h \
     src/jpsyahpointer.h \
-    src/jpsconnection.h
+    src/jpsconnection.h \
+    src/UndoFramework/actionstack.h \
+    src/UndoFramework/paintaction.h
 
 
 SOURCES += \
@@ -79,7 +81,9 @@ SOURCES += \
     src/graphicscene.cpp \
     src/widgetsettings.cpp \
     src/jpsyahpointer.cpp \
-    src/jpsconnection.cpp
+    src/jpsconnection.cpp \
+    src/UndoFramework/actionstack.cpp \
+    src/UndoFramework/paintaction.cpp
 
 
 RESOURCES +=  forms/Ressource.qrc
