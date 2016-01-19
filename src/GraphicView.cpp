@@ -1039,6 +1039,24 @@ bool jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
     return true;
 }
 
+void jpsGraphicsView::RecordLineAction(const QString& name, const QString& type, const QLine &oldLine)
+{
+    _undoStack.PushNewAction(LineAction(name,type,oldLine));
+}
+
+void jpsGraphicsView::Undo()
+{
+    const LineAction recentAction = _undoStack.GetRecentAction();
+
+
+    if (recentAction.GetName()=="LineDeleted")
+        addLineItem(recentAction.GetOldLine().p1().x(),recentAction.GetOldLine().p1().y(),recentAction.GetOldLine().p2().x(),
+                    recentAction.GetOldLine().p2().y(),recentAction.GetType());
+
+    _redoStack.PushNewAction(LineAction("LineAdded",recentAction.GetType(),QLine(0,0,0,0)));
+
+}
+
 
 void jpsGraphicsView::line_collision() ///FIX ME!!!
 {

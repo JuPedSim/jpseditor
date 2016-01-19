@@ -36,6 +36,8 @@
 #include "jpsLineItem.h"
 #include "jpslandmark.h"
 #include "jpsconnection.h"
+#include "./UndoFramework/actionstack.h"
+
 using ptrConnection = std::shared_ptr<jpsConnection>;
 
 class jpsGraphicsView: public QGraphicsView {
@@ -124,7 +126,9 @@ public:
     //RoomCaption
     bool show_hide_roomCaption(QString name, qreal x, qreal y);
 
-
+    //Undo Framework
+    void RecordLineAction(const QString &name, const QString &type, const QLine& oldLine);
+    void Undo();
 
 public slots:
     //Waypoints
@@ -201,6 +205,9 @@ private:
     bool _assoDef;
     bool _gridmode;
 
+    //Undo/Redo
+    ActionStack _undoStack;
+    ActionStack _redoStack;
 
 
 signals:
