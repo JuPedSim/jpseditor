@@ -510,8 +510,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>Undo-icon.png</normaloff>Undo-icon.png</iconset>
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/Undo-icon.png</normaloff>:/Undo-icon.png</iconset>
    </property>
    <property name="text">
     <string>Undo</string>

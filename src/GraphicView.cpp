@@ -229,7 +229,7 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
         }
         else
         {
-            ///LineEdit
+            //LineEdit
             if (_currentTrackedPoint!=nullptr && line_tracked==1)
             {
                 EditLine(_currentTrackedPoint);
@@ -238,7 +238,7 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
             }
             else
             {
-                ///Select_mode
+                //Select_mode
                 currentSelectRect=Scene->addRect(translated_pos.x(),translated_pos.y(),0,0,QPen(Qt::blue,0));
                 currentSelectRect->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
                 leftbutton_hold=true;
@@ -1039,23 +1039,23 @@ bool jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
     return true;
 }
 
-void jpsGraphicsView::RecordLineAction(const QString& name, const QString& type, const QLineF &oldLine)
-{
-    _undoStack.PushNewAction(LineAction(name,type,oldLine));
-}
+//void jpsGraphicsView::RecordLineAction(const QString& name, const QString& type, const QLineF &oldLine)
+//{
+//    _undoStack.PushNewAction(LineAction(name,type,oldLine));
+//}
 
-void jpsGraphicsView::Undo()
-{
-    const LineAction recentAction = _undoStack.GetRecentAction();
+//void jpsGraphicsView::Undo()
+//{
+//    const LineAction recentAction = _undoStack.GetRecentAction();
 
 
-    if (recentAction.GetName()=="LineDeleted")
-        addLineItem(recentAction.GetOldLine().p1().x(),recentAction.GetOldLine().p1().y(),recentAction.GetOldLine().p2().x(),
-                    recentAction.GetOldLine().p2().y(),recentAction.GetType());
+//    if (recentAction.GetName()=="LineDeleted")
+//        addLineItem(recentAction.GetOldLine().p1().x(),recentAction.GetOldLine().p1().y(),recentAction.GetOldLine().p2().x(),
+//                    recentAction.GetOldLine().p2().y(),recentAction.GetType());
 
-    _redoStack.PushNewAction(LineAction("LineAdded",recentAction.GetType(),QLineF(0,0,0,0)));
+//    _redoStack.PushNewAction(LineAction("LineAdded",recentAction.GetType(),QLineF(0,0,0,0)));
 
-}
+//}
 
 
 void jpsGraphicsView::line_collision() ///FIX ME!!!
@@ -1410,7 +1410,7 @@ void jpsGraphicsView::delete_marked_lines()
              type = "Door";
         else
              type = "Wall";
-        RecordLineAction("LineDeleted",type,marked_lines.back()->get_line()->line());
+        //RecordLineAction("LineDeleted",type,marked_lines.back()->get_line()->line());
         marked_lines.clear();
 
         //intersect_point_vector.clear();
