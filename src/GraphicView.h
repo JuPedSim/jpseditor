@@ -208,8 +208,8 @@ private:
     bool _gridmode;
 
     //Undo/Redo
-    ActionStack _undoStack;
-    ActionStack _redoStack;
+    //ActionStack _undoStack;
+    //ActionStack _redoStack;
 
 
 signals:
