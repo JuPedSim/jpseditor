@@ -100,6 +100,8 @@
    </attribute>
    <addaction name="actionSelect_Mode"/>
    <addaction name="separator"/>
+   <addaction name="actionUndo"/>
+   <addaction name="separator"/>
    <addaction name="actionWall"/>
    <addaction name="actionDoor"/>
    <addaction name="separator"/>
@@ -501,6 +503,27 @@
   <action name="actionShow_Point_of_Origin">
    <property name="text">
     <string>Show Point of Origin</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>Undo-icon.png</normaloff>Undo-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="toolTip">
+    <string>Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
    </property>
   </action>
  </widget>

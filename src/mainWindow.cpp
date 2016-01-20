@@ -143,7 +143,8 @@ MWindow :: MWindow() {
     //CMap
     connect(actionRun_visualisation,SIGNAL(triggered(bool)),this,SLOT(RunCMap()));
     connect(_cMapTimer,SIGNAL(timeout()),this,SLOT(UpdateCMap()));
-
+    //Undo
+    //connect(actionUndo,SIGNAL(triggered(bool)),mview,SLOT(Undo()));
 }
 
 MWindow::~MWindow()

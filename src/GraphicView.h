@@ -127,8 +127,8 @@ public:
     bool show_hide_roomCaption(QString name, qreal x, qreal y);
 
     //Undo Framework
-    void RecordLineAction(const QString &name, const QString &type, const QLine& oldLine);
-    void Undo();
+    void RecordLineAction(const QString &name, const QString &type, const QLineF &oldLine);
+
 
 public slots:
     //Waypoints
@@ -141,6 +141,8 @@ public slots:
     void unmarkLandmark();
     //Line operations
     void SelectAllLines();
+    //Undo Redo
+    void Undo();
 
 protected:
     //Mouse events

@@ -1039,7 +1039,7 @@ bool jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
     return true;
 }
 
-void jpsGraphicsView::RecordLineAction(const QString& name, const QString& type, const QLine &oldLine)
+void jpsGraphicsView::RecordLineAction(const QString& name, const QString& type, const QLineF &oldLine)
 {
     _undoStack.PushNewAction(LineAction(name,type,oldLine));
 }
@@ -1053,7 +1053,7 @@ void jpsGraphicsView::Undo()
         addLineItem(recentAction.GetOldLine().p1().x(),recentAction.GetOldLine().p1().y(),recentAction.GetOldLine().p2().x(),
                     recentAction.GetOldLine().p2().y(),recentAction.GetType());
 
-    _redoStack.PushNewAction(LineAction("LineAdded",recentAction.GetType(),QLine(0,0,0,0)));
+    _redoStack.PushNewAction(LineAction("LineAdded",recentAction.GetType(),QLineF(0,0,0,0)));
 
 }
 
@@ -1405,6 +1405,12 @@ void jpsGraphicsView::delete_marked_lines()
 
 
         }
+        QString type;
+        if (marked_lines.back()->is_Door())
+             type = "Door";
+        else
+             type = "Wall";
+        RecordLineAction("LineDeleted",type,marked_lines.back()->get_line()->line());
         marked_lines.clear();
 
         //intersect_point_vector.clear();
