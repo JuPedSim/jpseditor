@@ -508,6 +508,7 @@ void MWindow::en_selectMode()
     actionWall->setChecked(false);
     actionDoor->setChecked(false);
     actionExit->setChecked(false);
+    actionHLine->setChecked(false);
     actionLandmark->setChecked(false);
     length_edit->clearFocus();
 }
