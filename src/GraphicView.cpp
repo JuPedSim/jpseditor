@@ -814,7 +814,7 @@ void jpsGraphicsView::drawLine()
         //Undo
         RecordUndoLineAction("LineAdded",lineItem->GetType(),lineItem->get_line()->line());
 
-        drawLine();
+        //drawLine();
 
 
 

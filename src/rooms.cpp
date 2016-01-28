@@ -257,12 +257,12 @@ QPolygonF jpsRoom::RoomAsSortedPolygon() const
     }
 
 
-//    for (QPointF point:points)
-//    {
-//        std::cout << point.x() << " " << point.y() << std::endl;
+    for (QPointF point:points)
+    {
+        std::cout << point.x() << " " << point.y() << std::endl;
 
-//    }
-//    std::cout << "----------------------------" << std::endl;
+    }
+    std::cout << "----------------------------" << std::endl;
 
     return QPolygonF(points);
 }

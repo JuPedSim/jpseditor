@@ -358,9 +358,11 @@ void jpsDatamanager::writeRoutingHeader(QXmlStreamWriter *stream)
 
 void jpsDatamanager::writeHLines(QXmlStreamWriter *stream, QList<jpsLineItem *> &hLines)
 {
+    int id=1000;
     for (jpsLineItem *lineItem:hLines)
     {
         stream->writeStartElement("Hline");
+        stream->writeAttribute("id",QString::number(id));
         stream->writeAttribute("room_id","0");
         QString rid = RoomIDHLine(lineItem);
         if (rid.contains("Warning"))
@@ -384,6 +386,7 @@ void jpsDatamanager::writeHLines(QXmlStreamWriter *stream, QList<jpsLineItem *> 
             stream->writeEndElement(); //vertex
 
         stream->writeEndElement(); //Hline
+        id++;
     }
 }
 
