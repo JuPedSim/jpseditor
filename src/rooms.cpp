@@ -219,7 +219,52 @@ void jpsRoom::AddDoor(jpsCrossing *door)
 
 QPolygonF jpsRoom::RoomAsPolygon() const
 {
+
     return QPolygonF(get_vertices());
+}
+
+QPolygonF jpsRoom::RoomAsSortedPolygon() const
+{
+    QList<jpsLineItem*> lines = item_list;
+    for (jpsCrossing* crossing:_doorList)
+    {
+        lines.push_back(crossing->get_cLine());
+    }
+//    std::cout << lines.size() << std::endl;
+    QVector<QPointF> points;
+
+    points.push_back(lines.first()->get_line()->line().p1());
+    points.push_back(lines.first()->get_line()->line().p2());
+
+    lines.pop_front();
+
+    for (int i=0; i<lines.size(); i++)
+    {
+        if (lines[i]->get_line()->line().p1() == points.last())
+        {
+            //points.push_back(line->get_line()->line().p1());
+            points.push_back(lines[i]->get_line()->line().p2());
+            lines.removeOne(lines[i]);
+            i=-1;
+        }
+        else if (lines[i]->get_line()->line().p2() == points.last())
+        {
+            //points.push_back(line->get_line()->line().p1());
+            points.push_back(lines[i]->get_line()->line().p1());
+            lines.removeOne(lines[i]);
+            i=-1;
+        }
+    }
+
+
+//    for (QPointF point:points)
+//    {
+//        std::cout << point.x() << " " << point.y() << std::endl;
+
+//    }
+//    std::cout << "----------------------------" << std::endl;
+
+    return QPolygonF(points);
 }
 
 //bool jpsRoom::ContainsDoor(jpsLineItem *lineItem) const

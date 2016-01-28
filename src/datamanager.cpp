@@ -392,7 +392,7 @@ QString jpsDatamanager::RoomIDHLine(jpsLineItem *lineItem)
 
     for (jpsRoom* room:roomlist)
     {
-        QPolygonF rPolygon = room->RoomAsPolygon();
+        QPolygonF rPolygon = room->RoomAsSortedPolygon();
         if (rPolygon.containsPoint(lineItem->get_line()->line().p1(),Qt::OddEvenFill) ||
                 rPolygon.contains(lineItem->get_line()->line().p1()))
         {
@@ -402,15 +402,15 @@ QString jpsDatamanager::RoomIDHLine(jpsLineItem *lineItem)
             else
                 return "Warning! HLine intersects walls";
         }
-        else if (rPolygon.containsPoint(lineItem->get_line()->line().p2(),Qt::OddEvenFill)||
-                 rPolygon.contains(lineItem->get_line()->line().p2()))
-        {
-            if (rPolygon.containsPoint(lineItem->get_line()->line().p1(),Qt::OddEvenFill)||
-                    rPolygon.contains(lineItem->get_line()->line().p1()))
-                return QString::number(room->get_id());
-            else
-                return "Warning! HLine intersects walls";
-        }
+//        else if (rPolygon.containsPoint(lineItem->get_line()->line().p2(),Qt::OddEvenFill)||
+//                 rPolygon.contains(lineItem->get_line()->line().p2()))
+//        {
+//            if (rPolygon.containsPoint(lineItem->get_line()->line().p1(),Qt::OddEvenFill)||
+//                    rPolygon.contains(lineItem->get_line()->line().p1()))
+//                return QString::number(room->get_id());
+//            else
+//                return "Warning! HLine intersects walls";
+//        }
 
     }
     return "Warning! HLine outside geometry";

@@ -58,6 +58,11 @@ public:
     //bool ContainsDoor(jpsLineItem* lineItem) const;
     void AddDoor(jpsCrossing *door);
     QPolygonF RoomAsPolygon() const;
+    /**
+     * @brief RoomAsSortedPolygon
+     * @return SortedPolygon: QPolygonF
+     */
+    QPolygonF RoomAsSortedPolygon() const;
 
 
 private:
