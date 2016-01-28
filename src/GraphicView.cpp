@@ -64,6 +64,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     statWall=false;
     statDoor=false;
     statExit=false;
+    _statHLine=false;
     statLandmark=false;
     markedLandmark=nullptr;
     currentLandmarkRect=nullptr;
@@ -206,9 +207,9 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
     if (mouseEvent->button() == Qt::LeftButton)
     {
 
-        if (statWall==true || statDoor==true || statExit==true)
+        if (statWall || statDoor || statExit || _statHLine)
         {
-            /// If line is edited currently
+            // If line is edited currently
             if (_statLineEdit)
             {
                 for (jpsLineItem* line:line_vector)
@@ -774,11 +775,11 @@ void jpsGraphicsView::catch_lines()
 
 void jpsGraphicsView::drawLine()
 {
-    if (current_line==nullptr) /// if the mouse was pressed first of two times
+    if (current_line==nullptr) // if the mouse was pressed first of two times
     {
-        ///Determining first point of line
+        //Determining first point of line
 
-        /// all two points of the line are inited with the cursorcoordinates
+        // all two points of the line are inited with the cursorcoordinates
         current_line = Scene->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),currentPen);
         //current_line->translate(translation_x,translation_y);
         current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
@@ -804,11 +805,14 @@ void jpsGraphicsView::drawLine()
             }
         }
 
-        lineItem->set_type(statWall,statDoor,statExit);
+        lineItem->set_type(statWall,statDoor,statExit,_statHLine);
         line_vector.push_back(lineItem);
 
-        ///reset pointer
+        //reset pointer
         current_line=nullptr;
+
+        //Undo
+        RecordUndoLineAction("LineAdded",lineItem->GetType(),lineItem->get_line()->line());
 
         drawLine();
 
@@ -816,7 +820,7 @@ void jpsGraphicsView::drawLine()
 
     }
 
-    ///Vline
+    //Vline
     if (_currentVLine!=nullptr)
     {
         delete _currentVLine;
@@ -849,16 +853,16 @@ void jpsGraphicsView::disable_drawing()
     statExit=false;
     statLandmark=false;
     _statLineEdit=false;
-    /// if drawing was canceled by pushing ESC
+    // if drawing was canceled by pushing ESC
     if (current_line!=nullptr)
     {
-        ///not completed line will be deleted
+        //not completed line will be deleted
         delete current_line;
         current_line=nullptr;
     }
     if (_currentVLine!=nullptr)
     {
-        ///VLine will be deleted
+        //VLine will be deleted
         delete _currentVLine;
         _currentVLine=nullptr;
     }
@@ -908,6 +912,11 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
 
     return newLine;
 
+}
+
+jpsLineItem *jpsGraphicsView::addLineItem(const QLineF &line, const QString &type)
+{
+    return addLineItem(line.p1().x(),line.p1().y(),line.p2().x(),line.p2().y(),type);
 }
 
 void jpsGraphicsView::locate_intersection(jpsLineItem *item1, jpsLineItem *item2)
@@ -1039,26 +1048,65 @@ bool jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
     return true;
 }
 
-//void jpsGraphicsView::RecordLineAction(const QString& name, const QString& type, const QLineF &oldLine)
-//{
-//    _undoStack.PushNewAction(LineAction(name,type,oldLine));
-//}
+void jpsGraphicsView::RecordUndoLineAction(const QString& name, const QString& type, const QLineF &oldLine)
+{
+    _undoStack.PushNewAction(LineAction(name,type,oldLine));
+}
 
-//void jpsGraphicsView::Undo()
-//{
-//    const LineAction recentAction = _undoStack.GetRecentAction();
+void jpsGraphicsView::RecordRedoLineAction(const QString &name, const QString &type, const QLineF &oldLine)
+{
+    _redoStack.PushNewAction(LineAction(name,type,oldLine));
+}
+
+void jpsGraphicsView::Undo()
+{
+    if (!_undoStack.IsEmpty())
+    {
+        const LineAction recentAction = _undoStack.GetRecentAction();
+
+        if (recentAction.GetName()=="LineDeleted")
+        {
+            addLineItem(recentAction.GetOldLine().p1().x(),recentAction.GetOldLine().p1().y(),recentAction.GetOldLine().p2().x(),
+                        recentAction.GetOldLine().p2().y(),recentAction.GetType());
+
+            RecordRedoLineAction("LineAdded",recentAction.GetType(),QLineF(0,0,0,0));
+        }
+        else if (recentAction.GetName()=="LineAdded")
+        {
+            RecordRedoLineAction("LineDeleted",line_vector.back()->GetType(),line_vector.back()->get_line()->line());
+            RemoveLineItem(line_vector.back());
+        }
+    }
+
+}
+
+void jpsGraphicsView::Redo()
+{
+    if (!_redoStack.IsEmpty())
+    {
+        const LineAction recentAction = _redoStack.GetRecentAction();
+
+        if (recentAction.GetName()=="LineDeleted")
+        {
+            addLineItem(recentAction.GetOldLine().p1().x(),recentAction.GetOldLine().p1().y(),recentAction.GetOldLine().p2().x(),
+                        recentAction.GetOldLine().p2().y(),recentAction.GetType());
+
+            RecordUndoLineAction("LineAdded",recentAction.GetType(),QLineF(0,0,0,0));
+        }
+
+        else if (recentAction.GetName()=="LineAdded")
+        {
+            RecordUndoLineAction("LineDeleted",line_vector.back()->GetType(),line_vector.back()->get_line()->line());
+            RemoveLineItem(line_vector.back());
+
+        }
 
 
-//    if (recentAction.GetName()=="LineDeleted")
-//        addLineItem(recentAction.GetOldLine().p1().x(),recentAction.GetOldLine().p1().y(),recentAction.GetOldLine().p2().x(),
-//                    recentAction.GetOldLine().p2().y(),recentAction.GetType());
-
-//    _redoStack.PushNewAction(LineAction("LineAdded",recentAction.GetType(),QLineF(0,0,0,0)));
-
-//}
+    }
+}
 
 
-void jpsGraphicsView::line_collision() ///FIX ME!!!
+void jpsGraphicsView::line_collision() //FIX ME!!!
 {
     /// if no lines collided yet
     if (!lines_collided && current_line!=nullptr)
@@ -1395,8 +1443,10 @@ void jpsGraphicsView::delete_marked_lines()
         for (int i=0; i<marked_lines.size(); ++i)
         {
 
+            RecordUndoLineAction("LineDeleted",marked_lines[i]->GetType(),marked_lines[i]->get_line()->line());
 
             RemoveIntersections(marked_lines[i]);
+
 
             delete marked_lines[i]->get_line();
             //marked_lines[i]->set_line(nullptr);
@@ -1404,19 +1454,39 @@ void jpsGraphicsView::delete_marked_lines()
             line_vector.removeOne(marked_lines[i]);
 
 
+
         }
-        QString type;
-        if (marked_lines.back()->is_Door())
-             type = "Door";
-        else
-             type = "Wall";
-        //RecordLineAction("LineDeleted",type,marked_lines.back()->get_line()->line());
+
         marked_lines.clear();
 
         //intersect_point_vector.clear();
         line_tracked=-1;
         emit lines_deleted();
         update();
+    }
+
+}
+
+void jpsGraphicsView::RemoveLineItem(jpsLineItem *mline)
+{
+    RemoveIntersections(mline);
+    line_vector.removeOne(mline);
+    delete mline->get_line();
+    delete mline;
+    emit lines_deleted();
+
+}
+
+void jpsGraphicsView::RemoveLineItem(const QLineF &line)
+{
+    for (jpsLineItem* lineItem:line_vector)
+    {
+        if (lineItem->get_line()->line()==line)
+        {
+            unmark_all_lines();
+            select_line(lineItem);
+            delete_marked_lines();
+        }
     }
 
 }
@@ -1565,6 +1635,7 @@ void jpsGraphicsView::en_disableWall()
     statWall=!statWall;
     statDoor=false;
     statExit=false;
+    _statHLine=false;
     statLandmark=false;
     if (statWall==false)
     {
@@ -1598,6 +1669,7 @@ void jpsGraphicsView::en_disableDoor()
     statExit=false;
     statWall=false;
     statLandmark=false;
+    _statHLine=false;
     if (statDoor==false)
     {
         emit no_drawing();
@@ -1619,6 +1691,7 @@ void jpsGraphicsView::en_disableExit()
     statExit=!statExit;
     statDoor=false;
     statWall=false;
+    _statHLine=false;
     statLandmark=false;
     if (statExit==false)
     {
@@ -1627,6 +1700,28 @@ void jpsGraphicsView::en_disableExit()
     else
     {
         currentPen.setColor(Qt::darkMagenta);
+    }
+}
+
+bool jpsGraphicsView::statusHLine()
+{
+    return _statHLine;
+}
+
+void jpsGraphicsView::en_disableHLine()
+{
+    _statHLine=!_statHLine;
+    statExit=false;
+    statDoor=false;
+    statWall=false;
+    statLandmark=false;
+    if (_statHLine==false)
+    {
+        emit no_drawing();
+    }
+    else
+    {
+        currentPen.setColor(Qt::darkCyan);
     }
 }
 

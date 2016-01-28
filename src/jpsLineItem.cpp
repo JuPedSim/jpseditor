@@ -58,6 +58,16 @@ QString jpsLineItem::get_name()
     return mName;
 }
 
+QString jpsLineItem::GetType()
+{
+    if (is_Door())
+        return "Door";
+    else if (is_Wall())
+        return "Wall";
+    else if (IsHLine())
+        return "HLine";
+}
+
 void jpsLineItem::set_id(int id)
 {
     mId=id;
@@ -68,7 +78,7 @@ void jpsLineItem::set_name(QString name)
     mName=name;
 }
 
-void jpsLineItem::set_type(bool wall, bool door, bool exit)
+void jpsLineItem::set_type(bool wall, bool door, bool exit, bool hline)
 {
     if (wall==true)
     {
@@ -82,6 +92,8 @@ void jpsLineItem::set_type(bool wall, bool door, bool exit)
     {
         set_Exit();
     }
+    else
+        SetHLine();
 }
 
 void jpsLineItem::set_Wall()
@@ -89,6 +101,7 @@ void jpsLineItem::set_Wall()
     wall=true;
     door=false;
     exit=false;
+    _hLine=false;
     defaultColor="black";
 }
 
@@ -97,6 +110,7 @@ void jpsLineItem::set_Door()
     door=true;
     wall=false;
     exit=false;
+    _hLine=false;
     defaultColor="blue";
 }
 
@@ -105,7 +119,18 @@ void jpsLineItem::set_Exit()
     exit=true;
     wall=false;
     door=false;
+    _hLine=false;
     defaultColor="darkMagenta";
+
+}
+
+void jpsLineItem::SetHLine()
+{
+    exit=false;
+    wall=false;
+    door=false;
+    _hLine=true;
+    defaultColor="darkCyan";
 
 }
 
@@ -127,6 +152,11 @@ bool jpsLineItem::is_Door()
 bool jpsLineItem::is_Exit()
 {
     return exit;
+}
+
+bool jpsLineItem::IsHLine()
+{
+    return _hLine;
 }
 
 void jpsLineItem::add_intersectionPoint(QPointF *point)

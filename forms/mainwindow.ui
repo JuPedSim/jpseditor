@@ -101,9 +101,11 @@
    <addaction name="actionSelect_Mode"/>
    <addaction name="separator"/>
    <addaction name="actionUndo"/>
+   <addaction name="actionRedo"/>
    <addaction name="separator"/>
    <addaction name="actionWall"/>
    <addaction name="actionDoor"/>
+   <addaction name="actionHLine"/>
    <addaction name="separator"/>
    <addaction name="actiongridmode"/>
    <addaction name="separator"/>
@@ -523,6 +525,45 @@
     <string>Ctrl+Z</string>
    </property>
    <property name="visible">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/Redo-Icon.png</normaloff>:/Redo-Icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Redo</string>
+   </property>
+   <property name="toolTip">
+    <string>Redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+U</string>
+   </property>
+  </action>
+  <action name="actionHLine">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/Wall.png</normaloff>:/Wall.png</iconset>
+   </property>
+   <property name="text">
+    <string>HLine</string>
+   </property>
+   <property name="toolTip">
+    <string>HLine</string>
+   </property>
+   <property name="shortcut">
+    <string>H</string>
+   </property>
+   <property name="iconVisibleInMenu">
     <bool>true</bool>
    </property>
   </action>

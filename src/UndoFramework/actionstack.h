@@ -3,7 +3,7 @@
 
 #include <QStack>
 #include "action.h"
-#include "paintaction.h"
+#include "lineaction.h"
 
 class ActionStack
 {
@@ -13,6 +13,7 @@ public:
 
     LineAction GetRecentAction();
     void PushNewAction(const LineAction& action);
+    bool IsEmpty();
 private:
     QStack<LineAction> _actionstack;
 };

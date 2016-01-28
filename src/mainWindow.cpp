@@ -106,6 +106,7 @@ MWindow :: MWindow() {
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
     connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(en_disableDoor()));
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(en_disableExit()));
+    connect(actionHLine,SIGNAL(triggered(bool)),this,SLOT(en_disableHLine()));
     connect(actionObjectsnap,SIGNAL(triggered(bool)),this,SLOT(objectsnap()));
     connect(actionDelete_lines,SIGNAL(triggered(bool)),this,SLOT(delete_lines()));
     connect(actionDelete_single_line,SIGNAL(triggered(bool)),this,SLOT(delete_marked_lines()));
@@ -143,8 +144,9 @@ MWindow :: MWindow() {
     //CMap
     connect(actionRun_visualisation,SIGNAL(triggered(bool)),this,SLOT(RunCMap()));
     connect(_cMapTimer,SIGNAL(timeout()),this,SLOT(UpdateCMap()));
-    //Undo
-    //connect(actionUndo,SIGNAL(triggered(bool)),mview,SLOT(Undo()));
+    //Undo Redo
+    connect(actionUndo,SIGNAL(triggered(bool)),mview,SLOT(Undo()));
+    connect(actionRedo,SIGNAL(triggered(bool)),mview,SLOT(Redo()));
 }
 
 MWindow::~MWindow()
@@ -335,6 +337,13 @@ void MWindow::saveFile(){
             return;
         }
         dmanager->writeXML(file);
+
+        //routing (hlines)
+        QString fileNameRouting = fileName+"routing.xml";
+        QFile routingFile(fileNameRouting);
+        if (routingFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeRoutingXML(routingFile);
+
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
     }
@@ -399,12 +408,20 @@ void MWindow::en_disableLandmark()
     mview->en_disableLandmark();
 }
 
+void MWindow::en_disableHLine()
+{
+    this->disableDrawing();
+    actionHLine->setChecked(true);
+    mview->en_disableHLine();
+}
+
 void MWindow::disableDrawing()
 {
     this->actionWall->setChecked(false);
     this->actionDoor->setChecked(false);
     this->actionExit->setChecked(false);
     this->actionLandmark->setChecked(false);
+    this->actionHLine->setChecked(false);
 }
 
 void MWindow::objectsnap()
@@ -517,6 +534,7 @@ void MWindow::remove_all_lines()
 void MWindow::ShowLineLength()
 {
     length_edit->setText(QString::number(mview->ReturnLineLength()));
+    length_edit->selectAll();
 }
 
 void MWindow::rotate()

@@ -40,5 +40,6 @@
         <file>statue_specs.jpg</file>
         <file>anglesnap.PNG</file>
         <file>Undo-icon.png</file>
+        <file>Redo-Icon.png</file>
     </qresource>
 </RCC>

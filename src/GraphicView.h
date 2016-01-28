@@ -63,6 +63,8 @@ public:
     void en_disableDoor();
     bool statusExit();
     void en_disableExit();
+    bool statusHLine();
+    void en_disableHLine();
     bool statusLandmark();
     void en_disableLandmark();
 
@@ -96,9 +98,12 @@ public:
     void drawLine();
     qreal calc_d_point(const QLineF &line, const qreal &x, const qreal &y);
     void delete_marked_lines();
+    void RemoveLineItem(jpsLineItem *mline);
+    void RemoveLineItem(const QLineF &line);
     void RemoveIntersections(jpsLineItem* lineItem);
     // lines read from dxf-file
     jpsLineItem *addLineItem(const qreal &x1, const qreal &y1, const qreal &x2, const qreal &y2, const QString &type="");
+    jpsLineItem *addLineItem(const QLineF &line, const QString &type="");
     QList<jpsLineItem *> get_markedLines();
     QList<jpsLineItem *> get_line_vector();
     void unmark_all_lines();
@@ -127,8 +132,8 @@ public:
     bool show_hide_roomCaption(QString name, qreal x, qreal y);
 
     //Undo Framework
-    //void RecordLineAction(const QString &name, const QString &type, const QLineF &oldLine);
-
+    void RecordUndoLineAction(const QString &name, const QString &type, const QLineF &oldLine);
+    void RecordRedoLineAction(const QString &name, const QString &type, const QLineF &oldLine);
 
 public slots:
     //Waypoints
@@ -142,7 +147,8 @@ public slots:
     //Line operations
     void SelectAllLines();
     //Undo Redo
-    //void Undo();
+    void Undo();
+    void Redo();
 
 protected:
     //Mouse events
@@ -155,6 +161,7 @@ protected:
 
 private:
     QGraphicsLineItem* current_line;
+    QPolygonF polygon;
     //std::vector<jpsLineItem> line_vector;
     QList<QPointF *> intersect_point_vector;
     //QList<QPointF> grid_point_vector;
@@ -174,6 +181,7 @@ private:
     bool statDoor;
     bool statExit;
     bool statLandmark;
+    bool _statHLine;
     qreal catch_radius;
     qreal _scaleFactor;
     qreal gl_scale_f;
@@ -208,8 +216,8 @@ private:
     bool _gridmode;
 
     //Undo/Redo
-    //ActionStack _undoStack;
-    //ActionStack _redoStack;
+    ActionStack _undoStack;
+    ActionStack _redoStack;
 
 
 signals:

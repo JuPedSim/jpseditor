@@ -85,7 +85,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->roomBox2,SIGNAL(activated(int)),this,SLOT(add_rooms_to_crossing()));
     connect(ui->removeCrossingButton,SIGNAL(clicked(bool)),this,SLOT(delete_crossing()));
     connect(ui->crossingList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(select_crossing()));
-    connect(ui->auto_assign_doors,SIGNAL(clicked(bool)),this,SLOT(autoAssignDoors()));
+    //connect(ui->auto_assign_doors,SIGNAL(clicked(bool)),this,SLOT(autoAssignDoors()));
     //tab exit
 //    connect(ui->addExitButton,SIGNAL(clicked(bool)),this,SLOT(new_exit()));
 //    connect(ui->exitList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(enable_roomSelectionExits()));
@@ -767,20 +767,20 @@ void roomWidget::highlight_obs()
 
 }
 
-void roomWidget::autoAssignDoors()
-{
-    datamanager->AutoAssignCrossings();
-    show_all();
-    enable_roomSelectionCrossings();
-}
+//void roomWidget::autoAssignDoors()
+//{
+//    datamanager->AutoAssignCrossings();
+//    show_all();
+//    enable_roomSelectionCrossings();
+//}
 
-void roomWidget::autoAssignExits()
-{
-    datamanager->AutoAssignExits();
-    show_all();
-    enable_roomSelectionExits();
+//void roomWidget::autoAssignExits()
+//{
+//    datamanager->AutoAssignExits();
+//    show_all();
+//    enable_roomSelectionExits();
 
-}
+//}
 
 void roomWidget::ChangeRoomType()
 {

@@ -70,9 +70,11 @@ void jpsCrossing::add_rooms(jpsRoom *room1, jpsRoom *room2)
 {
     roomList.clear();
     roomList.push_back(room1);
+    room1->AddDoor(this);
     if (room2!=0L)
     {
         roomList.push_back(room2);
+        room2->AddDoor(this);
     }
 
 

@@ -88,6 +88,7 @@ protected slots:
     void en_disableDoor();
     void en_disableExit();
     void en_disableLandmark();
+    void en_disableHLine();
     void disableDrawing();
     void objectsnap();
 

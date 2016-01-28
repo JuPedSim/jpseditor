@@ -30,6 +30,7 @@
 #include <QtGui>
 #include <iostream>
 #include <QGraphicsLineItem>
+#include "jpscrossing.h"
 
 
 jpsRoom::jpsRoom(int id_room)
@@ -88,9 +89,9 @@ void jpsRoom::activate()
     }
 }
 
-QList<QPointF> jpsRoom::get_vertices()
+QVector<QPointF> jpsRoom::get_vertices() const
 {
-    QList<QPointF> vertices;
+    QVector<QPointF> vertices;
 
     for (int i=0; i<item_list.size(); i++)
     {
@@ -103,13 +104,26 @@ QList<QPointF> jpsRoom::get_vertices()
             vertices.push_back(item_list[i]->get_line()->line().p2());
         }
     }
+    for (jpsCrossing* crossing:_doorList)
+    {
+        if (vertices.contains(crossing->get_cLine()->get_line()->line().p1())==false)
+        {
+            vertices.push_back(crossing->get_cLine()->get_line()->line().p1());
+        }
+
+        if (vertices.contains(crossing->get_cLine()->get_line()->line().p1())==false)
+        {
+            vertices.push_back(crossing->get_cLine()->get_line()->line().p1());
+        }
+
+    }
 
     return vertices;
 }
 
 QPointF jpsRoom::get_center()
 {
-    QList<QPointF> vertices = get_vertices();
+    QVector<QPointF> vertices = get_vertices();
     qreal sum_x=0;
     qreal sum_y=0;
 
@@ -198,20 +212,30 @@ QList<QPointF> jpsRoom::GetDoorVertices() const
     return vertices;
 }
 
-bool jpsRoom::ContainsDoor(jpsLineItem *lineItem) const
+void jpsRoom::AddDoor(jpsCrossing *door)
 {
-    QList<QPointF> vertices = GetDoorVertices();
-
-    for (QPointF vertex:vertices)
-    {
-        if (lineItem->get_line()->contains(vertex))
-        {
-            return true;
-        }
-    }
-    return false;
-
+    _doorList.push_back(door);
 }
+
+QPolygonF jpsRoom::RoomAsPolygon() const
+{
+    return QPolygonF(get_vertices());
+}
+
+//bool jpsRoom::ContainsDoor(jpsLineItem *lineItem) const
+//{
+//    QList<QPointF> vertices = GetDoorVertices();
+
+//    for (QPointF vertex:vertices)
+//    {
+//        if (lineItem->get_line()->contains(vertex))
+//        {
+//            return true;
+//        }
+//    }
+//    return false;
+
+//}
 
 
 

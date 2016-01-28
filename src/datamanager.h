@@ -97,8 +97,8 @@ public:
 
 
     // Auto Assign
-    void AutoAssignCrossings();
-    void AutoAssignExits();
+//    void AutoAssignCrossings();
+//    void AutoAssignExits();
 
 
     // Read XML
@@ -112,8 +112,12 @@ public:
 
     // Write XML
     void writeXML(QFile &file);
+    void writeRoutingXML(QFile &file);
     void AutoSaveXML(QFile &file);
     void writeHeader(QXmlStreamWriter *stream);
+    void writeRoutingHeader(QXmlStreamWriter *stream);
+    void writeHLines(QXmlStreamWriter *stream, QList<jpsLineItem* >& hLines);
+    QString RoomIDHLine(jpsLineItem* lineItem);
     void writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);

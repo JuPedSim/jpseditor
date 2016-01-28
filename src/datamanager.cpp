@@ -277,6 +277,32 @@ void jpsDatamanager::writeXML(QFile &file)
     delete stream;
 }
 
+void jpsDatamanager::writeRoutingXML(QFile &file) // Construction side
+{
+    QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
+    QList<jpsLineItem* > hLines;
+
+    for (jpsLineItem* line:mView->get_line_vector())
+    {
+        if (line->IsHLine())
+        {
+            hLines.push_back(line);
+        }
+    }
+
+
+    writeRoutingHeader(stream);
+
+    stream->writeStartElement("Hlines");
+    writeHLines(stream,hLines);
+    stream->writeEndElement();//Hlines
+
+    stream->writeEndDocument();
+
+    delete stream;
+
+}
+
 void jpsDatamanager::AutoSaveXML(QFile &file)
 {
     QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
@@ -310,11 +336,85 @@ void jpsDatamanager::writeHeader(QXmlStreamWriter *stream)
     stream->writeStartDocument("1.0",true);
 
     stream->writeStartElement("geometry");
-    stream->writeAttribute("version", "0.5");
+    stream->writeAttribute("version", "0.8");
     stream->writeAttribute("caption","corner");
     stream->writeAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
     stream->writeAttribute("xsi:noNamespaceSchemaLocation","http://xsd.jupedsim.org/jps_geometry.xsd");
     stream->writeAttribute("unit","m");
+}
+
+void jpsDatamanager::writeRoutingHeader(QXmlStreamWriter *stream)
+{
+    stream->setAutoFormatting(true);
+    stream->writeStartDocument("1.0",true);
+
+    stream->writeStartElement("routing");
+    stream->writeAttribute("version", "0.8");
+    //stream->writeAttribute("caption","corner");
+    stream->writeAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+    stream->writeAttribute("xsi:noNamespaceSchemaLocation","http://xsd.jupedsim.org/jps_routing.xsd");
+    stream->writeAttribute("unit","m");
+}
+
+void jpsDatamanager::writeHLines(QXmlStreamWriter *stream, QList<jpsLineItem *> &hLines)
+{
+    for (jpsLineItem *lineItem:hLines)
+    {
+        stream->writeStartElement("Hline");
+        stream->writeAttribute("room_id","0");
+        QString rid = RoomIDHLine(lineItem);
+        if (rid.contains("Warning"))
+        {
+            QMessageBox::critical(mView,
+                                  "WriteHLines",
+                                  rid,
+                                  QMessageBox::Ok);
+        }
+        stream->writeAttribute("subroom_id",rid);
+
+            //Vertices
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px",QString::number(lineItem->get_line()->line().p1().x()));
+            stream->writeAttribute("py",QString::number(lineItem->get_line()->line().p1().y()));
+            stream->writeEndElement(); //vertex
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px",QString::number(lineItem->get_line()->line().p2().x()));
+            stream->writeAttribute("py",QString::number(lineItem->get_line()->line().p2().y()));
+            stream->writeEndElement(); //vertex
+
+        stream->writeEndElement(); //Hline
+    }
+}
+
+QString jpsDatamanager::RoomIDHLine(jpsLineItem *lineItem)
+{
+
+    for (jpsRoom* room:roomlist)
+    {
+        QPolygonF rPolygon = room->RoomAsPolygon();
+        if (rPolygon.containsPoint(lineItem->get_line()->line().p1(),Qt::OddEvenFill) ||
+                rPolygon.contains(lineItem->get_line()->line().p1()))
+        {
+            if (rPolygon.containsPoint(lineItem->get_line()->line().p2(),Qt::OddEvenFill)||
+                    rPolygon.contains(lineItem->get_line()->line().p2()))
+                return QString::number(room->get_id());
+            else
+                return "Warning! HLine intersects walls";
+        }
+        else if (rPolygon.containsPoint(lineItem->get_line()->line().p2(),Qt::OddEvenFill)||
+                 rPolygon.contains(lineItem->get_line()->line().p2()))
+        {
+            if (rPolygon.containsPoint(lineItem->get_line()->line().p1(),Qt::OddEvenFill)||
+                    rPolygon.contains(lineItem->get_line()->line().p1()))
+                return QString::number(room->get_id());
+            else
+                return "Warning! HLine intersects walls";
+        }
+
+    }
+    return "Warning! HLine outside geometry";
+
 }
 
 void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
@@ -365,7 +465,7 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
     }
 
 
-    ///Crossings
+    //Crossings
     writeCrossings(stream,lines);
 
     stream->writeEndElement();//crossings
@@ -756,29 +856,29 @@ jpsGraphicsView * jpsDatamanager::get_view()
     return mView;
 }
 
-void jpsDatamanager::AutoAssignCrossings()
-{
-    QList<jpsCrossing* > crossings = crossingList;
+//void jpsDatamanager::AutoAssignCrossings()
+//{
+//    QList<jpsCrossing* > crossings = crossingList;
 
-    for (jpsCrossing *crossing: crossings)
-    {
-        int roomCounter=0;
-        for (jpsRoom *room : roomlist)
-        {
-            if (room->ContainsDoor(crossing->get_cLine()) && roomCounter==0)
-            {
-                crossing->add_rooms(room);
-                roomCounter++;
+//    for (jpsCrossing *crossing: crossings)
+//    {
+//        int roomCounter=0;
+//        for (jpsRoom *room : roomlist)
+//        {
+//            if (room->ContainsDoor(crossing->get_cLine()) && roomCounter==0)
+//            {
+//                crossing->add_rooms(room);
+//                roomCounter++;
 
-            }
-            else if (room->ContainsDoor(crossing->get_cLine()) && roomCounter==1)
-            {
-                crossing->add_rooms(crossing->get_roomList()[0],room);
-                crossings.removeOne(crossing);
-                break;
-            }
-        }
-    }
+//            }
+//            else if (room->ContainsDoor(crossing->get_cLine()) && roomCounter==1)
+//            {
+//                crossing->add_rooms(crossing->get_roomList()[0],room);
+//                crossings.removeOne(crossing);
+//                break;
+//            }
+//        }
+//    }
 
 
 
@@ -822,38 +922,38 @@ void jpsDatamanager::AutoAssignCrossings()
 
 
 
-}
+//}
 
-void jpsDatamanager::AutoAssignExits()
-{
-    for (jpsExit *exit: exitList)
-    {
-        for (jpsRoom *room: roomlist)
-        {
-            QList<jpsLineItem* > walls = room->get_listWalls();
+//void jpsDatamanager::AutoAssignExits()
+//{
+//    for (jpsExit *exit: exitList)
+//    {
+//        for (jpsRoom *room: roomlist)
+//        {
+//            QList<jpsLineItem* > walls = room->get_listWalls();
 
-            int pointCounter = 0;
+//            int pointCounter = 0;
 
-            for (jpsLineItem* wall: walls)
-            {
-                if (wall->get_line()->line().p1()==exit->get_cLine()->get_line()->line().p1() ||
-                       wall->get_line()->line().p1()==exit->get_cLine()->get_line()->line().p2() ||
-                        wall->get_line()->line().p2()==exit->get_cLine()->get_line()->line().p1() ||
-                        wall->get_line()->line().p2()==exit->get_cLine()->get_line()->line().p2())
-                {
-                    pointCounter++;
-                }
-            }
+//            for (jpsLineItem* wall: walls)
+//            {
+//                if (wall->get_line()->line().p1()==exit->get_cLine()->get_line()->line().p1() ||
+//                       wall->get_line()->line().p1()==exit->get_cLine()->get_line()->line().p2() ||
+//                        wall->get_line()->line().p2()==exit->get_cLine()->get_line()->line().p1() ||
+//                        wall->get_line()->line().p2()==exit->get_cLine()->get_line()->line().p2())
+//                {
+//                    pointCounter++;
+//                }
+//            }
 
-            if (pointCounter==2)
-            {
-                exit->add_rooms(room);
-                break;
-            }
-        }
-    }
+//            if (pointCounter==2)
+//            {
+//                exit->add_rooms(room);
+//                break;
+//            }
+//        }
+//    }
 
-}
+//}
 
 bool jpsDatamanager::readXML(QFile &file)
 {
