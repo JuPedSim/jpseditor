@@ -275,12 +275,18 @@ void MWindow::openFileXML()
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-
         return;
     }
 
+    //RoutingFile
+    QString fileNameRouting= fileName.split(".").first()+"_routing.xml";
+    QFile fileRouting(fileNameRouting);
+    if (!fileRouting.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        return;
+    }
 
-    if (!dmanager->readXML(file))
+    if (!dmanager->readXML(file) || !dmanager->readRoutingXML(fileRouting))
     {
         QMessageBox::critical(this,
                               "OpenFileXML",
@@ -291,7 +297,8 @@ void MWindow::openFileXML()
 
     else
     {
-
+        //AutoZoom to drawing
+        mview->AutoZoom();
         statusBar()->showMessage("XML-File successfully loaded!",10000);
     }
 

@@ -103,6 +103,8 @@ public:
 
     // Read XML
     bool readXML(QFile &file);
+    bool readRoutingXML(QFile &file);
+    void parseHline(QXmlStreamReader &xmlReader);
     void parseSubRoom(QXmlStreamReader &xmlReader);
     void parseWalls(QXmlStreamReader &xmlReader,jpsRoom* room);
     void parseWalls(QXmlStreamReader &xmlReader,jpsObstacle* room);

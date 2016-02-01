@@ -889,6 +889,10 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
     {
         newLine->set_Exit();
     }
+    else if (type=="HLine")
+    {
+        newLine->SetHLine();
+    }
     else
     {
         newLine->set_Wall();

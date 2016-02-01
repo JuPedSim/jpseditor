@@ -1034,10 +1034,90 @@ bool jpsDatamanager::readXML(QFile &file)
      * and resets its internal state to the initial state. */
     xmlReader.clear();
 
-    ///AutoZoom to drawing
-    mView->AutoZoom();
+    return true;
+}
+
+bool jpsDatamanager::readRoutingXML(QFile &file)
+{
+    QXmlStreamReader xmlReader(&file);
+
+    // skip header
+    xmlReader.readNext();
+    xmlReader.readNext();
+
+    // see if file starts with geometry
+    if (xmlReader.name() != "routing")
+        return false;
+
+    while(!xmlReader.atEnd() && !xmlReader.hasError())
+    {
+        /* Read next element.*/
+        QXmlStreamReader::TokenType token = xmlReader.readNext();
+        /* If token is just StartDocument, we'll go to next.*/
+        if(token == QXmlStreamReader::StartDocument)
+        {
+            continue;
+        }
+
+        /* If token is StartElement, we'll see if we can read it.*/
+        if(token == QXmlStreamReader::StartElement)
+        {
+            /* If it's named Hlines, we'll go to the next.*/
+            if(xmlReader.name() == "Hlines")
+            {
+                continue;
+            }
+
+            if(xmlReader.name() == "Hline")
+            {
+                this->parseHline(xmlReader);
+            }
+        }
+    }
+    /* Error handling. */
+    if(xmlReader.hasError())
+    {
+        QMessageBox::critical(mView,
+                              "QXSRExample::parseXML",
+                              xmlReader.errorString(),
+                              QMessageBox::Ok);
+        return false;
+    }
+    /* Removes any device() or data from the reader
+     * and resets its internal state to the initial state. */
+    xmlReader.clear();
 
     return true;
+}
+
+void jpsDatamanager::parseHline(QXmlStreamReader &xmlReader)
+{
+
+    while(!(xmlReader.tokenType() == QXmlStreamReader::EndElement &&
+                xmlReader.name() == "Hline"))
+    {
+        xmlReader.readNext();
+
+        if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
+                         xmlReader.name() == "vertex")
+        {
+
+            // get coords from vertices
+            qreal x1=xmlReader.attributes().value("px").toString().toFloat();
+            qreal y1=xmlReader.attributes().value("py").toString().toFloat();
+
+            // go to next vertex
+            xmlReader.readNext();
+            xmlReader.readNext();
+            xmlReader.readNext();
+
+            qreal x2=xmlReader.attributes().value("px").toString().toFloat();
+            qreal y2=xmlReader.attributes().value("py").toString().toFloat();
+            // add Line to graphview
+            mView->addLineItem(x1,y1,x2,y2,"HLine");
+        }
+
+    }
 }
 
 void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
