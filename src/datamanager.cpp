@@ -358,6 +358,7 @@ void jpsDatamanager::writeRoutingHeader(QXmlStreamWriter *stream)
 
 void jpsDatamanager::writeHLines(QXmlStreamWriter *stream, QList<jpsLineItem *> &hLines)
 {
+    // to be sure that id is unique (considering crossings, transitions)
     int id=1000;
     for (jpsLineItem *lineItem:hLines)
     {

@@ -53,8 +53,12 @@
     </property>
     <addaction name="actionSelect_Mode"/>
     <addaction name="separator"/>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
+    <addaction name="separator"/>
     <addaction name="actionWall"/>
     <addaction name="actionDoor"/>
+    <addaction name="actionHLine"/>
     <addaction name="separator"/>
     <addaction name="actiongridmode"/>
     <addaction name="actionObjectsnap"/>
@@ -519,7 +523,7 @@
     <string>Undo</string>
    </property>
    <property name="toolTip">
-    <string>Undo</string>
+    <string>Undo PaintEvent</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Z</string>
@@ -537,10 +541,10 @@
     <string>Redo</string>
    </property>
    <property name="toolTip">
-    <string>Redo</string>
+    <string>Redo PaintEvent</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+U</string>
+    <string>Ctrl+Y</string>
    </property>
   </action>
   <action name="actionHLine">
@@ -552,7 +556,7 @@
    </property>
    <property name="icon">
     <iconset resource="Ressource.qrc">
-     <normaloff>:/Wall.png</normaloff>:/Wall.png</iconset>
+     <normaloff>:/HLine.png</normaloff>:/HLine.png</iconset>
    </property>
    <property name="text">
     <string>HLine</string>

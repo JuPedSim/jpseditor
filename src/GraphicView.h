@@ -132,8 +132,10 @@ public:
     bool show_hide_roomCaption(QString name, qreal x, qreal y);
 
     //Undo Framework
-    void RecordUndoLineAction(const QString &name, const QString &type, const QLineF &oldLine);
-    void RecordRedoLineAction(const QString &name, const QString &type, const QLineF &oldLine);
+    void RecordUndoLineAction(const QString &name, const QString &type, const int &itemID, const QLineF &oldLine);
+    void RecordRedoLineAction(const QString &name, const QString &type, const int &itemID, const QLineF &oldLine);
+    void UndoLineEdit(const int &lineID, const QLineF &old_line);
+    void RedoLineEdit(const int &lineID, const QLineF &old_line);
 
 public slots:
     //Waypoints
@@ -197,6 +199,7 @@ private:
     QList<jpsLineItem *> marked_lines;
     QGraphicsTextItem* current_caption;
     QList<QGraphicsTextItem* > caption_list;
+    int id_counter;
 
     //Landmark and waypoints
     QList<jpsLandmark* > LLandmarks;

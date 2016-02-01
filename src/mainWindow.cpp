@@ -183,6 +183,13 @@ void MWindow::AutoSave()
         dmanager->AutoSaveXML(file);
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("Backup file generated!"),10000);
+
+        //routing (hlines)
+        QString fileNameRouting = file.fileName();
+        fileNameRouting=fileNameRouting.split(".").first()+"_routing.xml";
+        QFile routingFile(fileNameRouting);
+        if (routingFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeRoutingXML(routingFile);
     }
 }
 
@@ -339,7 +346,8 @@ void MWindow::saveFile(){
         dmanager->writeXML(file);
 
         //routing (hlines)
-        QString fileNameRouting = fileName+"routing.xml";
+        QString fileNameRouting=fileName.split(".").first()+"_routing.xml";
+
         QFile routingFile(fileNameRouting);
         if (routingFile.open(QIODevice::WriteOnly|QIODevice::Text))
             dmanager->writeRoutingXML(routingFile);
