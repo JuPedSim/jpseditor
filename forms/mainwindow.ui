@@ -75,21 +75,10 @@
     <addaction name="actionRotate_90_deg_clockwise"/>
     <addaction name="actionShow_Point_of_Origin"/>
    </widget>
-   <widget class="QMenu" name="menuCognitive_Map">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="title">
-     <string>Cognitive Map</string>
-    </property>
-    <addaction name="action_ffnen_CogMap"/>
-    <addaction name="actionRun_visualisation"/>
-   </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuTools"/>
    <addaction name="menuView"/>
    <addaction name="menuHilfe"/>
-   <addaction name="menuCognitive_Map"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -417,7 +406,7 @@
     <bool>true</bool>
    </property>
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="Ressource.qrc">
@@ -430,7 +419,7 @@
     <string>Landmark</string>
    </property>
    <property name="visible">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionLandmarkWidget">
@@ -438,7 +427,7 @@
     <bool>true</bool>
    </property>
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="Ressource.qrc">
@@ -451,7 +440,7 @@
     <string>LandmarkSpecs</string>
    </property>
    <property name="visible">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionanglesnap">
