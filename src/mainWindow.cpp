@@ -394,8 +394,7 @@ void MWindow::info(){
     \n\
     We are proud to announce the first alpha release of our software JPSeditor (part of JuPedSim for simulating pedestrians evacuations). Please note that it is a pre release version for developers only. We are working hard towards the final release for this version.\n\
     \n\
-    JPSeditor is a graphical user interface to create the geometry of a scenario simulated by JuPedSim. It comes with set of CAD- and further tools to simplify the creation of proper xml-files\n \
-    incorporating information about the scenario' geometry.\n\
+    JPSeditor is a graphical user interface to create the geometry of a scenario simulated by JuPedSim. It comes with set of CAD- and further tools to simplify the creation of proper xml-files incorporating information about the scenario' geometry.\n\
     \n\
     Tutorial\n\
     ========\n\
