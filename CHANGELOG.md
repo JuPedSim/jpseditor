@@ -6,6 +6,9 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 #### JPSEDITOR
+- 1.2.16 Undo/Redo when Line was edited
+- 1.2.16 Change Info Text
+- 1.2.16 Load HLines
 - 1.2.16 Create and save HLines
 - First approaches of an undo/redo framework
 	- Undo/Redo working when line added or deleted
@@ -21,4 +24,3 @@ All notable changes to this project will be documented in this file.
 	- Show origin
 	- ...
 - Room and door declarations
-	
