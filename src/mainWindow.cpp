@@ -36,6 +36,7 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QShortcut>
 
 MWindow :: MWindow() {
 
@@ -47,13 +48,15 @@ MWindow :: MWindow() {
     mview = new jpsGraphicsView(this);
     dmanager = new jpsDatamanager(this,mview);
 
-    ///Roomwidget
+    //Roomwidget
     rwidget=nullptr;
-    ///Landmarkwidget
+    //Landmarkwidget
     lwidget=nullptr;
+    //WidgetSettings
+    _settings=nullptr;
 
     length_edit = new QLineEdit();
-    length_edit->setMaximumWidth(55);
+    length_edit->setMaximumWidth(75);
     label1 = new QLabel();
     label1->setMinimumWidth(90);
     label1->setText("Length of Line :");
@@ -63,9 +66,11 @@ MWindow :: MWindow() {
     infoLabel= new QLabel();
     infoLabel->setMinimumWidth(135);
 
-    ///filename of saved project
+    //filename of saved project
     _filename="";
 
+    //WindowTitle
+    this->setWindowTitle("JPSeditor");
 
     setCentralWidget(mview);
     //this->setMaximumSize(1920,1080);
@@ -75,27 +80,33 @@ MWindow :: MWindow() {
     statusBar()->addPermanentWidget(length_edit);
     statusBar()->addPermanentWidget(label2);
 
-    ///Timer needed for autosave function
-    /// timer will trigger autosave every 5th minute
+    //Timer needed for autosave function
+    // timer will trigger autosave every 5th minute
     timer = new QTimer(this);
     timer->setInterval(300000);
     timer->start();
 
+    _cMapTimer = new QTimer(this);
+    //_cMapTimer=nullptr;
 
-    ///Signals and Slots
-    /// Tab File
-    connect(actionBeenden, SIGNAL(triggered(bool)),qApp,SLOT(quit()));
+    //Signals and Slots
+    // Tab File
+    connect(actionBeenden, SIGNAL(triggered(bool)),this,SLOT(close()));
     connect(action_ffnen,SIGNAL(triggered(bool)),this,SLOT(openFile()));
     connect(action_ffnen_xml,SIGNAL(triggered(bool)),this,SLOT(openFileXML()));
     connect(actionSpeichern,SIGNAL(triggered(bool)),this,SLOT(saveFile()));
     connect(actionSpeichern_dxf,SIGNAL(triggered(bool)),this,SLOT(saveAsDXF()));
-    /// Tab Help
+    connect(actionSettings,SIGNAL(triggered(bool)),this,SLOT(Settings()));
+    connect(action_ffnen_CogMap,SIGNAL(triggered(bool)),this,SLOT(openFileCMap()));
+    // Tab Help
     connect(action_ber,SIGNAL(triggered(bool)),this,SLOT(info()));
-    /// Tab Tools
-    connect(actionanglesnap,SIGNAL(triggered(bool)),this,SLOT(gridmode()));
+    // Tab Tools
+    connect(actionanglesnap,SIGNAL(triggered(bool)),this,SLOT(anglesnap()));
+    connect(actiongridmode,SIGNAL(triggered(bool)),this,SLOT(gridmode()));
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
     connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(en_disableDoor()));
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(en_disableExit()));
+    connect(actionHLine,SIGNAL(triggered(bool)),this,SLOT(en_disableHLine()));
     connect(actionObjectsnap,SIGNAL(triggered(bool)),this,SLOT(objectsnap()));
     connect(actionDelete_lines,SIGNAL(triggered(bool)),this,SLOT(delete_lines()));
     connect(actionDelete_single_line,SIGNAL(triggered(bool)),this,SLOT(delete_marked_lines()));
@@ -104,26 +115,38 @@ MWindow :: MWindow() {
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
-    /// Tab View
+    // Tab View
     connect(actionRotate_90_deg_clockwise,SIGNAL(triggered(bool)),this,SLOT(rotate()));
-    /// Length edit
+    connect(actionShow_Point_of_Origin,SIGNAL(triggered(bool)),this,SLOT(ShowOrigin()));
+    // Length edit
     connect(length_edit,SIGNAL(returnPressed()),this,SLOT(send_length()));
-    /// mview
+    // mview
     connect(mview,SIGNAL(no_drawing()),this,SLOT(en_selectMode()));
     connect(mview,SIGNAL(remove_marked_lines()),this,SLOT(lines_deleted()));
     connect(mview,SIGNAL(remove_all()),this,SLOT(remove_all_lines()));
     connect(mview,SIGNAL(set_focus_textedit()),length_edit,SLOT(setFocus()));
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
     connect(mview,SIGNAL(landmark_added()),this,SLOT(add_landmark()));
+    connect(mview,SIGNAL(LineLengthChanged()),this,SLOT(ShowLineLength()));
+    // Mark all lines
+    QAction *str_a = new QAction(this);
+    str_a->setShortcut(Qt::Key_A | Qt::CTRL);
+    connect(str_a, SIGNAL(triggered(bool)), mview, SLOT(SelectAllLines()));
+    this->addAction(str_a);
     //connect(mview,SIGNAL(DoubleClick()),this,SLOT(en_selectMode()));
-    ///Autosave
+    // Autosave
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
-    ///Landmarks
+    //Landmarks
     connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
     connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
-    ///Landmark specifications
+    // Landmark specifications
     connect(actionLandmarkWidget,SIGNAL(triggered(bool)),this,SLOT(define_landmark()));
-
+    //CMap
+    connect(actionRun_visualisation,SIGNAL(triggered(bool)),this,SLOT(RunCMap()));
+    connect(_cMapTimer,SIGNAL(timeout()),this,SLOT(UpdateCMap()));
+    //Undo Redo
+    connect(actionUndo,SIGNAL(triggered(bool)),mview,SLOT(Undo()));
+    connect(actionRedo,SIGNAL(triggered(bool)),mview,SLOT(Redo()));
 }
 
 MWindow::~MWindow()
@@ -135,6 +158,7 @@ MWindow::~MWindow()
     delete label2;
     delete infoLabel;
     delete timer;
+    delete _cMapTimer;
 }
 
 void MWindow::AutoSave()
@@ -159,13 +183,69 @@ void MWindow::AutoSave()
         dmanager->AutoSaveXML(file);
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("Backup file generated!"),10000);
+
+        //routing (hlines)
+        QString fileNameRouting = file.fileName();
+        fileNameRouting=fileNameRouting.split(".").first()+"_routing.xml";
+        QFile routingFile(fileNameRouting);
+        if (routingFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeRoutingXML(routingFile);
     }
+}
+
+void MWindow::RunCMap()
+{
+
+    double frameRate = dmanager->GetCMapFrameRate();
+    _cMapFrame=1;
+    if (frameRate==0)
+    {
+        statusBar()->showMessage(tr("No cognitive map has been loaded!"),10000);
+        return;
+    }
+    _cMapTimer->setInterval(1/frameRate*1000);
+    _cMapTimer->start();
+}
+
+void MWindow::UpdateCMap()
+{
+    _cMapFrame++;
+    if (_cMapFrame>dmanager->GetLastCMapFrame())
+    {
+        _cMapTimer->stop();
+        dmanager->ShowCMapFrame(1);
+        return;
+    }
+    dmanager->ShowCMapFrame(_cMapFrame);
 }
 
 void MWindow::add_landmark()
 {
     jpsLandmark* landmark = mview->get_landmarks().last();
     dmanager->new_landmark(landmark);
+}
+
+void MWindow::Settings()
+{
+    if (_settings==nullptr)
+    {
+        _settings = new WidgetSettings(this,mview);
+        _settings->setAttribute(Qt::WA_DeleteOnClose);
+        _settings->setGeometry(QRect(QPoint(5,75), _settings->size()));
+        _settings->show();
+    }
+
+    else
+    {
+        _settings->close();
+        _settings=nullptr;
+    }
+
+}
+
+void MWindow::ShowOrigin()
+{
+    mview->ShowOrigin();
 }
 
 void MWindow::openFile(){
@@ -195,6 +275,41 @@ void MWindow::openFileXML()
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
+        return;
+    }
+
+    //RoutingFile
+    QString fileNameRouting= fileName.split(".").first()+"_routing.xml";
+    QFile fileRouting(fileNameRouting);
+    if (!fileRouting.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        return;
+    }
+
+    if (!dmanager->readXML(file) || !dmanager->readRoutingXML(fileRouting))
+    {
+        QMessageBox::critical(this,
+                              "OpenFileXML",
+                              "Couldn't open xml-file",
+                              QMessageBox::Ok);
+        statusBar()->showMessage("XML-File could not be parsed!",10000);
+    }
+
+    else
+    {
+        //AutoZoom to drawing
+        mview->AutoZoom();
+        statusBar()->showMessage("XML-File successfully loaded!",10000);
+    }
+
+}
+
+void MWindow::openFileCMap()
+{
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
         QMessageBox::critical(this,
                               "OpenFileXML",
                               "Couldn't open xml-file",
@@ -203,7 +318,7 @@ void MWindow::openFileXML()
     }
 
 
-    if (!dmanager->readXML(file))
+    if (!dmanager->ParseCogMap(file))
     {
         statusBar()->showMessage("XML-File could not be parsed!",10000);
     }
@@ -211,9 +326,9 @@ void MWindow::openFileXML()
     else
     {
 
-        statusBar()->showMessage("XML-File successfully loaded!",10000);
+        statusBar()->showMessage("Cognitive map successfully loaded!",10000);
+        dmanager->ShowCMapFrame(1);
     }
-
 }
 
 void MWindow::saveFile(){
@@ -236,6 +351,14 @@ void MWindow::saveFile(){
             return;
         }
         dmanager->writeXML(file);
+
+        //routing (hlines)
+        QString fileNameRouting=fileName.split(".").first()+"_routing.xml";
+
+        QFile routingFile(fileNameRouting);
+        if (routingFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeRoutingXML(routingFile);
+
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
     }
@@ -261,13 +384,31 @@ void MWindow::saveAsDXF()
 
 void MWindow::info(){
 
-    QMessageBox::information(
-                0,tr("About..."),tr("JuPedSim; Interface for generating and editing geometry(XML)-files necessary for using JPScore; Manual and tutorial coming soon!"));
+
+
+    QString info = "JuPedSim v0.8 alpha\n\
+    JPSeditor v0.8 alpha\n\
+    ====================\n\
+    \n\
+    Erik Andresen drafted this on 27 Jun 2016\n\
+    \n\
+    We are proud to announce the first alpha release of our software JPSeditor (part of JuPedSim for simulating pedestrians evacuations). Please note that it is a pre release version for developers only. We are working hard towards the final release for this version.\n\
+    \n\
+    JPSeditor is a graphical user interface to create the geometry of a scenario simulated by JuPedSim. It comes with set of CAD- and further tools to simplify the creation of proper xml-files incorporating information about the scenario' geometry.\n\
+    \n\
+    Tutorial\n\
+    ========\n\
+    \n\
+    To highlight some features of JuPedSim we have uploaded some videos on our [YouTube channel](https://www.youtube.com/user/JuPedSim) including a tutorial showing how to use the editor.";
+
+    QMessageBox messageBox;
+    messageBox.information(0,tr("About..."),info);
+
 }
 
-void MWindow::gridmode()
+void MWindow::anglesnap()
 {
-   mview->change_gridmode();
+   mview->change_stat_anglesnap();
 }
 
 void MWindow::en_disableWall()
@@ -300,17 +441,30 @@ void MWindow::en_disableLandmark()
     mview->en_disableLandmark();
 }
 
+void MWindow::en_disableHLine()
+{
+    this->disableDrawing();
+    actionHLine->setChecked(true);
+    mview->en_disableHLine();
+}
+
 void MWindow::disableDrawing()
 {
     this->actionWall->setChecked(false);
     this->actionDoor->setChecked(false);
     this->actionExit->setChecked(false);
     this->actionLandmark->setChecked(false);
+    this->actionHLine->setChecked(false);
 }
 
 void MWindow::objectsnap()
 {
     mview->change_objectsnap();
+}
+
+void MWindow::gridmode()
+{
+    mview->change_gridmode();
 }
 
 void MWindow::show_coords()
@@ -345,26 +499,29 @@ void MWindow::send_length()
 
 void MWindow::define_room()
 {
-    if (rwidget==0L)
+    if (rwidget==nullptr)
     {
         rwidget = new roomWidget(this,this->dmanager,this->mview);
         rwidget->setGeometry(QRect(QPoint(5,75), rwidget->size()));
+        rwidget->setAttribute(Qt::WA_DeleteOnClose);
         rwidget->show();
+
     }
     else
     {
         rwidget->close();
-        rwidget=0L;
+        rwidget=nullptr;
         actionRoom->setChecked(false);
     }
 }
 
 void MWindow::define_landmark()
 {
-    if (lwidget==0L)
+    if (lwidget==nullptr)
     {
         lwidget = new widgetLandmark(this,this->dmanager,this->mview);
         lwidget->setGeometry(QRect(QPoint(5,75), lwidget->size()));
+        lwidget->setAttribute(Qt::WA_DeleteOnClose);
         lwidget->show();
     }
     else
@@ -384,6 +541,7 @@ void MWindow::en_selectMode()
     actionWall->setChecked(false);
     actionDoor->setChecked(false);
     actionExit->setChecked(false);
+    actionHLine->setChecked(false);
     actionLandmark->setChecked(false);
     length_edit->clearFocus();
 }
@@ -407,9 +565,32 @@ void MWindow::remove_all_lines()
     dmanager->remove_all();
 }
 
+void MWindow::ShowLineLength()
+{
+    length_edit->setText(QString::number(mview->ReturnLineLength()));
+    length_edit->selectAll();
+}
+
 void MWindow::rotate()
 {
     mview->rotate(-90);
+}
+
+void MWindow::closeEvent(QCloseEvent *event)
+{
+    int ret = QMessageBox::warning(
+                this, "Quit?",
+                "Do you really want to quit?",
+                QMessageBox::Yes | QMessageBox::No );
+
+    if (ret == QMessageBox::Yes)
+    {
+        QMainWindow::closeEvent(event);
+    }
+    else
+    {
+        event->ignore();
+    }
 }
 
 

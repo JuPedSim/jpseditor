@@ -42,16 +42,19 @@ public:
     int get_id();
     QString get_defaultColor();
     QString get_name();
+    QString GetType();
     void set_id(int id);
     void set_name(QString name);
-    void set_type(bool wall, bool door, bool exit);
+    void set_type(bool wall, bool door, bool exit, bool hline=false);
     void set_Wall();
     void set_Door();
     void set_Exit();
+    void SetHLine();
     void set_defaultColor(QString color);
     bool is_Wall();
     bool is_Door();
     bool is_Exit();
+    bool IsHLine();
     void add_intersectionPoint(QPointF *point);
     void remove_intersectionPoint(QPointF *point);
     QList<QPointF *> get_intersectionVector();
@@ -70,6 +73,7 @@ private:
     bool wall;
     bool door;
     bool exit;
+    bool _hLine;
     QList<QPointF *> intersectionVector;
     QList<jpsLineItem* > intersectLineVector;
     /*

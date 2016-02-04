@@ -29,9 +29,11 @@
 #ifndef JPSLANDMARK_H
 #define JPSLANDMARK_H
 #include <QPointF>
+#include <memory>
 #include "rooms.h"
 #include "jpswaypoint.h"
 
+using ptrWaypoint = std::shared_ptr<jpsWaypoint>;
 
 class jpsLandmark
 {
@@ -39,22 +41,22 @@ public:
     jpsLandmark();
     jpsLandmark(QGraphicsPixmapItem* pixmap, QString name, QPointF point);
     ~jpsLandmark();
-    ///Setter
+    //Setter
     void set_pixmap(QGraphicsPixmapItem* pixmap);
     void set_name(QString name);
     void set_pos(QPointF pos);
     void set_room(jpsRoom* room);
     void set_visibility(int visibility);
-    ///Getter
+    //Getter
     QGraphicsPixmapItem* get_pixmap();
     QString get_name();
     const QPointF& get_pos();
     jpsRoom *get_room();
     int get_visibility();
-    ///Waypoint handling
-    void AddWaypoint(jpsWaypoint* waypoint);
-    void RemoveWaypoint(jpsWaypoint* waypoint);
-    QList<jpsWaypoint* > GetWaypoints();
+    //Waypoint handling
+    void AddWaypoint(ptrWaypoint waypoint);
+    void RemoveWaypoint(ptrWaypoint waypoint);
+    QList<ptrWaypoint> GetWaypoints();
     void RemoveAllWaypoints();
 
 
@@ -64,7 +66,7 @@ private:
     jpsRoom* _room;
     int _visibility;
     QGraphicsPixmapItem* _pixmapItem;
-    QList<jpsWaypoint* > _waypoints;
+    QList<ptrWaypoint > _waypoints;
 
 };
 

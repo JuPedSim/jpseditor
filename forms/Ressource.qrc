@@ -38,5 +38,9 @@
         <file>jupedsim.png</file>
         <file>statue.jpg</file>
         <file>statue_specs.jpg</file>
+        <file>anglesnap.PNG</file>
+        <file>Undo-icon.png</file>
+        <file>Redo-Icon.png</file>
+        <file>HLine.png</file>
     </qresource>
 </RCC>

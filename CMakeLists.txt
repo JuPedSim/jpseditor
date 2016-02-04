@@ -7,13 +7,21 @@
 #================
 # 1. CMAKE_BUILD_TYPE=Release (default Debug)
 # 2. DESIRED_QT_VERSION=5 (default 4)
+# example: >> cmake  -DDESIRED_QT_VERSION=5  -DCMAKE_PREFIX_PATH=~/Qt/5.5/clang_64 ..
+# Flags for VS: -G "Visual Studio ..." -DCMAKE_PREFIX_PATH=... -DCMAKE_C_FLAGS="-mwindows" 
 
+cmake_minimum_required(VERSION 2.8.9)
 IF (POLICY CMP0048) # in CMake 3.0.0+
   CMAKE_POLICY (SET CMP0048 OLD) # keep PROJECT() from clearing VERSION variables
 ENDIF (POLICY CMP0048)
-
+IF (POLICY CMP0043) # in CMake 3.0.0+
+  CMAKE_POLICY (SET CMP0043 OLD) # keep PROJECT() from clearing VERSION variables
+ENDIF (POLICY CMP0043)
+IF (POLICY CMP0020)
+CMAKE_POLICY (SET CMP0020 OLD) # keep old POLICY (2.8.10 and lower) The OLD behavior for this policy is not to link executables to
+ENDIF (POLICY CMP0020)			#qtmain.lib automatically when they link to the QtCore IMPORTEDtarget 
 project(JPSeditor)
-cmake_minimum_required(VERSION 2.8.9)
+
 
 
 set(README_FILE "${CMAKE_SOURCE_DIR}/README.md")
@@ -66,6 +74,7 @@ message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
 
 
 #--------------------
+if (NOT MSVC)
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
@@ -77,13 +86,14 @@ else()
   message(AUTHOR_WARNING "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 message(STATUS "Checking for C++11 compiler - available")
-
+endif()
 #---------------------
 
 set( SRCS
     src/mainWindow.cpp
     src/main.cpp 
     src/GraphicView.cpp
+    src/graphicscene.cpp
     src/roomwidget.cpp
     src/rooms.cpp
     src/datamanager.cpp  
@@ -91,9 +101,12 @@ set( SRCS
     src/jpsLineItem.cpp  
     src/jpsexit.cpp
     src/jpsobstacle.cpp 
-	src/jpslandmark.cpp
-	src/jpswaypoint.cpp
-	src/widgetlandmark.cpp
+    src/jpslandmark.cpp
+    src/jpswaypoint.cpp
+    src/widgetlandmark.cpp
+    src/widgetsettings.cpp
+    src/jpsyahpointer.cpp
+    src/jpsconnection.cpp
     dxflib/src/dl_writer_ascii.cpp
     dxflib/src/dl_dxf.cpp
   )  
@@ -101,6 +114,7 @@ set( SRCS
 set( HDR
     src/mainWindow.h 
     src/GraphicView.h
+    src/graphicscene.h
     src/roomwidget.h
     src/rooms.h
     src/datamanager.h  
@@ -108,9 +122,12 @@ set( HDR
     src/jpsLineItem.h  
     src/jpsexit.h     
     src/jpsobstacle.h
-	src/jpslandmark.h
-	src/jpswaypoint.h
-	src/widgetlandmark.h
+    src/jpslandmark.h
+    src/jpswaypoint.h
+    src/widgetlandmark.h
+    src/widgetsettings.h
+    src/jpsyahpointer.h
+    src/jpsconnection.h
     dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h
     dxflib/src/dl_global.h
@@ -129,7 +146,8 @@ set( HDR
 set( UIS
     forms/mainwindow.ui
     forms/roomwidget.ui
-	forms/widgetlandmark.ui
+    forms/widgetlandmark.ui
+    forms/widgetsettings.ui
   )
 
 # and finally a resource file
@@ -153,7 +171,7 @@ ENDIF (WIN32)
 message(STATUS "QT_Qmake_executable " ${QT_QMAKE_EXECUTABLE})
 if($QT_QMAKE_EXECUTABLE STREQUAL "")
   FIND_PROGRAM(QT_QMAKE_EXECUTABLE NAMES qmake)
-  if (NOT QT_QMAKE_EXECUTABL)
+  if (NOT QT_QMAKE_EXECUTABLE)
     message(WARNING "QT not found - abort.")
   endif()
 endif()
@@ -186,7 +204,7 @@ elseif("${DESIRED_QT_VERSION}" STREQUAL "4")
   #   QT4_INSTALLED is set to TRUE if qt4 is found and
   #   QT3_INSTALLED is set to TRUE if qt3 is found.
   FIND_PACKAGE(Qt COMPONENTS QtXml QT_USE_QTNETWORK QtXmlPatterns REQUIRED)
-
+  set(QT4_INSTALLED TRUE)
 endif()
 
 

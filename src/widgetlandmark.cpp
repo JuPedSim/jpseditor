@@ -40,6 +40,7 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     ui->setupUi(this);
     _dmanager=dmanager;
     _gview=gview;
+    _waypointIDCounter=0;
 
     show_landmarks();
 
@@ -47,6 +48,7 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     connect(ui->apply_name_button,SIGNAL(clicked(bool)),this,SLOT(change_name()));
     connect(ui->closeButton,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_landmark()));
     connect(ui->list_landmarks,SIGNAL(activated(int)),this,SLOT(enable_room_selection()));
+    connect(ui->list_landmarks,SIGNAL(currentIndexChanged(int)),_gview,SLOT(unmarkLandmark()));
     connect(ui->roomBox_landmarks,SIGNAL(activated(int)),this,SLOT(add_room_to_landmark()));
     connect(ui->add_button,SIGNAL(clicked(bool)),_gview,SLOT(StatAssoDef()));
     connect(_gview,SIGNAL(AssoDefCompleted()),this,SLOT(AddAssociation()));
@@ -162,8 +164,11 @@ void widgetLandmark::AddAssociation()
     {
         int cLanRow=ui->list_landmarks->currentIndex();
 
-        _dmanager->get_landmarks()[cLanRow]->AddWaypoint(new jpsWaypoint(_gview->GetCurrentSelectRect()->rect()));
+        _dmanager->get_landmarks()[cLanRow]->AddWaypoint(std::make_shared<jpsWaypoint>(_gview->GetCurrentSelectRect()->rect(),_waypointIDCounter));
+
         ShowAssociations();
+        _waypointIDCounter++;
+        ui->add_button->setChecked(false);
     }
 }
 
@@ -173,9 +178,9 @@ void widgetLandmark::ShowAssociations()
     if (ui->list_landmarks->currentIndex()!=-1)
     {
         int cLanRow=ui->list_landmarks->currentIndex();
-        QList<jpsWaypoint *> waypoints = _dmanager->get_landmarks()[cLanRow]->GetWaypoints();
+        QList<ptrWaypoint> waypoints = _dmanager->get_landmarks()[cLanRow]->GetWaypoints();
 
-        for (jpsWaypoint* waypoint:waypoints)
+        for (ptrWaypoint waypoint:waypoints)
         {
             QPointF pos = waypoint->GetPos();
             QString name = "Waypoint: x: "+QString::number(pos.x())+"y: "+QString::number(pos.y());

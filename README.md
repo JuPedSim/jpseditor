@@ -1,29 +1,33 @@
-JuPedSim v0.6 alpha
+JuPedSim v0.8 alpha
+JPSeditor v0.8 alpha
 ====================
 
-Ulrich Kemloh drafted this on 25 Jun 2014
+Erik Andresen drafted this on 27 Jun 2016
 
-We are proud to announce the first alpha release of our software JuPedSim for simulating pedestrians evacuations. Please note that it is a pre release version for developers only. We are working hard towards the final release for this version. Two modules are shipped with this pre-release:
+We are proud to announce the first alpha release of our software JPSeditor (part of JuPedSim for simulating pedestrians evacuations). Please note that it is a pre release version for developers only. We are working hard towards the final release for this version.
 
-- *jpscore*: command line simulation core
-- *jpsvis*: visualization module
+JPSeditor is a graphical user interface to create the geometry of a scenario simulated by JuPedSim. It comes with set of CAD- and further tools to simplify the creation of proper xml-files 
+incorporating information about the scenario' geometry.
+
 
 Features
 ========
 
-- Simulate pedestrians movement in a space continuous geometry
-- Forces-based models for describing the pedestrians interactions
-- Shortest and quickest path route choice strategies
-- Loading and visualizing trajectories and geometries
-- Easy to use visualization interface
-- Making high quality videos directly from the visualization interface or generating png screenshots
-- XML based input files
+- DXF Import / Export
+- CAD features
+	- Point and line grid
+	- object snap
+	- Orthomode
+	- Zooming 
+	- Line editing
+	- ...
+- Tools for room and door declarations
 
 
-Showcase
+Tutorial
 ========
 
-To highlight some features of JuPedSim we have uploaded some videos on our [YouTube channel](https://www.youtube.com/user/JuPedSim).
+To highlight some features of JuPedSim we have uploaded some videos on our [YouTube channel](https://www.youtube.com/user/JuPedSim) including a tutorial showing how to use the editor.
 
 
 Installing
@@ -39,39 +43,7 @@ As JuPedSim comes with no installer, you just need to delete the unziped directo
 Running
 =======
 
-    jpscore.exe my_simulation_ini.xml
-
-from the command line (or also dropping the file on the executable) will generate a trajectory file, which you can visualize with `jpsvis`.
-You will find some projects samples in the downloaded files and further information in the manual.
-
-Compiling from sources
-======================
-
-You can compile the simulation core for your specific platform with the supplied cmake script.
-The only requirement is a compiler supporting the new standard c++11.
-
-Windows (tested on Win7 with MinGW 4.8)
----------------------------------------
-
-    cmake -G "MinGW Makefiles" CMakeList.txt
-    make-mingw32.exe
-
-Linux (tested on Ubuntu 14.04 with gcc 4.8)
----------------
-
-    cmake CMakeList.txt
-    make
-
-OSX (tested on OSX Maverick with clang 5.1 and Yosemite with clang 6.1)
----------------------
-
-    cmake   CMakeList.txt
-    make
-
-Note that the OpenMP acceleration might be missing under OSX
-
-For the visualization module (`jpsvis`) at least Qt version 4.5 and VTK version 4.8 are required.
-You can download the latest version of QT [here](https://www.qt.io/download/) and the latest version of VTK [here](http://www.vtk.org/download/).
+Start the application by clicking on the binary file. (For example .exe)
 
 System Requirements
 ==============
@@ -79,11 +51,6 @@ System Requirements
 There is no special hardware/software requirements for running JuPedSim. The distributed binaries however, are only available for windows at the moment. For compiling from sources you need a compiler with c++11 support is needed for the core. Qt version >=4.5 and VTK >5.8 are needed for the visualization.
 
 
-Known Issues
-============
-
-Some verification tests are still failing. The actual cdash-board can be found [here](http://my.cdash.org/index.php?project=JuPedSim) 
-Occasionaly jpscore crashes if the input file is not valid. Make sure to validate your XML input files with the supplied XSD files.
 
 Frequently Asked Questions
 ===========================

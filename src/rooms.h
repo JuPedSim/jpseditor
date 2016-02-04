@@ -32,6 +32,8 @@
 #include <QGraphicsView>
 #include "jpsLineItem.h"
 
+class jpsCrossing;
+
 class jpsRoom
 {
 
@@ -45,7 +47,7 @@ public:
     void change_name(QString name);
     QList<jpsLineItem*> get_listWalls();
     void activate();
-    QList<QPointF> get_vertices();
+    QVector<QPointF> get_vertices() const;
     void set_id(int id_room);
     int get_id();
     QPointF get_center();
@@ -53,7 +55,14 @@ public:
     QString get_type();
     void set_type(const QString &string);
     QList<QPointF> GetDoorVertices() const;
-    bool ContainsDoor(jpsLineItem* lineItem) const;
+    //bool ContainsDoor(jpsLineItem* lineItem) const;
+    void AddDoor(jpsCrossing *door);
+    QPolygonF RoomAsPolygon() const;
+    /**
+     * @brief RoomAsSortedPolygon
+     * @return SortedPolygon: QPolygonF
+     */
+    QPolygonF RoomAsSortedPolygon() const;
 
 
 private:
@@ -62,6 +71,8 @@ private:
     QString name;
     QList<jpsLineItem*> item_list;
     QString _type;
+    QList<jpsCrossing* > _doorList;
+
 };
 
 

@@ -35,20 +35,46 @@ class jpsWaypoint
 {
 public:
     jpsWaypoint();
-    jpsWaypoint(QRectF rect);
-    jpsWaypoint(QGraphicsEllipseItem* ellipseItem);
+    jpsWaypoint(const QPointF& point,const qreal& rA, const qreal& rB, const int& id=0, const QString& type="Waypoint");
+    jpsWaypoint(QRectF rect, const int& id=0);
+    jpsWaypoint(QGraphicsEllipseItem* ellipseItem, const int& id=0);
     ~jpsWaypoint();
-    ///Getter
-    const QPointF& GetPos();
-    const QRectF &GetRect();
-    double GetA();
-    double GetB();
+    //Getter
+    const QPointF& GetPos() const;
+    const QRectF &GetRect() const;
+    const double& GetA() const;
+    const double& GetB() const;
+    const int& GetId() const;
     QGraphicsEllipseItem* GetEllipseItem();
+    const QString& GetCaption() const;
+    const QString& GetType() const;
 
-    ///Setter
+    //Setter
     void SetPos(QPointF point);
     void SetRect(QRect rect);
     void SetEllipseItem(QGraphicsEllipseItem* ellipseItem);
+    void SetId(const int& id);
+    void SetCaption(const QString& string);
+    void SetType(const QString& type);
+
+    //Occurence
+    const int& GetFirstFrame() const;
+    const int& GetLastFrame() const;
+    void SetFirstFrame(const int& frame);
+    void SetLastFrame(const int& frame);
+    bool OccursInFrame(const int& frame) const;
+
+    //Currency
+    bool IsCurrent() const;
+    bool IsCurrentInFrame(const int& frameID);
+    void SetCurrentness(bool stat, const int &frameID=1);
+    const int& GetFirstFrameCurrent() const;
+    const int& GetLastFrameCurrent() const;
+    void ChangeCurrentness(const int& frameID);
+    const QString& GetText();
+    void SetText(const QString& text);
+
+    bool Visited(const int& frameID) const;
 
 
 private:
@@ -57,6 +83,19 @@ private:
     QRectF _rect;
     double _a;
     double _b;
+    int _id;
+    QString _caption;
+    QString _type;
+
+    //Occurence
+    int _firstFrame;
+    int _lastFrame;
+
+    //Currentness
+    int _FFcurrentness;
+    int _LFcurrentness;
+    bool _currentness;
+    QString _text;
 
 };
 

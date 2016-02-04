@@ -30,6 +30,7 @@
 #include <QtGui>
 #include <iostream>
 #include <QGraphicsLineItem>
+#include "jpscrossing.h"
 
 
 jpsRoom::jpsRoom(int id_room)
@@ -38,6 +39,7 @@ jpsRoom::jpsRoom(int id_room)
     QString string="Room ";
     name=string.append(QString::number(id));
     highlighted=false;
+    _type="Not specified";
 
 }
 
@@ -87,9 +89,9 @@ void jpsRoom::activate()
     }
 }
 
-QList<QPointF> jpsRoom::get_vertices()
+QVector<QPointF> jpsRoom::get_vertices() const
 {
-    QList<QPointF> vertices;
+    QVector<QPointF> vertices;
 
     for (int i=0; i<item_list.size(); i++)
     {
@@ -102,13 +104,26 @@ QList<QPointF> jpsRoom::get_vertices()
             vertices.push_back(item_list[i]->get_line()->line().p2());
         }
     }
+    for (jpsCrossing* crossing:_doorList)
+    {
+        if (vertices.contains(crossing->get_cLine()->get_line()->line().p1())==false)
+        {
+            vertices.push_back(crossing->get_cLine()->get_line()->line().p1());
+        }
+
+        if (vertices.contains(crossing->get_cLine()->get_line()->line().p1())==false)
+        {
+            vertices.push_back(crossing->get_cLine()->get_line()->line().p1());
+        }
+
+    }
 
     return vertices;
 }
 
 QPointF jpsRoom::get_center()
 {
-    QList<QPointF> vertices = get_vertices();
+    QVector<QPointF> vertices = get_vertices();
     qreal sum_x=0;
     qreal sum_y=0;
 
@@ -197,20 +212,75 @@ QList<QPointF> jpsRoom::GetDoorVertices() const
     return vertices;
 }
 
-bool jpsRoom::ContainsDoor(jpsLineItem *lineItem) const
+void jpsRoom::AddDoor(jpsCrossing *door)
 {
-    QList<QPointF> vertices = GetDoorVertices();
+    _doorList.push_back(door);
+}
 
-    for (QPointF vertex:vertices)
+QPolygonF jpsRoom::RoomAsPolygon() const
+{
+
+    return QPolygonF(get_vertices());
+}
+
+QPolygonF jpsRoom::RoomAsSortedPolygon() const
+{
+    QList<jpsLineItem*> lines = item_list;
+    for (jpsCrossing* crossing:_doorList)
     {
-        if (lineItem->get_line()->contains(vertex))
+        lines.push_back(crossing->get_cLine());
+    }
+//    std::cout << lines.size() << std::endl;
+    QVector<QPointF> points;
+
+    points.push_back(lines.first()->get_line()->line().p1());
+    points.push_back(lines.first()->get_line()->line().p2());
+
+    lines.pop_front();
+
+    for (int i=0; i<lines.size(); i++)
+    {
+        if (lines[i]->get_line()->line().p1() == points.last())
         {
-            return true;
+            //points.push_back(line->get_line()->line().p1());
+            points.push_back(lines[i]->get_line()->line().p2());
+            lines.removeOne(lines[i]);
+            i=-1;
+        }
+        else if (lines[i]->get_line()->line().p2() == points.last())
+        {
+            //points.push_back(line->get_line()->line().p1());
+            points.push_back(lines[i]->get_line()->line().p1());
+            lines.removeOne(lines[i]);
+            i=-1;
         }
     }
-    return false;
 
+
+    for (QPointF point:points)
+    {
+        std::cout << point.x() << " " << point.y() << std::endl;
+
+    }
+    std::cout << "----------------------------" << std::endl;
+
+    return QPolygonF(points);
 }
+
+//bool jpsRoom::ContainsDoor(jpsLineItem *lineItem) const
+//{
+//    QList<QPointF> vertices = GetDoorVertices();
+
+//    for (QPointF vertex:vertices)
+//    {
+//        if (lineItem->get_line()->contains(vertex))
+//        {
+//            return true;
+//        }
+//    }
+//    return false;
+
+//}
 
 
 

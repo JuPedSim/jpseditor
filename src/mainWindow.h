@@ -37,6 +37,7 @@
 #include "ui_mainwindow.h"
 #include "roomwidget.h"
 #include "widgetlandmark.h"
+#include "widgetsettings.h"
 #include "GraphicView.h"
 #include "datamanager.h"
 #include "rooms.h"
@@ -53,6 +54,7 @@ public:
 private:
     roomWidget* rwidget;
     widgetLandmark* lwidget;
+    WidgetSettings* _settings;
     jpsDatamanager* dmanager;
     jpsGraphicsView* mview;
     //QVBoxLayout* VBox;
@@ -63,33 +65,64 @@ private:
     QString _filename;
     QTimer *timer;
 
+    //CMap
+    QTimer *_cMapTimer;
+    int _cMapFrame;
+
 
 protected slots:
+    
+    //parseFiles
     void openFile();
     void openFileXML();
+    void openFileCMap();
     void saveFile();
     void saveAsDXF();
+    
+    //about
     void info();
-    void gridmode();
+    
+    //drawing options
+    void anglesnap();
     void en_disableWall();
     void en_disableDoor();
     void en_disableExit();
     void en_disableLandmark();
+    void en_disableHLine();
     void disableDrawing();
     void objectsnap();
+
+    //Line operations
     void show_coords();
     void delete_lines();
     void delete_marked_lines();
     void send_length();
-    void define_room();
-    void define_landmark();
     void en_selectMode();
     void dis_selectMode();
     void lines_deleted();
     void remove_all_lines();
-    void rotate();
-    void AutoSave();
+    void ShowLineLength();
+    
+    //Room and landmark def
+    void define_room();
+    void define_landmark();
     void add_landmark();
+    
+    //view options
+    void gridmode();
+    void rotate();
+    void Settings();
+    void ShowOrigin();
+    
+    //autosave
+    void AutoSave();
+    
+    //CMap
+    void RunCMap();
+    void UpdateCMap();
+
+    //quit
+    void closeEvent(QCloseEvent *event);
 
 
 };

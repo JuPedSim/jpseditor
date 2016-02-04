@@ -47,11 +47,16 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     show_exits();
     show_obstacles();
 
-    ///temporary uncommented
+    //temporary uncommented
     ui->auto_assign_doors->setVisible(false);
     //ui->auto_assign_exits->setVisible(false);
 
-
+    // roomClasses
+    ui->classBox->addItem("Not specified");
+    ui->classBox->addItem("Corridor");
+    ui->classBox->addItem("Office");
+    ui->classBox->addItem("Lobby");
+    ui->classBox->addItem("Entrance");
 
 
     //SIGNALS AND SLOTS
@@ -65,12 +70,14 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->delete_room,SIGNAL(clicked(bool)),this,SLOT(delete_room()));
     connect(ui->apply_name_button,SIGNAL(clicked(bool)),this,SLOT(change_roomname()));
     connect(ui->add_button,SIGNAL(clicked(bool)),this,SLOT(addWall()));
-    connect(ui->list_rooms,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(showWalls()));
-    connect(ui->list_rooms,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showWalls()));
+    connect(ui->list_rooms,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(showWallsAndType()));
+    connect(ui->list_rooms,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showWallsAndType()));
     connect(ui->listWalls,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(selectWall()));
     connect(ui->remove_button,SIGNAL(clicked(bool)),this,SLOT(removeWall()));
     connect(ui->caption,SIGNAL(clicked(bool)),this,SLOT(shhi_roomCaption()));
     connect(ui->highlight,SIGNAL(clicked(bool)),this,SLOT(highlight_room()));
+    connect(ui->classBox,SIGNAL(activated(int)),this,SLOT(ChangeRoomType()));
+    connect(ui->classBox,SIGNAL(currentIndexChanged(int)),this,SLOT(ChangeRoomType()));
     //tab crossing
     connect(ui->addCrossingButton,SIGNAL(clicked(bool)),this,SLOT(new_crossing()));
     connect(ui->crossingList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(enable_roomSelectionCrossings()));
@@ -78,7 +85,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->roomBox2,SIGNAL(activated(int)),this,SLOT(add_rooms_to_crossing()));
     connect(ui->removeCrossingButton,SIGNAL(clicked(bool)),this,SLOT(delete_crossing()));
     connect(ui->crossingList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(select_crossing()));
-    connect(ui->auto_assign_doors,SIGNAL(clicked(bool)),this,SLOT(autoAssignDoors()));
+    //connect(ui->auto_assign_doors,SIGNAL(clicked(bool)),this,SLOT(autoAssignDoors()));
     //tab exit
 //    connect(ui->addExitButton,SIGNAL(clicked(bool)),this,SLOT(new_exit()));
 //    connect(ui->exitList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(enable_roomSelectionExits()));
@@ -244,7 +251,7 @@ void roomWidget::addWall()
             int crow=ui->list_rooms->currentRow();
 
             datamanager->get_roomlist()[crow]->addWall(graphview->get_markedLines());
-            this->showWalls();
+            this->showWallsAndType();
 
         }
     }
@@ -259,12 +266,12 @@ void roomWidget::removeWall()
             int crow=ui->list_rooms->currentRow();
 
             datamanager->get_roomlist()[crow]->removeWall(graphview->get_markedLines());
-            this->showWalls();
+            this->showWallsAndType();
         }
     }
 }
 
-void roomWidget::showWalls()
+void roomWidget::showWallsAndType()
 {
     ui->listWalls->clear();
 
@@ -285,6 +292,8 @@ void roomWidget::showWalls()
                 string.append(" y2:"+QString::number(walllist[i]->get_line()->line().y2()));
                 ui->listWalls->addItem(string);
             }
+
+            ShowRoomType(crow);
         }
     }
 }
@@ -558,7 +567,7 @@ void roomWidget::show_all()
     show_crossings();
     show_exits();
     show_obstacles();
-    showWalls();
+    showWallsAndType();
     showWallsObs();
 }
 
@@ -758,18 +767,40 @@ void roomWidget::highlight_obs()
 
 }
 
-void roomWidget::autoAssignDoors()
+//void roomWidget::autoAssignDoors()
+//{
+//    datamanager->AutoAssignCrossings();
+//    show_all();
+//    enable_roomSelectionCrossings();
+//}
+
+//void roomWidget::autoAssignExits()
+//{
+//    datamanager->AutoAssignExits();
+//    show_all();
+//    enable_roomSelectionExits();
+
+//}
+
+void roomWidget::ChangeRoomType()
 {
-    datamanager->AutoAssignCrossings();
-    show_all();
-    enable_roomSelectionCrossings();
+    if (ui->list_rooms->currentItem()!=0L)
+    {
+        int cRoomRow=ui->list_rooms->currentRow();
+        int cClassRow=ui->classBox->currentIndex();
+        if (cClassRow!=-1)
+        {
+            datamanager->get_roomlist()[cRoomRow]->set_type(ui->classBox->currentText());
+        }
+    }
+
 }
 
-void roomWidget::autoAssignExits()
+void roomWidget::ShowRoomType(int& cRow) const
 {
-    datamanager->AutoAssignExits();
-    show_all();
-    enable_roomSelectionExits();
+    QString type = datamanager->get_roomlist()[cRow]->get_type();
+    int itemindex = ui->classBox->findText(type);
+    ui->classBox->setCurrentIndex(itemindex);
 
 }
 
