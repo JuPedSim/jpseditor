@@ -30,8 +30,3 @@ All notable changes to this project will be documented in this file.
 	- Show origin
 	- ...
 - Room and door declarations
-# Change Log
-All notable changes to this project will be documented in this file.
-
-
-
