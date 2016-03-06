@@ -1,7 +1,7 @@
 /**
  * \file        widgetlandmark.h
  * \date        Jun 26, 2015
- * \version     v0.7
+ * \version     v0.8.1
  * \copyright   <2009-2015> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
@@ -22,7 +22,7 @@
  *
  * \section Description
  * With the help of this class the user is able to handle landmarks and set associations (waypoints) relying on a certain landmark.
- * widgetlandmark is not enabled in v0.7.
+ * widgetlandmark is not enabled in v0.8.1.
  *
  *
  **/

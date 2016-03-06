@@ -1,7 +1,7 @@
 /**
  * \file        jpswaypoint.cpp
  * \date        Jun 26, 2015
- * \version     v0.7
+ * \version     v0.8.1
  * \copyright   <2009-2015> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
@@ -22,7 +22,7 @@
  *
  * \section Description
  * This class is representing an spatial association which rely on a certain landmark.
- * jpswaypoint is not enabled in v0.7.
+ * jpswaypoint is not enabled in v0.8.1.
  *
  **/
 

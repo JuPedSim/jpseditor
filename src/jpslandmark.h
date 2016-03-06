@@ -1,7 +1,7 @@
 /**
  * \file        jpslandmark.h
  * \date        Jun 26, 2015
- * \version     v0.7
+ * \version     v0.8.1
  * \copyright   <2009-2015> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
@@ -22,7 +22,7 @@
  *
  * \section Description
  * This class is representing a landmark in the building which could be set by the user.
- * The usage of landmarks is not enabled in v0.7.
+ * The usage of landmarks is not enabled in v0.8.1.
  *
  **/
 
