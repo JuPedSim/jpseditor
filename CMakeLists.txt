@@ -109,6 +109,9 @@ set( SRCS
     src/jpsconnection.cpp
     dxflib/src/dl_writer_ascii.cpp
     dxflib/src/dl_dxf.cpp
+    src/UndoFramework/action.cpp
+    src/UndoFramework/actionstack.cpp
+    src/UndoFramework/lineaction.cpp
   )  
 # all header files that should be treated with moc
 set( HDR
@@ -139,6 +142,9 @@ set( HDR
     dxflib/src/dl_creationadapter.h
     dxflib/src/dl_codes.h
     dxflib/src/dl_attributes.h
+    src/UndoFramework/action.h
+    src/UndoFramework/actionstack.h
+    src/UndoFramework/lineaction.h
  
   )
 
