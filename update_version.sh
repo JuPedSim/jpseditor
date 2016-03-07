@@ -1,6 +1,9 @@
 #!/bin/sh
+# ----------------- change these parameter ---------
 old_version='v0.7'
 new_version='v0.8.1'
+# --------------------------------------------------
+
 Date=`date +"%b %d, %Y"`
 Year=`date +"%Y"`
 header="
@@ -26,7 +29,7 @@ header="
  **/
 "
 
-for f in $(find . -name '*.cpp' -or -name '*.h' );  
+for f in $(find . -path ./dxflib -prune -name '*.cpp' -or -name '*.h' ); # exclude dxflib 
 do 
 
 #file uptodate
