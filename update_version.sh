@@ -1,12 +1,31 @@
 #!/bin/sh
 old_version='v0.7'
 new_version='v0.8.1'
+Date=`date +"%b %d, %Y"`
+Year=`date +"%Y"`
+header="
+ * \\date        $Date
+ * \\version     ${new_version}
+ * \\copyright   <2009-$Year> Forschungszentrum Jülich GmbH. All rights reserved.
+ *
+ * \\section License
+ * This file is part of JuPedSim.
+ *
+ * JuPedSim is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * JuPedSim is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
+ **/
+"
 
-
-#old_version='http://134.94.2.137/jps_ini_core.xsd'
-#new_version='http://xsd.jupedsim.org/0.6/jps_ini_core.xsd'
-
-#for f in $(find ../ -name '*.cpp' -or -name '*.h' -or -name '*.xml' -or -name '*.py');
 for f in $(find . -name '*.cpp' -or -name '*.h' );  
 do 
 
@@ -16,11 +35,20 @@ if grep -R -q "$new_version" $f; then
 	continue
 fi
 
-if grep -R -q "$old_version" $f; then
+if grep -R -q "\version     $old_version" $f; then
 	echo "Processing $f  $old_version ---> $new_version"
 	sed -i -e "s/${old_version}/${new_version}/g" $f
 else
-	echo "File $f does not contain a version number"
+    echo "File $f does not contain a version number. Adding header.."
+    VAR="/**
+ * \\file        `basename $f` $header
+     "
+    ed -s "$f" << EOF
+0a
+$VAR
+.
+w
+EOF
 fi
 done
 
