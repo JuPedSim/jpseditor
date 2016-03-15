@@ -281,12 +281,14 @@ void MWindow::openFileXML()
     //RoutingFile
     QString fileNameRouting= fileName.split(".").first()+"_routing.xml";
     QFile fileRouting(fileNameRouting);
+    bool statusFileRouting=true;
     if (!fileRouting.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        return;
+        statusFileRouting=false;
+
     }
 
-    if (!dmanager->readXML(file) || !dmanager->readRoutingXML(fileRouting))
+    if (!dmanager->readXML(file))
     {
         QMessageBox::critical(this,
                               "OpenFileXML",
@@ -295,8 +297,14 @@ void MWindow::openFileXML()
         statusBar()->showMessage("XML-File could not be parsed!",10000);
     }
 
+
+
     else
     {
+        //optional: load routing file
+        if (statusFileRouting==true)
+            dmanager->readRoutingXML(fileRouting);
+
         //AutoZoom to drawing
         mview->AutoZoom();
         statusBar()->showMessage("XML-File successfully loaded!",10000);
