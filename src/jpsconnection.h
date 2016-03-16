@@ -27,18 +27,20 @@
 
 #include <memory>
 #include <utility>
-#include "jpswaypoint.h"
+#include "jpslandmark.h"
 
-using ptrWaypoint = std::shared_ptr<jpsWaypoint>;
+using ptrLandmark = std::shared_ptr<jpsLandmark>;
 
 
 class jpsConnection
 {
+
 using ptrConnection = std::shared_ptr<jpsConnection>;
+
 public:
-    jpsConnection(ptrWaypoint waypoint1, ptrWaypoint waypoint2, const int& frameID=-1);
+    jpsConnection(ptrLandmark waypoint1, ptrLandmark waypoint2, const int& frameID=-1);
     ~jpsConnection();
-    std::pair<ptrWaypoint,ptrWaypoint> GetWaypoints() const;
+    std::pair<ptrLandmark,ptrLandmark> GetLandmarks() const;
     //Occurence
     bool OccursInFrame(const int &frameID) const;
     void SetFirstFrame(const int &frameID);
@@ -48,8 +50,8 @@ public:
     // Operator overload
     bool operator ==(const ptrConnection con2) const;
 private:
-    ptrWaypoint _waypoint1;
-    ptrWaypoint _waypoint2;
+    ptrLandmark _landmark1;
+    ptrLandmark _landmark2;
     int _firstFrame;
     int _lastFrame;
 };

@@ -24,10 +24,10 @@
      
 #include "jpsconnection.h"
 
-jpsConnection::jpsConnection(ptrWaypoint waypoint1, ptrWaypoint waypoint2, const int &frameID)
+jpsConnection::jpsConnection(ptrLandmark landmark1, ptrLandmark landmark2, const int &frameID)
 {
-    _waypoint1=waypoint1;
-    _waypoint2=waypoint2;
+    _landmark1=landmark1;
+    _landmark2=landmark2;
     _firstFrame=frameID;
     _lastFrame=frameID;
 }
@@ -37,9 +37,9 @@ jpsConnection::~jpsConnection()
 
 }
 
-std::pair<ptrWaypoint, ptrWaypoint> jpsConnection::GetWaypoints() const
+std::pair<ptrLandmark, ptrLandmark> jpsConnection::GetLandmarks() const
 {
-    return std::make_pair(_waypoint1,_waypoint2);
+    return std::make_pair(_landmark1,_landmark2);
 }
 
 bool jpsConnection::OccursInFrame(const int& frameID) const
@@ -74,8 +74,8 @@ const int &jpsConnection::GetLastFrame() const
 
 bool jpsConnection::operator == (const ptrConnection con2) const
 {
-    if ((con2->GetWaypoints().first==_waypoint1 && con2->GetWaypoints().second==_waypoint2)
-            || (con2->GetWaypoints().second==_waypoint1 && con2->GetWaypoints().first==_waypoint2))
+    if ((con2->GetLandmarks().first==_landmark1 && con2->GetLandmarks().second==_landmark2)
+            || (con2->GetLandmarks().second==_landmark1 && con2->GetLandmarks().first==_landmark2))
     {
         return true;
     }
