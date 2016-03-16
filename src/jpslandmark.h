@@ -37,7 +37,7 @@ class jpsLandmark
 {
 public:
     jpsLandmark();
-    jpsLandmark(const QGraphicsPixmapItem* pixmap,const QString& caption, const QPointF& point,const qreal& rA, const qreal& rB, const int& id=0, const QString& type="Landmark");
+    jpsLandmark(QGraphicsPixmapItem* pixmap,const QString& caption, const QPointF& realPos,const qreal& rA=0, const qreal& rB=0, const int& id=0, const QString& type="Landmark");
     ~jpsLandmark();
     //Setter
 
@@ -50,9 +50,10 @@ public:
     const double& GetA() const;
     const double& GetB() const;
     const int& GetId() const;
-    QGraphicsEllipseItem* GetEllipseItem();
+    QGraphicsEllipseItem* GetEllipseItem() const;
     const QString& GetCaption() const;
     const QString& GetType() const;
+    QGraphicsTextItem* GetTextItem() const;
 
     //Setter
     void SetPixmap(QGraphicsPixmapItem* pixmap);
@@ -64,6 +65,7 @@ public:
     void SetId(const int& id);
     void SetCaption(const QString& string);
     void SetType(const QString& type);
+    void SetTextItem(QGraphicsTextItem* textItem);
 
 //    //Occurence
 //    const int& GetFirstFrame() const;
@@ -95,9 +97,9 @@ private:
     jpsRoom* _room;
     int _visibility;
     QGraphicsPixmapItem* _pixmapItem;
-    QList<ptrWaypoint > _waypoints;
     QRectF _rect;
     QGraphicsEllipseItem* _ellipseItem;
+    QGraphicsTextItem* _textItem;
 
 };
 

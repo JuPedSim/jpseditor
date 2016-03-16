@@ -33,6 +33,10 @@
 #include <QTabWidget>
 #include "datamanager.h"
 #include "GraphicView.h"
+#include <memory>
+
+using ptrLandmark = std::shared_ptr<jpsLandmark>;
+
 
 namespace Ui {
 class widgetLandmark;
@@ -52,11 +56,14 @@ protected slots:
     void enable_room_selection();
     void disable_room_selection();
     void change_name();
+    void SetPosInCMap();
     void AddAssociation();
-    void ShowAssociations();
+    ///Show or hide landmark picture and ellipse in graphicsview
+    void ShowHideLandmark();
     void RemoveAssociation();
 
 private:
+    ptrLandmark GetCurrentLandmark() const;
     Ui::widgetLandmark *ui;
     jpsDatamanager* _dmanager;
     jpsGraphicsView* _gview;

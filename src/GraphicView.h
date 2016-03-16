@@ -39,6 +39,9 @@
 #include "./UndoFramework/actionstack.h"
 
 using ptrConnection = std::shared_ptr<jpsConnection>;
+using ptrLandmark = std::shared_ptr<jpsLandmark>;
+
+class jpsDatamanager;
 
 class jpsGraphicsView: public QGraphicsView {
 
@@ -46,7 +49,7 @@ class jpsGraphicsView: public QGraphicsView {
 
 public:
     //Constructor
-    jpsGraphicsView(QWidget* parent = nullptr);
+    jpsGraphicsView(QWidget* parent = nullptr, jpsDatamanager* datamanager);
 
     //Destructor
     ~jpsGraphicsView();
@@ -117,12 +120,13 @@ public:
     void catch_landmark();
     void select_landmark(jpsLandmark *landmark);
     void addLandmark();
+    void ShowHideLandmark(ptrLandmark landmark);
     // unmark Landmarks see slots
     QList<jpsLandmark *> get_landmarks();
 
     //Waypoints/Connections and YAHPointer
     QGraphicsRectItem* GetCurrentSelectRect();
-    void ShowWaypoints(QList<ptrWaypoint > waypoints);
+
     void ShowYAHPointer(const QPointF& pos, const qreal& dir);
     void ClearWaypointLabels();
     void ShowConnections(QList<ptrConnection> cons);
@@ -162,6 +166,7 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent *event);
 
 private:
+    jpsDatamanager* _datamanager;
     QGraphicsLineItem* current_line;
     QPolygonF polygon;
     //std::vector<jpsLineItem> line_vector;
@@ -202,10 +207,8 @@ private:
     int id_counter;
 
     //Landmark and waypoints
-    QList<jpsLandmark* > LLandmarks;
     jpsLandmark* markedLandmark;
     QGraphicsRectItem* currentLandmarkRect;
-    QList<QGraphicsEllipseItem* > _waypoints;
     QList<QGraphicsLineItem* > _connections;
     QList<QGraphicsLineItem* > _yahPointer;
     QList<QGraphicsTextItem* > _waypointLabels;
@@ -230,7 +233,6 @@ signals:
     void no_drawing();
     void remove_marked_lines();
     void remove_all();
-    void landmark_added();
     void AssoDefCompleted();
     void LineLengthChanged();
     //void DoubleClick();

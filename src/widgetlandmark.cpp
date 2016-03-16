@@ -123,7 +123,7 @@ void widgetLandmark::enable_room_selection()
 
 
         }
-        ///mark Landmark
+        //mark Landmark
         _gview->select_landmark(_dmanager->get_landmarks()[cLanRow]);
 
         ShowAssociations();
@@ -147,15 +147,24 @@ void widgetLandmark::disable_room_selection()
 }
 
 void widgetLandmark::change_name()
-{
-    if (ui->list_landmarks->currentIndex()!=-1)
+{    
+    ptrLandmark landmark = GetCurrentLandmark();
+
+    if (landmark!=nullptr)
     {
-        int crow=ui->list_landmarks->currentIndex();
-
-            _dmanager->get_landmarks()[crow]->set_name(ui->chname_edit->text());
-
+        landmark->SetCaption(ui->chname_edit->text());
         this->show_landmarks();
     }
+
+}
+
+void widgetLandmark::SetPosInCMap()
+{
+    ptrLandmark landmark = GetCurrentLandmark();
+
+    if (landmark!=nullptr)
+        landmark->SetRect(_gview->GetCurrentSelectRect()->rect());
+
 }
 
 void widgetLandmark::AddAssociation()
@@ -172,22 +181,13 @@ void widgetLandmark::AddAssociation()
     }
 }
 
-void widgetLandmark::ShowAssociations()
+void widgetLandmark::ShowHideLandmark()
 {
-    ui->listWaypoints->clear();
-    if (ui->list_landmarks->currentIndex()!=-1)
+    ptrLandmark landmark = GetCurrentLandmark();
+
+    if (landmark!=nullptr)
     {
-        int cLanRow=ui->list_landmarks->currentIndex();
-        QList<ptrWaypoint> waypoints = _dmanager->get_landmarks()[cLanRow]->GetWaypoints();
-
-        for (ptrWaypoint waypoint:waypoints)
-        {
-            QPointF pos = waypoint->GetPos();
-            QString name = "Waypoint: x: "+QString::number(pos.x())+"y: "+QString::number(pos.y());
-            ui->listWaypoints->addItem(name);
-
-        }
-        _gview->ShowWaypoints(waypoints);
+        _gview->ShowHideLandmark(landmark);
     }
 }
 
@@ -207,4 +207,16 @@ void widgetLandmark::RemoveAssociation()
         }
 
     }
+}
+
+ptrLandmark widgetLandmark::GetCurrentLandmark() const
+{
+    if (ui->list_landmarks->currentIndex()!=-1)
+    {
+        int crow=ui->list_landmarks->currentIndex();
+
+        return _dmanager->get_landmarks()[crow];
+    }
+    else
+        return nullptr;
 }

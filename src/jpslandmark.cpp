@@ -33,10 +33,10 @@ jpsLandmark::jpsLandmark()
 
 }
 
-jpsLandmark::jpsLandmark(const QGraphicsPixmapItem *pixmap, const QString &caption, const QPointF &point, const qreal &rA, const qreal &rB, const int &id, const QString &type)
+jpsLandmark::jpsLandmark(QGraphicsPixmapItem *pixmap, const QString &caption, const QPointF &realPos, const qreal &rA, const qreal &rB, const int &id, const QString &type)
 {
     _caption=caption;
-    _pos=point;
+    _pos=realPos;
     _room=nullptr;
     _visibility=0;
     _pixmapItem=pixmap;
@@ -50,7 +50,9 @@ jpsLandmark::jpsLandmark(const QGraphicsPixmapItem *pixmap, const QString &capti
 
 jpsLandmark::~jpsLandmark()
 {
-
+    delete _pixmapItem;
+    delete _ellipseItem;
+    delete _textItem;
 }
 
 void jpsLandmark::SetPixmap(QGraphicsPixmapItem *pixmap)
@@ -87,4 +89,90 @@ int jpsLandmark::GetVisibility() const
     return _visibility;
 }
 
+
+const QPointF &jpsLandmark::GetPos() const
+{
+    return _pos;
+
+}
+
+const QRectF &jpsLandmark::GetRect() const
+{
+    return _rect;
+}
+
+const double& jpsLandmark::GetA() const
+{
+    return _a;
+}
+
+const double& jpsLandmark::GetB() const
+{
+    return _b;
+}
+
+const int &jpsLandmark::GetId() const
+{
+    return _id;
+}
+
+QGraphicsEllipseItem *jpsLandmark::GetEllipseItem() const
+{
+    return _ellipseItem;
+}
+
+const QString &jpsLandmark::GetCaption() const
+{
+    return _caption;
+}
+
+const QString &jpsLandmark::GetType() const
+{
+    return _type;
+}
+
+QGraphicsTextItem *jpsLandmark::GetTextItem() const
+{
+    return _textItem;
+}
+
+
+void jpsLandmark::SetPos(QPointF point)
+{
+    _pos=point;
+    _rect.setRect(point.x(),point.y(),_rect.width(),_rect.height());
+}
+
+void jpsLandmark::SetRect(QRect rect)
+{
+    _rect=rect;
+    _a=_rect.width();
+    _b=_rect.height();
+    _pos=_rect.center();
+}
+
+void jpsLandmark::SetEllipseItem(QGraphicsEllipseItem *ellipseItem)
+{
+    _ellipseItem=ellipseItem;
+}
+
+void jpsLandmark::SetId(const int &id)
+{
+    _id=id;
+}
+
+void jpsLandmark::SetCaption(const QString &string)
+{
+    _caption=string;
+}
+
+void jpsLandmark::SetType(const QString &type)
+{
+    _type=type;
+}
+
+void jpsLandmark::SetTextItem(QGraphicsTextItem *textItem)
+{
+    _textItem=textItem;
+}
 

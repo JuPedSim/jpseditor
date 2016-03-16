@@ -32,12 +32,13 @@
 #include <cmath>
 #include <memory>
 #include <QMessageBox>
+#include "datamanager.h"
 
 
 
-jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
+jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):QGraphicsView(parent)
 {
-
+    _datamanager=datamanager;
     current_line=nullptr;
     _currentVLine=nullptr;
     current_caption=nullptr;
@@ -295,10 +296,24 @@ void jpsGraphicsView::addLandmark()
     QString name="Landmark"+QString::number(LLandmarks.size());
     jpsLandmark* landmark = new jpsLandmark(pixmapItem,name,pixmapItem->scenePos());
 
-    LLandmarks.push_back(landmark);
+    _dm
 
     emit landmark_added();
 
+}
+
+void jpsGraphicsView::ShowHideLandmark(ptrLandmark landmark)
+{
+    QGraphicsEllipseItem* ellipse = Scene->addEllipse(landmark->GetRect(),QPen(Qt::blue,0));
+    ellipse->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+    QString string = landmark->GetCaption();
+    QGraphicsTextItem* text = Scene->addText(string);
+    text->setPos(landmark->GetPos().x()+translation_x,landmark->GetPos().y()+translation_y);
+    //text->setScale(gl_scale_f);
+    text->setData(0,gl_scale_f);
+    text->setTransform(QTransform::fromScale(gl_scale_f,-gl_scale_f),true);
+    landmark->SetEllipseItem(ellipse);
+    landmark->SetTextItem(text);
 }
 
 void jpsGraphicsView::unmarkLandmark()

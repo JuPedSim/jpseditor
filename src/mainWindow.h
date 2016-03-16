@@ -106,7 +106,6 @@ protected slots:
     //Room and landmark def
     void define_room();
     void define_landmark();
-    void add_landmark();
     
     //view options
     void gridmode();
