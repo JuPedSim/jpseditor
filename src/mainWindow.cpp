@@ -47,6 +47,7 @@ MWindow :: MWindow() {
 
     mview = new jpsGraphicsView(this);
     dmanager = new jpsDatamanager(this,mview);
+    mview->SetDatamanager(dmanager);
 
     //Roomwidget
     rwidget=nullptr;
@@ -126,7 +127,6 @@ MWindow :: MWindow() {
     connect(mview,SIGNAL(remove_all()),this,SLOT(remove_all_lines()));
     connect(mview,SIGNAL(set_focus_textedit()),length_edit,SLOT(setFocus()));
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
-    connect(mview,SIGNAL(landmark_added()),this,SLOT(add_landmark()));
     connect(mview,SIGNAL(LineLengthChanged()),this,SLOT(ShowLineLength()));
     // Mark all lines
     QAction *str_a = new QAction(this);
@@ -193,37 +193,32 @@ void MWindow::AutoSave()
     }
 }
 
-void MWindow::RunCMap()
-{
+//void MWindow::RunCMap()
+//{
 
-    double frameRate = dmanager->GetCMapFrameRate();
-    _cMapFrame=1;
-    if (frameRate==0)
-    {
-        statusBar()->showMessage(tr("No cognitive map has been loaded!"),10000);
-        return;
-    }
-    _cMapTimer->setInterval(1/frameRate*1000);
-    _cMapTimer->start();
-}
+//    double frameRate = dmanager->GetCMapFrameRate();
+//    _cMapFrame=1;
+//    if (frameRate==0)
+//    {
+//        statusBar()->showMessage(tr("No cognitive map has been loaded!"),10000);
+//        return;
+//    }
+//    _cMapTimer->setInterval(1/frameRate*1000);
+//    _cMapTimer->start();
+//}
 
-void MWindow::UpdateCMap()
-{
-    _cMapFrame++;
-    if (_cMapFrame>dmanager->GetLastCMapFrame())
-    {
-        _cMapTimer->stop();
-        dmanager->ShowCMapFrame(1);
-        return;
-    }
-    dmanager->ShowCMapFrame(_cMapFrame);
-}
+//void MWindow::UpdateCMap()
+//{
+//    _cMapFrame++;
+//    if (_cMapFrame>dmanager->GetLastCMapFrame())
+//    {
+//        _cMapTimer->stop();
+//        dmanager->ShowCMapFrame(1);
+//        return;
+//    }
+//    dmanager->ShowCMapFrame(_cMapFrame);
+//}
 
-void MWindow::add_landmark()
-{
-    jpsLandmark* landmark = mview->get_landmarks().last();
-    dmanager->new_landmark(landmark);
-}
 
 void MWindow::Settings()
 {
@@ -312,32 +307,32 @@ void MWindow::openFileXML()
 
 }
 
-void MWindow::openFileCMap()
-{
-    QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        QMessageBox::critical(this,
-                              "OpenFileXML",
-                              "Couldn't open xml-file",
-                              QMessageBox::Ok);
-        return;
-    }
+//void MWindow::openFileCMap()
+//{
+//    QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
+//    QFile file(fileName);
+//    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+//    {
+//        QMessageBox::critical(this,
+//                              "OpenFileXML",
+//                              "Couldn't open xml-file",
+//                              QMessageBox::Ok);
+//        return;
+//    }
 
 
-    if (!dmanager->ParseCogMap(file))
-    {
-        statusBar()->showMessage("XML-File could not be parsed!",10000);
-    }
+//    if (!dmanager->ParseCogMap(file))
+//    {
+//        statusBar()->showMessage("XML-File could not be parsed!",10000);
+//    }
 
-    else
-    {
+//    else
+//    {
 
-        statusBar()->showMessage("Cognitive map successfully loaded!",10000);
-        dmanager->ShowCMapFrame(1);
-    }
-}
+//        statusBar()->showMessage("Cognitive map successfully loaded!",10000);
+//        dmanager->ShowCMapFrame(1);
+//    }
+//}
 
 void MWindow::saveFile(){
     QString fileName = QFileDialog::getSaveFileName(this,tr("Save XML"),"",tr("XML-Files (*.xml)"));
@@ -535,7 +530,6 @@ void MWindow::define_landmark()
     else
     {
         lwidget->close();
-        mview->ClearWaypoints();
         lwidget=nullptr;
         actionLandmarkWidget->setChecked(false);
     }

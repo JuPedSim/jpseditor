@@ -44,7 +44,7 @@ public:
     //Getter
     QGraphicsPixmapItem* GetPixmap() const;
     jpsRoom *GetRoom() const;
-    const int GetVisibility() const;
+    int GetVisibility() const;
     const QPointF& GetPos() const;
     const QRectF &GetRect() const;
     const double& GetA() const;

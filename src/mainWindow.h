@@ -75,7 +75,7 @@ protected slots:
     //parseFiles
     void openFile();
     void openFileXML();
-    void openFileCMap();
+//    void openFileCMap();
     void saveFile();
     void saveAsDXF();
     
@@ -117,8 +117,8 @@ protected slots:
     void AutoSave();
     
     //CMap
-    void RunCMap();
-    void UpdateCMap();
+    //void RunCMap();
+    //void UpdateCMap();
 
     //quit
     void closeEvent(QCloseEvent *event);

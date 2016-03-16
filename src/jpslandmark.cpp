@@ -44,7 +44,7 @@ jpsLandmark::jpsLandmark(QGraphicsPixmapItem *pixmap, const QString &caption, co
     _b=rB;
     _id=id;
     _type=type;
-    _rect=QRectF(point.x()-rA,point.y()-rB,rA*2,rB*2);
+    _rect=QRectF(realPos.x()-rA,realPos.y()-rB,rA*2,rB*2);
 
 }
 

@@ -49,10 +49,12 @@ class jpsGraphicsView: public QGraphicsView {
 
 public:
     //Constructor
-    jpsGraphicsView(QWidget* parent = nullptr, jpsDatamanager* datamanager);
+    jpsGraphicsView(QWidget* parent = nullptr, jpsDatamanager* datamanager=nullptr);
 
     //Destructor
     ~jpsGraphicsView();
+
+    void SetDatamanager(jpsDatamanager* datamanager);
 
     //Change modes
     void change_stat_anglesnap();
@@ -120,15 +122,14 @@ public:
     void catch_landmark();
     void select_landmark(jpsLandmark *landmark);
     void addLandmark();
-    void ShowHideLandmark(ptrLandmark landmark);
+    void ShowLandmark(ptrLandmark landmark);
+    void HideLandmark(ptrLandmark landmark);
     // unmark Landmarks see slots
-    QList<jpsLandmark *> get_landmarks();
 
     //Waypoints/Connections and YAHPointer
     QGraphicsRectItem* GetCurrentSelectRect();
 
     void ShowYAHPointer(const QPointF& pos, const qreal& dir);
-    void ClearWaypointLabels();
     void ShowConnections(QList<ptrConnection> cons);
     void ClearConnections();
 
@@ -144,7 +145,6 @@ public:
 public slots:
     //Waypoints
     void StatAssoDef();
-    void ClearWaypoints();
     //GridSettings
     void ActivateLineGrid();
     void ActivatePointGrid();

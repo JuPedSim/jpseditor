@@ -239,15 +239,20 @@ void jpsDatamanager::new_landmark(jpsLandmark *newlandmark)
 void jpsDatamanager::remove_landmark(jpsLandmark *landmark)
 {
     landmarks.removeOne(landmark);
+    delete landmark;
 }
 
 void jpsDatamanager::change_LandmarkName(jpsLandmark *landmark, QString name)
 {
-    landmark->set_name(name);
+    landmark->SetCaption(name);
 }
 
 void jpsDatamanager::remove_all_landmarks()
 {
+    for (jpsLandmark* landmark:landmarks)
+    {
+        delete landmark;
+    }
     landmarks.clear();
 }
 
@@ -762,37 +767,36 @@ void jpsDatamanager::writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLi
 
 void jpsDatamanager::writeLandmarks(QXmlStreamWriter *stream, QList<jpsLandmark *> &landmarks)
 {
-    int m=0;
     int n=0;
     for (jpsLandmark* landmark:landmarks)
     {
         stream->writeStartElement("landmark");
 
         stream->writeAttribute("id",QString::number(n));
-        stream->writeAttribute("caption",landmark->get_name());
+        stream->writeAttribute("caption",landmark->GetCaption());
         stream->writeAttribute("type","NaN");
         stream->writeAttribute("room1_id","0");
-        if (landmark->get_room()!=nullptr)
-            stream->writeAttribute("subroom1_id",QString::number(landmark->get_room()->get_id()));
+        if (landmark->GetRoom()!=nullptr)
+            stream->writeAttribute("subroom1_id",QString::number(landmark->GetRoom()->get_id()));
         else
             stream->writeAttribute("subroom1_id","NaN");
-        stream->writeAttribute("px",QString::number(landmark->get_pos().x()));
-        stream->writeAttribute("py",QString::number(landmark->get_pos().y()));
+        stream->writeAttribute("px",QString::number(landmark->GetPos().x()));
+        stream->writeAttribute("py",QString::number(landmark->GetPos().y()));
         stream->writeStartElement("associations");
 
-        for (ptrWaypoint waypoint:landmark->GetWaypoints())
-        {
-            stream->writeStartElement("association");
-            stream->writeAttribute("id",QString::number(m));
-            stream->writeAttribute("caption","Waypoint");
-            stream->writeAttribute("type","NaN");
-            stream->writeAttribute("px",QString::number(waypoint->GetPos().x()));
-            stream->writeAttribute("py",QString::number(waypoint->GetPos().y()));
-            stream->writeAttribute("a",QString::number(waypoint->GetA()));
-            stream->writeAttribute("b",QString::number(waypoint->GetB()));
-            stream->writeEndElement();//association
-            m++;
-        }
+//        for (ptrWaypoint waypoint:landmark->GetWaypoints())
+//        {
+//            stream->writeStartElement("association");
+//            stream->writeAttribute("id",QString::number(m));
+//            stream->writeAttribute("caption","Waypoint");
+//            stream->writeAttribute("type","NaN");
+//            stream->writeAttribute("px",QString::number(waypoint->GetPos().x()));
+//            stream->writeAttribute("py",QString::number(waypoint->GetPos().y()));
+//            stream->writeAttribute("a",QString::number(waypoint->GetA()));
+//            stream->writeAttribute("b",QString::number(waypoint->GetB()));
+//            stream->writeEndElement();//association
+//            m++;
+//        }
         stream->writeEndElement();//associations
         stream->writeEndElement();//landmark
         n++;
@@ -1650,268 +1654,268 @@ QString jpsDatamanager::check_printAbility()
     return "";
 }
 
-bool jpsDatamanager::ParseCogMap(QFile &file)
-{
-    QXmlStreamReader xmlReader(&file);
+//bool jpsDatamanager::ParseCogMap(QFile &file)
+//{
+//    QXmlStreamReader xmlReader(&file);
 
-    while(!xmlReader.atEnd() && !xmlReader.hasError())
-    {
-        /* Read next element.*/
-        QXmlStreamReader::TokenType token = xmlReader.readNext();
-        /* If token is just StartDocument, we'll go to next.*/
-        if(token == QXmlStreamReader::StartDocument)
-        {
-            continue;
-        }
+//    while(!xmlReader.atEnd() && !xmlReader.hasError())
+//    {
+//        /* Read next element.*/
+//        QXmlStreamReader::TokenType token = xmlReader.readNext();
+//        /* If token is just StartDocument, we'll go to next.*/
+//        if(token == QXmlStreamReader::StartDocument)
+//        {
+//            continue;
+//        }
 
-        /* If token is StartElement, we'll see if we can read it.*/
-        if(token == QXmlStreamReader::StartElement)
-        {
-            /* If it's named rooms, we'll go to the next.*/
-            if(xmlReader.name() == "cognitiveMap")
-            {
-                continue;
-            }
-            if(xmlReader.name() == "header")
-            {
-                continue;
-            }
-            if(xmlReader.name() == "frameRate")
-            {
-                _frameRate=xmlReader.readElementText().toFloat();
-            }
-            if(xmlReader.name() == "frame")
-            {
-                ParseFrames(xmlReader);
-            }
-        }
-    }
-    /* Error handling. */
-    if(xmlReader.hasError())
-    {
-        QMessageBox::critical(mView,
-                              "QXSRExample::parseXML",
-                              xmlReader.errorString(),
-                              QMessageBox::Ok);
-        return false;
-    }
-    /* Removes any device() or data from the reader
-     * and resets its internal state to the initial state. */
-
-
-    xmlReader.clear();
-    return true;
-}
-
-void jpsDatamanager::ParseFrames(QXmlStreamReader &xmlReader)
-{
-      int frameID= xmlReader.attributes().value("ID").toString().toInt();
-
-    while(!(xmlReader.tokenType() == QXmlStreamReader::EndElement &&
-                xmlReader.name() == "frame"))
-    {
-        if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
-                         xmlReader.name() == "YAHPointer")
-        {
-            ParseYAHPointer(xmlReader, frameID);
-        }
-        else if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
-                    xmlReader.name() == "landmark")
-        {
-            ParseLandmarksInCMap(xmlReader, frameID);
-        }
-        else if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
-                    xmlReader.name() == "waypoint")
-        {
-            ParseWaypointInCMap(xmlReader, frameID);
-        }
-        else if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
-                    xmlReader.name() == "connection")
-        {
-            ParseConnectionsInCMap(xmlReader, frameID);
-        }
-        xmlReader.readNext();
-
-    }
-
-    _lastCMapFrame=frameID;
-}
-
-void jpsDatamanager::ParseYAHPointer(QXmlStreamReader &xmlReader, const int& frame)
-{
-    qreal x = xmlReader.attributes().value("x").toString().toFloat();
-    qreal y = xmlReader.attributes().value("y").toString().toFloat();
-    qreal angle = xmlReader.attributes().value("dir").toString().toFloat();
-    if (_yahPointer==nullptr)
-    {
-        _yahPointer = new jpsYAHPointer(x,y,angle);
-        _yahPointer->SetFirstFrame(frame);
-        _yahPointer->SetLastFrame(frame);
-    }
-    else
-    {
-        _yahPointer->SetPos(QPointF(x,y));
-        _yahPointer->SetDirection(angle);
-        _yahPointer->SetLastFrame(frame);
-    }
-
-}
-
-void jpsDatamanager::ParseLandmarksInCMap(QXmlStreamReader &xmlReader, const int& frame)
-{
-
-    bool wayPInList=false;
-
-    int id = xmlReader.attributes().value("ID").toString().toInt();
-    qreal x = xmlReader.attributes().value("x").toString().toFloat();
-    qreal y = xmlReader.attributes().value("y").toString().toFloat();
-    qreal rA = xmlReader.attributes().value("rA").toString().toFloat();
-    qreal rB = xmlReader.attributes().value("rB").toString().toFloat();
-    QString caption = xmlReader.attributes().value("caption").toString();
-
-    for (ptrWaypoint waypoint:_waypointsInCMap)
-    {
-        if (waypoint->GetId()==id && waypoint->GetType()=="Landmark")
-        {
-            wayPInList = true;
-            waypoint->SetLastFrame(frame);
-        }
-    }
-
-    if (!wayPInList)
-    {
-        _waypointsInCMap.push_back(std::make_shared<jpsWaypoint>(QPointF(x,y),rA,rB,id,"Landmark"));
-        _waypointsInCMap.back()->SetFirstFrame(frame);
-        _waypointsInCMap.back()->SetLastFrame(frame);
-        _waypointsInCMap.back()->SetCaption(caption);
-    }
-}
-
-void jpsDatamanager::ParseWaypointInCMap(QXmlStreamReader &xmlReader, const int& frame)
-{
-    bool wayPInList=false;
-
-    int id = xmlReader.attributes().value("ID").toString().toInt();
-    qreal x = xmlReader.attributes().value("x").toString().toFloat();
-    qreal y = xmlReader.attributes().value("y").toString().toFloat();
-    qreal rA = xmlReader.attributes().value("rA").toString().toFloat();
-    qreal rB = xmlReader.attributes().value("rB").toString().toFloat();
-    QString caption = xmlReader.attributes().value("caption").toString();
-    bool current = xmlReader.attributes().value("current").toString().toInt();
-
-    for (ptrWaypoint waypoint:_waypointsInCMap)
-    {
-        if (waypoint->GetId()==id && waypoint->GetType()=="Waypoint")
-        {
-            wayPInList = true;
-            waypoint->SetLastFrame(frame);
-
-            if (current!=waypoint->IsCurrent())
-            {
-                waypoint->ChangeCurrentness(frame);
-
-            }
-
-        }
-    }
-
-    if (!wayPInList)
-    {
-        _waypointsInCMap.push_back(std::make_shared<jpsWaypoint>(QPointF(x,y),rA,rB,id,"Waypoint"));
-        _waypointsInCMap.back()->SetFirstFrame(frame);
-        _waypointsInCMap.back()->SetLastFrame(frame);
-        _waypointsInCMap.back()->SetCurrentness(current,frame);
-        _waypointsInCMap.back()->SetCaption(caption);
-    }
-
-}
-
-void jpsDatamanager::ParseConnectionsInCMap(QXmlStreamReader &xmlReader, const int &frame)
-{
-    int id1 = xmlReader.attributes().value("Landmark_WaypointID1").toString().toInt();
-    int id2 = xmlReader.attributes().value("Landmark_WaypointID2").toString().toInt();
-    std::shared_ptr<jpsWaypoint> waypoint1 = nullptr;
-    std::shared_ptr<jpsWaypoint> waypoint2 = nullptr;
+//        /* If token is StartElement, we'll see if we can read it.*/
+//        if(token == QXmlStreamReader::StartElement)
+//        {
+//            /* If it's named rooms, we'll go to the next.*/
+//            if(xmlReader.name() == "cognitiveMap")
+//            {
+//                continue;
+//            }
+//            if(xmlReader.name() == "header")
+//            {
+//                continue;
+//            }
+//            if(xmlReader.name() == "frameRate")
+//            {
+//                _frameRate=xmlReader.readElementText().toFloat();
+//            }
+//            if(xmlReader.name() == "frame")
+//            {
+//                ParseFrames(xmlReader);
+//            }
+//        }
+//    }
+//    /* Error handling. */
+//    if(xmlReader.hasError())
+//    {
+//        QMessageBox::critical(mView,
+//                              "QXSRExample::parseXML",
+//                              xmlReader.errorString(),
+//                              QMessageBox::Ok);
+//        return false;
+//    }
+//    /* Removes any device() or data from the reader
+//     * and resets its internal state to the initial state. */
 
 
-    for (ptrWaypoint waypoint:_waypointsInCMap)
-    {
-        if (waypoint->GetId()==id1)
-        {
-            waypoint1=waypoint;
+//    xmlReader.clear();
+//    return true;
+//}
 
-        }
-        else if (waypoint->GetId()==id2)
-        {
-            waypoint2=waypoint;
+//void jpsDatamanager::ParseFrames(QXmlStreamReader &xmlReader)
+//{
+//      int frameID= xmlReader.attributes().value("ID").toString().toInt();
 
-        }
+//    while(!(xmlReader.tokenType() == QXmlStreamReader::EndElement &&
+//                xmlReader.name() == "frame"))
+//    {
+//        if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
+//                         xmlReader.name() == "YAHPointer")
+//        {
+//            ParseYAHPointer(xmlReader, frameID);
+//        }
+//        else if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
+//                    xmlReader.name() == "landmark")
+//        {
+//            ParseLandmarksInCMap(xmlReader, frameID);
+//        }
+//        else if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
+//                    xmlReader.name() == "waypoint")
+//        {
+//            ParseWaypointInCMap(xmlReader, frameID);
+//        }
+//        else if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
+//                    xmlReader.name() == "connection")
+//        {
+//            ParseConnectionsInCMap(xmlReader, frameID);
+//        }
+//        xmlReader.readNext();
 
-    }
+//    }
 
-    ptrConnection con = std::make_shared<jpsConnection>(waypoint1,waypoint2,frame);
-    if (waypoint1!=nullptr && waypoint2!=nullptr)
-    {
-        for (ptrConnection conInMap : _connectionsInCMap)
-        {
-            if (con->operator ==(conInMap))
-            {
-                conInMap->SetLastFrame(frame);
+//    _lastCMapFrame=frameID;
+//}
 
-                return;
-            }
-        }
+//void jpsDatamanager::ParseYAHPointer(QXmlStreamReader &xmlReader, const int& frame)
+//{
+//    qreal x = xmlReader.attributes().value("x").toString().toFloat();
+//    qreal y = xmlReader.attributes().value("y").toString().toFloat();
+//    qreal angle = xmlReader.attributes().value("dir").toString().toFloat();
+//    if (_yahPointer==nullptr)
+//    {
+//        _yahPointer = new jpsYAHPointer(x,y,angle);
+//        _yahPointer->SetFirstFrame(frame);
+//        _yahPointer->SetLastFrame(frame);
+//    }
+//    else
+//    {
+//        _yahPointer->SetPos(QPointF(x,y));
+//        _yahPointer->SetDirection(angle);
+//        _yahPointer->SetLastFrame(frame);
+//    }
 
-        _connectionsInCMap.push_back(con);
-    }
+//}
+
+//void jpsDatamanager::ParseLandmarksInCMap(QXmlStreamReader &xmlReader, const int& frame)
+//{
+
+//    bool wayPInList=false;
+
+//    int id = xmlReader.attributes().value("ID").toString().toInt();
+//    qreal x = xmlReader.attributes().value("x").toString().toFloat();
+//    qreal y = xmlReader.attributes().value("y").toString().toFloat();
+//    qreal rA = xmlReader.attributes().value("rA").toString().toFloat();
+//    qreal rB = xmlReader.attributes().value("rB").toString().toFloat();
+//    QString caption = xmlReader.attributes().value("caption").toString();
+
+//    for (ptrWaypoint waypoint:_waypointsInCMap)
+//    {
+//        if (waypoint->GetId()==id && waypoint->GetType()=="Landmark")
+//        {
+//            wayPInList = true;
+//            waypoint->SetLastFrame(frame);
+//        }
+//    }
+
+//    if (!wayPInList)
+//    {
+//        _waypointsInCMap.push_back(std::make_shared<jpsWaypoint>(QPointF(x,y),rA,rB,id,"Landmark"));
+//        _waypointsInCMap.back()->SetFirstFrame(frame);
+//        _waypointsInCMap.back()->SetLastFrame(frame);
+//        _waypointsInCMap.back()->SetCaption(caption);
+//    }
+//}
+
+//void jpsDatamanager::ParseWaypointInCMap(QXmlStreamReader &xmlReader, const int& frame)
+//{
+//    bool wayPInList=false;
+
+//    int id = xmlReader.attributes().value("ID").toString().toInt();
+//    qreal x = xmlReader.attributes().value("x").toString().toFloat();
+//    qreal y = xmlReader.attributes().value("y").toString().toFloat();
+//    qreal rA = xmlReader.attributes().value("rA").toString().toFloat();
+//    qreal rB = xmlReader.attributes().value("rB").toString().toFloat();
+//    QString caption = xmlReader.attributes().value("caption").toString();
+//    bool current = xmlReader.attributes().value("current").toString().toInt();
+
+//    for (ptrWaypoint waypoint:_waypointsInCMap)
+//    {
+//        if (waypoint->GetId()==id && waypoint->GetType()=="Waypoint")
+//        {
+//            wayPInList = true;
+//            waypoint->SetLastFrame(frame);
+
+//            if (current!=waypoint->IsCurrent())
+//            {
+//                waypoint->ChangeCurrentness(frame);
+
+//            }
+
+//        }
+//    }
+
+//    if (!wayPInList)
+//    {
+//        _waypointsInCMap.push_back(std::make_shared<jpsWaypoint>(QPointF(x,y),rA,rB,id,"Waypoint"));
+//        _waypointsInCMap.back()->SetFirstFrame(frame);
+//        _waypointsInCMap.back()->SetLastFrame(frame);
+//        _waypointsInCMap.back()->SetCurrentness(current,frame);
+//        _waypointsInCMap.back()->SetCaption(caption);
+//    }
+
+//}
+
+//void jpsDatamanager::ParseConnectionsInCMap(QXmlStreamReader &xmlReader, const int &frame)
+//{
+//    int id1 = xmlReader.attributes().value("Landmark_WaypointID1").toString().toInt();
+//    int id2 = xmlReader.attributes().value("Landmark_WaypointID2").toString().toInt();
+//    std::shared_ptr<jpsWaypoint> waypoint1 = nullptr;
+//    std::shared_ptr<jpsWaypoint> waypoint2 = nullptr;
 
 
-}
+//    for (ptrWaypoint waypoint:_waypointsInCMap)
+//    {
+//        if (waypoint->GetId()==id1)
+//        {
+//            waypoint1=waypoint;
 
-void jpsDatamanager::ShowCMapFrame(const int& frame) const
-{
-    mView->ShowYAHPointer(_yahPointer->GetPosWhenFrame(frame),_yahPointer->GetDirWhenFrame(frame));
+//        }
+//        else if (waypoint->GetId()==id2)
+//        {
+//            waypoint2=waypoint;
 
-    QList<ptrWaypoint > wayPCandidates;
+//        }
 
-    for (ptrWaypoint waypoint:_waypointsInCMap)
-    {
-        if (waypoint->OccursInFrame(frame))
-        {
-            wayPCandidates.push_back(waypoint);
+//    }
 
-            if (waypoint->IsCurrentInFrame(frame))
-                waypoint->SetText("Next target");
-            else if (waypoint->Visited(frame))
-                waypoint->SetText("Already visited");
-            else
-                waypoint->SetText("");
-        }
-    }
-    QList<ptrConnection> conCandidates;
-    for (ptrConnection connection:_connectionsInCMap)
-    {
-        if (connection->OccursInFrame(frame))
-        {
-            conCandidates.push_back(connection);
-        }
-    }
+//    ptrConnection con = std::make_shared<jpsConnection>(waypoint1,waypoint2,frame);
+//    if (waypoint1!=nullptr && waypoint2!=nullptr)
+//    {
+//        for (ptrConnection conInMap : _connectionsInCMap)
+//        {
+//            if (con->operator ==(conInMap))
+//            {
+//                conInMap->SetLastFrame(frame);
 
-    mView->ShowConnections(conCandidates);
-    mView->ShowWaypoints(wayPCandidates);
+//                return;
+//            }
+//        }
 
-}
+//        _connectionsInCMap.push_back(con);
+//    }
 
 
-const double &jpsDatamanager::GetCMapFrameRate() const
-{
-    return _frameRate;
-}
+//}
 
-const int &jpsDatamanager::GetLastCMapFrame() const
-{
-    return _lastCMapFrame;
-}
+//void jpsDatamanager::ShowCMapFrame(const int& frame) const
+//{
+//    mView->ShowYAHPointer(_yahPointer->GetPosWhenFrame(frame),_yahPointer->GetDirWhenFrame(frame));
+
+//    QList<ptrWaypoint > wayPCandidates;
+
+//    for (ptrWaypoint waypoint:_waypointsInCMap)
+//    {
+//        if (waypoint->OccursInFrame(frame))
+//        {
+//            wayPCandidates.push_back(waypoint);
+
+//            if (waypoint->IsCurrentInFrame(frame))
+//                waypoint->SetText("Next target");
+//            else if (waypoint->Visited(frame))
+//                waypoint->SetText("Already visited");
+//            else
+//                waypoint->SetText("");
+//        }
+//    }
+//    QList<ptrConnection> conCandidates;
+//    for (ptrConnection connection:_connectionsInCMap)
+//    {
+//        if (connection->OccursInFrame(frame))
+//        {
+//            conCandidates.push_back(connection);
+//        }
+//    }
+
+//    mView->ShowConnections(conCandidates);
+//    mView->ShowWaypoints(wayPCandidates);
+
+//}
+
+
+//const double &jpsDatamanager::GetCMapFrameRate() const
+//{
+//    return _frameRate;
+//}
+
+//const int &jpsDatamanager::GetLastCMapFrame() const
+//{
+//    return _lastCMapFrame;
+//}
 
 
 

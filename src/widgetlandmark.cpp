@@ -187,7 +187,7 @@ void widgetLandmark::ShowHideLandmark()
 
     if (landmark!=nullptr)
     {
-        _gview->ShowHideLandmark(landmark);
+        _gview->ShowLandmark(landmark);
     }
 }
 

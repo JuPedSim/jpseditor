@@ -38,7 +38,7 @@ class jpsConnection
 using ptrConnection = std::shared_ptr<jpsConnection>;
 
 public:
-    jpsConnection(ptrLandmark waypoint1, ptrLandmark waypoint2, const int& frameID=-1);
+    jpsConnection(ptrLandmark landmark1, ptrLandmark landmark2, const int& frameID=-1);
     ~jpsConnection();
     std::pair<ptrLandmark,ptrLandmark> GetLandmarks() const;
     //Occurence

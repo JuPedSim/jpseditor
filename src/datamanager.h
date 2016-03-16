@@ -49,7 +49,7 @@
 
 
 using ptrConnection = std::shared_ptr<jpsConnection>;
-using ptrWaypoint = std::shared_ptr<jpsWaypoint>;
+
 
 
 class jpsDatamanager: public DL_CreationAdapter
@@ -144,17 +144,17 @@ public:
     QString check_printAbility();
 
     //Parse Cognitive Map
-    bool ParseCogMap(QFile &file);
-    void ParseFrames(QXmlStreamReader &xmlReader);
-    void ParseYAHPointer(QXmlStreamReader &xmlReader, const int &frame);
-    void ParseLandmarksInCMap(QXmlStreamReader &xmlReader, const int &frame);
-    void ParseWaypointInCMap(QXmlStreamReader &xmlReader, const int &frame);
-    void ParseConnectionsInCMap(QXmlStreamReader &xmlReader, const int &frame);
+//    bool ParseCogMap(QFile &file);
+//    void ParseFrames(QXmlStreamReader &xmlReader);
+//    void ParseYAHPointer(QXmlStreamReader &xmlReader, const int &frame);
+//    void ParseLandmarksInCMap(QXmlStreamReader &xmlReader, const int &frame);
+//    void ParseWaypointInCMap(QXmlStreamReader &xmlReader, const int &frame);
+//    void ParseConnectionsInCMap(QXmlStreamReader &xmlReader, const int &frame);
 
-    //Show Cognitive Map
-    void ShowCMapFrame(const int& frame) const;
-    const double& GetCMapFrameRate() const;
-    const int& GetLastCMapFrame() const;
+//    //Show Cognitive Map
+//    void ShowCMapFrame(const int& frame) const;
+//    const double& GetCMapFrameRate() const;
+//    const int& GetLastCMapFrame() const;
 
 private:
     //Geometry
@@ -170,7 +170,6 @@ private:
 
     //CognitiveMap
     QList<jpsLandmark* > _landmarksInCMap;
-    QList<ptrWaypoint > _waypointsInCMap;
     QList<ptrConnection> _connectionsInCMap;
     jpsYAHPointer* _yahPointer;
     double _frameRate;
