@@ -296,7 +296,9 @@ void widgetLandmark::SetLandmarksToConnection()
 void widgetLandmark::SetLineItemAsConnection()
 {
     QLineF line = QLineF(_currentConnection->GetLandmarks().first->GetPos(),_currentConnection->GetLandmarks().second->GetPos());
-    QGraphicsLineItem* lineItem = _gview->GetScene()->addLine(line,QPen(Qt::blue,0));
+    QPen pen = QPen(Qt::blue,2);
+    pen.setCosmetic(true);
+    QGraphicsLineItem* lineItem = _gview->GetScene()->addLine(line,pen);
     _currentConnection->SetLineItem(lineItem);
     _currentConnection=nullptr;
 }

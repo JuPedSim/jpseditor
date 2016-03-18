@@ -72,6 +72,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     currentLandmarkRect=nullptr;
     currentPen.setColor(Qt::black);
     currentPen.setCosmetic(true);
+    currentPen.setWidth(2);
     this->scale(1/gl_scale_f,-1/gl_scale_f);
     _currentTrackedPoint=nullptr;
     _statLineEdit=false;
@@ -209,6 +210,10 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
         //{
         //emit set_focus_textedit();
         current_line->setLine(current_line->line().x1(),current_line->line().y1(),translated_pos.x(),translated_pos.y());
+        if (current_line->line().isNull())
+            current_line->setVisible(false);
+        else
+            current_line->setVisible(true);
 
         //}
         //As line length has changed
@@ -783,6 +788,7 @@ void jpsGraphicsView::drawLine()
 
         // all two points of the line are inited with the cursorcoordinates
         current_line = Scene->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),currentPen);
+        current_line->setVisible(false);
         //current_line->translate(translation_x,translation_y);
         current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
         emit set_focus_textedit();
