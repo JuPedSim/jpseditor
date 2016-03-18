@@ -24,12 +24,13 @@
      
 #include "jpsconnection.h"
 
-jpsConnection::jpsConnection(ptrLandmark landmark1, ptrLandmark landmark2, const int &frameID)
+jpsConnection::jpsConnection(ptrLandmark landmark1, ptrLandmark landmark2, QGraphicsLineItem *lineItem, const int &frameID)
 {
     _landmark1=landmark1;
     _landmark2=landmark2;
     _firstFrame=frameID;
     _lastFrame=frameID;
+    _lineItem=lineItem;
 }
 
 jpsConnection::~jpsConnection()
@@ -42,35 +43,35 @@ std::pair<ptrLandmark, ptrLandmark> jpsConnection::GetLandmarks() const
     return std::make_pair(_landmark1,_landmark2);
 }
 
-bool jpsConnection::OccursInFrame(const int& frameID) const
-{
-    if (frameID>=_firstFrame && frameID<=_lastFrame)
-    {
-        return true;
-    }
-    else
-        return false;
-}
+//bool jpsConnection::OccursInFrame(const int& frameID) const
+//{
+//    if (frameID>=_firstFrame && frameID<=_lastFrame)
+//    {
+//        return true;
+//    }
+//    else
+//        return false;
+//}
 
-void jpsConnection::SetFirstFrame(const int &frameID)
-{
-    _firstFrame=frameID;
-}
+//void jpsConnection::SetFirstFrame(const int &frameID)
+//{
+//    _firstFrame=frameID;
+//}
 
-void jpsConnection::SetLastFrame(const int &frameID)
-{
-    _lastFrame=frameID;
-}
+//void jpsConnection::SetLastFrame(const int &frameID)
+//{
+//    _lastFrame=frameID;
+//}
 
-const int &jpsConnection::GetFirstFrame() const
-{
-    return _firstFrame;
-}
+//const int &jpsConnection::GetFirstFrame() const
+//{
+//    return _firstFrame;
+//}
 
-const int &jpsConnection::GetLastFrame() const
-{
-    return _lastFrame;
-}
+//const int &jpsConnection::GetLastFrame() const
+//{
+//    return _lastFrame;
+//}
 
 bool jpsConnection::operator == (const ptrConnection con2) const
 {
@@ -82,4 +83,26 @@ bool jpsConnection::operator == (const ptrConnection con2) const
     else
         return false;
 }
+
+void jpsConnection::SetLineItem(QGraphicsLineItem *lineItem)
+{
+    _lineItem=lineItem;
+}
+
+QGraphicsLineItem *jpsConnection::GetLineItem()
+{
+    return _lineItem;
+}
+
+void jpsConnection::SetFirstLandmark(ptrLandmark landmark)
+{
+    _landmark1=landmark;
+}
+
+void jpsConnection::SetSecondLandmark(ptrLandmark landmark)
+{
+    _landmark2=landmark;
+}
+
+
 

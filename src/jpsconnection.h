@@ -38,22 +38,31 @@ class jpsConnection
 using ptrConnection = std::shared_ptr<jpsConnection>;
 
 public:
-    jpsConnection(ptrLandmark landmark1, ptrLandmark landmark2, const int& frameID=-1);
+    jpsConnection(ptrLandmark landmark1=nullptr, ptrLandmark landmark2=nullptr, QGraphicsLineItem* lineItem=nullptr, const int& frameID=-1);
     ~jpsConnection();
     std::pair<ptrLandmark,ptrLandmark> GetLandmarks() const;
+
+    void SetLineItem(QGraphicsLineItem* lineItem);
+    QGraphicsLineItem* GetLineItem();
+
+    void SetFirstLandmark(ptrLandmark landmark);
+    void SetSecondLandmark(ptrLandmark landmark);
     //Occurence
-    bool OccursInFrame(const int &frameID) const;
-    void SetFirstFrame(const int &frameID);
-    void SetLastFrame(const int &frameID);
-    const int& GetFirstFrame() const;
-    const int& GetLastFrame() const;
+//    bool OccursInFrame(const int &frameID) const;
+//    void SetFirstFrame(const int &frameID);
+//    void SetLastFrame(const int &frameID);
+//    const int& GetFirstFrame() const;
+//    const int& GetLastFrame() const;
     // Operator overload
     bool operator ==(const ptrConnection con2) const;
 private:
     ptrLandmark _landmark1;
     ptrLandmark _landmark2;
+    QGraphicsLineItem* _lineItem;
     int _firstFrame;
     int _lastFrame;
+
+
 };
 
 #endif // JPSCONNECTION_H

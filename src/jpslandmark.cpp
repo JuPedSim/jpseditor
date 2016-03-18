@@ -146,6 +146,11 @@ QGraphicsTextItem *jpsLandmark::GetPixmapTextItem() const
     return _pixmapText;
 }
 
+const QList<jpsConnection *> &jpsLandmark::GetConnections() const
+{
+    return _connections;
+}
+
 
 void jpsLandmark::SetPos(QPointF point)
 {
@@ -194,5 +199,15 @@ void jpsLandmark::SetTextItem(QGraphicsTextItem *textItem)
 void jpsLandmark::SetPixMapText(QGraphicsTextItem *textItem)
 {
     _pixmapText=textItem;
+}
+
+void jpsLandmark::NewConnection(jpsConnection *newConnection)
+{
+    _connections.push_back(newConnection);
+}
+
+void jpsLandmark::RemoveConnection(jpsConnection *connection)
+{
+    _connections.removeOne(connection);
 }
 

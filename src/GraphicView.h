@@ -59,6 +59,10 @@ public:
     const qreal& GetTranslationY() const;
     const qreal& GetScaleF() const;
 
+    //Pos
+    const QPointF& return_Pos() const;
+
+
     void SetDatamanager(jpsDatamanager* datamanager);
 
     //Change modes
@@ -92,8 +96,6 @@ public:
     qreal CalcGridSize();
     void ShowOrigin();
 
-    //Pos
-    QPointF return_Pos();
 
     //Catch lines, points and intersections
     void catch_points();
@@ -129,8 +131,9 @@ public:
     void addLandmark();
     // unmark Landmarks see slots
 
-    //Waypoints/Connections and YAHPointer
+    //Connections and YAHPointer
     QGraphicsRectItem* GetCurrentSelectRect();
+    void SetStatDefConnections(const int& stat);
 
     void ShowYAHPointer(const QPointF& pos, const qreal& dir);
     void ShowConnections(QList<ptrConnection> cons);
@@ -215,6 +218,7 @@ private:
     QList<QGraphicsLineItem* > _connections;
     QList<QGraphicsLineItem* > _yahPointer;
     QList<QGraphicsTextItem* > _waypointLabels;
+    int _statDefConnections;
 
     QGraphicsLineItem* _currentVLine;
     QPointF* _currentTrackedPoint;
@@ -238,6 +242,8 @@ signals:
     void remove_all();
     void PositionDefCompleted();
     void LineLengthChanged();
+    void DefConnection1Completed();
+    void DefConnection2Completed();
     //void DoubleClick();
 
 };

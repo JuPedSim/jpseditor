@@ -54,6 +54,12 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     connect(_gview,SIGNAL(PositionDefCompleted()),this,SLOT(SetPosInCMap()));
     connect(ui->remove_button,SIGNAL(clicked(bool)),this,SLOT(RemoveAssociation()));
     connect(ui->button_showhide,SIGNAL(clicked(bool)),this,SLOT(ShowHideLandmark()));
+
+    //connectionDef
+    connect(ui->add_button_connections,SIGNAL(clicked(bool)),this,SLOT(NewConnection()));
+    connect(_gview,SIGNAL(DefConnection1Completed()),this,SLOT(AskForSecondLandmark()));
+    connect(_gview,SIGNAL(DefConnection2Completed()),this,SLOT(SetLandmarksToConnection()));
+
 }
 
 widgetLandmark::~widgetLandmark()
@@ -233,6 +239,66 @@ void widgetLandmark::ShowHideLandmark()
         }
 
     }
+}
+
+void widgetLandmark::NewConnection()
+{
+    jpsConnection* connection = new jpsConnection();
+    _dmanager->NewConnection(connection);
+    _currentConnection=connection;
+    AskForFirstLandmark();
+}
+
+void widgetLandmark::AskForFirstLandmark()
+{
+    _gview->SetStatDefConnections(1);
+}
+
+void widgetLandmark::AskForSecondLandmark()
+{
+    // if mousePressed: if mousepos in landmark: first landmark set in connection
+    QPointF mousePos = _gview->return_Pos();
+    for (jpsLandmark* landmark:_dmanager->get_landmarks())
+    {
+        if (landmark->GetEllipseItem()!=nullptr)
+        {
+            if (landmark->GetEllipseItem()->boundingRect().contains(mousePos))
+            {
+                _currentConnection->SetFirstLandmark(std::shared_ptr<jpsLandmark>(landmark));
+                _gview->SetStatDefConnections(2);
+                return;
+            }
+        }
+    }
+}
+
+void widgetLandmark::SetLandmarksToConnection()
+{
+    // if mousePressed: if mousepos in landmark: first landmark set in connection
+    QPointF mousePos = _gview->return_Pos();
+    for (jpsLandmark* landmark:_dmanager->get_landmarks())
+    {
+        if (landmark->GetEllipseItem()!=nullptr)
+        {
+            if (landmark->GetEllipseItem()->boundingRect().contains(mousePos))
+            {
+                _currentConnection->SetSecondLandmark(std::shared_ptr<jpsLandmark>(landmark));
+                _gview->SetStatDefConnections(0);
+                SetLineItemAsConnection();
+                ui->add_button_connections->setChecked(false);
+                return;
+            }
+        }
+    }
+    ui->add_button_connections->setChecked(false);
+}
+
+void widgetLandmark::SetLineItemAsConnection()
+{
+    QLineF line = QLineF(_currentConnection->GetLandmarks().first->GetPos(),_currentConnection->GetLandmarks().second->GetPos());
+    QGraphicsLineItem* lineItem = _gview->GetScene()->addLine(line,QPen(Qt::blue,0));
+    _currentConnection->SetLineItem(lineItem);
+    _currentConnection=nullptr;
 }
 
 void widgetLandmark::RemoveAssociation()

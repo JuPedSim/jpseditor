@@ -57,17 +57,24 @@ protected slots:
     void disable_room_selection();
     void change_name();
     void SetPosInCMap();
+    //associated landmarks
     void AddAssociation();
-    ///Show or hide landmark picture and ellipse in graphicsview
-    void ShowHideLandmark();
     void RemoveAssociation();
-
+    //Show or hide landmark picture and ellipse in graphicsview
+    void ShowHideLandmark();
+    //connections
+    void NewConnection();
+    void AskForFirstLandmark();
+    void AskForSecondLandmark();
+    void SetLandmarksToConnection();
+    void SetLineItemAsConnection();
 private:
     jpsLandmark *GetCurrentLandmark() const;
     Ui::widgetLandmark *ui;
     jpsDatamanager* _dmanager;
     jpsGraphicsView* _gview;
     int _waypointIDCounter;
+    jpsConnection* _currentConnection;
 };
 
 #endif // WIDGETLANDMARK_H

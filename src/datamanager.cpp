@@ -256,6 +256,31 @@ void jpsDatamanager::remove_all_landmarks()
     landmarks.clear();
 }
 
+const QList<jpsConnection *> &jpsDatamanager::GetAllConnections() const
+{
+    return _landmarkConnections;
+}
+
+void jpsDatamanager::NewConnection(jpsConnection *newConnection)
+{
+    _landmarkConnections.push_back(newConnection);
+}
+
+void jpsDatamanager::RemoveConnection(jpsConnection *connection)
+{
+    _landmarkConnections.removeOne(connection);
+    delete connection;
+}
+
+void jpsDatamanager::RemoveAllConnections()
+{
+    for (jpsConnection* connection:_landmarkConnections)
+    {
+        delete connection;
+    }
+    _landmarkConnections.clear();
+}
+
 void jpsDatamanager::writeXML(QFile &file)
 {
     QXmlStreamWriter* stream = new QXmlStreamWriter(&file);

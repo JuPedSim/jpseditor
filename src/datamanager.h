@@ -89,6 +89,12 @@ public:
     void remove_landmark(jpsLandmark* landmark);
     void change_LandmarkName(jpsLandmark* landmark, QString name);
     void remove_all_landmarks();
+    //Connection
+    const QList<jpsConnection*>& GetAllConnections() const;
+    void NewConnection(jpsConnection* newConnection);
+    void RemoveConnection(jpsConnection* connection);
+    void RemoveAllConnections();
+
     //
     void remove_all();
     void remove_marked_lines();
@@ -163,6 +169,7 @@ private:
     QList<jpsCrossing *> crossingList;
     QList<jpsExit *> exitList;
     QList<jpsLandmark* > landmarks;
+    QList<jpsConnection* > _landmarkConnections;
     int room_id_counter;
     int obs_id_counter;
     QWidget* parent_widget;

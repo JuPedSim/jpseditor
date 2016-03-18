@@ -76,6 +76,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     _currentTrackedPoint=nullptr;
     _statLineEdit=false;
     intersection_point=nullptr;
+    _statDefConnections=0;
 
     lines_collided=false;
     _posDef=false;
@@ -257,8 +258,12 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
         }
         else
         {
+            if (_statDefConnections==1)
+            {
+                emit DefConnection1Completed();
+            }
             //LineEdit
-            if (_currentTrackedPoint!=nullptr && line_tracked==1)
+            else if (_currentTrackedPoint!=nullptr && line_tracked==1)
             {
                 EditLine(_currentTrackedPoint);
                 _currentTrackedPoint=nullptr;
@@ -356,6 +361,11 @@ QGraphicsRectItem *jpsGraphicsView::GetCurrentSelectRect()
     return currentSelectRect;
 }
 
+void jpsGraphicsView::SetStatDefConnections(const int &stat)
+{
+    _statDefConnections=stat;
+}
+
 
 void jpsGraphicsView::ShowYAHPointer(const QPointF &pos, const qreal &dir)
 {
@@ -437,7 +447,12 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
         {
             leftbutton_hold=false;
 
-            if (currentSelectRect!=nullptr)
+            //for connection setting
+            if (_statDefConnections==2)
+            {
+                emit DefConnection2Completed();
+            }
+            else if (currentSelectRect!=nullptr)
             {
                 if (_posDef)
                 {
@@ -475,7 +490,7 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 
 
 
-QPointF jpsGraphicsView::return_Pos()
+const QPointF &jpsGraphicsView::return_Pos() const
 {
     return translated_pos;
 }

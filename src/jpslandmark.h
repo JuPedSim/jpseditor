@@ -32,6 +32,8 @@
 #include <memory>
 #include "rooms.h"
 
+class jpsConnection;
+
 
 class jpsLandmark
 {
@@ -55,6 +57,7 @@ public:
     const QString& GetType() const;
     QGraphicsTextItem* GetTextItem() const;
     QGraphicsTextItem* GetPixmapTextItem() const;
+    const QList<jpsConnection*>& GetConnections() const;
 
     //Setter
     void SetPixmap(QGraphicsPixmapItem* pixmap);
@@ -68,6 +71,11 @@ public:
     void SetType(const QString& type);
     void SetTextItem(QGraphicsTextItem* textItem);
     void SetPixMapText(QGraphicsTextItem* textItem);
+
+    //Connections
+    void NewConnection(jpsConnection* newConnection);
+    void RemoveConnection(jpsConnection* connection);
+
 
 //    //Occurence
 //    const int& GetFirstFrame() const;
@@ -103,6 +111,7 @@ private:
     QGraphicsEllipseItem* _ellipseItem;
     QGraphicsTextItem* _textItem;
     QGraphicsTextItem* _pixmapText;
+    QList<jpsConnection*> _connections;
 
 };
 
