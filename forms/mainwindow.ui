@@ -67,6 +67,8 @@
     <addaction name="actionDelete_single_line"/>
     <addaction name="separator"/>
     <addaction name="actionRoom"/>
+    <addaction name="actionLandmark"/>
+    <addaction name="actionLandmarkWidget"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -406,7 +408,7 @@
     <bool>true</bool>
    </property>
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="Ressource.qrc">
@@ -419,7 +421,7 @@
     <string>Landmark</string>
    </property>
    <property name="visible">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionLandmarkWidget">
@@ -427,7 +429,7 @@
     <bool>true</bool>
    </property>
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="Ressource.qrc">
@@ -440,7 +442,7 @@
     <string>LandmarkSpecs</string>
    </property>
    <property name="visible">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionanglesnap">

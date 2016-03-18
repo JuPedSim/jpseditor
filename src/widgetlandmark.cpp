@@ -50,8 +50,8 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     connect(ui->list_landmarks,SIGNAL(activated(int)),this,SLOT(enable_room_selection()));
     connect(ui->list_landmarks,SIGNAL(currentIndexChanged(int)),_gview,SLOT(unmarkLandmark()));
     connect(ui->roomBox_landmarks,SIGNAL(activated(int)),this,SLOT(add_room_to_landmark()));
-    connect(ui->add_button,SIGNAL(clicked(bool)),_gview,SLOT(StatAssoDef()));
-    connect(_gview,SIGNAL(AssoDefCompleted()),this,SLOT(AddAssociation()));
+    connect(ui->add_button,SIGNAL(clicked(bool)),_gview,SLOT(StatPositionDef()));
+    connect(_gview,SIGNAL(PositionDefCompleted()),this,SLOT(SetPosInCMap()));
     connect(ui->remove_button,SIGNAL(clicked(bool)),this,SLOT(RemoveAssociation()));
 }
 
@@ -66,7 +66,7 @@ void widgetLandmark::show_landmarks()
     QList<jpsLandmark*> landmarks=_dmanager->get_landmarks();
     for (jpsLandmark* landmark:landmarks)
     {
-        ui->list_landmarks->addItem(landmark->get_name());
+        ui->list_landmarks->addItem(landmark->GetCaption());
     }
 
 }
@@ -79,7 +79,7 @@ void widgetLandmark::add_room_to_landmark()
         int cRoomRow=ui->roomBox_landmarks->currentIndex();
         if (cRoomRow!=-1)
         {
-            _dmanager->get_landmarks()[cLanRow]->set_room(_dmanager->get_roomlist()[cRoomRow]);
+            _dmanager->get_landmarks()[cLanRow]->SetRoom(_dmanager->get_roomlist()[cRoomRow]);
         }
     }
 }
@@ -93,7 +93,6 @@ void widgetLandmark::enable_room_selection()
         ui->roomBox_landmarks->clear();
         ui->label_Waypoints->setEnabled(true);
         ui->label_Waypoints2->setEnabled(true);
-        ui->listWaypoints->setEnabled(true);
         ui->add_button->setEnabled(true);
         ui->remove_button->setEnabled(true);
 
@@ -110,7 +109,7 @@ void widgetLandmark::enable_room_selection()
         int cLanRow=ui->list_landmarks->currentIndex();
         if (cLanRow!=-1)
         {
-            jpsRoom* cRoom = _dmanager->get_landmarks()[cLanRow]->get_room();
+            jpsRoom* cRoom = _dmanager->get_landmarks()[cLanRow]->GetRoom();
             if (cRoom!=nullptr)
             {
                 int index = _dmanager->get_roomlist().indexOf(cRoom);
@@ -126,7 +125,6 @@ void widgetLandmark::enable_room_selection()
         //mark Landmark
         _gview->select_landmark(_dmanager->get_landmarks()[cLanRow]);
 
-        ShowAssociations();
 
     }
     else
@@ -141,14 +139,13 @@ void widgetLandmark::disable_room_selection()
     ui->is_in->setEnabled(false);
     ui->label_Waypoints->setEnabled(false);
     ui->label_Waypoints2->setEnabled(false);
-    ui->listWaypoints->setEnabled(false);
     ui->add_button->setEnabled(false);
     ui->remove_button->setEnabled(false);
 }
 
 void widgetLandmark::change_name()
 {    
-    ptrLandmark landmark = GetCurrentLandmark();
+    jpsLandmark* landmark = GetCurrentLandmark();
 
     if (landmark!=nullptr)
     {
@@ -160,30 +157,37 @@ void widgetLandmark::change_name()
 
 void widgetLandmark::SetPosInCMap()
 {
-    ptrLandmark landmark = GetCurrentLandmark();
+    jpsLandmark* landmark = GetCurrentLandmark();
 
     if (landmark!=nullptr)
+    {
         landmark->SetRect(_gview->GetCurrentSelectRect()->rect());
+        QString string = "Ellipse: Center: x: "+QString::number(landmark->GetRect().center().x())
+                + " y: "+QString::number(landmark->GetRect().center().y())+" rA: "+QString::number(landmark->GetA())
+                                         + " rB: "+QString::number(landmark->GetB());
+        ui->ellipse_label->setText(string);
+        ShowHideLandmark();
+    }
 
 }
 
 void widgetLandmark::AddAssociation()
 {
-    if (ui->list_landmarks->currentIndex()!=-1)
-    {
-        int cLanRow=ui->list_landmarks->currentIndex();
+//    if (ui->list_landmarks->currentIndex()!=-1)
+//    {
+//        int cLanRow=ui->list_landmarks->currentIndex();
 
-        _dmanager->get_landmarks()[cLanRow]->AddWaypoint(std::make_shared<jpsWaypoint>(_gview->GetCurrentSelectRect()->rect(),_waypointIDCounter));
+//        _dmanager->get_landmarks()[cLanRow]->AddWaypoint(std::make_shared<jpsWaypoint>(_gview->GetCurrentSelectRect()->rect(),_waypointIDCounter));
 
-        ShowAssociations();
-        _waypointIDCounter++;
-        ui->add_button->setChecked(false);
-    }
+//        ShowAssociations();
+//        _waypointIDCounter++;
+//        ui->add_button->setChecked(false);
+//    }
 }
 
 void widgetLandmark::ShowHideLandmark()
 {
-    ptrLandmark landmark = GetCurrentLandmark();
+    jpsLandmark* landmark = GetCurrentLandmark();
 
     if (landmark!=nullptr)
     {
@@ -193,23 +197,23 @@ void widgetLandmark::ShowHideLandmark()
 
 void widgetLandmark::RemoveAssociation()
 {
-    if (ui->list_landmarks->currentIndex()!=-1)
-    {
+//    if (ui->list_landmarks->currentIndex()!=-1)
+//    {
 
-        int cLanRow=ui->list_landmarks->currentIndex();
+//        int cLanRow=ui->list_landmarks->currentIndex();
 
-        if (ui->listWaypoints->currentItem()!=nullptr)
-        {
-            int cWayRow=ui->listWaypoints->currentRow();
+//        if (ui->listWaypoints->currentItem()!=nullptr)
+//        {
+//            int cWayRow=ui->listWaypoints->currentRow();
 
-            _dmanager->get_landmarks()[cLanRow]->RemoveWaypoint(_dmanager->get_landmarks()[cLanRow]->GetWaypoints()[cWayRow]);
-            ShowAssociations();
-        }
+//            _dmanager->get_landmarks()[cLanRow]->RemoveWaypoint(_dmanager->get_landmarks()[cLanRow]->GetWaypoints()[cWayRow]);
+//            ShowAssociations();
+//        }
 
-    }
+//    }
 }
 
-ptrLandmark widgetLandmark::GetCurrentLandmark() const
+jpsLandmark* widgetLandmark::GetCurrentLandmark() const
 {
     if (ui->list_landmarks->currentIndex()!=-1)
     {

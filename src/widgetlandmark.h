@@ -63,7 +63,7 @@ protected slots:
     void RemoveAssociation();
 
 private:
-    ptrLandmark GetCurrentLandmark() const;
+    jpsLandmark *GetCurrentLandmark() const;
     Ui::widgetLandmark *ui;
     jpsDatamanager* _dmanager;
     jpsGraphicsView* _gview;

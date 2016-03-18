@@ -24,7 +24,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>30</y>
+      <y>20</y>
       <width>191</width>
       <height>31</height>
      </rect>
@@ -45,26 +45,13 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>470</y>
+      <y>420</y>
       <width>291</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Press Add and throw rect!</string>
-    </property>
-   </widget>
-   <widget class="QListWidget" name="listWaypoints">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>360</y>
-      <width>291</width>
-      <height>91</height>
-     </rect>
+     <string>Press Set and throw rect!</string>
     </property>
    </widget>
    <widget class="QPushButton" name="closeButton">
@@ -74,7 +61,7 @@
     <property name="geometry">
      <rect>
       <x>110</x>
-      <y>560</y>
+      <y>570</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -89,14 +76,14 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>510</y>
+      <x>20</x>
+      <y>460</y>
       <width>112</width>
       <height>34</height>
      </rect>
     </property>
     <property name="text">
-     <string>Add</string>
+     <string>Set</string>
     </property>
     <property name="checkable">
      <bool>true</bool>
@@ -108,8 +95,8 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>170</x>
-      <y>510</y>
+      <x>160</x>
+      <y>460</y>
       <width>112</width>
       <height>34</height>
      </rect>
@@ -125,7 +112,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>310</y>
+      <y>270</y>
       <width>191</width>
       <height>31</height>
      </rect>
@@ -142,8 +129,8 @@
    <widget class="QLineEdit" name="chname_edit">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>150</y>
+      <x>70</x>
+      <y>130</y>
       <width>113</width>
       <height>22</height>
      </rect>
@@ -153,7 +140,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>150</y>
+      <y>130</y>
       <width>51</width>
       <height>16</height>
      </rect>
@@ -170,8 +157,8 @@
    <widget class="QPushButton" name="apply_name_button">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>150</y>
+      <x>200</x>
+      <y>130</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -184,7 +171,7 @@
     <property name="geometry">
      <rect>
       <x>-10</x>
-      <y>200</y>
+      <y>170</y>
       <width>341</width>
       <height>20</height>
      </rect>
@@ -197,7 +184,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>80</y>
+      <y>60</y>
       <width>201</width>
       <height>31</height>
      </rect>
@@ -207,7 +194,7 @@
     <property name="geometry">
      <rect>
       <x>-10</x>
-      <y>290</y>
+      <y>240</y>
       <width>341</width>
       <height>20</height>
      </rect>
@@ -222,8 +209,8 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>250</y>
+      <x>110</x>
+      <y>200</y>
       <width>101</width>
       <height>21</height>
      </rect>
@@ -235,8 +222,8 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>240</y>
+      <x>30</x>
+      <y>190</y>
       <width>61</width>
       <height>41</height>
      </rect>
@@ -248,6 +235,76 @@
     </property>
     <property name="text">
      <string>is in:</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="list_landmarks_associations">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>310</y>
+      <width>201</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_Waypoints_2">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>390</y>
+      <width>271</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Set Position in Cognitive Map:</string>
+    </property>
+   </widget>
+   <widget class="Line" name="line_4">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>360</y>
+      <width>341</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="ellipse_label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>515</y>
+      <width>291</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="Line" name="line_5">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>540</y>
+      <width>341</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
     </property>
    </widget>
   </widget>

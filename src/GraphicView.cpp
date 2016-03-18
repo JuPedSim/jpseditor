@@ -78,7 +78,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     intersection_point=nullptr;
 
     lines_collided=false;
-    _assoDef=false;
+    _posDef=false;
 
 
     //m_graphView->setFixedSize(1600, 900);
@@ -300,19 +300,29 @@ void jpsGraphicsView::addLandmark()
     pixmapItem->setTransform(QTransform::fromTranslate(translation_x,-translation_y), true);
     QString name="Landmark"+QString::number(_datamanager->get_landmarks().size());
     jpsLandmark* landmark = new jpsLandmark(pixmapItem,name,pixmapItem->scenePos());
+    //text immediately under the pixmap
+    QGraphicsTextItem* text = Scene->addText(name);
+    text->setPos(QPointF(landmark->GetPos().x(),
+                         landmark->GetPos().y()+0.2));// landmark->GetPos().x()+translation_x,landmark->GetPos().y()+translation_y);
+    //text->setScale(gl_scale_f);
+
+    text->setData(0,0.01);
+    text->setTransform(QTransform::fromScale(0.01,-0.01),true);
+
+
+    landmark->SetPixMapText(text);
 
     _datamanager->new_landmark(landmark);
 
 }
 
-void jpsGraphicsView::ShowLandmark(ptrLandmark landmark)
+void jpsGraphicsView::ShowLandmark(jpsLandmark* landmark)
 {
     if (landmark->GetEllipseItem()==nullptr)
     {
         QGraphicsEllipseItem* ellipse = Scene->addEllipse(landmark->GetRect(),QPen(Qt::blue,0));
         ellipse->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
-        QString string = landmark->GetCaption();
-        QGraphicsTextItem* text = Scene->addText(string);
+        QGraphicsTextItem* text = Scene->addText(landmark->GetCaption());
         text->setPos(landmark->GetPos().x()+translation_x,landmark->GetPos().y()+translation_y);
         //text->setScale(gl_scale_f);
         text->setData(0,gl_scale_f);
@@ -324,7 +334,7 @@ void jpsGraphicsView::ShowLandmark(ptrLandmark landmark)
         HideLandmark(landmark);
 }
 
-void jpsGraphicsView::HideLandmark(ptrLandmark landmark)
+void jpsGraphicsView::HideLandmark(jpsLandmark* landmark)
 {
     delete landmark->GetEllipseItem();
     landmark->SetEllipseItem(nullptr);
@@ -434,11 +444,11 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 
             if (currentSelectRect!=nullptr)
             {
-                if (_assoDef)
+                if (_posDef)
                 {
-                    //Waypoint definition
-                    emit AssoDefCompleted();
-                    _assoDef=false;
+                    //Landmark position definition
+                    emit PositionDefCompleted();
+                    _posDef=false;
                 }
                 else
                 {
@@ -1284,12 +1294,23 @@ void jpsGraphicsView::translations(QPointF old_pos)
     {
         lineItem->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
-    for (QGraphicsTextItem* item:_waypointLabels)
+    for (jpsLandmark* item:_datamanager->get_landmarks())
     {
-        qreal scalef = item->data(0).toReal();
-        item->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
-        item->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
-        item->setTransform(QTransform::fromScale(scalef,scalef),true);
+        if (item->GetTextItem()!=nullptr)
+        {
+            qreal scalef = item->GetTextItem()->data(0).toReal();
+            item->GetTextItem()->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
+            item->GetTextItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
+            item->GetTextItem()->setTransform(QTransform::fromScale(scalef,scalef),true);
+        }
+
+        if (item->GetPixmapTextItem()!=nullptr)
+        {
+            qreal scalef = item->GetPixmapTextItem()->data(0).toReal();
+            item->GetPixmapTextItem()->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
+            item->GetPixmapTextItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
+            item->GetPixmapTextItem()->setTransform(QTransform::fromScale(scalef,scalef),true);
+        }
     }
 
     for (QGraphicsLineItem* lineItem:_connections)
@@ -1434,9 +1455,9 @@ void jpsGraphicsView::ShowOrigin()
     }
 }
 
-void jpsGraphicsView::StatAssoDef()
+void jpsGraphicsView::StatPositionDef()
 {
-   _assoDef=!_assoDef;
+   _posDef=!_posDef;
 }
 
 

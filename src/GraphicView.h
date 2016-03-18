@@ -122,8 +122,8 @@ public:
     void catch_landmark();
     void select_landmark(jpsLandmark *landmark);
     void addLandmark();
-    void ShowLandmark(ptrLandmark landmark);
-    void HideLandmark(ptrLandmark landmark);
+    void ShowLandmark(jpsLandmark *landmark);
+    void HideLandmark(jpsLandmark *landmark);
     // unmark Landmarks see slots
 
     //Waypoints/Connections and YAHPointer
@@ -144,7 +144,7 @@ public:
 
 public slots:
     //Waypoints
-    void StatAssoDef();
+    void StatPositionDef();
     //GridSettings
     void ActivateLineGrid();
     void ActivatePointGrid();
@@ -218,7 +218,7 @@ private:
     QGraphicsPixmapItem* gridmap;
     bool _statLineEdit;
     bool lines_collided;
-    bool _assoDef;
+    bool _posDef;
     bool _gridmode;
 
     //Undo/Redo
@@ -233,7 +233,7 @@ signals:
     void no_drawing();
     void remove_marked_lines();
     void remove_all();
-    void AssoDefCompleted();
+    void PositionDefCompleted();
     void LineLengthChanged();
     //void DoubleClick();
 

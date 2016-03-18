@@ -27,6 +27,7 @@
  **/
 
 #include "jpslandmark.h"
+#include <QGraphicsTextItem>
 
 jpsLandmark::jpsLandmark()
 {
@@ -45,6 +46,9 @@ jpsLandmark::jpsLandmark(QGraphicsPixmapItem *pixmap, const QString &caption, co
     _id=id;
     _type=type;
     _rect=QRectF(realPos.x()-rA,realPos.y()-rB,rA*2,rB*2);
+    _textItem=nullptr;
+    _pixmapText=nullptr;
+    _ellipseItem=nullptr;
 
 }
 
@@ -53,6 +57,7 @@ jpsLandmark::~jpsLandmark()
     delete _pixmapItem;
     delete _ellipseItem;
     delete _textItem;
+    delete _pixmapText;
 }
 
 void jpsLandmark::SetPixmap(QGraphicsPixmapItem *pixmap)
@@ -136,6 +141,11 @@ QGraphicsTextItem *jpsLandmark::GetTextItem() const
     return _textItem;
 }
 
+QGraphicsTextItem *jpsLandmark::GetPixmapTextItem() const
+{
+    return _pixmapText;
+}
+
 
 void jpsLandmark::SetPos(QPointF point)
 {
@@ -143,7 +153,7 @@ void jpsLandmark::SetPos(QPointF point)
     _rect.setRect(point.x(),point.y(),_rect.width(),_rect.height());
 }
 
-void jpsLandmark::SetRect(QRect rect)
+void jpsLandmark::SetRect(const QRectF& rect)
 {
     _rect=rect;
     _a=_rect.width();
@@ -164,6 +174,11 @@ void jpsLandmark::SetId(const int &id)
 void jpsLandmark::SetCaption(const QString &string)
 {
     _caption=string;
+    if (_textItem!=nullptr)
+        _textItem->setPlainText(_caption);
+
+    if (_pixmapText!=nullptr)
+        _pixmapText->setPlainText(_caption);
 }
 
 void jpsLandmark::SetType(const QString &type)
@@ -174,5 +189,10 @@ void jpsLandmark::SetType(const QString &type)
 void jpsLandmark::SetTextItem(QGraphicsTextItem *textItem)
 {
     _textItem=textItem;
+}
+
+void jpsLandmark::SetPixMapText(QGraphicsTextItem *textItem)
+{
+    _pixmapText=textItem;
 }
 

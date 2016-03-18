@@ -54,18 +54,20 @@ public:
     const QString& GetCaption() const;
     const QString& GetType() const;
     QGraphicsTextItem* GetTextItem() const;
+    QGraphicsTextItem* GetPixmapTextItem() const;
 
     //Setter
     void SetPixmap(QGraphicsPixmapItem* pixmap);
     void SetRoom(jpsRoom* room);
     void SetVisibility(int visibility);
     void SetPos(QPointF point);
-    void SetRect(QRect rect);
+    void SetRect(const QRectF &rect);
     void SetEllipseItem(QGraphicsEllipseItem* ellipseItem);
     void SetId(const int& id);
     void SetCaption(const QString& string);
     void SetType(const QString& type);
     void SetTextItem(QGraphicsTextItem* textItem);
+    void SetPixMapText(QGraphicsTextItem* textItem);
 
 //    //Occurence
 //    const int& GetFirstFrame() const;
@@ -100,6 +102,7 @@ private:
     QRectF _rect;
     QGraphicsEllipseItem* _ellipseItem;
     QGraphicsTextItem* _textItem;
+    QGraphicsTextItem* _pixmapText;
 
 };
 
