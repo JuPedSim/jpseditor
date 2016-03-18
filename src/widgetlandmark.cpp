@@ -53,6 +53,7 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     connect(ui->add_button,SIGNAL(clicked(bool)),_gview,SLOT(StatPositionDef()));
     connect(_gview,SIGNAL(PositionDefCompleted()),this,SLOT(SetPosInCMap()));
     connect(ui->remove_button,SIGNAL(clicked(bool)),this,SLOT(RemoveAssociation()));
+    connect(ui->button_showhide,SIGNAL(clicked(bool)),this,SLOT(ShowHideLandmark()));
 }
 
 widgetLandmark::~widgetLandmark()
@@ -68,6 +69,8 @@ void widgetLandmark::show_landmarks()
     {
         ui->list_landmarks->addItem(landmark->GetCaption());
     }
+    if (!landmarks.empty())
+        enable_room_selection();
 
 }
 
@@ -91,8 +94,6 @@ void widgetLandmark::enable_room_selection()
         ui->roomBox_landmarks->setEnabled(true);
         ui->is_in->setEnabled(true);
         ui->roomBox_landmarks->clear();
-        ui->label_Waypoints->setEnabled(true);
-        ui->label_Waypoints2->setEnabled(true);
         ui->add_button->setEnabled(true);
         ui->remove_button->setEnabled(true);
 
@@ -150,7 +151,9 @@ void widgetLandmark::change_name()
     if (landmark!=nullptr)
     {
         landmark->SetCaption(ui->chname_edit->text());
+        int row = ui->list_landmarks->currentIndex();
         this->show_landmarks();
+        ui->list_landmarks->setCurrentIndex(row);
     }
 
 }
@@ -162,14 +165,27 @@ void widgetLandmark::SetPosInCMap()
     if (landmark!=nullptr)
     {
         landmark->SetRect(_gview->GetCurrentSelectRect()->rect());
-        QString string = "Ellipse: Center: x: "+QString::number(landmark->GetRect().center().x())
+        QString string = "Ellipse: x: "+QString::number(landmark->GetRect().center().x())
                 + " y: "+QString::number(landmark->GetRect().center().y())+" rA: "+QString::number(landmark->GetA())
                                          + " rB: "+QString::number(landmark->GetB());
         ui->ellipse_label->setText(string);
-        ShowHideLandmark();
+        ui->add_button->setChecked(false);
+
+        // show ellipse and text in graphics view
+        QGraphicsEllipseItem* ellipse = _gview->GetScene()->addEllipse(landmark->GetRect(),QPen(Qt::blue,0));
+        ellipse->setTransform(QTransform::fromTranslate(_gview->GetTranslationX(),_gview->GetTranslationY()), true);
+        QGraphicsTextItem* text = _gview->GetScene()->addText(landmark->GetCaption());
+        text->setPos(landmark->GetPos().x()+_gview->GetTranslationX(),landmark->GetPos().y()+_gview->GetTranslationY());
+        //text->setScale(gl_scale_f);
+        text->setData(0,_gview->GetScaleF());
+        text->setTransform(QTransform::fromScale(_gview->GetScaleF(),-_gview->GetScaleF()),true);
+        landmark->SetEllipseItem(ellipse);
+        landmark->SetTextItem(text);
     }
 
 }
+
+
 
 void widgetLandmark::AddAssociation()
 {
@@ -191,7 +207,31 @@ void widgetLandmark::ShowHideLandmark()
 
     if (landmark!=nullptr)
     {
-        _gview->ShowLandmark(landmark);
+        if (landmark->GetEllipseItem()==nullptr && landmark->GetPixmap()->isVisible())
+        {
+            landmark->GetPixmap()->setVisible(false);
+            landmark->GetPixmapTextItem()->setVisible(false);
+        }
+        else if (landmark->GetEllipseItem()==nullptr && !landmark->GetPixmap()->isVisible())
+        {
+            landmark->GetPixmap()->setVisible(true);
+            landmark->GetPixmapTextItem()->setVisible(true);
+        }
+        else if (!landmark->GetEllipseItem()->isVisible())
+        {
+            landmark->GetPixmap()->setVisible(true);
+            landmark->GetPixmapTextItem()->setVisible(true);
+            landmark->GetEllipseItem()->setVisible(true);
+            landmark->GetTextItem()->setVisible(true);
+        }
+        else
+        {
+            landmark->GetPixmap()->setVisible(false);
+            landmark->GetPixmapTextItem()->setVisible(false);
+            landmark->GetEllipseItem()->setVisible(false);
+            landmark->GetTextItem()->setVisible(false);
+        }
+
     }
 }
 

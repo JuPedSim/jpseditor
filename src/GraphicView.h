@@ -54,6 +54,11 @@ public:
     //Destructor
     ~jpsGraphicsView();
 
+    QGraphicsScene* GetScene();
+    const qreal& GetTranslationX() const;
+    const qreal& GetTranslationY() const;
+    const qreal& GetScaleF() const;
+
     void SetDatamanager(jpsDatamanager* datamanager);
 
     //Change modes
@@ -122,8 +127,6 @@ public:
     void catch_landmark();
     void select_landmark(jpsLandmark *landmark);
     void addLandmark();
-    void ShowLandmark(jpsLandmark *landmark);
-    void HideLandmark(jpsLandmark *landmark);
     // unmark Landmarks see slots
 
     //Waypoints/Connections and YAHPointer

@@ -113,6 +113,26 @@ jpsGraphicsView::~jpsGraphicsView()
     delete Scene;
 }
 
+QGraphicsScene *jpsGraphicsView::GetScene()
+{
+    return Scene;
+}
+
+const qreal &jpsGraphicsView::GetTranslationX() const
+{
+    return translation_x;
+}
+
+const qreal &jpsGraphicsView::GetTranslationY() const
+{
+    return translation_y;
+}
+
+const qreal &jpsGraphicsView::GetScaleF() const
+{
+    return gl_scale_f;
+}
+
 void jpsGraphicsView::SetDatamanager(jpsDatamanager *datamanager)
 {
     _datamanager=datamanager;
@@ -316,31 +336,6 @@ void jpsGraphicsView::addLandmark()
 
 }
 
-void jpsGraphicsView::ShowLandmark(jpsLandmark* landmark)
-{
-    if (landmark->GetEllipseItem()==nullptr)
-    {
-        QGraphicsEllipseItem* ellipse = Scene->addEllipse(landmark->GetRect(),QPen(Qt::blue,0));
-        ellipse->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
-        QGraphicsTextItem* text = Scene->addText(landmark->GetCaption());
-        text->setPos(landmark->GetPos().x()+translation_x,landmark->GetPos().y()+translation_y);
-        //text->setScale(gl_scale_f);
-        text->setData(0,gl_scale_f);
-        text->setTransform(QTransform::fromScale(gl_scale_f,-gl_scale_f),true);
-        landmark->SetEllipseItem(ellipse);
-        landmark->SetTextItem(text);
-    }
-    else
-        HideLandmark(landmark);
-}
-
-void jpsGraphicsView::HideLandmark(jpsLandmark* landmark)
-{
-    delete landmark->GetEllipseItem();
-    landmark->SetEllipseItem(nullptr);
-    delete landmark->GetTextItem();
-    landmark->SetTextItem(nullptr);
-}
 
 void jpsGraphicsView::unmarkLandmark()
 {

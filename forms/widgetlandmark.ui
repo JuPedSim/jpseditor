@@ -23,7 +23,7 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>40</x>
       <y>20</y>
       <width>191</width>
       <height>31</height>
@@ -130,7 +130,7 @@
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>130</y>
+      <y>140</y>
       <width>113</width>
       <height>22</height>
      </rect>
@@ -139,8 +139,8 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>130</y>
+      <x>10</x>
+      <y>140</y>
       <width>51</width>
       <height>16</height>
      </rect>
@@ -158,7 +158,7 @@
     <property name="geometry">
      <rect>
       <x>200</x>
-      <y>130</y>
+      <y>140</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -183,8 +183,8 @@
    <widget class="QComboBox" name="list_landmarks">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>60</y>
+      <x>40</x>
+      <y>70</y>
       <width>201</width>
       <height>31</height>
      </rect>
@@ -291,7 +291,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string/>
     </property>
    </widget>
    <widget class="Line" name="line_5">
@@ -305,6 +305,19 @@
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="button_showhide">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>10</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Show/Hide</string>
     </property>
    </widget>
   </widget>
