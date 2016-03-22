@@ -48,6 +48,7 @@ public:
     jpsRoom *GetRoom() const;
     int GetVisibility() const;
     const QPointF& GetPos() const;
+    const QPointF& GetRealPos() const;
     const QRectF &GetRect() const;
     const double& GetA() const;
     const double& GetB() const;
@@ -63,7 +64,8 @@ public:
     void SetPixmap(QGraphicsPixmapItem* pixmap);
     void SetRoom(jpsRoom* room);
     void SetVisibility(int visibility);
-    void SetPos(QPointF point);
+    void SetPos(const QPointF& point);
+    void SetRealPos(const QPointF& point);
     void SetRect(const QRectF &rect);
     void SetEllipseItem(QGraphicsEllipseItem* ellipseItem);
     void SetId(const int& id);
@@ -104,6 +106,7 @@ private:
     int _id;
     QString _type;
     QPointF _pos;
+    QPointF _realPos;
     jpsRoom* _room;
     int _visibility;
     QGraphicsPixmapItem* _pixmapItem;

@@ -144,6 +144,7 @@ MWindow :: MWindow() {
     //CMap
     connect(actionRun_visualisation,SIGNAL(triggered(bool)),this,SLOT(RunCMap()));
     connect(_cMapTimer,SIGNAL(timeout()),this,SLOT(UpdateCMap()));
+    connect(actionSpeichern_cogmap,SIGNAL(triggered()),this,SLOT(SaveCogMapXML()));
     //Undo Redo
     connect(actionUndo,SIGNAL(triggered(bool)),mview,SLOT(Undo()));
     connect(actionRedo,SIGNAL(triggered(bool)),mview,SLOT(Redo()));
@@ -381,6 +382,20 @@ void MWindow::saveAsDXF()
         dmanager->writeDXF(fName);
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("DXF-File successfully saved!"),10000);
+    }
+}
+
+void MWindow::SaveCogMapXML()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,tr("Save CognitiveMap XML"),"",tr("XML-Files (*.xml)"));
+    if (fileName.isEmpty()) return;
+    QFile file(fileName);
+
+    if(file.open(QIODevice::WriteOnly|QIODevice::Text))
+    {
+        dmanager->WriteCognitiveMapXML(file);
+        //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
+        statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
     }
 }
 

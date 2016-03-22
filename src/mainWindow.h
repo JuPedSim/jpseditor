@@ -78,6 +78,9 @@ protected slots:
 //    void openFileCMap();
     void saveFile();
     void saveAsDXF();
+
+    //cogmap
+    void SaveCogMapXML();
     
     //about
     void info();

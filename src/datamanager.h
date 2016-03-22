@@ -121,6 +121,7 @@ public:
     // Write XML
     void writeXML(QFile &file);
     void writeRoutingXML(QFile &file);
+
     void AutoSaveXML(QFile &file);
     void writeHeader(QXmlStreamWriter *stream);
     void writeRoutingHeader(QXmlStreamWriter *stream);
@@ -134,7 +135,13 @@ public:
     void writeNotAssignedWalls(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeNotAssignedDoors(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
-    void writeLandmarks(QXmlStreamWriter *stream, QList<jpsLandmark* > &landmarks);
+
+
+    //Write Cognitive Map XML
+    void WriteCognitiveMapXML(QFile &file);
+    void WriteCognitiveMapHeader(QXmlStreamWriter *stream);
+    void writeLandmarks(QXmlStreamWriter *stream);
+    void WriteConnections(QXmlStreamWriter *stream);
 
     // Read DXF
     bool readDXF(std::string filename);
@@ -181,6 +188,8 @@ private:
     jpsYAHPointer* _yahPointer;
     double _frameRate;
     int _lastCMapFrame;
+
+    int _landmarkCounter;
 
 
 

@@ -29,24 +29,22 @@
 #include <utility>
 #include "jpslandmark.h"
 
-using ptrLandmark = std::shared_ptr<jpsLandmark>;
+
 
 
 class jpsConnection
 {
 
-using ptrConnection = std::shared_ptr<jpsConnection>;
-
 public:
-    jpsConnection(ptrLandmark landmark1=nullptr, ptrLandmark landmark2=nullptr, QGraphicsLineItem* lineItem=nullptr, const int& frameID=-1);
+    jpsConnection(jpsLandmark* landmark1=nullptr, jpsLandmark* landmark2=nullptr, QGraphicsLineItem* lineItem=nullptr, const int& frameID=-1);
     ~jpsConnection();
-    std::pair<ptrLandmark,ptrLandmark> GetLandmarks() const;
+    std::pair<jpsLandmark*, jpsLandmark*> GetLandmarks() const;
 
     void SetLineItem(QGraphicsLineItem* lineItem);
     QGraphicsLineItem* GetLineItem();
 
-    void SetFirstLandmark(ptrLandmark landmark);
-    void SetSecondLandmark(ptrLandmark landmark);
+    void SetFirstLandmark(jpsLandmark* landmark);
+    void SetSecondLandmark(jpsLandmark* landmark);
     //Occurence
 //    bool OccursInFrame(const int &frameID) const;
 //    void SetFirstFrame(const int &frameID);
@@ -54,10 +52,10 @@ public:
 //    const int& GetFirstFrame() const;
 //    const int& GetLastFrame() const;
     // Operator overload
-    bool operator ==(const ptrConnection con2) const;
+    bool operator ==(const jpsConnection *con2) const;
 private:
-    ptrLandmark _landmark1;
-    ptrLandmark _landmark2;
+    jpsLandmark* _landmark1;
+    jpsLandmark* _landmark2;
     QGraphicsLineItem* _lineItem;
     int _firstFrame;
     int _lastFrame;

@@ -35,6 +35,7 @@
     <addaction name="action_ffnen"/>
     <addaction name="actionSpeichern"/>
     <addaction name="actionSpeichern_dxf"/>
+    <addaction name="actionSpeichern_cogmap"/>
     <addaction name="separator"/>
     <addaction name="separator"/>
     <addaction name="actionSettings"/>
@@ -560,6 +561,21 @@
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionSpeichern_cogmap">
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/filesave.png</normaloff>:/filesave.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save CognitiveMap</string>
+   </property>
+   <property name="toolTip">
+    <string>Save CognitiveMap</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
  </widget>

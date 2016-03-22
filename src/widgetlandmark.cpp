@@ -44,9 +44,9 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
 
     show_landmarks();
 
-
     connect(ui->apply_name_button,SIGNAL(clicked(bool)),this,SLOT(change_name()));
     connect(ui->closeButton,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_landmark()));
+    connect(ui->closeButton_2,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_landmark()));
     connect(ui->list_landmarks,SIGNAL(activated(int)),this,SLOT(enable_room_selection()));
     connect(ui->list_landmarks,SIGNAL(currentIndexChanged(int)),_gview,SLOT(unmarkLandmark()));
     connect(ui->roomBox_landmarks,SIGNAL(activated(int)),this,SLOT(add_room_to_landmark()));
@@ -59,6 +59,7 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     connect(ui->add_button_connections,SIGNAL(clicked(bool)),this,SLOT(NewConnection()));
     connect(_gview,SIGNAL(DefConnection1Completed()),this,SLOT(AskForSecondLandmark()));
     connect(_gview,SIGNAL(DefConnection2Completed()),this,SLOT(SetLandmarksToConnection()));
+    connect(ui->remove_button_connections,SIGNAL(clicked(bool)),this,SLOT(RemoveConnection()));
 
 }
 
@@ -178,7 +179,9 @@ void widgetLandmark::SetPosInCMap()
         ui->add_button->setChecked(false);
 
         // show ellipse and text in graphics view
-        QGraphicsEllipseItem* ellipse = _gview->GetScene()->addEllipse(landmark->GetRect(),QPen(Qt::blue,0));
+        QPen pen = QPen(Qt::blue,2);
+        pen.setCosmetic(true);
+        QGraphicsEllipseItem* ellipse = _gview->GetScene()->addEllipse(landmark->GetRect(),pen);
         ellipse->setTransform(QTransform::fromTranslate(_gview->GetTranslationX(),_gview->GetTranslationY()), true);
         QGraphicsTextItem* text = _gview->GetScene()->addText(landmark->GetCaption());
         text->setPos(landmark->GetPos().x()+_gview->GetTranslationX(),landmark->GetPos().y()+_gview->GetTranslationY());
@@ -264,7 +267,8 @@ void widgetLandmark::AskForSecondLandmark()
         {
             if (landmark->GetEllipseItem()->boundingRect().contains(mousePos))
             {
-                _currentConnection->SetFirstLandmark(std::shared_ptr<jpsLandmark>(landmark));
+                _currentConnection->SetFirstLandmark(landmark);
+                landmark->NewConnection(_currentConnection);
                 _gview->SetStatDefConnections(2);
                 return;
             }
@@ -282,8 +286,10 @@ void widgetLandmark::SetLandmarksToConnection()
         {
             if (landmark->GetEllipseItem()->boundingRect().contains(mousePos))
             {
-                _currentConnection->SetSecondLandmark(std::shared_ptr<jpsLandmark>(landmark));
+                _currentConnection->SetSecondLandmark(landmark);
+                landmark->NewConnection(_currentConnection);
                 _gview->SetStatDefConnections(0);
+                AddConnectionsToWidget();
                 SetLineItemAsConnection();
                 ui->add_button_connections->setChecked(false);
                 return;
@@ -291,6 +297,7 @@ void widgetLandmark::SetLandmarksToConnection()
         }
     }
     ui->add_button_connections->setChecked(false);
+
 }
 
 void widgetLandmark::SetLineItemAsConnection()
@@ -299,8 +306,37 @@ void widgetLandmark::SetLineItemAsConnection()
     QPen pen = QPen(Qt::blue,2);
     pen.setCosmetic(true);
     QGraphicsLineItem* lineItem = _gview->GetScene()->addLine(line,pen);
+    lineItem->setTransform(QTransform::fromTranslate(_gview->GetTranslationX(),_gview->GetTranslationY()), true);
     _currentConnection->SetLineItem(lineItem);
     _currentConnection=nullptr;
+}
+
+void widgetLandmark::AddConnectionsToWidget()
+{
+    QString string = _currentConnection->GetLandmarks().first->GetCaption()+" <-> "+_currentConnection->GetLandmarks().second->GetCaption();
+    ui->listWidgetConnections->addItem(string);
+
+}
+
+void widgetLandmark::RemoveConnection()
+{
+    if (ui->listWidgetConnections->currentRow()!=-1)
+    {
+        int currentRow = ui->listWidgetConnections->currentRow();
+        QListWidgetItem* item = ui->listWidgetConnections->takeItem(currentRow);
+        delete item;
+        _dmanager->RemoveConnection(_dmanager->GetAllConnections()[currentRow]);
+    }
+}
+
+void widgetLandmark::NewRegion()
+{
+
+}
+
+void widgetLandmark::RemoveRegion()
+{
+
 }
 
 void widgetLandmark::RemoveAssociation()

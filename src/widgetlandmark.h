@@ -68,6 +68,11 @@ protected slots:
     void AskForSecondLandmark();
     void SetLandmarksToConnection();
     void SetLineItemAsConnection();
+    void AddConnectionsToWidget();
+    void RemoveConnection();
+    //regions
+    void NewRegion();
+    void RemoveRegion();
 private:
     jpsLandmark *GetCurrentLandmark() const;
     Ui::widgetLandmark *ui;

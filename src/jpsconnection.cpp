@@ -24,7 +24,7 @@
      
 #include "jpsconnection.h"
 
-jpsConnection::jpsConnection(ptrLandmark landmark1, ptrLandmark landmark2, QGraphicsLineItem *lineItem, const int &frameID)
+jpsConnection::jpsConnection(jpsLandmark* landmark1, jpsLandmark* landmark2, QGraphicsLineItem *lineItem, const int &frameID)
 {
     _landmark1=landmark1;
     _landmark2=landmark2;
@@ -38,7 +38,7 @@ jpsConnection::~jpsConnection()
 
 }
 
-std::pair<ptrLandmark, ptrLandmark> jpsConnection::GetLandmarks() const
+std::pair<jpsLandmark*, jpsLandmark*> jpsConnection::GetLandmarks() const
 {
     return std::make_pair(_landmark1,_landmark2);
 }
@@ -73,7 +73,7 @@ std::pair<ptrLandmark, ptrLandmark> jpsConnection::GetLandmarks() const
 //    return _lastFrame;
 //}
 
-bool jpsConnection::operator == (const ptrConnection con2) const
+bool jpsConnection::operator == (const jpsConnection* con2) const
 {
     if ((con2->GetLandmarks().first==_landmark1 && con2->GetLandmarks().second==_landmark2)
             || (con2->GetLandmarks().second==_landmark1 && con2->GetLandmarks().first==_landmark2))
@@ -94,12 +94,12 @@ QGraphicsLineItem *jpsConnection::GetLineItem()
     return _lineItem;
 }
 
-void jpsConnection::SetFirstLandmark(ptrLandmark landmark)
+void jpsConnection::SetFirstLandmark(jpsLandmark* landmark)
 {
     _landmark1=landmark;
 }
 
-void jpsConnection::SetSecondLandmark(ptrLandmark landmark)
+void jpsConnection::SetSecondLandmark(jpsLandmark* landmark)
 {
     _landmark2=landmark;
 }

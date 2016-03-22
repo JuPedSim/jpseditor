@@ -14,11 +14,11 @@
    <string>TabWidget</string>
   </property>
   <property name="currentIndex">
-   <number>0</number>
+   <number>1</number>
   </property>
   <widget class="QWidget" name="widget">
    <attribute name="title">
-    <string>Landmark</string>
+    <string>Landmarks</string>
    </attribute>
    <widget class="QLabel" name="label">
     <property name="geometry">
@@ -40,7 +40,7 @@
    </widget>
    <widget class="QLabel" name="label_Waypoints2">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -72,7 +72,7 @@
    </widget>
    <widget class="QPushButton" name="add_button">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -91,7 +91,7 @@
    </widget>
    <widget class="QPushButton" name="remove_button">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -107,11 +107,11 @@
    </widget>
    <widget class="QLabel" name="label_Waypoints">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>20</x>
       <y>260</y>
       <width>191</width>
       <height>31</height>
@@ -123,7 +123,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Connections with:</string>
+     <string>Associations:</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="chname_edit">
@@ -205,7 +205,7 @@
    </widget>
    <widget class="QComboBox" name="roomBox_landmarks">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -218,7 +218,7 @@
    </widget>
    <widget class="QLabel" name="is_in">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -239,7 +239,7 @@
    </widget>
    <widget class="QLabel" name="label_Waypoints_2">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -310,7 +310,7 @@
      <string>Show/Hide</string>
     </property>
    </widget>
-   <widget class="QListWidget" name="listWidgetconnections">
+   <widget class="QListWidget" name="listWidgetassociations">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -320,7 +320,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="add_button_connections">
+   <widget class="QPushButton" name="add_button_associations">
     <property name="enabled">
      <bool>true</bool>
     </property>
@@ -337,6 +337,106 @@
     </property>
     <property name="checkable">
      <bool>true</bool>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="tabConnections">
+   <attribute name="title">
+    <string>Connections</string>
+   </attribute>
+   <widget class="Line" name="line_6">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>530</y>
+      <width>341</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="closeButton_2">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>560</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Close</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>20</y>
+      <width>191</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Connections:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="add_button_connections">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>320</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>New</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="remove_button_connections">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>320</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Remove</string>
+    </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="listWidgetConnections">
+    <property name="geometry">
+     <rect>
+      <x>15</x>
+      <y>80</y>
+      <width>281</width>
+      <height>192</height>
+     </rect>
     </property>
    </widget>
   </widget>

@@ -37,6 +37,7 @@ jpsLandmark::jpsLandmark()
 jpsLandmark::jpsLandmark(QGraphicsPixmapItem *pixmap, const QString &caption, const QPointF &realPos, const qreal &rA, const qreal &rB, const int &id, const QString &type)
 {
     _caption=caption;
+    _realPos=realPos;
     _pos=realPos;
     _room=nullptr;
     _visibility=0;
@@ -101,6 +102,11 @@ const QPointF &jpsLandmark::GetPos() const
 
 }
 
+const QPointF &jpsLandmark::GetRealPos() const
+{
+    return _realPos;
+}
+
 const QRectF &jpsLandmark::GetRect() const
 {
     return _rect;
@@ -152,10 +158,15 @@ const QList<jpsConnection *> &jpsLandmark::GetConnections() const
 }
 
 
-void jpsLandmark::SetPos(QPointF point)
+void jpsLandmark::SetPos(const QPointF& point)
 {
     _pos=point;
     _rect.setRect(point.x(),point.y(),_rect.width(),_rect.height());
+}
+
+void jpsLandmark::SetRealPos(const QPointF &point)
+{
+    _realPos=point;
 }
 
 void jpsLandmark::SetRect(const QRectF& rect)
@@ -208,6 +219,11 @@ void jpsLandmark::NewConnection(jpsConnection *newConnection)
 
 void jpsLandmark::RemoveConnection(jpsConnection *connection)
 {
-    _connections.removeOne(connection);
+    if (_connections.contains(connection))
+    {
+        _connections.removeOne(connection);
+    }
 }
+
+
 

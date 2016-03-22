@@ -328,7 +328,7 @@ void jpsGraphicsView::addLandmark()
                           +pixmap.height()/1000.));
     pixmapItem->setTransform(QTransform::fromScale(1,-1),true);
     pixmapItem->setTransform(QTransform::fromTranslate(translation_x,-translation_y), true);
-    QString name="Landmark"+QString::number(_datamanager->get_landmarks().size());
+    QString name="Landmark"+QString::number(_datamanager->GetLandmarkCounter());
     jpsLandmark* landmark = new jpsLandmark(pixmapItem,name,pixmapItem->scenePos());
     //text immediately under the pixmap
     QGraphicsTextItem* text = Scene->addText(name);
@@ -1327,6 +1327,11 @@ void jpsGraphicsView::translations(QPointF old_pos)
             item->GetPixmapTextItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
             item->GetPixmapTextItem()->setTransform(QTransform::fromScale(scalef,scalef),true);
         }
+    }
+
+    for (jpsConnection* connection:_datamanager->GetAllConnections())
+    {
+        connection->GetLineItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
 
     for (QGraphicsLineItem* lineItem:_connections)

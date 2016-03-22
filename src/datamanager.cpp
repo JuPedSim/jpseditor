@@ -41,6 +41,7 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
     obs_id_counter=0;
     _yahPointer=nullptr;
     _frameRate=0;
+    _landmarkCounter=0;
 
 }
 
@@ -233,13 +234,20 @@ QList<jpsLandmark *> jpsDatamanager::get_landmarks()
 
 void jpsDatamanager::new_landmark(jpsLandmark *newlandmark)
 {
+    newlandmark->SetId(_landmarkCounter);
+    _landmarkCounter++;
     landmarks.push_back(newlandmark);
 }
 
 void jpsDatamanager::remove_landmark(jpsLandmark *landmark)
 {
     landmarks.removeOne(landmark);
+    for (jpsConnection* connection:landmark->GetConnections())
+    {
+        RemoveConnection(connection);
+    }
     delete landmark;
+    _landmarkCounter++;
 }
 
 void jpsDatamanager::change_LandmarkName(jpsLandmark *landmark, QString name)
@@ -256,6 +264,11 @@ void jpsDatamanager::remove_all_landmarks()
     landmarks.clear();
 }
 
+const int &jpsDatamanager::GetLandmarkCounter() const
+{
+    return _landmarkCounter;
+}
+
 const QList<jpsConnection *> &jpsDatamanager::GetAllConnections() const
 {
     return _landmarkConnections;
@@ -269,6 +282,9 @@ void jpsDatamanager::NewConnection(jpsConnection *newConnection)
 void jpsDatamanager::RemoveConnection(jpsConnection *connection)
 {
     _landmarkConnections.removeOne(connection);
+    connection->GetLandmarks().first->RemoveConnection(connection);
+    connection->GetLandmarks().second->RemoveConnection(connection);
+    delete connection->GetLineItem();
     delete connection;
 }
 
@@ -295,10 +311,6 @@ void jpsDatamanager::writeXML(QFile &file)
     writeTransitions(stream,lines);
     exitList.clear();
     stream->writeEndElement();//transitions
-
-    stream->writeStartElement("landmarks");
-    writeLandmarks(stream,landmarks);
-    stream->writeEndElement();//landmarks
 
     stream->writeEndElement();//geometry
 
@@ -333,6 +345,41 @@ void jpsDatamanager::writeRoutingXML(QFile &file) // Construction side
 
 }
 
+void jpsDatamanager::WriteCognitiveMapXML(QFile &file)
+{
+    QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
+    WriteCognitiveMapHeader(stream);
+
+
+    stream->writeStartElement("landmarks");
+    writeLandmarks(stream);
+    stream->writeEndElement();//landmarks
+
+    stream->writeStartElement("connections");
+    WriteConnections(stream);
+    stream->writeEndElement();//connections
+
+
+    stream->writeEndElement();//cognitiveMap
+
+    stream->writeEndDocument();
+
+    delete stream;
+}
+
+void jpsDatamanager::WriteCognitiveMapHeader(QXmlStreamWriter *stream)
+{
+    stream->setAutoFormatting(true);
+    stream->writeStartDocument("1.0",true);
+
+    stream->writeStartElement("cognitiveMap");
+    stream->writeAttribute("version", "0.81");
+    stream->writeAttribute("caption","cogMap");
+    stream->writeAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+    stream->writeAttribute("xsi:noNamespaceSchemaLocation","http://xsd.jupedsim.org/jps_geometry.xsd");
+    stream->writeAttribute("unit","m");
+}
+
 void jpsDatamanager::AutoSaveXML(QFile &file)
 {
     QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
@@ -349,9 +396,9 @@ void jpsDatamanager::AutoSaveXML(QFile &file)
     exitList.clear();
     stream->writeEndElement();//transitions
 
-    stream->writeStartElement("landmarks");
-    writeLandmarks(stream,landmarks);
-    stream->writeEndElement();//landmarks
+//    stream->writeStartElement("landmarks");
+//    writeLandmarks(stream,landmarks);
+//    stream->writeEndElement();//landmarks
 
     stream->writeEndElement();//geometry
 
@@ -790,43 +837,55 @@ void jpsDatamanager::writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLi
 
 }
 
-void jpsDatamanager::writeLandmarks(QXmlStreamWriter *stream, QList<jpsLandmark *> &landmarks)
+void jpsDatamanager::writeLandmarks(QXmlStreamWriter *stream)
 {
-    int n=0;
+
     for (jpsLandmark* landmark:landmarks)
     {
         stream->writeStartElement("landmark");
 
-        stream->writeAttribute("id",QString::number(n));
+        stream->writeAttribute("id",landmark->GetId());
         stream->writeAttribute("caption",landmark->GetCaption());
-        stream->writeAttribute("type","NaN");
+        stream->writeAttribute("type",landmark->GetType());
         stream->writeAttribute("room1_id","0");
         if (landmark->GetRoom()!=nullptr)
             stream->writeAttribute("subroom1_id",QString::number(landmark->GetRoom()->get_id()));
         else
             stream->writeAttribute("subroom1_id","NaN");
+        stream->writeAttribute("pxreal",QString::number(landmark->GetRealPos().x()));
+        stream->writeAttribute("pyreal",QString::number(landmark->GetRealPos().y()));
         stream->writeAttribute("px",QString::number(landmark->GetPos().x()));
         stream->writeAttribute("py",QString::number(landmark->GetPos().y()));
-        stream->writeStartElement("associations");
+        stream->writeAttribute("a",QString::number(landmark->GetA()));
+        stream->writeAttribute("b",QString::number(landmark->GetB()));
 
-//        for (ptrWaypoint waypoint:landmark->GetWaypoints())
-//        {
-//            stream->writeStartElement("association");
-//            stream->writeAttribute("id",QString::number(m));
-//            stream->writeAttribute("caption","Waypoint");
-//            stream->writeAttribute("type","NaN");
-//            stream->writeAttribute("px",QString::number(waypoint->GetPos().x()));
-//            stream->writeAttribute("py",QString::number(waypoint->GetPos().y()));
-//            stream->writeAttribute("a",QString::number(waypoint->GetA()));
-//            stream->writeAttribute("b",QString::number(waypoint->GetB()));
-//            stream->writeEndElement();//association
-//            m++;
-//        }
+        stream->writeStartElement("associations");
+        //
         stream->writeEndElement();//associations
         stream->writeEndElement();//landmark
-        n++;
+
     }
 
+
+}
+
+void jpsDatamanager::WriteConnections(QXmlStreamWriter *stream)
+{
+    int n=0;
+    for (jpsConnection* connection:_landmarkConnections)
+    {
+        stream->writeStartElement("connection");
+
+        stream->writeAttribute("id",QString::number(n));
+        stream->writeAttribute("caption","Connection "+QString::number(n));
+        stream->writeAttribute("type","Not specified");
+        stream->writeAttribute("landmark1_id",QString::number(connection->GetLandmarks().first->GetId()));
+        stream->writeAttribute("landmark2_id",QString::number(connection->GetLandmarks().second->GetId()));
+
+        stream->writeEndElement();//connection
+        n++;
+
+    }
 }
 
 void jpsDatamanager::remove_all()
