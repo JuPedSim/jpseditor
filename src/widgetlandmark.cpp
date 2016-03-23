@@ -40,7 +40,10 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     ui->setupUi(this);
     _dmanager=dmanager;
     _gview=gview;
-    _waypointIDCounter=0;
+
+    //Landmark type
+    ui->Box_landmarkType->addItem("Landmark");
+    ui->Box_landmarkType->addItem("Main Target");
 
     show_landmarks();
 
@@ -48,12 +51,14 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     connect(ui->closeButton,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_landmark()));
     connect(ui->closeButton_2,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_landmark()));
     connect(ui->list_landmarks,SIGNAL(activated(int)),this,SLOT(enable_room_selection()));
+    connect(ui->list_landmarks,SIGNAL(activated(int)),this,SLOT(ShowLandmarkType()));
     connect(ui->list_landmarks,SIGNAL(currentIndexChanged(int)),_gview,SLOT(unmarkLandmark()));
     connect(ui->roomBox_landmarks,SIGNAL(activated(int)),this,SLOT(add_room_to_landmark()));
     connect(ui->add_button,SIGNAL(clicked(bool)),_gview,SLOT(StatPositionDef()));
     connect(_gview,SIGNAL(PositionDefCompleted()),this,SLOT(SetPosInCMap()));
     connect(ui->remove_button,SIGNAL(clicked(bool)),this,SLOT(RemoveAssociation()));
     connect(ui->button_showhide,SIGNAL(clicked(bool)),this,SLOT(ShowHideLandmark()));
+    connect(ui->Box_landmarkType,SIGNAL(currentIndexChanged(int)),this,SLOT(SetLandmarkType()));
 
     //connectionDef
     connect(ui->add_button_connections,SIGNAL(clicked(bool)),this,SLOT(NewConnection()));
@@ -78,6 +83,7 @@ void widgetLandmark::show_landmarks()
     }
     if (!landmarks.empty())
         enable_room_selection();
+    ShowLandmarkType();
 
 }
 
@@ -192,6 +198,29 @@ void widgetLandmark::SetPosInCMap()
         landmark->SetTextItem(text);
     }
 
+}
+
+void widgetLandmark::ShowLandmarkType()
+{
+   jpsLandmark* landmark = GetCurrentLandmark();
+
+   if (landmark!=nullptr)
+   {
+       if (landmark->GetType()=="Landmark")
+        ui->Box_landmarkType->setCurrentIndex(0);
+       else
+           ui->Box_landmarkType->setCurrentIndex(1);
+   }
+}
+
+void widgetLandmark::SetLandmarkType()
+{
+    jpsLandmark* landmark = GetCurrentLandmark();
+
+    if (landmark!=nullptr)
+    {
+        landmark->SetType(ui->Box_landmarkType->currentText());
+    }
 }
 
 

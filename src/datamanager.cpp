@@ -844,7 +844,7 @@ void jpsDatamanager::writeLandmarks(QXmlStreamWriter *stream)
     {
         stream->writeStartElement("landmark");
 
-        stream->writeAttribute("id",landmark->GetId());
+        stream->writeAttribute("id",QString::number(landmark->GetId()));
         stream->writeAttribute("caption",landmark->GetCaption());
         stream->writeAttribute("type",landmark->GetType());
         stream->writeAttribute("room1_id","0");

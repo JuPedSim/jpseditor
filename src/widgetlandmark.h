@@ -57,6 +57,8 @@ protected slots:
     void disable_room_selection();
     void change_name();
     void SetPosInCMap();
+    void ShowLandmarkType();
+    void SetLandmarkType();
     //associated landmarks
     void AddAssociation();
     void RemoveAssociation();
@@ -78,7 +80,6 @@ private:
     Ui::widgetLandmark *ui;
     jpsDatamanager* _dmanager;
     jpsGraphicsView* _gview;
-    int _waypointIDCounter;
     jpsConnection* _currentConnection;
 };
 

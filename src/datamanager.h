@@ -89,6 +89,7 @@ public:
     void remove_landmark(jpsLandmark* landmark);
     void change_LandmarkName(jpsLandmark* landmark, QString name);
     void remove_all_landmarks();
+    const int& GetLandmarkCounter() const;
     //Connection
     const QList<jpsConnection*>& GetAllConnections() const;
     void NewConnection(jpsConnection* newConnection);
