@@ -6,11 +6,15 @@ class jpsRegion
 {
 public:
     jpsRegion(const int& id, const QString& caption, const QPointF& pos, const qreal& a, const qreal& b, const QString& type="Region");
-    jpsRegion(const int& id, const QString& caption, QGraphicsEllipseItem* ellipse, const QString& type="Region");
+    jpsRegion(const int& id, const QString& caption, QGraphicsEllipseItem* ellipse, QGraphicsTextItem* text=nullptr, const QString& type="Region");
     ~jpsRegion();
 
     void AddLandmark(jpsLandmark* landmark);
     void RemoveLandmark(jpsLandmark* landmark);
+
+    //Getter
+    const QPointF& GetPos() const;
+    const QString& GetCaption() const;
 
 private:
     QString _caption;

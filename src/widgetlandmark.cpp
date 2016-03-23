@@ -360,7 +360,28 @@ void widgetLandmark::RemoveConnection()
 
 void widgetLandmark::NewRegion()
 {
+    ui->add_button->setChecked(false);
+    // show ellipse and text in graphics view
+    QPen pen = QPen(Qt::blue,2);
+    pen.setCosmetic(true);
+    QRectF rect = _gview->GetCurrentSelectRect()->rect();
+    QGraphicsEllipseItem* ellipse = _gview->GetScene()->addEllipse(rect,pen);
+    ellipse->setTransform(QTransform::fromTranslate(_gview->GetTranslationX(),_gview->GetTranslationY()), true);
+    QString string = "Ellipse: x: "+QString::number(rect.center().x())
+            + " y: "+QString::number(rect.center().y())+" rA: "+QString::number(rect.width()/2.0)
+                                     + " rB: "+QString::number(rect.height()/2.0);
+    ui->listWidgetRegions->addItem(string);
+    // create region
+    jpsRegion* region = new jpsRegion(_dmanager->GetRegionCounter(),"Region "+QString::number(_dmanager->GetRegionCounter()),
+                                      rect.center(),rect.width()/2.0,rect.height()/2.0);
 
+    QGraphicsTextItem* text = _gview->GetScene()->addText(region->GetCaption());
+    text->setPos(rect.center().x()+_gview->GetTranslationX(),rect.center().y()+_gview->GetTranslationY());
+    //text->setScale(gl_scale_f);
+    text->setData(0,_gview->GetScaleF());
+    text->setTransform(QTransform::fromScale(_gview->GetScaleF(),-_gview->GetScaleF()),true);
+
+    _dmanager->NewRegion(region);
 }
 
 void widgetLandmark::RemoveRegion()

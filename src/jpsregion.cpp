@@ -12,16 +12,22 @@ jpsRegion::jpsRegion(const int &id, const QString &caption, const QPointF &pos, 
     _textItem=nullptr;
 }
 
-jpsRegion::jpsRegion(const int &id, const QString &caption, QGraphicsEllipseItem *ellipse, const QString &type)
+jpsRegion::jpsRegion(const int &id, const QString &caption, QGraphicsEllipseItem *ellipse, QGraphicsTextItem* text, const QString &type)
 {
     _id=id;
     _caption=caption;
     _ellipseItem=ellipse;
-    _textItem=nullptr;
+    _type=type;
+    _pos=_ellipseItem->pos();
+    _a=_ellipseItem->rect().width()/2.0;
+    _b=_ellipseItem->rect().height()/2.0;
+    _textItem=text;
 }
 
 jpsRegion::~jpsRegion()
 {
+    delete _ellipseItem;
+    delete _textItem;
 
 }
 
@@ -33,5 +39,15 @@ void jpsRegion::AddLandmark(jpsLandmark *landmark)
 void jpsRegion::RemoveLandmark(jpsLandmark *landmark)
 {
     _landmarks.removeOne(landmark);
+}
+
+const QPointF &jpsRegion::GetPos() const
+{
+    return _pos;
+}
+
+const QString &jpsRegion::GetCaption() const
+{
+    return _caption;
 }
 

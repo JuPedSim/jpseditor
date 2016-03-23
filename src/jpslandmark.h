@@ -29,6 +29,7 @@
 #ifndef JPSLANDMARK_H
 #define JPSLANDMARK_H
 #include <QPointF>
+#include <QGraphicsTextItem>
 #include <memory>
 #include "rooms.h"
 

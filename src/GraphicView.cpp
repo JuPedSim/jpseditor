@@ -310,10 +310,13 @@ void jpsGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
 
 void jpsGraphicsView::unmark_all_lines()
 {
+    QPen pen = QPen(Qt::black,2);
+    pen.setCosmetic(true);
 
     for (int i=0; i<marked_lines.size();i++)
     {
-        marked_lines[i]->get_line()->setPen(QPen(QColor(marked_lines[i]->get_defaultColor()),0));
+        pen.setColor(QColor(marked_lines[i]->get_defaultColor()));
+        marked_lines[i]->get_line()->setPen(pen);
     }
     marked_lines.clear();
 }
@@ -844,13 +847,17 @@ void jpsGraphicsView::select_line(jpsLineItem *mline)
 
     if (!marked_lines.contains(mline))
     {
-        mline->get_line()->setPen(QPen(Qt::red,0));
+        QPen pen = QPen(Qt::red,2);
+        pen.setCosmetic(true);
+        mline->get_line()->setPen(pen);
         marked_lines.push_back(mline);
         line_tracked=1;
     }
     else
     {
-        mline->get_line()->setPen(QPen(Qt::black,0));
+        QPen pen = QPen(Qt::black,2);
+        pen.setCosmetic(true);
+        mline->get_line()->setPen(pen);
         marked_lines.removeOne(mline);
     }
 }
@@ -905,7 +912,9 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
         newLine->set_Wall();
     }
 
-    current_line->setPen(QPen(QColor(newLine->get_defaultColor()),0));
+    QPen pen = QPen(QColor(newLine->get_defaultColor()),2);
+    pen.setCosmetic(true);
+    current_line->setPen(pen);
     // if line has already been added before (from another room)
 
     for (int i=0; i<line_vector.size(); i++)

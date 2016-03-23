@@ -27,14 +27,14 @@
 
 //main.cpp
 
-// for compiling a standalone windows exe with VS
-//#ifdef _MSC_VER
-//#    ifdef NDEBUG
-//#        pragma comment(linker, "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
-//#    else
-//#        pragma comment(linker, "/SUBSYSTEM:CONSOLE")
-//#    endif
-//#endif
+ //for compiling a standalone windows exe with VS
+#ifdef _MSC_VER
+#    ifdef NDEBUG
+#        pragma comment(linker, "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
+#    else
+#        pragma comment(linker, "/SUBSYSTEM:CONSOLE")
+#    endif
+#endif
 
 
 

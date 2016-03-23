@@ -42,6 +42,7 @@
 #include "GraphicView.h"
 #include "jpsyahpointer.h"
 #include "jpsconnection.h"
+#include "jpsregion.h"
 
 
 #include "../dxflib/src/dl_creationadapter.h"
@@ -95,7 +96,12 @@ public:
     void NewConnection(jpsConnection* newConnection);
     void RemoveConnection(jpsConnection* connection);
     void RemoveAllConnections();
-
+    //Regions
+    const QList<jpsRegion*>& GetRegions() const;
+    void NewRegion(jpsRegion* region);
+    void RemoveRegion(jpsRegion* region);
+    void RemoveAllRegions();
+    const int& GetRegionCounter() const;
     //
     void remove_all();
     void remove_marked_lines();
@@ -178,6 +184,7 @@ private:
     QList<jpsExit *> exitList;
     QList<jpsLandmark* > landmarks;
     QList<jpsConnection* > _landmarkConnections;
+    QList<jpsRegion* > _regions;
     int room_id_counter;
     int obs_id_counter;
     QWidget* parent_widget;
@@ -191,6 +198,7 @@ private:
     int _lastCMapFrame;
 
     int _landmarkCounter;
+    int _regionCounter;
 
 
 

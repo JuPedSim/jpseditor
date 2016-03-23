@@ -42,6 +42,7 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
     _yahPointer=nullptr;
     _frameRate=0;
     _landmarkCounter=0;
+    _regionCounter=0;
 
 }
 
@@ -292,9 +293,41 @@ void jpsDatamanager::RemoveAllConnections()
 {
     for (jpsConnection* connection:_landmarkConnections)
     {
+        delete connection->GetLineItem();
         delete connection;
     }
     _landmarkConnections.clear();
+}
+
+const QList<jpsRegion *> &jpsDatamanager::GetRegions() const
+{
+    return _regions;
+}
+
+void jpsDatamanager::NewRegion(jpsRegion *region)
+{
+    _regions.push_back(region);
+    _regionCounter++;
+}
+
+void jpsDatamanager::RemoveRegion(jpsRegion *region)
+{
+    _regions.removeOne(region);
+    delete region;
+}
+
+void jpsDatamanager::RemoveAllRegions()
+{
+    for (jpsRegion* region:_regions)
+    {
+        delete region;
+    }
+    _regions.clear();
+}
+
+const int &jpsDatamanager::GetRegionCounter() const
+{
+    return _regionCounter;
 }
 
 void jpsDatamanager::writeXML(QFile &file)
