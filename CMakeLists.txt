@@ -107,6 +107,7 @@ set( SRCS
     src/widgetsettings.cpp
     src/jpsyahpointer.cpp
     src/jpsconnection.cpp
+	src/jpsregion.cpp
     dxflib/src/dl_writer_ascii.cpp
     dxflib/src/dl_dxf.cpp
     src/UndoFramework/action.cpp
@@ -131,6 +132,7 @@ set( HDR
     src/widgetsettings.h
     src/jpsyahpointer.h
     src/jpsconnection.h
+	src/jpsregion.h
     dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h
     dxflib/src/dl_global.h

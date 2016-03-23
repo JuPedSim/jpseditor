@@ -149,8 +149,9 @@ public:
     void RedoLineEdit(const int &lineID, const QLineF &old_line);
 
 public slots:
-    //Waypoints
+    //Landmarks/Regions
     void StatPositionDef();
+    void ChangeRegionStatDef();
     //GridSettings
     void ActivateLineGrid();
     void ActivatePointGrid();
@@ -219,13 +220,14 @@ private:
     QList<QGraphicsLineItem* > _yahPointer;
     QList<QGraphicsTextItem* > _waypointLabels;
     int _statDefConnections;
+    bool _regionDef;
+    bool _posDef;
 
     QGraphicsLineItem* _currentVLine;
     QPointF* _currentTrackedPoint;
     QGraphicsPixmapItem* gridmap;
     bool _statLineEdit;
     bool lines_collided;
-    bool _posDef;
     bool _gridmode;
 
     //Undo/Redo
@@ -244,6 +246,7 @@ signals:
     void LineLengthChanged();
     void DefConnection1Completed();
     void DefConnection2Completed();
+    void RegionDefCompleted();
     //void DoubleClick();
 
 };

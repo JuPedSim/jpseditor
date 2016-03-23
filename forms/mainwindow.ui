@@ -37,7 +37,6 @@
     <addaction name="actionSpeichern_dxf"/>
     <addaction name="actionSpeichern_cogmap"/>
     <addaction name="separator"/>
-    <addaction name="separator"/>
     <addaction name="actionSettings"/>
     <addaction name="separator"/>
     <addaction name="actionBeenden"/>
@@ -576,6 +575,9 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
    </property>
   </action>
  </widget>

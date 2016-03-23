@@ -34,6 +34,7 @@
 #include "rooms.h"
 
 class jpsConnection;
+class jpsRegion;
 
 
 class jpsLandmark
@@ -79,6 +80,9 @@ public:
     void NewConnection(jpsConnection* newConnection);
     void RemoveConnection(jpsConnection* connection);
 
+    //Region
+    void SetRegion(jpsRegion* region);
+
 
 //    //Occurence
 //    const int& GetFirstFrame() const;
@@ -116,6 +120,7 @@ private:
     QGraphicsTextItem* _textItem;
     QGraphicsTextItem* _pixmapText;
     QList<jpsConnection*> _connections;
+    jpsRegion* _region;
 
 };
 

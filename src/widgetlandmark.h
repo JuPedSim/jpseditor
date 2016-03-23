@@ -75,6 +75,7 @@ protected slots:
     //regions
     void NewRegion();
     void RemoveRegion();
+    void SetLandmarkToRegion();
 private:
     jpsLandmark *GetCurrentLandmark() const;
     Ui::widgetLandmark *ui;

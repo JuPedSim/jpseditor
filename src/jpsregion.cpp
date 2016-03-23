@@ -51,3 +51,23 @@ const QString &jpsRegion::GetCaption() const
     return _caption;
 }
 
+QGraphicsTextItem *jpsRegion::GetTextItem() const
+{
+    return _textItem;
+}
+
+QGraphicsEllipseItem *jpsRegion::GetEllipseItem() const
+{
+    return _ellipseItem;
+}
+
+void jpsRegion::SetTextItem(QGraphicsTextItem *textItem)
+{
+    _textItem=textItem;
+}
+
+void jpsRegion::SetEllipse(QGraphicsEllipseItem *ellipseItem)
+{
+    _ellipseItem=ellipseItem;
+}
+

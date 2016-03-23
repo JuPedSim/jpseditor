@@ -14,7 +14,7 @@
    <string>TabWidget</string>
   </property>
   <property name="currentIndex">
-   <number>2</number>
+   <number>0</number>
   </property>
   <widget class="QWidget" name="widget">
    <attribute name="title">
@@ -209,7 +209,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>80</x>
       <y>240</y>
       <width>101</width>
       <height>21</height>
@@ -222,7 +222,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>10</x>
       <y>230</y>
       <width>61</width>
       <height>41</height>
@@ -386,6 +386,19 @@
      </rect>
     </property>
    </widget>
+   <widget class="QComboBox" name="box_regions">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>240</y>
+      <width>101</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QWidget" name="tabConnections">
    <attribute name="title">
@@ -543,6 +556,35 @@
     </property>
     <property name="text">
      <string>Regions:</string>
+    </property>
+   </widget>
+   <widget class="Line" name="line_8">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>540</y>
+      <width>341</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="closeButton_regions">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>570</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Close</string>
     </property>
    </widget>
   </widget>

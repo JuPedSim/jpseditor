@@ -81,6 +81,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
 
     lines_collided=false;
     _posDef=false;
+    _regionDef=false;
 
 
     //m_graphView->setFixedSize(1600, 900);
@@ -467,6 +468,11 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
                     //Landmark position definition
                     emit PositionDefCompleted();
                     _posDef=false;
+                }
+                else if (_regionDef)
+                {
+                    emit RegionDefCompleted();
+                    _regionDef=false;
                 }
                 else
                 {
@@ -1301,10 +1307,7 @@ void jpsGraphicsView::translations(QPointF old_pos)
 
     for (jpsLandmark* landmark:_datamanager->get_landmarks())
     {
-        landmark->GetPixmap()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
-        if (landmark->GetEllipseItem()==nullptr)
-            continue;
-        landmark->GetEllipseItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+
 
     }
     if (currentLandmarkRect!=nullptr)
@@ -1319,28 +1322,47 @@ void jpsGraphicsView::translations(QPointF old_pos)
     {
         lineItem->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
-    for (jpsLandmark* item:_datamanager->get_landmarks())
+    for (jpsLandmark* landmark:_datamanager->get_landmarks())
     {
-        if (item->GetTextItem()!=nullptr)
+        if (landmark->GetTextItem()!=nullptr)
         {
-            qreal scalef = item->GetTextItem()->data(0).toReal();
-            item->GetTextItem()->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
-            item->GetTextItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
-            item->GetTextItem()->setTransform(QTransform::fromScale(scalef,scalef),true);
+            qreal scalef = landmark->GetTextItem()->data(0).toReal();
+            landmark->GetTextItem()->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
+            landmark->GetTextItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
+            landmark->GetTextItem()->setTransform(QTransform::fromScale(scalef,scalef),true);
         }
 
-        if (item->GetPixmapTextItem()!=nullptr)
+        if (landmark->GetPixmapTextItem()!=nullptr)
         {
-            qreal scalef = item->GetPixmapTextItem()->data(0).toReal();
-            item->GetPixmapTextItem()->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
-            item->GetPixmapTextItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
-            item->GetPixmapTextItem()->setTransform(QTransform::fromScale(scalef,scalef),true);
+            qreal scalef = landmark->GetPixmapTextItem()->data(0).toReal();
+            landmark->GetPixmapTextItem()->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
+            landmark->GetPixmapTextItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
+            landmark->GetPixmapTextItem()->setTransform(QTransform::fromScale(scalef,scalef),true);
         }
+
+        landmark->GetPixmap()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
+
+        if (landmark->GetEllipseItem()!=nullptr)
+            landmark->GetEllipseItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
 
     for (jpsConnection* connection:_datamanager->GetAllConnections())
     {
         connection->GetLineItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
+
+    for (jpsRegion* region:_datamanager->GetRegions())
+    {
+        if (region->GetTextItem()!=nullptr)
+        {
+            qreal scalef = region->GetTextItem()->data(0).toReal();
+            region->GetTextItem()->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
+            region->GetTextItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
+            region->GetTextItem()->setTransform(QTransform::fromScale(scalef,scalef),true);
+        }
+
+        if (region->GetEllipseItem()!=nullptr)
+            region->GetEllipseItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
 
     for (QGraphicsLineItem* lineItem:_connections)
@@ -1487,7 +1509,12 @@ void jpsGraphicsView::ShowOrigin()
 
 void jpsGraphicsView::StatPositionDef()
 {
-   _posDef=!_posDef;
+    _posDef=!_posDef;
+}
+
+void jpsGraphicsView::ChangeRegionStatDef()
+{
+    _regionDef=!_regionDef;
 }
 
 

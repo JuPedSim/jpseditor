@@ -15,6 +15,13 @@ public:
     //Getter
     const QPointF& GetPos() const;
     const QString& GetCaption() const;
+    QGraphicsTextItem* GetTextItem() const;
+    QGraphicsEllipseItem* GetEllipseItem() const;
+
+    //Setter
+
+    void SetTextItem(QGraphicsTextItem* textItem);
+    void SetEllipse(QGraphicsEllipseItem* ellipseItem);
 
 private:
     QString _caption;

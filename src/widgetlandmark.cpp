@@ -50,6 +50,7 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     connect(ui->apply_name_button,SIGNAL(clicked(bool)),this,SLOT(change_name()));
     connect(ui->closeButton,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_landmark()));
     connect(ui->closeButton_2,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_landmark()));
+    connect(ui->closeButton_regions,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_landmark()));
     connect(ui->list_landmarks,SIGNAL(activated(int)),this,SLOT(enable_room_selection()));
     connect(ui->list_landmarks,SIGNAL(activated(int)),this,SLOT(ShowLandmarkType()));
     connect(ui->list_landmarks,SIGNAL(currentIndexChanged(int)),_gview,SLOT(unmarkLandmark()));
@@ -65,6 +66,11 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     connect(_gview,SIGNAL(DefConnection1Completed()),this,SLOT(AskForSecondLandmark()));
     connect(_gview,SIGNAL(DefConnection2Completed()),this,SLOT(SetLandmarksToConnection()));
     connect(ui->remove_button_connections,SIGNAL(clicked(bool)),this,SLOT(RemoveConnection()));
+
+    //Region Def
+    connect(ui->add_button_regions,SIGNAL(clicked(bool)),_gview,SLOT(ChangeRegionStatDef()));
+    connect(_gview,SIGNAL(RegionDefCompleted()),this,SLOT(NewRegion()));
+    connect(ui->remove_button_regions,SIGNAL(clicked(bool)),this,SLOT(RemoveRegion()));
 
 }
 
@@ -362,12 +368,12 @@ void widgetLandmark::NewRegion()
 {
     ui->add_button->setChecked(false);
     // show ellipse and text in graphics view
-    QPen pen = QPen(Qt::blue,2);
+    QPen pen = QPen(Qt::green,2);
     pen.setCosmetic(true);
     QRectF rect = _gview->GetCurrentSelectRect()->rect();
     QGraphicsEllipseItem* ellipse = _gview->GetScene()->addEllipse(rect,pen);
     ellipse->setTransform(QTransform::fromTranslate(_gview->GetTranslationX(),_gview->GetTranslationY()), true);
-    QString string = "Ellipse: x: "+QString::number(rect.center().x())
+    QString string = "x: "+QString::number(rect.center().x())
             + " y: "+QString::number(rect.center().y())+" rA: "+QString::number(rect.width()/2.0)
                                      + " rB: "+QString::number(rect.height()/2.0);
     ui->listWidgetRegions->addItem(string);
@@ -381,11 +387,41 @@ void widgetLandmark::NewRegion()
     text->setData(0,_gview->GetScaleF());
     text->setTransform(QTransform::fromScale(_gview->GetScaleF(),-_gview->GetScaleF()),true);
 
+    region->SetTextItem(text);
+    region->SetEllipse(ellipse);
     _dmanager->NewRegion(region);
 }
 
 void widgetLandmark::RemoveRegion()
 {
+    int row = ui->listWidgetRegions->currentRow();
+    if (row!=-1)
+    {
+        _dmanager->RemoveRegion(_dmanager->GetRegions()[row]);
+        QListWidgetItem* item = ui->listWidgetRegions->takeItem(row);
+        delete item;
+    }
+}
+
+void widgetLandmark::SetLandmarkToRegion()
+{
+    jpsLandmark* landmark = GetCurrentLandmark();
+
+    if (landmark!=nullptr)
+    {
+        int row = ui->box_regions->currentIndex();
+
+        if (row!=-1)
+        {
+            for (jpsRegion* region:_dmanager->GetRegions())
+            {
+                region->RemoveLandmark(landmark);
+            }
+            jpsRegion* cRegion = _dmanager->GetRegions()[row];
+            landmark->SetRegion(cRegion);
+            cRegion->AddLandmark(landmark);
+        }
+    }
 
 }
 

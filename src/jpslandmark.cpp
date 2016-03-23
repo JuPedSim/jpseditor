@@ -50,6 +50,7 @@ jpsLandmark::jpsLandmark(QGraphicsPixmapItem *pixmap, const QString &caption, co
     _textItem=nullptr;
     _pixmapText=nullptr;
     _ellipseItem=nullptr;
+    _region=nullptr;
 
 }
 
@@ -223,6 +224,11 @@ void jpsLandmark::RemoveConnection(jpsConnection *connection)
     {
         _connections.removeOne(connection);
     }
+}
+
+void jpsLandmark::SetRegion(jpsRegion *region)
+{
+    _region=region;
 }
 
 

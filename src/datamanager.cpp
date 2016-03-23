@@ -314,6 +314,7 @@ void jpsDatamanager::RemoveRegion(jpsRegion *region)
 {
     _regions.removeOne(region);
     delete region;
+
 }
 
 void jpsDatamanager::RemoveAllRegions()
