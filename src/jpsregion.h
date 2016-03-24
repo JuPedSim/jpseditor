@@ -5,8 +5,8 @@
 class jpsRegion
 {
 public:
-    jpsRegion(const int& id, const QString& caption, const QPointF& pos, const qreal& a, const qreal& b, const QString& type="Region");
-    jpsRegion(const int& id, const QString& caption, QGraphicsEllipseItem* ellipse, QGraphicsTextItem* text=nullptr, const QString& type="Region");
+    jpsRegion(const int& id, const QString& caption, const QPointF& pos, const qreal& a, const qreal& b, const QString& type="Region", const int& floor=0);
+    jpsRegion(const int& id, const QString& caption, QGraphicsEllipseItem* ellipse, QGraphicsTextItem* text=nullptr, const QString& type="Region", const int& floor=0);
     ~jpsRegion();
 
     void AddLandmark(jpsLandmark* landmark);
@@ -32,6 +32,7 @@ private:
     QPointF _pos;
     QGraphicsEllipseItem* _ellipseItem;
     QGraphicsTextItem* _textItem;
+    int _floor;
 
     //Landmarks
     QList<jpsLandmark*> _landmarks;

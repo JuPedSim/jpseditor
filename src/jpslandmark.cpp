@@ -231,5 +231,10 @@ void jpsLandmark::SetRegion(jpsRegion *region)
     _region=region;
 }
 
+jpsRegion *jpsLandmark::GetRegion() const
+{
+    return _region;
+}
+
 
 

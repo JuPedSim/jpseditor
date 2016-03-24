@@ -82,6 +82,7 @@ public:
 
     //Region
     void SetRegion(jpsRegion* region);
+    jpsRegion* GetRegion() const;
 
 
 //    //Occurence

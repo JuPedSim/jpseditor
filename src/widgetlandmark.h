@@ -59,6 +59,7 @@ protected slots:
     void SetPosInCMap();
     void ShowLandmarkType();
     void SetLandmarkType();
+    void ShowRegionBox();
     //associated landmarks
     void AddAssociation();
     void RemoveAssociation();
@@ -76,8 +77,10 @@ protected slots:
     void NewRegion();
     void RemoveRegion();
     void SetLandmarkToRegion();
+    void ShowHideRegion();
 private:
     jpsLandmark *GetCurrentLandmark() const;
+    jpsRegion* GetCurrentRegion() const;
     Ui::widgetLandmark *ui;
     jpsDatamanager* _dmanager;
     jpsGraphicsView* _gview;

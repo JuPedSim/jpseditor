@@ -59,7 +59,7 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     connect(_gview,SIGNAL(PositionDefCompleted()),this,SLOT(SetPosInCMap()));
     connect(ui->remove_button,SIGNAL(clicked(bool)),this,SLOT(RemoveAssociation()));
     connect(ui->button_showhide,SIGNAL(clicked(bool)),this,SLOT(ShowHideLandmark()));
-    connect(ui->Box_landmarkType,SIGNAL(currentIndexChanged(int)),this,SLOT(SetLandmarkType()));
+    connect(ui->Box_landmarkType,SIGNAL(activated(int)),this,SLOT(SetLandmarkType()));
 
     //connectionDef
     connect(ui->add_button_connections,SIGNAL(clicked(bool)),this,SLOT(NewConnection()));
@@ -71,6 +71,8 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     connect(ui->add_button_regions,SIGNAL(clicked(bool)),_gview,SLOT(ChangeRegionStatDef()));
     connect(_gview,SIGNAL(RegionDefCompleted()),this,SLOT(NewRegion()));
     connect(ui->remove_button_regions,SIGNAL(clicked(bool)),this,SLOT(RemoveRegion()));
+    connect(ui->box_regions,SIGNAL(activated(int)),this,SLOT(SetLandmarkToRegion()));
+    connect(ui->button_showhide_region,SIGNAL(clicked(bool)),this,SLOT(ShowHideRegion()));
 
 }
 
@@ -90,6 +92,7 @@ void widgetLandmark::show_landmarks()
     if (!landmarks.empty())
         enable_room_selection();
     ShowLandmarkType();
+    ShowRegionBox();
 
 }
 
@@ -226,6 +229,25 @@ void widgetLandmark::SetLandmarkType()
     if (landmark!=nullptr)
     {
         landmark->SetType(ui->Box_landmarkType->currentText());
+    }
+}
+
+void widgetLandmark::ShowRegionBox()
+{
+    if (_dmanager->GetRegions().empty())
+        return;
+
+    for (jpsRegion* region:_dmanager->GetRegions())
+    {
+        ui->box_regions->addItem(region->GetCaption());
+    }
+
+    jpsLandmark* landmark = GetCurrentLandmark();
+
+    if (landmark!=nullptr)
+    {
+        if (landmark->GetRegion()!=nullptr)
+            ui->box_regions->setCurrentText(landmark->GetRegion()->GetCaption());
     }
 }
 
@@ -368,7 +390,7 @@ void widgetLandmark::NewRegion()
 {
     ui->add_button->setChecked(false);
     // show ellipse and text in graphics view
-    QPen pen = QPen(Qt::green,2);
+    QPen pen = QPen(Qt::darkGreen,2);
     pen.setCosmetic(true);
     QRectF rect = _gview->GetCurrentSelectRect()->rect();
     QGraphicsEllipseItem* ellipse = _gview->GetScene()->addEllipse(rect,pen);
@@ -425,6 +447,25 @@ void widgetLandmark::SetLandmarkToRegion()
 
 }
 
+void widgetLandmark::ShowHideRegion()
+{
+    jpsRegion* region = GetCurrentRegion();
+
+    if (region!=nullptr)
+    {
+        if (region->GetEllipseItem()->isVisible())
+        {
+            region->GetEllipseItem()->setVisible(false);
+            region->GetTextItem()->setVisible(false);
+        }
+        else
+        {
+            region->GetEllipseItem()->setVisible(true);
+            region->GetTextItem()->setVisible(true);
+        }
+    }
+}
+
 void widgetLandmark::RemoveAssociation()
 {
 //    if (ui->list_landmarks->currentIndex()!=-1)
@@ -450,6 +491,18 @@ jpsLandmark* widgetLandmark::GetCurrentLandmark() const
         int crow=ui->list_landmarks->currentIndex();
 
         return _dmanager->get_landmarks()[crow];
+    }
+    else
+        return nullptr;
+}
+
+jpsRegion *widgetLandmark::GetCurrentRegion() const
+{
+    if (ui->listWidgetRegions->currentRow()!=-1)
+    {
+        int crow=ui->listWidgetRegions->currentRow();
+
+        return _dmanager->GetRegions()[crow];
     }
     else
         return nullptr;
