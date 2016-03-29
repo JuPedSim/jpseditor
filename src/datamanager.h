@@ -145,10 +145,13 @@ public:
 
 
     //Write Cognitive Map XML
-    void WriteCognitiveMapXML(QFile &file);
+    void WriteCognitiveMapXML(QFile &file, bool fuzzy=false);
     void WriteCognitiveMapHeader(QXmlStreamWriter *stream);
-    void writeLandmarks(QXmlStreamWriter *stream);
-    void WriteConnections(QXmlStreamWriter *stream);
+    void WriteRegions(QXmlStreamWriter *stream, bool fuzzy=false);
+    void WriteLandmarks(jpsRegion *cRegion, QXmlStreamWriter *stream, bool fuzzy=false);
+    void WriteConnections(jpsRegion *cRegion, QXmlStreamWriter *stream);
+    void CreateAndSaveASimilarCogMap(const int &id);
+    qreal MakeItFuzzy(const qreal &mean, const qreal& std);
 
     // Read DXF
     bool readDXF(std::string filename);
@@ -199,6 +202,8 @@ private:
 
     int _landmarkCounter;
     int _regionCounter;
+
+    QString _currentCogMapFileName;
 
 
 

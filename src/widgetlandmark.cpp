@@ -51,6 +51,7 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     connect(ui->closeButton,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_landmark()));
     connect(ui->closeButton_2,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_landmark()));
     connect(ui->closeButton_regions,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_landmark()));
+    connect(ui->cogmap_closeButton,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_landmark()));
     connect(ui->list_landmarks,SIGNAL(activated(int)),this,SLOT(enable_room_selection()));
     connect(ui->list_landmarks,SIGNAL(activated(int)),this,SLOT(ShowLandmarkType()));
     connect(ui->list_landmarks,SIGNAL(currentIndexChanged(int)),_gview,SLOT(unmarkLandmark()));
@@ -73,6 +74,10 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     connect(ui->remove_button_regions,SIGNAL(clicked(bool)),this,SLOT(RemoveRegion()));
     connect(ui->box_regions,SIGNAL(activated(int)),this,SLOT(SetLandmarkToRegion()));
     connect(ui->button_showhide_region,SIGNAL(clicked(bool)),this,SLOT(ShowHideRegion()));
+
+    //saveCogMap
+    connect(ui->save_button_cogmap,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(SaveCogMapXML()));
+    connect(ui->save_button_multiple_maps,SIGNAL(clicked(bool)),this,SLOT(CreateSimilarMaps()));
 
 }
 
@@ -238,7 +243,6 @@ void widgetLandmark::ShowRegionBox()
     if (_dmanager->GetRegions().empty())
         return;
 
-    std::cout << _dmanager->GetRegions().size() << std::endl;
     for (jpsRegion* region:_dmanager->GetRegions())
     {
         ui->box_regions->addItem(region->GetCaption()); 
@@ -400,8 +404,8 @@ void widgetLandmark::NewRegion()
 
 
     // create region
-    jpsRegion* region = new jpsRegion(_dmanager->GetRegionCounter(),"Region "+QString::number(_dmanager->GetRegionCounter()),
-                                      rect.center(),rect.width()/2.0,rect.height()/2.0);
+    jpsRegion* region = new jpsRegion(_dmanager->GetRegionCounter(),"Region"+QString::number(_dmanager->GetRegionCounter()),
+                                      rect.center(),std::fabs(rect.width()/2.0),std::fabs(rect.height()/2.0));
 
 
     QGraphicsTextItem* text = _gview->GetScene()->addText(region->GetCaption());
@@ -482,6 +486,18 @@ void widgetLandmark::ShowRegions()
         ui->listWidgetRegions->addItem(string);
     }
 }
+
+void widgetLandmark::CreateSimilarMaps()
+{
+    int numberMaps = ui->spinBox_numberMaps->value();
+
+    for (int i=0; i<numberMaps; ++i)
+    {
+        _dmanager->CreateAndSaveASimilarCogMap(i);
+    }
+}
+
+
 
 void widgetLandmark::RemoveAssociation()
 {

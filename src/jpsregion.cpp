@@ -43,6 +43,11 @@ void jpsRegion::RemoveLandmark(jpsLandmark *landmark)
     _landmarks.removeOne(landmark);
 }
 
+const int &jpsRegion::GetId() const
+{
+    return _id;
+}
+
 const QPointF &jpsRegion::GetPos() const
 {
     return _pos;

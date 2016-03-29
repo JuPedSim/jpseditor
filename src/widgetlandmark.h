@@ -79,6 +79,9 @@ protected slots:
     void SetLandmarkToRegion();
     void ShowHideRegion();
     void ShowRegions();
+
+    void CreateSimilarMaps();
+
 private:
     jpsLandmark *GetCurrentLandmark() const;
     jpsRegion* GetCurrentRegion() const;

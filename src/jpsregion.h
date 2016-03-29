@@ -13,6 +13,7 @@ public:
     void RemoveLandmark(jpsLandmark* landmark);
 
     //Getter
+    const int& GetId() const;
     const QPointF& GetPos() const;
     const QString& GetCaption() const;
     QGraphicsTextItem* GetTextItem() const;

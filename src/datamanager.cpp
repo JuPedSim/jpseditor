@@ -30,8 +30,9 @@
 #include "datamanager.h"
 #include <iostream>
 #include <utility>
-
-
+#include <random>
+#include <chrono>
+#include <QFileDialog>
 
 jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 {
@@ -379,20 +380,15 @@ void jpsDatamanager::writeRoutingXML(QFile &file) // Construction side
 
 }
 
-void jpsDatamanager::WriteCognitiveMapXML(QFile &file)
+void jpsDatamanager::WriteCognitiveMapXML(QFile &file, bool fuzzy)
 {
     QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
     WriteCognitiveMapHeader(stream);
 
-
-    stream->writeStartElement("landmarks");
-    writeLandmarks(stream);
-    stream->writeEndElement();//landmarks
-
-    stream->writeStartElement("connections");
-    WriteConnections(stream);
-    stream->writeEndElement();//connections
-
+    //write regions incl. their landmarks and connections
+    stream->writeStartElement("regions");
+    WriteRegions(stream,fuzzy);
+    stream->writeEndElement();//regions
 
     stream->writeEndElement();//cognitiveMap
 
@@ -412,6 +408,52 @@ void jpsDatamanager::WriteCognitiveMapHeader(QXmlStreamWriter *stream)
     stream->writeAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
     stream->writeAttribute("xsi:noNamespaceSchemaLocation","http://xsd.jupedsim.org/jps_geometry.xsd");
     stream->writeAttribute("unit","m");
+}
+
+void jpsDatamanager::WriteRegions(QXmlStreamWriter *stream, bool fuzzy)
+{
+    for (jpsRegion* region:_regions)
+    {
+        stream->writeStartElement("region");
+
+        int id = region->GetId();
+        QString caption = region->GetCaption();
+        qreal px = region->GetPos().x();
+        qreal py = region->GetPos().y();
+        qreal a = region->GetA();
+        qreal b = region->GetB();
+
+        if (fuzzy)
+        {
+            px = MakeItFuzzy(px,a/2.0);
+            py = MakeItFuzzy(py,b/2.0);
+            a = MakeItFuzzy(a,a/2.0);
+            if (a<0)
+                a=0;
+            b= MakeItFuzzy(b,b/2.0);
+            if (b<0)
+                b=0;
+        }
+
+
+        stream->writeAttribute("id",QString::number(id));
+        stream->writeAttribute("caption",caption);
+        stream->writeAttribute("px",QString::number(px));
+        stream->writeAttribute("py",QString::number(py));
+        stream->writeAttribute("a",QString::number(a));
+        stream->writeAttribute("b",QString::number(b));
+
+
+        stream->writeStartElement("landmarks");
+        WriteLandmarks(region,stream,true);
+        stream->writeEndElement();//landmarks
+
+        stream->writeStartElement("connections");
+        WriteConnections(region,stream);
+        stream->writeEndElement();//connections
+
+        stream->writeEndElement();//region
+    }
 }
 
 void jpsDatamanager::AutoSaveXML(QFile &file)
@@ -871,55 +913,131 @@ void jpsDatamanager::writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLi
 
 }
 
-void jpsDatamanager::writeLandmarks(QXmlStreamWriter *stream)
+void jpsDatamanager::WriteLandmarks(jpsRegion* cRegion, QXmlStreamWriter *stream, bool fuzzy)
 {
 
     for (jpsLandmark* landmark:landmarks)
     {
-        stream->writeStartElement("landmark");
+        if (landmark->GetRegion()==cRegion)
+        {
+            int id = landmark->GetId();
+            QString caption = landmark->GetCaption();
+            QString type = landmark->GetType();
+            int id_subroom;
+            if (landmark->GetRoom()!=nullptr)
+                id_subroom = landmark->GetRoom()->get_id();
+            else
+                id_subroom = -1;
+            qreal pxreal = landmark->GetRealPos().x();
+            qreal pyreal = landmark->GetRealPos().y();
+            qreal px = landmark->GetPos().x();
+            qreal py = landmark->GetPos().y();
+            qreal a = landmark->GetA();
+            qreal b = landmark->GetB();
 
-        stream->writeAttribute("id",QString::number(landmark->GetId()));
-        stream->writeAttribute("caption",landmark->GetCaption());
-        stream->writeAttribute("type",landmark->GetType());
-        stream->writeAttribute("room1_id","0");
-        if (landmark->GetRoom()!=nullptr)
-            stream->writeAttribute("subroom1_id",QString::number(landmark->GetRoom()->get_id()));
-        else
-            stream->writeAttribute("subroom1_id","NaN");
-        stream->writeAttribute("pxreal",QString::number(landmark->GetRealPos().x()));
-        stream->writeAttribute("pyreal",QString::number(landmark->GetRealPos().y()));
-        stream->writeAttribute("px",QString::number(landmark->GetPos().x()));
-        stream->writeAttribute("py",QString::number(landmark->GetPos().y()));
-        stream->writeAttribute("a",QString::number(landmark->GetA()));
-        stream->writeAttribute("b",QString::number(landmark->GetB()));
 
-        stream->writeStartElement("associations");
-        //
-        stream->writeEndElement();//associations
-        stream->writeEndElement();//landmark
+            if (fuzzy)
+            {
+                px = MakeItFuzzy(px,a/2.0);
+                py = MakeItFuzzy(py,b/2.0);
+                a = MakeItFuzzy(a,a/2.0);
+                if (a<0)
+                    a=0;
+                b = MakeItFuzzy(b,b/2.0);
+                if (b<0)
+                    b=0;
+            }
+
+
+            stream->writeStartElement("landmark");
+
+            stream->writeAttribute("id",QString::number(id));
+            stream->writeAttribute("caption",caption);
+            stream->writeAttribute("type",type);
+            stream->writeAttribute("room1_id","0");
+            if (landmark->GetRoom()!=nullptr)
+                stream->writeAttribute("subroom1_id",QString::number(id_subroom));
+            else
+                stream->writeAttribute("subroom1_id","NaN");
+            stream->writeAttribute("pxreal",QString::number(pxreal));
+            stream->writeAttribute("pyreal",QString::number(pyreal));
+            stream->writeAttribute("px",QString::number(px));
+            stream->writeAttribute("py",QString::number(py));
+            stream->writeAttribute("a",QString::number(a));
+            stream->writeAttribute("b",QString::number(b));
+
+            stream->writeStartElement("associations");
+            //
+            stream->writeEndElement();//associations
+            stream->writeEndElement();//landmark
+        }
 
     }
 
 
 }
 
-void jpsDatamanager::WriteConnections(QXmlStreamWriter *stream)
+void jpsDatamanager::WriteConnections(jpsRegion* cRegion, QXmlStreamWriter *stream)
 {
     int n=0;
     for (jpsConnection* connection:_landmarkConnections)
     {
-        stream->writeStartElement("connection");
+        if (connection->GetLandmarks().first->GetRegion()==cRegion)
+        {
+            stream->writeStartElement("connection");
 
-        stream->writeAttribute("id",QString::number(n));
-        stream->writeAttribute("caption","Connection "+QString::number(n));
-        stream->writeAttribute("type","Not specified");
-        stream->writeAttribute("landmark1_id",QString::number(connection->GetLandmarks().first->GetId()));
-        stream->writeAttribute("landmark2_id",QString::number(connection->GetLandmarks().second->GetId()));
+            stream->writeAttribute("id",QString::number(n));
+            stream->writeAttribute("caption","Connection "+QString::number(n));
+            stream->writeAttribute("type","Not specified");
+            stream->writeAttribute("landmark1_id",QString::number(connection->GetLandmarks().first->GetId()));
+            stream->writeAttribute("landmark2_id",QString::number(connection->GetLandmarks().second->GetId()));
 
-        stream->writeEndElement();//connection
-        n++;
+            stream->writeEndElement();//connection
+            n++;
+        }
 
     }
+}
+
+void jpsDatamanager::CreateAndSaveASimilarCogMap(const int& id)
+{
+    //Filename of first cognitivemap
+    QString filename;
+    if (id==0)
+    {
+        _currentCogMapFileName = QFileDialog::getSaveFileName(this->parent_widget,QFileDialog::tr("Save CognitiveMap XML"),"",QFileDialog::tr("XML-Files (*.xml)"));
+        if (_currentCogMapFileName.isEmpty()) return;
+        _currentCogMapFileName.remove(".xml");
+        filename=_currentCogMapFileName+QString::number(id)+".xml";
+    }
+    else
+    {
+        filename=_currentCogMapFileName+QString::number(id)+".xml";
+    }
+    QFile file(filename);
+
+
+    if(file.open(QIODevice::WriteOnly|QIODevice::Text))
+    {
+        WriteCognitiveMapXML(file,true);
+        //statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
+    }
+
+}
+
+qreal jpsDatamanager::MakeItFuzzy(const qreal& mean, const qreal &std)
+{
+    using myClock = std::chrono::high_resolution_clock;
+    myClock::duration d = myClock::now().time_since_epoch();
+
+    auto seed = d.count();
+
+    std::default_random_engine generator(seed);
+    std::normal_distribution<double> distribution(mean,std);
+
+    double number = distribution(generator);
+
+    return number;
 }
 
 void jpsDatamanager::remove_all()
