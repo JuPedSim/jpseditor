@@ -93,6 +93,7 @@ void widgetLandmark::show_landmarks()
         enable_room_selection();
     ShowLandmarkType();
     ShowRegionBox();
+    ShowRegions();
 
 }
 
@@ -237,9 +238,10 @@ void widgetLandmark::ShowRegionBox()
     if (_dmanager->GetRegions().empty())
         return;
 
+    std::cout << _dmanager->GetRegions().size() << std::endl;
     for (jpsRegion* region:_dmanager->GetRegions())
     {
-        ui->box_regions->addItem(region->GetCaption());
+        ui->box_regions->addItem(region->GetCaption()); 
     }
 
     jpsLandmark* landmark = GetCurrentLandmark();
@@ -395,13 +397,12 @@ void widgetLandmark::NewRegion()
     QRectF rect = _gview->GetCurrentSelectRect()->rect();
     QGraphicsEllipseItem* ellipse = _gview->GetScene()->addEllipse(rect,pen);
     ellipse->setTransform(QTransform::fromTranslate(_gview->GetTranslationX(),_gview->GetTranslationY()), true);
-    QString string = "x: "+QString::number(rect.center().x())
-            + " y: "+QString::number(rect.center().y())+" rA: "+QString::number(rect.width()/2.0)
-                                     + " rB: "+QString::number(rect.height()/2.0);
-    ui->listWidgetRegions->addItem(string);
+
+
     // create region
     jpsRegion* region = new jpsRegion(_dmanager->GetRegionCounter(),"Region "+QString::number(_dmanager->GetRegionCounter()),
                                       rect.center(),rect.width()/2.0,rect.height()/2.0);
+
 
     QGraphicsTextItem* text = _gview->GetScene()->addText(region->GetCaption());
     text->setPos(rect.center().x()+_gview->GetTranslationX(),rect.center().y()+_gview->GetTranslationY());
@@ -412,6 +413,9 @@ void widgetLandmark::NewRegion()
     region->SetTextItem(text);
     region->SetEllipse(ellipse);
     _dmanager->NewRegion(region);
+
+    //show Region in listwidget
+    ShowRegions();
 }
 
 void widgetLandmark::RemoveRegion()
@@ -463,6 +467,19 @@ void widgetLandmark::ShowHideRegion()
             region->GetEllipseItem()->setVisible(true);
             region->GetTextItem()->setVisible(true);
         }
+    }
+}
+
+void widgetLandmark::ShowRegions()
+{
+    ui->listWidgetRegions->clear();
+    for (jpsRegion* region:_dmanager->GetRegions())
+    {
+
+        QString string = "x: "+QString::number(region->GetPos().x())
+                + " y: "+QString::number(region->GetPos().y())+" rA: "+QString::number(region->GetA())
+                                         + " rB: "+QString::number(region->GetB());
+        ui->listWidgetRegions->addItem(string);
     }
 }
 

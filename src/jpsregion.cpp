@@ -63,6 +63,16 @@ QGraphicsEllipseItem *jpsRegion::GetEllipseItem() const
     return _ellipseItem;
 }
 
+const qreal &jpsRegion::GetA() const
+{
+    return _a;
+}
+
+const qreal &jpsRegion::GetB() const
+{
+    return _b;
+}
+
 void jpsRegion::SetTextItem(QGraphicsTextItem *textItem)
 {
     _textItem=textItem;

@@ -17,6 +17,8 @@ public:
     const QString& GetCaption() const;
     QGraphicsTextItem* GetTextItem() const;
     QGraphicsEllipseItem* GetEllipseItem() const;
+    const qreal& GetA() const;
+    const qreal& GetB() const;
 
     //Setter
 
