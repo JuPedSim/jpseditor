@@ -142,12 +142,13 @@ MWindow :: MWindow() {
     // Landmark specifications
     connect(actionLandmarkWidget,SIGNAL(triggered(bool)),this,SLOT(define_landmark()));
     //CMap
-    connect(actionRun_visualisation,SIGNAL(triggered(bool)),this,SLOT(RunCMap()));
-    connect(_cMapTimer,SIGNAL(timeout()),this,SLOT(UpdateCMap()));
-    connect(actionSpeichern_cogmap,SIGNAL(triggered()),this,SLOT(SaveCogMapXML()));
+//    connect(actionRun_visualisation,SIGNAL(triggered(bool)),this,SLOT(RunCMap()));
+//    connect(_cMapTimer,SIGNAL(timeout()),this,SLOT(UpdateCMap()));
+//    connect(actionSpeichern_cogmap,SIGNAL(triggered()),this,SLOT(SaveCogMapXML()));
     //Undo Redo
     connect(actionUndo,SIGNAL(triggered(bool)),mview,SLOT(Undo()));
     connect(actionRedo,SIGNAL(triggered(bool)),mview,SLOT(Redo()));
+
 }
 
 MWindow::~MWindow()
@@ -193,6 +194,7 @@ void MWindow::AutoSave()
             dmanager->writeRoutingXML(routingFile);
     }
 }
+
 
 //void MWindow::RunCMap()
 //{

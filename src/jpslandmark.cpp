@@ -173,8 +173,8 @@ void jpsLandmark::SetRealPos(const QPointF &point)
 void jpsLandmark::SetRect(const QRectF& rect)
 {
     _rect=rect;
-    _a=std::fabs(_rect.width());
-    _b=std::fabs(_rect.height());
+    _a=std::fabs(_rect.width()/2.0);
+    _b=std::fabs(_rect.height()/2.0);
     _pos=_rect.center();
 }
 

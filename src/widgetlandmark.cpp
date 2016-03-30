@@ -45,6 +45,7 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     ui->Box_landmarkType->addItem("Landmark");
     ui->Box_landmarkType->addItem("Main Target");
 
+
     show_landmarks();
 
     connect(ui->apply_name_button,SIGNAL(clicked(bool)),this,SLOT(change_name()));
@@ -78,6 +79,7 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     //saveCogMap
     connect(ui->save_button_cogmap,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(SaveCogMapXML()));
     connect(ui->save_button_multiple_maps,SIGNAL(clicked(bool)),this,SLOT(CreateSimilarMaps()));
+    connect(this,SIGNAL(Progress()),this->parentWidget(),SLOT(ShowProgressBar()));
 
 }
 
@@ -495,7 +497,10 @@ void widgetLandmark::CreateSimilarMaps()
     {
         _dmanager->CreateAndSaveASimilarCogMap(i);
     }
+    //ui->progressBar->setVisible(false);
 }
+
+
 
 
 

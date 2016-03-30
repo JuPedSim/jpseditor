@@ -1019,8 +1019,11 @@ void jpsDatamanager::CreateAndSaveASimilarCogMap(const int& id)
 
     if(file.open(QIODevice::WriteOnly|QIODevice::Text))
     {
-        WriteCognitiveMapXML(file,true);
-        //statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
+        if (id==0)
+            WriteCognitiveMapXML(file,false);
+        else
+            WriteCognitiveMapXML(file,true);
+
     }
 
 }

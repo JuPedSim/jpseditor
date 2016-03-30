@@ -89,6 +89,7 @@ private:
     jpsDatamanager* _dmanager;
     jpsGraphicsView* _gview;
     jpsConnection* _currentConnection;
+
 };
 
 #endif // WIDGETLANDMARK_H

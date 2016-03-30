@@ -118,7 +118,8 @@ protected slots:
     
     //autosave
     void AutoSave();
-    
+
+
     //CMap
     //void RunCMap();
     //void UpdateCMap();
