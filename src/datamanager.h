@@ -149,6 +149,7 @@ public:
     void WriteCognitiveMapHeader(QXmlStreamWriter *stream);
     void WriteRegions(QXmlStreamWriter *stream, bool fuzzy=false);
     void WriteLandmarks(jpsRegion *cRegion, QXmlStreamWriter *stream, bool fuzzy=false);
+    QList<jpsLandmark *> CutOutLandmarks(QList<jpsLandmark* > landmarks);
     void WriteConnections(jpsRegion *cRegion, QXmlStreamWriter *stream);
     void CreateAndSaveASimilarCogMap(const int &id);
     qreal MakeItFuzzy(const qreal &mean, const qreal& std);

@@ -79,7 +79,6 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     //saveCogMap
     connect(ui->save_button_cogmap,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(SaveCogMapXML()));
     connect(ui->save_button_multiple_maps,SIGNAL(clicked(bool)),this,SLOT(CreateSimilarMaps()));
-    connect(this,SIGNAL(Progress()),this->parentWidget(),SLOT(ShowProgressBar()));
 
 }
 
@@ -251,11 +250,20 @@ void widgetLandmark::ShowRegionBox()
     }
 
     jpsLandmark* landmark = GetCurrentLandmark();
-
+    QString cRegion;
     if (landmark!=nullptr)
     {
         if (landmark->GetRegion()!=nullptr)
-            ui->box_regions->setCurrentText(landmark->GetRegion()->GetCaption());
+
+            cRegion = landmark->GetRegion()->GetCaption();
+            for (int i=0; i<ui->box_regions->count(); ++i)
+            {
+                if (ui->box_regions->itemText(i)==cRegion)
+                {
+                    ui->box_regions->setCurrentIndex(i);
+                    break;
+                }
+            }
     }
 }
 

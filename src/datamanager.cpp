@@ -428,11 +428,11 @@ void jpsDatamanager::WriteRegions(QXmlStreamWriter *stream, bool fuzzy)
             px = MakeItFuzzy(px,a/2.0);
             py = MakeItFuzzy(py,b/2.0);
             a = MakeItFuzzy(a,a/2.0);
-            if (a<0)
-                a=0;
+            if (a<0.5)
+                a=0.5;
             b= MakeItFuzzy(b,b/2.0);
-            if (b<0)
-                b=0;
+            if (b<0.5)
+                b=0.5;
         }
 
 
@@ -445,7 +445,7 @@ void jpsDatamanager::WriteRegions(QXmlStreamWriter *stream, bool fuzzy)
 
 
         stream->writeStartElement("landmarks");
-        WriteLandmarks(region,stream,true);
+        WriteLandmarks(region,stream,fuzzy);
         stream->writeEndElement();//landmarks
 
         stream->writeStartElement("connections");
@@ -916,13 +916,20 @@ void jpsDatamanager::writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLi
 void jpsDatamanager::WriteLandmarks(jpsRegion* cRegion, QXmlStreamWriter *stream, bool fuzzy)
 {
 
-    for (jpsLandmark* landmark:landmarks)
+    //cut some landmarks and/or their connections
+    QList<jpsLandmark* > currentLandmarks;
+    
+    //currentLandmarks=CutOutLandmarks(currentLandmarks);
+    
+    for (jpsLandmark* landmark:currentLandmarks)
     {
         if (landmark->GetRegion()==cRegion)
         {
             int id = landmark->GetId();
             QString caption = landmark->GetCaption();
             QString type = landmark->GetType();
+            if (type=="Main Target")
+                type="main";
             int id_subroom;
             if (landmark->GetRoom()!=nullptr)
                 id_subroom = landmark->GetRoom()->get_id();
@@ -935,17 +942,16 @@ void jpsDatamanager::WriteLandmarks(jpsRegion* cRegion, QXmlStreamWriter *stream
             qreal a = landmark->GetA();
             qreal b = landmark->GetB();
 
-
             if (fuzzy)
             {
                 px = MakeItFuzzy(px,a/2.0);
                 py = MakeItFuzzy(py,b/2.0);
                 a = MakeItFuzzy(a,a/2.0);
-                if (a<0)
-                    a=0;
+                if (a<0.5)
+                    a=0.5;
                 b = MakeItFuzzy(b,b/2.0);
-                if (b<0)
-                    b=0;
+                if (b<0.5)
+                    b=0.5;
             }
 
 
@@ -975,6 +981,16 @@ void jpsDatamanager::WriteLandmarks(jpsRegion* cRegion, QXmlStreamWriter *stream
     }
 
 
+}
+
+QList<jpsLandmark *> jpsDatamanager::CutOutLandmarks(QList<jpsLandmark *> landmarks)
+{
+//    using myClock = std::chrono::high_resolution_clock;
+//    myClock::duration d = myClock::now().time_since_epoch();
+
+//    auto seed = d.count();
+
+//    std::default_random_engine generator(seed);
 }
 
 void jpsDatamanager::WriteConnections(jpsRegion* cRegion, QXmlStreamWriter *stream)

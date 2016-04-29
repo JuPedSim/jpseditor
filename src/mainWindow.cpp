@@ -98,7 +98,7 @@ MWindow :: MWindow() {
     connect(actionSpeichern,SIGNAL(triggered(bool)),this,SLOT(saveFile()));
     connect(actionSpeichern_dxf,SIGNAL(triggered(bool)),this,SLOT(saveAsDXF()));
     connect(actionSettings,SIGNAL(triggered(bool)),this,SLOT(Settings()));
-    connect(action_ffnen_CogMap,SIGNAL(triggered(bool)),this,SLOT(openFileCMap()));
+    //connect(action_ffnen_CogMap,SIGNAL(triggered(bool)),this,SLOT(openFileCMap()));
     // Tab Help
     connect(action_ber,SIGNAL(triggered(bool)),this,SLOT(info()));
     // Tab Tools
