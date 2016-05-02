@@ -30,8 +30,9 @@
 #include "widgetlandmark.h"
 #include "ui_widgetlandmark.h"
 
-#include <iostream>
 
+#include <iostream>
+#include <cmath>
 
 widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsView *gview):
     QTabWidget(parent),

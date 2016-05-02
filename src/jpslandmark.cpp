@@ -27,7 +27,7 @@
  **/
 
 #include "jpslandmark.h"
-
+#include<cmath>
 
 jpsLandmark::jpsLandmark()
 {
