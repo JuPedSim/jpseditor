@@ -95,6 +95,7 @@ MWindow :: MWindow() {
     connect(actionBeenden, SIGNAL(triggered(bool)),this,SLOT(close()));
     connect(action_ffnen,SIGNAL(triggered(bool)),this,SLOT(openFile()));
     connect(action_ffnen_xml,SIGNAL(triggered(bool)),this,SLOT(openFileXML()));
+    connect(action_ffnen_cogmap,SIGNAL(triggered(bool)),this,SLOT(openFileCogMap()));
     connect(actionSpeichern,SIGNAL(triggered(bool)),this,SLOT(saveFile()));
     connect(actionSpeichern_dxf,SIGNAL(triggered(bool)),this,SLOT(saveAsDXF()));
     connect(actionSettings,SIGNAL(triggered(bool)),this,SLOT(Settings()));
@@ -310,32 +311,31 @@ void MWindow::openFileXML()
 
 }
 
-//void MWindow::openFileCMap()
-//{
-//    QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
-//    QFile file(fileName);
-//    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-//    {
-//        QMessageBox::critical(this,
-//                              "OpenFileXML",
-//                              "Couldn't open xml-file",
-//                              QMessageBox::Ok);
-//        return;
-//    }
+void MWindow::openFileCogMap()
+{
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::critical(this,
+                              "OpenFileXML",
+                              "Couldn't open xml-file",
+                              QMessageBox::Ok);
+        return;
+    }
 
 
-//    if (!dmanager->ParseCogMap(file))
-//    {
-//        statusBar()->showMessage("XML-File could not be parsed!",10000);
-//    }
+    if (!dmanager->ParseCogMap(file))
+    {
+        statusBar()->showMessage("XML-File could not be parsed!",10000);
+    }
 
-//    else
-//    {
+    else
+    {
 
-//        statusBar()->showMessage("Cognitive map successfully loaded!",10000);
-//        dmanager->ShowCMapFrame(1);
-//    }
-//}
+        statusBar()->showMessage("Cognitive map successfully loaded!",10000);
+    }
+}
 
 void MWindow::saveFile(){
     QString fileName = QFileDialog::getSaveFileName(this,tr("Save XML"),"",tr("XML-Files (*.xml)"));

@@ -18,6 +18,7 @@ public:
     const QString& GetCaption() const;
     QGraphicsTextItem* GetTextItem() const;
     QGraphicsEllipseItem* GetEllipseItem() const;
+    QList<jpsLandmark* > GetLandmarks() const;
     const qreal& GetA() const;
     const qreal& GetB() const;
 

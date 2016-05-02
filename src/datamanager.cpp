@@ -37,7 +37,7 @@
 jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 {
     parent_widget=parent;
-    mView=view;
+    _mView=view;
     room_id_counter=0;
     obs_id_counter=0;
     _yahPointer=nullptr;
@@ -50,6 +50,7 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 jpsDatamanager::~jpsDatamanager()
 {
     //remove_all(); vmiew->delete_all() does this work
+    remove_all();
 }
 
 void jpsDatamanager::new_room()
@@ -231,19 +232,19 @@ void jpsDatamanager::remove_all_exits()
 
 QList<jpsLandmark *> jpsDatamanager::get_landmarks()
 {
-    return landmarks;
+    return _landmarks;
 }
 
 void jpsDatamanager::new_landmark(jpsLandmark *newlandmark)
 {
     newlandmark->SetId(_landmarkCounter);
     _landmarkCounter++;
-    landmarks.push_back(newlandmark);
+    _landmarks.push_back(newlandmark);
 }
 
 void jpsDatamanager::remove_landmark(jpsLandmark *landmark)
 {
-    landmarks.removeOne(landmark);
+    _landmarks.removeOne(landmark);
     for (jpsConnection* connection:landmark->GetConnections())
     {
         RemoveConnection(connection);
@@ -259,11 +260,11 @@ void jpsDatamanager::change_LandmarkName(jpsLandmark *landmark, QString name)
 
 void jpsDatamanager::remove_all_landmarks()
 {
-    for (jpsLandmark* landmark:landmarks)
+    for (jpsLandmark* landmark:_landmarks)
     {
         delete landmark;
     }
-    landmarks.clear();
+    _landmarks.clear();
 }
 
 const int &jpsDatamanager::GetLandmarkCounter() const
@@ -296,8 +297,20 @@ void jpsDatamanager::RemoveAllConnections()
     {
         delete connection->GetLineItem();
         delete connection;
+
+        //remove also from _ConnectionsAfterLandmarkLoose
+        if (_ConnectionsAfterLandmarkLoose.contains(connection))
+        {
+            _ConnectionsAfterLandmarkLoose.removeOne(connection);
+        }
     }
     _landmarkConnections.clear();
+
+    for (jpsConnection* connection:_ConnectionsAfterLandmarkLoose)
+    {
+        delete connection;
+    }
+    _ConnectionsAfterLandmarkLoose.clear();
 }
 
 const QList<jpsRegion *> &jpsDatamanager::GetRegions() const
@@ -335,7 +348,7 @@ const int &jpsDatamanager::GetRegionCounter() const
 void jpsDatamanager::writeXML(QFile &file)
 {
     QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
-    QList<jpsLineItem* > lines = mView->get_line_vector();
+    QList<jpsLineItem* > lines = _mView->get_line_vector();
 
     writeHeader(stream);
     stream->writeStartElement("rooms");
@@ -359,7 +372,7 @@ void jpsDatamanager::writeRoutingXML(QFile &file) // Construction side
     QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
     QList<jpsLineItem* > hLines;
 
-    for (jpsLineItem* line:mView->get_line_vector())
+    for (jpsLineItem* line:_mView->get_line_vector())
     {
         if (line->IsHLine())
         {
@@ -459,7 +472,7 @@ void jpsDatamanager::WriteRegions(QXmlStreamWriter *stream, bool fuzzy)
 void jpsDatamanager::AutoSaveXML(QFile &file)
 {
     QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
-    QList<jpsLineItem* > lines = mView->get_line_vector();
+    QList<jpsLineItem* > lines = _mView->get_line_vector();
 
     writeHeader(stream);
     stream->writeStartElement("rooms");
@@ -521,7 +534,7 @@ void jpsDatamanager::writeHLines(QXmlStreamWriter *stream, QList<jpsLineItem *> 
         QString rid = RoomIDHLine(lineItem);
         if (rid.contains("Warning"))
         {
-            QMessageBox::critical(mView,
+            QMessageBox::critical(_mView,
                                   "WriteHLines",
                                   rid,
                                   QMessageBox::Ok);
@@ -917,9 +930,12 @@ void jpsDatamanager::WriteLandmarks(jpsRegion* cRegion, QXmlStreamWriter *stream
 {
 
     //cut some landmarks and/or their connections
+    _ConnectionsAfterLandmarkLoose=_landmarkConnections;
     QList<jpsLandmark* > currentLandmarks;
-    
-    //currentLandmarks=CutOutLandmarks(currentLandmarks);
+    if (fuzzy)
+        currentLandmarks=CutOutLandmarks(_landmarks);
+    else
+        currentLandmarks=_landmarks;
     
     for (jpsLandmark* landmark:currentLandmarks)
     {
@@ -985,18 +1001,83 @@ void jpsDatamanager::WriteLandmarks(jpsRegion* cRegion, QXmlStreamWriter *stream
 
 QList<jpsLandmark *> jpsDatamanager::CutOutLandmarks(QList<jpsLandmark *> landmarks)
 {
-//    using myClock = std::chrono::high_resolution_clock;
-//    myClock::duration d = myClock::now().time_since_epoch();
+    using myClock = std::chrono::high_resolution_clock;
 
-//    auto seed = d.count();
 
-//    std::default_random_engine generator(seed);
+    for (jpsLandmark* landmark:landmarks)
+    {
+
+        myClock::duration d = myClock::now().time_since_epoch();
+
+        auto seed = d.count();
+
+        std::default_random_engine generator(seed);
+
+        std::discrete_distribution<int> distribution({ 20, 80 });
+
+        int number = distribution(generator);
+
+        if (!number)
+        {
+            landmarks.removeOne(landmark);
+            BridgeLostLandmark(landmark);
+        }
+
+    }
+    return landmarks;
+}
+
+void jpsDatamanager::BridgeLostLandmark(jpsLandmark *landmark)
+{
+    // if landmark was removed from the landmarknetwork adjacent connected
+    // landmarks will be connected with each other (if random engine returns 1)
+
+    using myClock = std::chrono::high_resolution_clock;
+
+    QList<jpsLandmark* > connectedLandmarks;
+    QList<jpsConnection* > connections = landmark->GetConnections();
+
+    for (jpsConnection* connection:connections)
+    {
+        _ConnectionsAfterLandmarkLoose.removeOne(connection);
+
+        myClock::duration d = myClock::now().time_since_epoch();
+
+        auto seed = d.count();
+
+        std::default_random_engine generator(seed);
+
+        std::discrete_distribution<int> distribution({ 20, 80 });
+
+        int number = distribution(generator);
+
+        if (number)
+        {
+            std::pair<jpsLandmark*, jpsLandmark*> lPair = connection->GetLandmarks();
+            if (lPair.first!=landmark)
+                connectedLandmarks.push_back(lPair.first);
+            else
+                connectedLandmarks.push_back(lPair.second);
+        }
+    }
+
+    for (jpsLandmark* connectedLandmark:connectedLandmarks)
+    {
+        for (jpsLandmark* connectedLandmark2:connectedLandmarks)
+        {
+            if (connectedLandmark!=connectedLandmark2)
+            {
+                _ConnectionsAfterLandmarkLoose.push_back(new jpsConnection(connectedLandmark,connectedLandmark2));
+            }
+        }
+    }
+
 }
 
 void jpsDatamanager::WriteConnections(jpsRegion* cRegion, QXmlStreamWriter *stream)
 {
     int n=0;
-    for (jpsConnection* connection:_landmarkConnections)
+    for (jpsConnection* connection:_ConnectionsAfterLandmarkLoose)
     {
         if (connection->GetLandmarks().first->GetRegion()==cRegion)
         {
@@ -1066,6 +1147,8 @@ void jpsDatamanager::remove_all()
     remove_all_obstacles();
     remove_all_rooms();
     remove_all_landmarks();
+    RemoveAllConnections();
+    RemoveAllRegions();
     room_id_counter=0;
     obs_id_counter=0;
 
@@ -1073,7 +1156,7 @@ void jpsDatamanager::remove_all()
 
 void jpsDatamanager::remove_marked_lines()
 {
-    QList<jpsLineItem* > marked_lines = mView->get_markedLines();
+    QList<jpsLineItem* > marked_lines = _mView->get_markedLines();
     for (int i=0; i<marked_lines.size(); i++)
     {
         if (marked_lines[i]->is_Wall()==true)
@@ -1111,12 +1194,12 @@ void jpsDatamanager::remove_marked_lines()
 
 void jpsDatamanager::set_view(jpsGraphicsView *view)
 {
-    mView=view;
+    _mView=view;
 }
 
 jpsGraphicsView * jpsDatamanager::get_view()
 {
-    return mView;
+    return _mView;
 }
 
 //void jpsDatamanager::AutoAssignCrossings()
@@ -1283,7 +1366,7 @@ bool jpsDatamanager::readXML(QFile &file)
     /* Error handling. */
     if(xmlReader.hasError())
     {
-        QMessageBox::critical(mView,
+        QMessageBox::critical(_mView,
                               "QXSRExample::parseXML",
                               xmlReader.errorString(),
                               QMessageBox::Ok);
@@ -1336,7 +1419,7 @@ bool jpsDatamanager::readRoutingXML(QFile &file)
     /* Error handling. */
     if(xmlReader.hasError())
     {
-        QMessageBox::critical(mView,
+        QMessageBox::critical(_mView,
                               "QXSRExample::parseXML",
                               xmlReader.errorString(),
                               QMessageBox::Ok);
@@ -1373,7 +1456,7 @@ void jpsDatamanager::parseHline(QXmlStreamReader &xmlReader)
             qreal x2=xmlReader.attributes().value("px").toString().toFloat();
             qreal y2=xmlReader.attributes().value("py").toString().toFloat();
             // add Line to graphview
-            mView->addLineItem(x1,y1,x2,y2,"HLine");
+            _mView->addLineItem(x1,y1,x2,y2,"HLine");
         }
 
     }
@@ -1446,7 +1529,7 @@ void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, jpsRoom *room)
             qreal x2=xmlReader.attributes().value("px").toString().toFloat();
             qreal y2=xmlReader.attributes().value("py").toString().toFloat();
             // add Line to graphview
-            jpsLineItem* lineItem = mView->addLineItem(x1,y1,x2,y2,"Wall");
+            jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"Wall");
 
             room->addWall(lineItem);
 
@@ -1486,7 +1569,7 @@ void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, jpsObstacle *room)
             qreal x2=xmlReader.attributes().value("px").toString().toFloat();
             qreal y2=xmlReader.attributes().value("py").toString().toFloat();
             // add Line to graphview
-            jpsLineItem* lineItem = mView->addLineItem(x1,y1,x2,y2,"Wall");
+            jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"Wall");
 
             room->addWall(lineItem);
 
@@ -1518,7 +1601,7 @@ void jpsDatamanager::parseCrossings(QXmlStreamReader &xmlReader)
     qreal x2=xmlReader.attributes().value("px").toString().toFloat();
     qreal y2=xmlReader.attributes().value("py").toString().toFloat();
 
-    jpsLineItem* lineItem = mView->addLineItem(x1,y1,x2,y2,"Door");
+    jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"Door");
 
     if (id!=-2)
     {
@@ -1573,7 +1656,7 @@ void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
     qreal x2=xmlReader.attributes().value("px").toString().toFloat();
     qreal y2=xmlReader.attributes().value("py").toString().toFloat();
 
-    jpsLineItem* lineItem = mView->addLineItem(x1,y1,x2,y2,"Exit");
+    jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"Exit");
     if (id!=-2)
     {
         jpsCrossing* exit = new jpsCrossing(lineItem);
@@ -1635,7 +1718,7 @@ bool jpsDatamanager::readDXF(std::string filename)
     else
     {
         ///AutoZoom to contents (items of Scene)
-        mView->AutoZoom();
+        _mView->AutoZoom();
         return true;
     }
 
@@ -1647,11 +1730,11 @@ void jpsDatamanager::addLine(const DL_LineData &d)
     std::string layername = attributes.getLayer();
     std::transform(layername.begin(), layername.end(), layername.begin(), ::tolower);
     if (layername=="wall")
-        mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"Wall");
+        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"Wall");
     else if (layername=="door")
-        mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"Door");
+        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"Door");
     else
-        mView->addLineItem(d.x1,d.y1,d.x2,d.y2);
+        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2);
 }
 
 
@@ -1832,7 +1915,7 @@ void jpsDatamanager::writeDXFEntities(DL_Dxf *dxf, DL_WriterA *dw)
     //DL_Attributes("mainlayer", 256, 256, -1, "BYLAYER"));
 
 
-    QList<jpsLineItem* > lines = mView->get_line_vector();
+    QList<jpsLineItem* > lines = _mView->get_line_vector();
 
     DL_Attributes attribute("mainlayer", 256, 256, -1, "BYLAYER");
 
@@ -1909,92 +1992,191 @@ QString jpsDatamanager::check_printAbility()
     return "";
 }
 
-//bool jpsDatamanager::ParseCogMap(QFile &file)
-//{
-//    QXmlStreamReader xmlReader(&file);
+bool jpsDatamanager::ParseCogMap(QFile &file)
+{
+    QXmlStreamReader xmlReader(&file);
+    jpsRegion* actRegion=nullptr;
 
-//    while(!xmlReader.atEnd() && !xmlReader.hasError())
-//    {
-//        /* Read next element.*/
-//        QXmlStreamReader::TokenType token = xmlReader.readNext();
-//        /* If token is just StartDocument, we'll go to next.*/
-//        if(token == QXmlStreamReader::StartDocument)
-//        {
-//            continue;
-//        }
+    while(!xmlReader.atEnd() && !xmlReader.hasError())
+    {
+        /* Read next element.*/
+        QXmlStreamReader::TokenType token = xmlReader.readNext();
+        /* If token is just StartDocument, we'll go to next.*/
+        if(token == QXmlStreamReader::StartDocument)
+        {
+            continue;
+        }
 
-//        /* If token is StartElement, we'll see if we can read it.*/
-//        if(token == QXmlStreamReader::StartElement)
-//        {
-//            /* If it's named rooms, we'll go to the next.*/
-//            if(xmlReader.name() == "cognitiveMap")
-//            {
-//                continue;
-//            }
+        /* If token is StartElement, we'll see if we can read it.*/
+        if(token == QXmlStreamReader::StartElement)
+        {
+            /* If it's named rooms, we'll go to the next.*/
+            if(xmlReader.name() == "cognitiveMap")
+            {
+                continue;
+            }
 //            if(xmlReader.name() == "header")
 //            {
 //                continue;
 //            }
-//            if(xmlReader.name() == "frameRate")
-//            {
-//                _frameRate=xmlReader.readElementText().toFloat();
-//            }
-//            if(xmlReader.name() == "frame")
-//            {
-//                ParseFrames(xmlReader);
-//            }
-//        }
-//    }
-//    /* Error handling. */
-//    if(xmlReader.hasError())
-//    {
-//        QMessageBox::critical(mView,
-//                              "QXSRExample::parseXML",
-//                              xmlReader.errorString(),
-//                              QMessageBox::Ok);
-//        return false;
-//    }
-//    /* Removes any device() or data from the reader
-//     * and resets its internal state to the initial state. */
+            if(xmlReader.name() == "regions")
+            {
+                continue;
+            }
+            if (xmlReader.name()=="region")
+            {
+                actRegion=ParseRegion(xmlReader);
+            }
+            if(xmlReader.name() == "landmarks")
+            {
+                continue;
+            }
+            if(xmlReader.name() == "landmark")
+            {
+                if (actRegion!=nullptr)
+                    ParseLandmark(actRegion,xmlReader);
+            }
+            if(xmlReader.name() == "connections")
+            {
+                continue;
+            }
+            if(xmlReader.name() == "connection")
+            {
+                if (actRegion!=nullptr)
+                    ParseConnection(actRegion,xmlReader);
+            }
+        }
+    }
+    /* Error handling. */
+    if(xmlReader.hasError())
+    {
+        QMessageBox::critical(_mView,
+                              "QXSRExample::parseXML",
+                              xmlReader.errorString(),
+                              QMessageBox::Ok);
+        return false;
+    }
+    /* Removes any device() or data from the reader
+     * and resets its internal state to the initial state. */
 
 
-//    xmlReader.clear();
-//    return true;
-//}
+    xmlReader.clear();
+    return true;
+}
 
-//void jpsDatamanager::ParseFrames(QXmlStreamReader &xmlReader)
-//{
-//      int frameID= xmlReader.attributes().value("ID").toString().toInt();
+void jpsDatamanager::ParseLandmark(jpsRegion *actRegion, QXmlStreamReader &xmlReader)
+{
+    int id = xmlReader.attributes().value("id").toInt();
+    QString caption = xmlReader.attributes().value("caption").toString();
+    //int roomId = xmlReader.attributes().value("room1_id").toString().toInt();
+    int subroomId = xmlReader.attributes().value("subroom1_id").toInt();
+    qreal real_x = xmlReader.attributes().value("pxreal").toFloat();
+    qreal real_y = xmlReader.attributes().value("pyreal").toFloat();
+    qreal x = xmlReader.attributes().value("px").toFloat();
+    qreal y = xmlReader.attributes().value("py").toFloat();
+    qreal rA = xmlReader.attributes().value("a").toFloat();
+    qreal rB = xmlReader.attributes().value("b").toFloat();
 
-//    while(!(xmlReader.tokenType() == QXmlStreamReader::EndElement &&
-//                xmlReader.name() == "frame"))
-//    {
-//        if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
-//                         xmlReader.name() == "YAHPointer")
-//        {
-//            ParseYAHPointer(xmlReader, frameID);
-//        }
-//        else if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
-//                    xmlReader.name() == "landmark")
-//        {
-//            ParseLandmarksInCMap(xmlReader, frameID);
-//        }
-//        else if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
-//                    xmlReader.name() == "waypoint")
-//        {
-//            ParseWaypointInCMap(xmlReader, frameID);
-//        }
-//        else if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
-//                    xmlReader.name() == "connection")
-//        {
-//            ParseConnectionsInCMap(xmlReader, frameID);
-//        }
-//        xmlReader.readNext();
 
-//    }
+    //create landmark incl. pixmap
+    _mView->addLandmark(QPointF(real_x,real_y));
 
-//    _lastCMapFrame=frameID;
-//}
+    _landmarks.back()->SetId(id);
+    _landmarks.back()->SetCaption(caption);
+    for (jpsRoom* room:roomlist)
+    {
+        if (room->get_id()==subroomId)
+            _landmarks.back()->SetRoom(room);
+        break;
+    }
+    _landmarks.back()->SetRect(QRectF(QPointF(x-rA,y+rB),QPointF(x+rA,y-rB)));
+
+    // Ellipse
+    // show ellipse and text in graphics view
+    QPen pen = QPen(Qt::blue,2);
+    pen.setCosmetic(true);
+    QGraphicsEllipseItem* ellipse = _mView->GetScene()->addEllipse(_landmarks.back()->GetRect(),pen);
+    ellipse->setTransform(QTransform::fromTranslate(_mView->GetTranslationX(),_mView->GetTranslationY()), true);
+    QGraphicsTextItem* text = _mView->GetScene()->addText(_landmarks.back()->GetCaption());
+    text->setPos(_landmarks.back()->GetPos().x()+_mView->GetTranslationX(),_landmarks.back()->GetPos().y()+_mView->GetTranslationY());
+    //text->setScale(gl_scale_f);
+    text->setData(0,_mView->GetScaleF());
+    text->setTransform(QTransform::fromScale(_mView->GetScaleF(),-_mView->GetScaleF()),true);
+    _landmarks.back()->SetEllipseItem(ellipse);
+    _landmarks.back()->SetTextItem(text);
+
+    //register region and landmark (vice versa)
+    actRegion->AddLandmark(_landmarks.back());
+    _landmarks.back()->SetRegion(actRegion);
+
+}
+
+void jpsDatamanager::ParseConnection(jpsRegion *actRegion, QXmlStreamReader &xmlReader)
+{
+    //int id = xmlReader.attributes().value("id").toInt();
+    //QString caption = xmlReader.attributes().value("caption").toString();
+    //QString type = xmlReader.attributes().value("type").toString();
+    int idLandmark1 = xmlReader.attributes().value("landmark1_id").toInt();
+    int idLandmark2 = xmlReader.attributes().value("landmark2_id").toInt();
+
+    jpsLandmark* landmark1 = nullptr;
+    jpsLandmark* landmark2 = nullptr;
+
+    for (jpsLandmark* landmark:actRegion->GetLandmarks())
+    {
+        if (landmark->GetId()==idLandmark1)
+            landmark1=landmark;
+        else if (landmark->GetId()==idLandmark2)
+            landmark2=landmark;
+    }
+
+    jpsConnection* currentConnection =new jpsConnection(landmark1,landmark2);
+
+    QLineF line = QLineF(landmark1->GetPos(),landmark2->GetPos());
+    QPen pen = QPen(Qt::blue,2);
+    pen.setCosmetic(true);
+    QGraphicsLineItem* lineItem = _mView->GetScene()->addLine(line,pen);
+    lineItem->setTransform(QTransform::fromTranslate(_mView->GetTranslationX(),_mView->GetTranslationY()), true);
+    currentConnection->SetLineItem(lineItem);
+
+    NewConnection(currentConnection);
+}
+
+jpsRegion* jpsDatamanager::ParseRegion(QXmlStreamReader &xmlReader)
+{
+    int id = xmlReader.attributes().value("id").toInt();
+    QString caption = xmlReader.attributes().value("caption").toString();
+    qreal x = xmlReader.attributes().value("px").toFloat();
+    qreal y = xmlReader.attributes().value("py").toFloat();
+    qreal rA = xmlReader.attributes().value("a").toFloat();
+    qreal rB = xmlReader.attributes().value("b").toFloat();
+
+    QPen pen = QPen(Qt::darkGreen,2);
+    pen.setCosmetic(true);
+    QRectF rect = QRectF(QPointF(x-rA,y+rB),QPointF(x+rA,y-rB));
+    QGraphicsEllipseItem* ellipse = _mView->GetScene()->addEllipse(rect,pen);
+    ellipse->setTransform(QTransform::fromTranslate(_mView->GetTranslationX(),_mView->GetTranslationY()), true);
+
+    // create region
+    jpsRegion* actRegion = new jpsRegion(id,caption,
+                                      rect.center(),std::fabs(rect.width()/2.0),std::fabs(rect.height()/2.0));
+
+    QGraphicsTextItem* text = _mView->GetScene()->addText(actRegion->GetCaption());
+    text->setPos(rect.center().x()+_mView->GetTranslationX(),rect.center().y()+_mView->GetTranslationY());
+    //text->setScale(gl_scale_f);
+    text->setData(0,_mView->GetScaleF());
+    text->setTransform(QTransform::fromScale(_mView->GetScaleF(),-_mView->GetScaleF()),true);
+
+    actRegion->SetTextItem(text);
+    actRegion->SetEllipse(ellipse);
+
+    NewRegion(actRegion);
+
+    return actRegion;
+
+}
+
+
 
 //void jpsDatamanager::ParseYAHPointer(QXmlStreamReader &xmlReader, const int& frame)
 //{
@@ -2016,113 +2198,6 @@ QString jpsDatamanager::check_printAbility()
 
 //}
 
-//void jpsDatamanager::ParseLandmarksInCMap(QXmlStreamReader &xmlReader, const int& frame)
-//{
-
-//    bool wayPInList=false;
-
-//    int id = xmlReader.attributes().value("ID").toString().toInt();
-//    qreal x = xmlReader.attributes().value("x").toString().toFloat();
-//    qreal y = xmlReader.attributes().value("y").toString().toFloat();
-//    qreal rA = xmlReader.attributes().value("rA").toString().toFloat();
-//    qreal rB = xmlReader.attributes().value("rB").toString().toFloat();
-//    QString caption = xmlReader.attributes().value("caption").toString();
-
-//    for (ptrWaypoint waypoint:_waypointsInCMap)
-//    {
-//        if (waypoint->GetId()==id && waypoint->GetType()=="Landmark")
-//        {
-//            wayPInList = true;
-//            waypoint->SetLastFrame(frame);
-//        }
-//    }
-
-//    if (!wayPInList)
-//    {
-//        _waypointsInCMap.push_back(std::make_shared<jpsWaypoint>(QPointF(x,y),rA,rB,id,"Landmark"));
-//        _waypointsInCMap.back()->SetFirstFrame(frame);
-//        _waypointsInCMap.back()->SetLastFrame(frame);
-//        _waypointsInCMap.back()->SetCaption(caption);
-//    }
-//}
-
-//void jpsDatamanager::ParseWaypointInCMap(QXmlStreamReader &xmlReader, const int& frame)
-//{
-//    bool wayPInList=false;
-
-//    int id = xmlReader.attributes().value("ID").toString().toInt();
-//    qreal x = xmlReader.attributes().value("x").toString().toFloat();
-//    qreal y = xmlReader.attributes().value("y").toString().toFloat();
-//    qreal rA = xmlReader.attributes().value("rA").toString().toFloat();
-//    qreal rB = xmlReader.attributes().value("rB").toString().toFloat();
-//    QString caption = xmlReader.attributes().value("caption").toString();
-//    bool current = xmlReader.attributes().value("current").toString().toInt();
-
-//    for (ptrWaypoint waypoint:_waypointsInCMap)
-//    {
-//        if (waypoint->GetId()==id && waypoint->GetType()=="Waypoint")
-//        {
-//            wayPInList = true;
-//            waypoint->SetLastFrame(frame);
-
-//            if (current!=waypoint->IsCurrent())
-//            {
-//                waypoint->ChangeCurrentness(frame);
-
-//            }
-
-//        }
-//    }
-
-//    if (!wayPInList)
-//    {
-//        _waypointsInCMap.push_back(std::make_shared<jpsWaypoint>(QPointF(x,y),rA,rB,id,"Waypoint"));
-//        _waypointsInCMap.back()->SetFirstFrame(frame);
-//        _waypointsInCMap.back()->SetLastFrame(frame);
-//        _waypointsInCMap.back()->SetCurrentness(current,frame);
-//        _waypointsInCMap.back()->SetCaption(caption);
-//    }
-
-//}
-
-//void jpsDatamanager::ParseConnectionsInCMap(QXmlStreamReader &xmlReader, const int &frame)
-//{
-//    int id1 = xmlReader.attributes().value("Landmark_WaypointID1").toString().toInt();
-//    int id2 = xmlReader.attributes().value("Landmark_WaypointID2").toString().toInt();
-//    std::shared_ptr<jpsWaypoint> waypoint1 = nullptr;
-//    std::shared_ptr<jpsWaypoint> waypoint2 = nullptr;
-
-
-//    for (ptrWaypoint waypoint:_waypointsInCMap)
-//    {
-//        if (waypoint->GetId()==id1)
-//        {
-//            waypoint1=waypoint;
-
-//        }
-//        else if (waypoint->GetId()==id2)
-//        {
-//            waypoint2=waypoint;
-
-//        }
-
-//    }
-
-//    ptrConnection con = std::make_shared<jpsConnection>(waypoint1,waypoint2,frame);
-//    if (waypoint1!=nullptr && waypoint2!=nullptr)
-//    {
-//        for (ptrConnection conInMap : _connectionsInCMap)
-//        {
-//            if (con->operator ==(conInMap))
-//            {
-//                conInMap->SetLastFrame(frame);
-
-//                return;
-//            }
-//        }
-
-//        _connectionsInCMap.push_back(con);
-//    }
 
 
 //}

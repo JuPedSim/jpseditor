@@ -129,6 +129,7 @@ public:
     void catch_landmark();
     void select_landmark(jpsLandmark *landmark);
     void addLandmark();
+    void addLandmark(const QPointF& pos);
     // unmark Landmarks see slots
 
     //Connections and YAHPointer

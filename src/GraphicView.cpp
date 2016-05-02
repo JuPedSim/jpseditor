@@ -350,6 +350,33 @@ void jpsGraphicsView::addLandmark()
 
 }
 
+void jpsGraphicsView::addLandmark(const QPointF &pos)
+{
+    QPixmap pixmap("../jupedsim/forms/statue.jpg");
+
+    QGraphicsPixmapItem* pixmapItem = Scene->addPixmap(pixmap);
+    pixmapItem->setScale(0.002);
+    pixmapItem->setTransform(QTransform::fromTranslate(pos.x()-pixmap.width()/1000.,pos.y()
+                          +pixmap.height()/1000.));
+    pixmapItem->setTransform(QTransform::fromScale(1,-1),true);
+    pixmapItem->setTransform(QTransform::fromTranslate(translation_x,-translation_y), true);
+    QString name="Landmark"+QString::number(_datamanager->GetLandmarkCounter());
+    jpsLandmark* landmark = new jpsLandmark(pixmapItem,name,pixmapItem->scenePos());
+    //text immediately under the pixmap
+    QGraphicsTextItem* text = Scene->addText(name);
+    text->setPos(QPointF(landmark->GetPos().x(),
+                         landmark->GetPos().y()+0.2));// landmark->GetPos().x()+translation_x,landmark->GetPos().y()+translation_y);
+    //text->setScale(gl_scale_f);
+
+    text->setData(0,0.01);
+    text->setTransform(QTransform::fromScale(0.01,-0.01),true);
+
+
+    landmark->SetPixMapText(text);
+
+    _datamanager->new_landmark(landmark);
+}
+
 
 void jpsGraphicsView::unmarkLandmark()
 {

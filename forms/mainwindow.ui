@@ -33,6 +33,7 @@
     </property>
     <addaction name="action_ffnen_xml"/>
     <addaction name="action_ffnen"/>
+    <addaction name="action_ffnen_cogmap"/>
     <addaction name="actionSpeichern"/>
     <addaction name="actionSpeichern_dxf"/>
     <addaction name="actionSpeichern_cogmap"/>
@@ -408,7 +409,7 @@
     <bool>true</bool>
    </property>
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="Ressource.qrc">
@@ -421,7 +422,7 @@
     <string>Landmark</string>
    </property>
    <property name="visible">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionLandmarkWidget">
@@ -429,7 +430,7 @@
     <bool>true</bool>
    </property>
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="Ressource.qrc">
@@ -442,7 +443,7 @@
     <string>LandmarkSpecs</string>
    </property>
    <property name="visible">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionanglesnap">
@@ -563,6 +564,9 @@
    </property>
   </action>
   <action name="actionSpeichern_cogmap">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="Ressource.qrc">
      <normaloff>:/filesave.png</normaloff>:/filesave.png</iconset>
@@ -577,7 +581,19 @@
     <string>Ctrl+S</string>
    </property>
    <property name="visible">
-    <bool>false</bool>
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="action_ffnen_cogmap">
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/open.png</normaloff>:/open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Load Cognitive Map</string>
+   </property>
+   <property name="toolTip">
+    <string>Load Cognitive Map</string>
    </property>
   </action>
  </widget>

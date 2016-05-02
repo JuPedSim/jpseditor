@@ -75,7 +75,7 @@ protected slots:
     //parseFiles
     void openFile();
     void openFileXML();
-//    void openFileCMap();
+    void openFileCogMap();
     void saveFile();
     void saveAsDXF();
 

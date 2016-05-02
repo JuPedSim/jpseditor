@@ -150,6 +150,7 @@ public:
     void WriteRegions(QXmlStreamWriter *stream, bool fuzzy=false);
     void WriteLandmarks(jpsRegion *cRegion, QXmlStreamWriter *stream, bool fuzzy=false);
     QList<jpsLandmark *> CutOutLandmarks(QList<jpsLandmark* > landmarks);
+    void BridgeLostLandmark(jpsLandmark* landmark);
     void WriteConnections(jpsRegion *cRegion, QXmlStreamWriter *stream);
     void CreateAndSaveASimilarCogMap(const int &id);
     qreal MakeItFuzzy(const qreal &mean, const qreal& std);
@@ -168,12 +169,11 @@ public:
     QString check_printAbility();
 
     //Parse Cognitive Map
-//    bool ParseCogMap(QFile &file);
-//    void ParseFrames(QXmlStreamReader &xmlReader);
-//    void ParseYAHPointer(QXmlStreamReader &xmlReader, const int &frame);
-//    void ParseLandmarksInCMap(QXmlStreamReader &xmlReader, const int &frame);
-//    void ParseWaypointInCMap(QXmlStreamReader &xmlReader, const int &frame);
-//    void ParseConnectionsInCMap(QXmlStreamReader &xmlReader, const int &frame);
+    bool ParseCogMap(QFile &file);
+    jpsRegion* ParseRegion(QXmlStreamReader &xmlReader);
+    void ParseYAHPointer(QXmlStreamReader &xmlReader, const int &frame);
+    void ParseLandmark(jpsRegion* actRegion, QXmlStreamReader &xmlReader);
+    void ParseConnection(jpsRegion* actRegion, QXmlStreamReader &xmlReader);
 
 //    //Show Cognitive Map
 //    void ShowCMapFrame(const int& frame) const;
@@ -186,17 +186,18 @@ private:
     QList<jpsObstacle *> obstaclelist;
     QList<jpsCrossing *> crossingList;
     QList<jpsExit *> exitList;
-    QList<jpsLandmark* > landmarks;
+    QList<jpsLandmark* > _landmarks;
     QList<jpsConnection* > _landmarkConnections;
+    QList<jpsConnection* > _ConnectionsAfterLandmarkLoose;
     QList<jpsRegion* > _regions;
     int room_id_counter;
     int obs_id_counter;
     QWidget* parent_widget;
-    jpsGraphicsView* mView;
+    jpsGraphicsView* _mView;
 
     //CognitiveMap
-    QList<jpsLandmark* > _landmarksInCMap;
-    QList<ptrConnection> _connectionsInCMap;
+    //QList<jpsLandmark* > _landmarksInCMap;
+    //QList<ptrConnection> _connectionsInCMap;
     jpsYAHPointer* _yahPointer;
     double _frameRate;
     int _lastCMapFrame;

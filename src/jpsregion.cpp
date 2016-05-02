@@ -68,6 +68,11 @@ QGraphicsEllipseItem *jpsRegion::GetEllipseItem() const
     return _ellipseItem;
 }
 
+QList<jpsLandmark *> jpsRegion::GetLandmarks() const
+{
+    return _landmarks;
+}
+
 const qreal &jpsRegion::GetA() const
 {
     return _a;
