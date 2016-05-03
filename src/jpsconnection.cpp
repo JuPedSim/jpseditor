@@ -73,10 +73,10 @@ std::pair<jpsLandmark*, jpsLandmark*> jpsConnection::GetLandmarks() const
 //    return _lastFrame;
 //}
 
-bool jpsConnection::operator == (const jpsConnection* con2) const
+bool jpsConnection::operator == (const jpsConnection& con2) const
 {
-    if ((con2->GetLandmarks().first==_landmark1 && con2->GetLandmarks().second==_landmark2)
-            || (con2->GetLandmarks().second==_landmark1 && con2->GetLandmarks().first==_landmark2))
+    if ((con2.GetLandmarks().first==_landmark1 && con2.GetLandmarks().second==_landmark2)
+            || (con2.GetLandmarks().second==_landmark1 && con2.GetLandmarks().first==_landmark2))
     {
         return true;
     }

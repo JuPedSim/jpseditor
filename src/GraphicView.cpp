@@ -359,9 +359,9 @@ void jpsGraphicsView::addLandmark(const QPointF &pos)
     pixmapItem->setTransform(QTransform::fromTranslate(pos.x()-pixmap.width()/1000.,pos.y()
                           +pixmap.height()/1000.));
     pixmapItem->setTransform(QTransform::fromScale(1,-1),true);
-    pixmapItem->setTransform(QTransform::fromTranslate(translation_x,-translation_y), true);
+    //pixmapItem->setTransform(QTransform::fromTranslate(translation_x,-translation_y), true);
     QString name="Landmark"+QString::number(_datamanager->GetLandmarkCounter());
-    jpsLandmark* landmark = new jpsLandmark(pixmapItem,name,pixmapItem->scenePos());
+    jpsLandmark* landmark = new jpsLandmark(pixmapItem,name,pos);
     //text immediately under the pixmap
     QGraphicsTextItem* text = Scene->addText(name);
     text->setPos(QPointF(landmark->GetPos().x(),
@@ -538,6 +538,9 @@ const QPointF &jpsGraphicsView::return_Pos() const
 
 void jpsGraphicsView::delete_all(bool final)
 {
+    unmark_all_lines();
+    unmarkLandmark();
+
     if (!final)
     {
         int ret = QMessageBox::warning(this,"Delete?", "Do you really want to delete all elements?", QMessageBox::Yes | QMessageBox::No);

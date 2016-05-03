@@ -52,7 +52,7 @@ public:
 //    const int& GetFirstFrame() const;
 //    const int& GetLastFrame() const;
     // Operator overload
-    bool operator ==(const jpsConnection *con2) const;
+    bool operator ==(const jpsConnection& con2) const;
 private:
     jpsLandmark* _landmark1;
     jpsLandmark* _landmark2;

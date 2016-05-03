@@ -1074,7 +1074,7 @@ void jpsDatamanager::BridgeLostLandmark(jpsLandmark *landmark)
                 jpsConnection* newConnection = new jpsConnection(connectedLandmark,connectedLandmark2);
                 for (jpsConnection* connection:_ConnectionsAfterLandmarkLoose)
                 {
-                    if (connection==newConnection)
+                    if (*connection==*newConnection)
                     {
                         status=true;
                     }
