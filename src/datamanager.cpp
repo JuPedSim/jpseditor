@@ -1488,7 +1488,7 @@ void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
     /* Let's check that subroom has id attribute. */
 
     /* We'll add it to the room. */
-    roomlist.last()->set_id(attributes.value("id").toInt());
+    roomlist.last()->set_id(attributes.value("id").toString().toInt());
 
     /* We'll add it to the room. */
     roomlist.last()->change_name(attributes.value("caption").toString());
@@ -2082,16 +2082,16 @@ bool jpsDatamanager::ParseCogMap(QFile &file)
 
 void jpsDatamanager::ParseLandmark(jpsRegion *actRegion, QXmlStreamReader &xmlReader)
 {
-    int id = xmlReader.attributes().value("id").toInt();
+    int id = xmlReader.attributes().value("id").toString().toInt();
     QString caption = xmlReader.attributes().value("caption").toString();
     //int roomId = xmlReader.attributes().value("room1_id").toString().toInt();
-    int subroomId = xmlReader.attributes().value("subroom1_id").toInt();
-    qreal real_x = xmlReader.attributes().value("pxreal").toFloat();
-    qreal real_y = xmlReader.attributes().value("pyreal").toFloat();
-    qreal x = xmlReader.attributes().value("px").toFloat();
-    qreal y = xmlReader.attributes().value("py").toFloat();
-    qreal rA = xmlReader.attributes().value("a").toFloat();
-    qreal rB = xmlReader.attributes().value("b").toFloat();
+    int subroomId = xmlReader.attributes().value("subroom1_id").toString().toInt();
+    qreal real_x = xmlReader.attributes().value("pxreal").toString().toFloat();
+    qreal real_y = xmlReader.attributes().value("pyreal").toString().toFloat();
+    qreal x = xmlReader.attributes().value("px").toString().toFloat();
+    qreal y = xmlReader.attributes().value("py").toString().toFloat();
+    qreal rA = xmlReader.attributes().value("a").toString().toFloat();
+    qreal rB = xmlReader.attributes().value("b").toString().toFloat();
 
 
     //create landmark incl. pixmap
@@ -2135,8 +2135,8 @@ void jpsDatamanager::ParseConnection(jpsRegion *actRegion, QXmlStreamReader &xml
     //int id = xmlReader.attributes().value("id").toInt();
     //QString caption = xmlReader.attributes().value("caption").toString();
     //QString type = xmlReader.attributes().value("type").toString();
-    int idLandmark1 = xmlReader.attributes().value("landmark1_id").toInt();
-    int idLandmark2 = xmlReader.attributes().value("landmark2_id").toInt();
+    int idLandmark1 = xmlReader.attributes().value("landmark1_id").toString().toInt();
+    int idLandmark2 = xmlReader.attributes().value("landmark2_id").toString().toInt();
 
     jpsLandmark* landmark1 = nullptr;
     jpsLandmark* landmark2 = nullptr;
@@ -2165,12 +2165,12 @@ void jpsDatamanager::ParseConnection(jpsRegion *actRegion, QXmlStreamReader &xml
 
 jpsRegion* jpsDatamanager::ParseRegion(QXmlStreamReader &xmlReader)
 {
-    int id = xmlReader.attributes().value("id").toInt();
+    int id = xmlReader.attributes().value("id").toString().toInt();
     QString caption = xmlReader.attributes().value("caption").toString();
-    qreal x = xmlReader.attributes().value("px").toFloat();
-    qreal y = xmlReader.attributes().value("py").toFloat();
-    qreal rA = xmlReader.attributes().value("a").toFloat();
-    qreal rB = xmlReader.attributes().value("b").toFloat();
+    qreal x = xmlReader.attributes().value("px").toString().toFloat();
+    qreal y = xmlReader.attributes().value("py").toString().toFloat();
+    qreal rA = xmlReader.attributes().value("a").toString().toFloat();
+    qreal rB = xmlReader.attributes().value("b").toString().toFloat();
 
     QPen pen = QPen(Qt::darkGreen,2);
     pen.setCosmetic(true);
