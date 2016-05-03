@@ -1690,6 +1690,7 @@ void jpsGraphicsView::catch_landmark()
 
 void jpsGraphicsView::select_landmark(jpsLandmark* landmark)
 {
+    unmarkLandmark();
     currentLandmarkRect=Scene->addRect(
                 landmark->GetPixmap()->mapRectToScene(landmark->GetPixmap()->pixmap().rect()),QPen(Qt::red,0));
     markedLandmark=landmark;

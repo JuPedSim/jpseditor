@@ -1471,11 +1471,10 @@ void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
     /* Let's check that subroom has id attribute. */
 
     /* We'll add it to the room. */
-    roomlist.last()->set_id(attributes.value("id").toString().toInt());
+    roomlist.last()->set_id(attributes.value("id").toInt());
 
     /* We'll add it to the room. */
     roomlist.last()->change_name(attributes.value("caption").toString());
-
     if(attributes.hasAttribute("class"))
     {
         if (attributes.value("class").toString()=="subroom")
@@ -2086,8 +2085,11 @@ void jpsDatamanager::ParseLandmark(jpsRegion *actRegion, QXmlStreamReader &xmlRe
     for (jpsRoom* room:roomlist)
     {
         if (room->get_id()==subroomId)
+        {
             _landmarks.back()->SetRoom(room);
-        break;
+            break;
+        }
+
     }
     _landmarks.back()->SetRect(QRectF(QPointF(x-rA,y+rB),QPointF(x+rA,y-rB)));
 
