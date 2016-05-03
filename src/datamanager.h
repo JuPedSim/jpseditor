@@ -149,7 +149,7 @@ public:
     void WriteCognitiveMapHeader(QXmlStreamWriter *stream);
     void WriteRegions(QXmlStreamWriter *stream, bool fuzzy=false);
     void WriteLandmarks(jpsRegion *cRegion, QXmlStreamWriter *stream, bool fuzzy=false);
-    QList<jpsLandmark *> CutOutLandmarks(QList<jpsLandmark* > landmarks);
+    void CutOutLandmarks();
     void BridgeLostLandmark(jpsLandmark* landmark);
     void WriteConnections(jpsRegion *cRegion, QXmlStreamWriter *stream);
     void CreateAndSaveASimilarCogMap(const int &id);
@@ -188,6 +188,7 @@ private:
     QList<jpsExit *> exitList;
     QList<jpsLandmark* > _landmarks;
     QList<jpsConnection* > _landmarkConnections;
+    QList<jpsLandmark* > _landmarksAfterLoose;
     QList<jpsConnection* > _ConnectionsAfterLandmarkLoose;
     QList<jpsRegion* > _regions;
     int room_id_counter;

@@ -931,13 +931,11 @@ void jpsDatamanager::WriteLandmarks(jpsRegion* cRegion, QXmlStreamWriter *stream
 
     //cut some landmarks and/or their connections
     _ConnectionsAfterLandmarkLoose=_landmarkConnections;
-    QList<jpsLandmark* > currentLandmarks;
+    _landmarksAfterLoose=_landmarks;
     if (fuzzy)
-        currentLandmarks=CutOutLandmarks(_landmarks);
-    else
-        currentLandmarks=_landmarks;
+        CutOutLandmarks();
     
-    for (jpsLandmark* landmark:currentLandmarks)
+    for (jpsLandmark* landmark:_landmarksAfterLoose)
     {
         if (landmark->GetRegion()==cRegion)
         {
@@ -999,32 +997,34 @@ void jpsDatamanager::WriteLandmarks(jpsRegion* cRegion, QXmlStreamWriter *stream
 
 }
 
-QList<jpsLandmark *> jpsDatamanager::CutOutLandmarks(QList<jpsLandmark *> landmarks)
+void jpsDatamanager::CutOutLandmarks()
 {
     using myClock = std::chrono::high_resolution_clock;
 
-
-    for (jpsLandmark* landmark:landmarks)
+    int number;
+    int n=0;
+    for (jpsLandmark* landmark:_landmarksAfterLoose)
     {
 
         myClock::duration d = myClock::now().time_since_epoch();
 
-        auto seed = d.count();
+        auto seed = d.count()+n;
 
         std::default_random_engine generator(seed);
 
-        std::discrete_distribution<int> distribution({ 20, 80 });
+        std::discrete_distribution<int> distribution({ 50,50 });
 
-        int number = distribution(generator);
+        number = distribution(generator);
 
         if (!number)
         {
-            landmarks.removeOne(landmark);
+            _landmarksAfterLoose.removeOne(landmark);
             BridgeLostLandmark(landmark);
         }
+        n++;
 
     }
-    return landmarks;
+
 }
 
 void jpsDatamanager::BridgeLostLandmark(jpsLandmark *landmark)
@@ -1037,13 +1037,15 @@ void jpsDatamanager::BridgeLostLandmark(jpsLandmark *landmark)
     QList<jpsLandmark* > connectedLandmarks;
     QList<jpsConnection* > connections = landmark->GetConnections();
 
+    int n=0;
+
     for (jpsConnection* connection:connections)
     {
         _ConnectionsAfterLandmarkLoose.removeOne(connection);
 
         myClock::duration d = myClock::now().time_since_epoch();
 
-        auto seed = d.count();
+        auto seed = d.count()+n;
 
         std::default_random_engine generator(seed);
 
@@ -1059,6 +1061,7 @@ void jpsDatamanager::BridgeLostLandmark(jpsLandmark *landmark)
             else
                 connectedLandmarks.push_back(lPair.second);
         }
+        n++;
     }
 
     for (jpsLandmark* connectedLandmark:connectedLandmarks)
@@ -1067,7 +1070,17 @@ void jpsDatamanager::BridgeLostLandmark(jpsLandmark *landmark)
         {
             if (connectedLandmark!=connectedLandmark2)
             {
-                _ConnectionsAfterLandmarkLoose.push_back(new jpsConnection(connectedLandmark,connectedLandmark2));
+                bool status=false;
+                jpsConnection* newConnection = new jpsConnection(connectedLandmark,connectedLandmark2);
+                for (jpsConnection* connection:_ConnectionsAfterLandmarkLoose)
+                {
+                    if (connection==newConnection)
+                    {
+                        status=true;
+                    }
+                }
+                if (!status)
+                    _ConnectionsAfterLandmarkLoose.push_back(newConnection);
             }
         }
     }
@@ -1079,18 +1092,22 @@ void jpsDatamanager::WriteConnections(jpsRegion* cRegion, QXmlStreamWriter *stre
     int n=0;
     for (jpsConnection* connection:_ConnectionsAfterLandmarkLoose)
     {
-        if (connection->GetLandmarks().first->GetRegion()==cRegion)
+        // only write connection if adjacent landmark is still there
+        if (_landmarksAfterLoose.contains(connection->GetLandmarks().first) && _landmarksAfterLoose.contains(connection->GetLandmarks().second))
         {
-            stream->writeStartElement("connection");
+            if (connection->GetLandmarks().first->GetRegion()==cRegion)
+            {
+                stream->writeStartElement("connection");
 
-            stream->writeAttribute("id",QString::number(n));
-            stream->writeAttribute("caption","Connection "+QString::number(n));
-            stream->writeAttribute("type","Not specified");
-            stream->writeAttribute("landmark1_id",QString::number(connection->GetLandmarks().first->GetId()));
-            stream->writeAttribute("landmark2_id",QString::number(connection->GetLandmarks().second->GetId()));
+                stream->writeAttribute("id",QString::number(n));
+                stream->writeAttribute("caption","Connection "+QString::number(n));
+                stream->writeAttribute("type","Not specified");
+                stream->writeAttribute("landmark1_id",QString::number(connection->GetLandmarks().first->GetId()));
+                stream->writeAttribute("landmark2_id",QString::number(connection->GetLandmarks().second->GetId()));
 
-            stream->writeEndElement();//connection
-            n++;
+                stream->writeEndElement();//connection
+                n++;
+            }
         }
 
     }
@@ -2133,6 +2150,8 @@ void jpsDatamanager::ParseConnection(jpsRegion *actRegion, QXmlStreamReader &xml
     }
 
     jpsConnection* currentConnection =new jpsConnection(landmark1,landmark2);
+    landmark1->NewConnection(currentConnection);
+    landmark2->NewConnection(currentConnection);
 
     QLineF line = QLineF(landmark1->GetPos(),landmark2->GetPos());
     QPen pen = QPen(Qt::blue,2);
