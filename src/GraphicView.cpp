@@ -359,7 +359,7 @@ void jpsGraphicsView::addLandmark(const QPointF &pos)
     pixmapItem->setTransform(QTransform::fromTranslate(pos.x()-pixmap.width()/1000.,pos.y()
                           +pixmap.height()/1000.));
     pixmapItem->setTransform(QTransform::fromScale(1,-1),true);
-    //pixmapItem->setTransform(QTransform::fromTranslate(translation_x,-translation_y), true);
+    pixmapItem->setTransform(QTransform::fromTranslate(translation_x,-translation_y), true);
     QString name="Landmark"+QString::number(_datamanager->GetLandmarkCounter());
     jpsLandmark* landmark = new jpsLandmark(pixmapItem,name,pos);
     //text immediately under the pixmap
@@ -368,6 +368,7 @@ void jpsGraphicsView::addLandmark(const QPointF &pos)
                          landmark->GetPos().y()+0.2));// landmark->GetPos().x()+translation_x,landmark->GetPos().y()+translation_y);
     //text->setScale(gl_scale_f);
 
+    text->setTransform(QTransform::fromTranslate(translation_x,-translation_y), true);
     text->setData(0,0.01);
     text->setTransform(QTransform::fromScale(0.01,-0.01),true);
 
@@ -924,8 +925,10 @@ void jpsGraphicsView::disable_drawing()
 
 jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const qreal &x2,const qreal &y2,const QString &type)
 {
+    QPen pen = QPen(Qt::black,0);
+    pen.setCosmetic(true);
 
-    current_line=Scene->addLine(x1,y1,x2,y2);
+    current_line=Scene->addLine(x1,y1,x2,y2,pen);
     current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
     jpsLineItem* newLine = new jpsLineItem(current_line);
     newLine->set_id(id_counter);
@@ -948,9 +951,8 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
         newLine->set_Wall();
     }
 
-    QPen pen = QPen(QColor(newLine->get_defaultColor()),2);
-    pen.setCosmetic(true);
-    current_line->setPen(pen);
+    pen.setColor(newLine->get_defaultColor());
+    newLine->get_line()->setPen(pen);
     // if line has already been added before (from another room)
 
     for (int i=0; i<line_vector.size(); i++)

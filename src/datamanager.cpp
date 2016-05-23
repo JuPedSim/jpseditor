@@ -1006,13 +1006,18 @@ void jpsDatamanager::CutOutLandmarks()
     for (jpsLandmark* landmark:_landmarksAfterLoose)
     {
 
+        if (landmark->GetType()=="main" || landmark->GetType()=="Main Target")
+        {
+            continue;
+        }
+
         myClock::duration d = myClock::now().time_since_epoch();
 
         auto seed = d.count()+n;
 
         std::default_random_engine generator(seed);
 
-        std::discrete_distribution<int> distribution({ 50,50 });
+        std::discrete_distribution<int> distribution({ 40,60 });
 
         number = distribution(generator);
 
@@ -2084,6 +2089,7 @@ void jpsDatamanager::ParseLandmark(jpsRegion *actRegion, QXmlStreamReader &xmlRe
 {
     int id = xmlReader.attributes().value("id").toString().toInt();
     QString caption = xmlReader.attributes().value("caption").toString();
+    QString type = xmlReader.attributes().value("type").toString();
     //int roomId = xmlReader.attributes().value("room1_id").toString().toInt();
     int subroomId = xmlReader.attributes().value("subroom1_id").toString().toInt();
     qreal real_x = xmlReader.attributes().value("pxreal").toString().toFloat();
@@ -2099,6 +2105,8 @@ void jpsDatamanager::ParseLandmark(jpsRegion *actRegion, QXmlStreamReader &xmlRe
 
     _landmarks.back()->SetId(id);
     _landmarks.back()->SetCaption(caption);
+    _landmarks.back()->SetType(type);
+
     for (jpsRoom* room:roomlist)
     {
         if (room->get_id()==subroomId)
