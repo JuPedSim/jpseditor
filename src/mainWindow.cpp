@@ -475,6 +475,7 @@ void MWindow::disableDrawing()
     this->actionExit->setChecked(false);
     this->actionLandmark->setChecked(false);
     this->actionHLine->setChecked(false);
+    this->actionCopy->setChecked(false);
 }
 
 void MWindow::objectsnap()
@@ -562,6 +563,7 @@ void MWindow::en_selectMode()
     actionExit->setChecked(false);
     actionHLine->setChecked(false);
     actionLandmark->setChecked(false);
+    actionCopy->setChecked(false);
     length_edit->clearFocus();
 }
 
@@ -613,14 +615,8 @@ void MWindow::closeEvent(QCloseEvent *event)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
+void MWindow::on_actionCopy_triggered()
+{
+    actionCopy->setChecked(true);
+    mview->start_Copy_function();
+}

@@ -128,6 +128,8 @@ protected slots:
     void closeEvent(QCloseEvent *event);
 
 
+private slots:
+    void on_actionCopy_triggered();
 };
 
 

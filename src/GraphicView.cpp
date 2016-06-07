@@ -67,6 +67,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     statDoor=false;
     statExit=false;
     _statHLine=false;
+    _statCopy=0;
     statLandmark=false;
     markedLandmark=nullptr;
     currentLandmarkRect=nullptr;
@@ -256,7 +257,9 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                 emit no_drawing();
             }
             else
+            {
                 drawLine();
+            }
         }
         else if (statLandmark==true)
         {
@@ -274,6 +277,16 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                 EditLine(_currentTrackedPoint);
                 _currentTrackedPoint=nullptr;
                 line_tracked=-1;
+            }
+            else if (_statCopy!=0)
+            {
+                if (_statCopy==1)
+                {
+                    _copyOrigin=return_Pos();
+                    _statCopy += 1;
+                }
+                else
+                    Copy_lines(return_Pos()-_copyOrigin);
             }
             else
             {
@@ -907,6 +920,7 @@ void jpsGraphicsView::disable_drawing()
     statExit=false;
     statLandmark=false;
     _statLineEdit=false;
+    _statCopy=0;
     // if drawing was canceled by pushing ESC
     if (current_line!=nullptr)
     {
@@ -1855,6 +1869,7 @@ void jpsGraphicsView::en_disableHLine()
     statDoor=false;
     statWall=false;
     statLandmark=false;
+    _statCopy=0;
     if (_statHLine==false)
     {
         emit no_drawing();
@@ -1876,6 +1891,7 @@ void jpsGraphicsView::en_disableLandmark()
     statDoor=false;
     statWall=false;
     statExit=false;
+    _statCopy=0;
     if (statLandmark==false)
     {
         emit no_drawing();
@@ -1887,13 +1903,18 @@ bool jpsGraphicsView::statusExit()
     return statExit;
 }
 
+void jpsGraphicsView::start_Copy_function()
+{
+    _statCopy=1;
+}
 
-
-
-
-
-
-
-
-
-
+void jpsGraphicsView::Copy_lines(const QPointF& delta)
+{
+    for (jpsLineItem* line:marked_lines)
+    {
+       addLineItem(line->get_line()->line().x1()+delta.x(),line->get_line()->line().x2()+delta.x(),
+                   line->get_line()->line().y1()+delta.y(),line->get_line()->line().y2()+delta.y(),
+                   line->GetType());
+    }
+    _statCopy=0;
+}

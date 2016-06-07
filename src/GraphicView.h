@@ -123,6 +123,8 @@ public:
     void SetVLine();
     void EditLine(QPointF* point);
     qreal ReturnLineLength();
+    void start_Copy_function();
+    void Copy_lines(const QPointF& delta);
 
     // Landmark
     void delete_landmark();
@@ -197,6 +199,8 @@ private:
     bool statExit;
     bool statLandmark;
     bool _statHLine;
+    int _statCopy;
+    QPointF _copyOrigin;
     qreal catch_radius;
     qreal _scaleFactor;
     qreal gl_scale_f;
