@@ -1912,9 +1912,11 @@ void jpsGraphicsView::Copy_lines(const QPointF& delta)
 {
     for (jpsLineItem* line:marked_lines)
     {
-       addLineItem(line->get_line()->line().x1()+delta.x(),line->get_line()->line().x2()+delta.x(),
-                   line->get_line()->line().y1()+delta.y(),line->get_line()->line().y2()+delta.y(),
-                   line->GetType());
+        addLineItem(line->get_line()->line().p1().x()+delta.x(),
+                    line->get_line()->line().p1().y()+delta.y(),
+                    line->get_line()->line().p2().x()+delta.x(),
+                    line->get_line()->line().p2().y()+delta.y(),
+                    line->GetType());
     }
     _statCopy=0;
 }
