@@ -958,12 +958,12 @@ void jpsDatamanager::WriteLandmarks(jpsRegion* cRegion, QXmlStreamWriter *stream
 
             if (fuzzy)
             {
-                px = MakeItFuzzy(px,a/2.0);
-                py = MakeItFuzzy(py,b/2.0);
-                a = MakeItFuzzy(a,a/2.0);
+                px = MakeItFuzzy(px,a/5.0);
+                py = MakeItFuzzy(py,b/5.0);
+                a = MakeItFuzzy(a,a/3.0);
                 if (a<0.5)
                     a=0.5;
-                b = MakeItFuzzy(b,b/2.0);
+                b = MakeItFuzzy(b,b/3.0);
                 if (b<0.5)
                     b=0.5;
             }
@@ -1001,14 +1001,20 @@ void jpsDatamanager::CutOutLandmarks()
 {
     using myClock = std::chrono::high_resolution_clock;
 
+    int numberMainTargets = GetNumberOfMainTargets();
+    int statcutMainTarget= numberMainTargets;
+
     int number;
     int n=0;
     for (jpsLandmark* landmark:_landmarksAfterLoose)
     {
-
+        // at least one main target will be kept
         if (landmark->GetType()=="main" || landmark->GetType()=="Main Target")
         {
-            continue;
+            if (numberMainTargets==1)
+                continue;
+            else if (statcutMainTarget==1)
+                continue;
         }
 
         myClock::duration d = myClock::now().time_since_epoch();
@@ -1017,12 +1023,14 @@ void jpsDatamanager::CutOutLandmarks()
 
         std::default_random_engine generator(seed);
 
-        std::discrete_distribution<int> distribution({ 40,60 });
+        std::discrete_distribution<int> distribution({ 30,70 });
 
         number = distribution(generator);
 
         if (!number)
         {
+            if (landmark->GetType()=="main" || landmark->GetType()=="Main Target")
+                statcutMainTarget--;
             _landmarksAfterLoose.removeOne(landmark);
             BridgeLostLandmark(landmark);
         }
@@ -1160,6 +1168,19 @@ qreal jpsDatamanager::MakeItFuzzy(const qreal& mean, const qreal &std)
     double number = distribution(generator);
 
     return number;
+}
+
+int jpsDatamanager::GetNumberOfMainTargets() const
+{
+    int counter=0;
+    for (jpsLandmark* landmark:_landmarks)
+    {
+        if (landmark->GetType()=="main" || landmark->GetType()=="Main Target")
+        {
+            counter++;
+        }
+    }
+    return counter;
 }
 
 void jpsDatamanager::remove_all()

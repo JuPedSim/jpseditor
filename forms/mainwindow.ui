@@ -24,7 +24,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuDatei">
@@ -410,7 +410,7 @@
     <bool>true</bool>
    </property>
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="Ressource.qrc">
@@ -423,7 +423,7 @@
     <string>Landmark</string>
    </property>
    <property name="visible">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionLandmarkWidget">
@@ -431,7 +431,7 @@
     <bool>true</bool>
    </property>
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="Ressource.qrc">
@@ -444,7 +444,7 @@
     <string>LandmarkSpecs</string>
    </property>
    <property name="visible">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionanglesnap">
@@ -566,7 +566,7 @@
   </action>
   <action name="actionSpeichern_cogmap">
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="Ressource.qrc">
@@ -582,7 +582,7 @@
     <string>Ctrl+S</string>
    </property>
    <property name="visible">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </action>
   <action name="action_ffnen_cogmap">
@@ -595,6 +595,9 @@
    </property>
    <property name="toolTip">
     <string>Load Cognitive Map</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionCopy">

@@ -272,7 +272,7 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                 emit DefConnection1Completed();
             }
             //LineEdit
-            else if (_currentTrackedPoint!=nullptr && line_tracked==1)
+            else if (_currentTrackedPoint!=nullptr && line_tracked==1 && _statCopy==0)
             {
                 EditLine(_currentTrackedPoint);
                 _currentTrackedPoint=nullptr;
@@ -920,6 +920,7 @@ void jpsGraphicsView::disable_drawing()
     statExit=false;
     statLandmark=false;
     _statLineEdit=false;
+    _statHLine=false;
     _statCopy=0;
     // if drawing was canceled by pushing ESC
     if (current_line!=nullptr)
@@ -939,7 +940,7 @@ void jpsGraphicsView::disable_drawing()
 
 jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const qreal &x2,const qreal &y2,const QString &type)
 {
-    QPen pen = QPen(Qt::black,0);
+    QPen pen = QPen(Qt::black,2);
     pen.setCosmetic(true);
 
     current_line=Scene->addLine(x1,y1,x2,y2,pen);

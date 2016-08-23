@@ -154,6 +154,7 @@ public:
     void WriteConnections(jpsRegion *cRegion, QXmlStreamWriter *stream);
     void CreateAndSaveASimilarCogMap(const int &id);
     qreal MakeItFuzzy(const qreal &mean, const qreal& std);
+    int GetNumberOfMainTargets() const;
 
     // Read DXF
     bool readDXF(std::string filename);
