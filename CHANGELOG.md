@@ -9,6 +9,11 @@ All notable changes to this project will be documented in this file.
 
 ### Bugs fixed
 
+### Bugs
+
+    Several heap errors, especially related to the undo/redo framework
+    Autosave not working properly
+    
 ## v0.8.0 [05.03.2016]
 
 ### Added
