@@ -1169,6 +1169,8 @@ void jpsGraphicsView::Undo()
 {
     if (!_undoStack.IsEmpty())
     {
+        emit no_drawing();
+
         const LineAction recentAction = _undoStack.GetRecentAction();
 
         if (recentAction.GetName()=="LineDeleted")
@@ -1196,6 +1198,8 @@ void jpsGraphicsView::Redo()
 {
     if (!_redoStack.IsEmpty())
     {
+        emit no_drawing();
+
         const LineAction recentAction = _redoStack.GetRecentAction();
 
         if (recentAction.GetName()=="LineDeleted")

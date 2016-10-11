@@ -578,9 +578,6 @@
    <property name="toolTip">
     <string>Save CognitiveMap</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
-   </property>
    <property name="visible">
     <bool>false</bool>
    </property>
