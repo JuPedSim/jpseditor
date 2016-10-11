@@ -9,13 +9,13 @@ All notable changes to this project will be documented in this file.
 
 ### Bugs fixed
 
-	Heap error when using undo/redo while drawing
+- Heap error when using undo/redo while drawing
 
 ### Bugs
 
-    Several heap errors
-    Autosave not working properly
-	DXF-Import restricted 
+- Several heap errors
+- Autosave not working properly
+- DXF-Import restricted 
     
 ## v0.8.0 [05.03.2016]
 
