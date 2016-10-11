@@ -1,7 +1,7 @@
 /**
  * \file        widgetlandmark.h
  * \date        Jun 26, 2015
- * \version     v0.7
+ * \version     v0.8.1
  * \copyright   <2009-2015> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
@@ -22,7 +22,7 @@
  *
  * \section Description
  * With the help of this class the user is able to handle landmarks and set associations (waypoints) relying on a certain landmark.
- * widgetlandmark is not enabled in v0.7.
+ * widgetlandmark is not enabled in v0.8.1.
  *
  *
  **/
@@ -33,6 +33,10 @@
 #include <QTabWidget>
 #include "datamanager.h"
 #include "GraphicView.h"
+#include <memory>
+
+using ptrLandmark = std::shared_ptr<jpsLandmark>;
+
 
 namespace Ui {
 class widgetLandmark;
@@ -52,15 +56,40 @@ protected slots:
     void enable_room_selection();
     void disable_room_selection();
     void change_name();
+    void SetPosInCMap();
+    void ShowLandmarkType();
+    void SetLandmarkType();
+    void ShowRegionBox();
+    //associated landmarks
     void AddAssociation();
-    void ShowAssociations();
     void RemoveAssociation();
+    //Show or hide landmark picture and ellipse in graphicsview
+    void ShowHideLandmark();
+    //connections
+    void NewConnection();
+    void AskForFirstLandmark();
+    void AskForSecondLandmark();
+    void SetLandmarksToConnection();
+    void SetLineItemAsConnection();
+    void AddConnectionsToWidget();
+    void RemoveConnection();
+    //regions
+    void NewRegion();
+    void RemoveRegion();
+    void SetLandmarkToRegion();
+    void ShowHideRegion();
+    void ShowRegions();
+
+    void CreateSimilarMaps();
 
 private:
+    jpsLandmark *GetCurrentLandmark() const;
+    jpsRegion* GetCurrentRegion() const;
     Ui::widgetLandmark *ui;
     jpsDatamanager* _dmanager;
     jpsGraphicsView* _gview;
-    int _waypointIDCounter;
+    jpsConnection* _currentConnection;
+
 };
 
 #endif // WIDGETLANDMARK_H

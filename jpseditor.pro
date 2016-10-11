@@ -60,7 +60,8 @@ HEADERS += \
     src/jpsconnection.h \
     src/UndoFramework/actionstack.h \
     src/UndoFramework/action.h \
-    src/UndoFramework/lineaction.h
+    src/UndoFramework/lineaction.h \
+    src/jpsregion.h
 
 
 SOURCES += \
@@ -85,7 +86,8 @@ SOURCES += \
     src/jpsconnection.cpp \
     src/UndoFramework/actionstack.cpp \
     src/UndoFramework/action.cpp \
-    src/UndoFramework/lineaction.cpp
+    src/UndoFramework/lineaction.cpp \
+    src/jpsregion.cpp
 
 
 RESOURCES +=  forms/Ressource.qrc

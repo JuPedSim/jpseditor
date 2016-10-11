@@ -1,7 +1,7 @@
 /**
  * \file        datamanager.h
  * \date        Jun 26, 2015
- * \version     v0.7
+ * \version     v0.8.1
  * \copyright   <2009-2015> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
@@ -42,6 +42,7 @@
 #include "GraphicView.h"
 #include "jpsyahpointer.h"
 #include "jpsconnection.h"
+#include "jpsregion.h"
 
 
 #include "../dxflib/src/dl_creationadapter.h"
@@ -49,7 +50,7 @@
 
 
 using ptrConnection = std::shared_ptr<jpsConnection>;
-using ptrWaypoint = std::shared_ptr<jpsWaypoint>;
+
 
 
 class jpsDatamanager: public DL_CreationAdapter
@@ -89,6 +90,18 @@ public:
     void remove_landmark(jpsLandmark* landmark);
     void change_LandmarkName(jpsLandmark* landmark, QString name);
     void remove_all_landmarks();
+    const int& GetLandmarkCounter() const;
+    //Connection
+    const QList<jpsConnection*>& GetAllConnections() const;
+    void NewConnection(jpsConnection* newConnection);
+    void RemoveConnection(jpsConnection* connection);
+    void RemoveAllConnections();
+    //Regions
+    const QList<jpsRegion*>& GetRegions() const;
+    void NewRegion(jpsRegion* region);
+    void RemoveRegion(jpsRegion* region);
+    void RemoveAllRegions();
+    const int& GetRegionCounter() const;
     //
     void remove_all();
     void remove_marked_lines();
@@ -115,6 +128,7 @@ public:
     // Write XML
     void writeXML(QFile &file);
     void writeRoutingXML(QFile &file);
+
     void AutoSaveXML(QFile &file);
     void writeHeader(QXmlStreamWriter *stream);
     void writeRoutingHeader(QXmlStreamWriter *stream);
@@ -128,7 +142,19 @@ public:
     void writeNotAssignedWalls(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeNotAssignedDoors(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
-    void writeLandmarks(QXmlStreamWriter *stream, QList<jpsLandmark* > &landmarks);
+
+
+    //Write Cognitive Map XML
+    void WriteCognitiveMapXML(QFile &file, bool fuzzy=false);
+    void WriteCognitiveMapHeader(QXmlStreamWriter *stream);
+    void WriteRegions(QXmlStreamWriter *stream, bool fuzzy=false);
+    void WriteLandmarks(jpsRegion *cRegion, QXmlStreamWriter *stream, bool fuzzy=false);
+    void CutOutLandmarks();
+    void BridgeLostLandmark(jpsLandmark* landmark);
+    void WriteConnections(jpsRegion *cRegion, QXmlStreamWriter *stream);
+    void CreateAndSaveASimilarCogMap(const int &id);
+    qreal MakeItFuzzy(const qreal &mean, const qreal& std);
+    int GetNumberOfMainTargets() const;
 
     // Read DXF
     bool readDXF(std::string filename);
@@ -145,16 +171,15 @@ public:
 
     //Parse Cognitive Map
     bool ParseCogMap(QFile &file);
-    void ParseFrames(QXmlStreamReader &xmlReader);
+    jpsRegion* ParseRegion(QXmlStreamReader &xmlReader);
     void ParseYAHPointer(QXmlStreamReader &xmlReader, const int &frame);
-    void ParseLandmarksInCMap(QXmlStreamReader &xmlReader, const int &frame);
-    void ParseWaypointInCMap(QXmlStreamReader &xmlReader, const int &frame);
-    void ParseConnectionsInCMap(QXmlStreamReader &xmlReader, const int &frame);
+    void ParseLandmark(jpsRegion* actRegion, QXmlStreamReader &xmlReader);
+    void ParseConnection(jpsRegion* actRegion, QXmlStreamReader &xmlReader);
 
-    //Show Cognitive Map
-    void ShowCMapFrame(const int& frame) const;
-    const double& GetCMapFrameRate() const;
-    const int& GetLastCMapFrame() const;
+//    //Show Cognitive Map
+//    void ShowCMapFrame(const int& frame) const;
+//    const double& GetCMapFrameRate() const;
+//    const int& GetLastCMapFrame() const;
 
 private:
     //Geometry
@@ -162,19 +187,27 @@ private:
     QList<jpsObstacle *> obstaclelist;
     QList<jpsCrossing *> crossingList;
     QList<jpsExit *> exitList;
-    QList<jpsLandmark* > landmarks;
+    QList<jpsLandmark* > _landmarks;
+    QList<jpsConnection* > _landmarkConnections;
+    QList<jpsLandmark* > _landmarksAfterLoose;
+    QList<jpsConnection* > _ConnectionsAfterLandmarkLoose;
+    QList<jpsRegion* > _regions;
     int room_id_counter;
     int obs_id_counter;
     QWidget* parent_widget;
-    jpsGraphicsView* mView;
+    jpsGraphicsView* _mView;
 
     //CognitiveMap
-    QList<jpsLandmark* > _landmarksInCMap;
-    QList<ptrWaypoint > _waypointsInCMap;
-    QList<ptrConnection> _connectionsInCMap;
+    //QList<jpsLandmark* > _landmarksInCMap;
+    //QList<ptrConnection> _connectionsInCMap;
     jpsYAHPointer* _yahPointer;
     double _frameRate;
     int _lastCMapFrame;
+
+    int _landmarkCounter;
+    int _regionCounter;
+
+    QString _currentCogMapFileName;
 
 
 

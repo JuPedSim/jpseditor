@@ -1,7 +1,7 @@
 /**
  * \file        GraphicView.h
  * \date        Jun 26, 2015
- * \version     v0.7
+ * \version     v0.8.1
  * \copyright   <2009-2015> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
@@ -39,6 +39,9 @@
 #include "./UndoFramework/actionstack.h"
 
 using ptrConnection = std::shared_ptr<jpsConnection>;
+using ptrLandmark = std::shared_ptr<jpsLandmark>;
+
+class jpsDatamanager;
 
 class jpsGraphicsView: public QGraphicsView {
 
@@ -46,10 +49,21 @@ class jpsGraphicsView: public QGraphicsView {
 
 public:
     //Constructor
-    jpsGraphicsView(QWidget* parent = nullptr);
+    jpsGraphicsView(QWidget* parent = nullptr, jpsDatamanager* datamanager=nullptr);
 
     //Destructor
     ~jpsGraphicsView();
+
+    QGraphicsScene* GetScene();
+    const qreal& GetTranslationX() const;
+    const qreal& GetTranslationY() const;
+    const qreal& GetScaleF() const;
+
+    //Pos
+    const QPointF& return_Pos() const;
+
+
+    void SetDatamanager(jpsDatamanager* datamanager);
 
     //Change modes
     void change_stat_anglesnap();
@@ -82,8 +96,6 @@ public:
     qreal CalcGridSize();
     void ShowOrigin();
 
-    //Pos
-    QPointF return_Pos();
 
     //Catch lines, points and intersections
     void catch_points();
@@ -111,20 +123,22 @@ public:
     void SetVLine();
     void EditLine(QPointF* point);
     qreal ReturnLineLength();
+    void start_Copy_function();
+    void Copy_lines(const QPointF& delta);
 
     // Landmark
     void delete_landmark();
     void catch_landmark();
     void select_landmark(jpsLandmark *landmark);
     void addLandmark();
+    void addLandmark(const QPointF& pos);
     // unmark Landmarks see slots
-    QList<jpsLandmark *> get_landmarks();
 
-    //Waypoints/Connections and YAHPointer
+    //Connections and YAHPointer
     QGraphicsRectItem* GetCurrentSelectRect();
-    void ShowWaypoints(QList<ptrWaypoint > waypoints);
+    void SetStatDefConnections(const int& stat);
+
     void ShowYAHPointer(const QPointF& pos, const qreal& dir);
-    void ClearWaypointLabels();
     void ShowConnections(QList<ptrConnection> cons);
     void ClearConnections();
 
@@ -138,9 +152,9 @@ public:
     void RedoLineEdit(const int &lineID, const QLineF &old_line);
 
 public slots:
-    //Waypoints
-    void StatAssoDef();
-    void ClearWaypoints();
+    //Landmarks/Regions
+    void StatPositionDef();
+    void ChangeRegionStatDef();
     //GridSettings
     void ActivateLineGrid();
     void ActivatePointGrid();
@@ -162,6 +176,7 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent *event);
 
 private:
+    jpsDatamanager* _datamanager;
     QGraphicsLineItem* current_line;
     QPolygonF polygon;
     //std::vector<jpsLineItem> line_vector;
@@ -184,6 +199,8 @@ private:
     bool statExit;
     bool statLandmark;
     bool _statHLine;
+    int _statCopy;
+    QPointF _copyOrigin;
     qreal catch_radius;
     qreal _scaleFactor;
     qreal gl_scale_f;
@@ -202,20 +219,20 @@ private:
     int id_counter;
 
     //Landmark and waypoints
-    QList<jpsLandmark* > LLandmarks;
     jpsLandmark* markedLandmark;
     QGraphicsRectItem* currentLandmarkRect;
-    QList<QGraphicsEllipseItem* > _waypoints;
     QList<QGraphicsLineItem* > _connections;
     QList<QGraphicsLineItem* > _yahPointer;
     QList<QGraphicsTextItem* > _waypointLabels;
+    int _statDefConnections;
+    bool _regionDef;
+    bool _posDef;
 
     QGraphicsLineItem* _currentVLine;
     QPointF* _currentTrackedPoint;
     QGraphicsPixmapItem* gridmap;
     bool _statLineEdit;
     bool lines_collided;
-    bool _assoDef;
     bool _gridmode;
 
     //Undo/Redo
@@ -230,9 +247,11 @@ signals:
     void no_drawing();
     void remove_marked_lines();
     void remove_all();
-    void landmark_added();
-    void AssoDefCompleted();
+    void PositionDefCompleted();
     void LineLengthChanged();
+    void DefConnection1Completed();
+    void DefConnection2Completed();
+    void RegionDefCompleted();
     //void DoubleClick();
 
 };

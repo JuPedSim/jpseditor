@@ -1,7 +1,7 @@
 /**
  * \file        jpslandmark.h
  * \date        Jun 26, 2015
- * \version     v0.7
+ * \version     v0.8.1
  * \copyright   <2009-2015> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
@@ -22,51 +22,106 @@
  *
  * \section Description
  * This class is representing a landmark in the building which could be set by the user.
- * The usage of landmarks is not enabled in v0.7.
+ * The usage of landmarks is not enabled in v0.8.1.
  *
  **/
 
 #ifndef JPSLANDMARK_H
 #define JPSLANDMARK_H
 #include <QPointF>
+#include <QGraphicsTextItem>
 #include <memory>
 #include "rooms.h"
-#include "jpswaypoint.h"
 
-using ptrWaypoint = std::shared_ptr<jpsWaypoint>;
+class jpsConnection;
+class jpsRegion;
+
 
 class jpsLandmark
 {
 public:
     jpsLandmark();
-    jpsLandmark(QGraphicsPixmapItem* pixmap, QString name, QPointF point);
+    jpsLandmark(QGraphicsPixmapItem* pixmap,const QString& caption, const QPointF& realPos,const qreal& rA=0, const qreal& rB=0, const int& id=0, const QString& type="Landmark");
     ~jpsLandmark();
     //Setter
-    void set_pixmap(QGraphicsPixmapItem* pixmap);
-    void set_name(QString name);
-    void set_pos(QPointF pos);
-    void set_room(jpsRoom* room);
-    void set_visibility(int visibility);
+
     //Getter
-    QGraphicsPixmapItem* get_pixmap();
-    QString get_name();
-    const QPointF& get_pos();
-    jpsRoom *get_room();
-    int get_visibility();
-    //Waypoint handling
-    void AddWaypoint(ptrWaypoint waypoint);
-    void RemoveWaypoint(ptrWaypoint waypoint);
-    QList<ptrWaypoint> GetWaypoints();
-    void RemoveAllWaypoints();
+    QGraphicsPixmapItem* GetPixmap() const;
+    jpsRoom *GetRoom() const;
+    int GetVisibility() const;
+    const QPointF& GetPos() const;
+    const QPointF& GetRealPos() const;
+    const QRectF &GetRect() const;
+    const double& GetA() const;
+    const double& GetB() const;
+    const int& GetId() const;
+    QGraphicsEllipseItem* GetEllipseItem() const;
+    const QString& GetCaption() const;
+    const QString& GetType() const;
+    QGraphicsTextItem* GetTextItem() const;
+    QGraphicsTextItem* GetPixmapTextItem() const;
+    const QList<jpsConnection*>& GetConnections() const;
+
+    //Setter
+    void SetPixmap(QGraphicsPixmapItem* pixmap);
+    void SetRoom(jpsRoom* room);
+    void SetVisibility(int visibility);
+    void SetPos(const QPointF& point);
+    void SetRealPos(const QPointF& point);
+    void SetRect(const QRectF &rect);
+    void SetEllipseItem(QGraphicsEllipseItem* ellipseItem);
+    void SetId(const int& id);
+    void SetCaption(const QString& string);
+    void SetType(const QString& type);
+    void SetTextItem(QGraphicsTextItem* textItem);
+    void SetPixMapText(QGraphicsTextItem* textItem);
+
+    //Connections
+    void NewConnection(jpsConnection* newConnection);
+    void RemoveConnection(jpsConnection* connection);
+
+    //Region
+    void SetRegion(jpsRegion* region);
+    jpsRegion* GetRegion() const;
+
+
+//    //Occurence
+//    const int& GetFirstFrame() const;
+//    const int& GetLastFrame() const;
+//    void SetFirstFrame(const int& frame);
+//    void SetLastFrame(const int& frame);
+//    bool OccursInFrame(const int& frame) const;
+
+//    //Currency
+//    bool IsCurrent() const;
+//    bool IsCurrentInFrame(const int& frameID);
+//    void SetCurrentness(bool stat, const int &frameID=1);
+//    const int& GetFirstFrameCurrent() const;
+//    const int& GetLastFrameCurrent() const;
+//    void ChangeCurrentness(const int& frameID);
+//    const QString& GetText();
+//    void SetText(const QString& text);
+
+//    bool Visited(const int& frameID) const;
 
 
 private:
-    QString _name;
+    QString _caption;
+    qreal _a;
+    qreal _b;
+    int _id;
+    QString _type;
     QPointF _pos;
+    QPointF _realPos;
     jpsRoom* _room;
     int _visibility;
     QGraphicsPixmapItem* _pixmapItem;
-    QList<ptrWaypoint > _waypoints;
+    QRectF _rect;
+    QGraphicsEllipseItem* _ellipseItem;
+    QGraphicsTextItem* _textItem;
+    QGraphicsTextItem* _pixmapText;
+    QList<jpsConnection*> _connections;
+    jpsRegion* _region;
 
 };
 

@@ -1,7 +1,7 @@
 /**
  * \file        main.cpp
  * \date        Jun 26, 2015
- * \version     v0.7
+ * \version     v0.8.1
  * \copyright   <2009-2015> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
@@ -27,7 +27,7 @@
 
 //main.cpp
 
-/* for compiling a standalone windows exe with VS
+ //for compiling a standalone windows exe with VS
 #ifdef _MSC_VER
 #    ifdef NDEBUG
 #        pragma comment(linker, "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
@@ -35,7 +35,7 @@
 #        pragma comment(linker, "/SUBSYSTEM:CONSOLE")
 #    endif
 #endif
-*/
+
 
 
 #include "mainWindow.h"

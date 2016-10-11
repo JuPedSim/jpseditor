@@ -1,7 +1,7 @@
 /**
  * \file        GraphicView.cpp
  * \date        Jun 26, 2015
- * \version     v0.7
+ * \version     v0.8.1
  * \copyright   <2009-2015> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
@@ -32,12 +32,13 @@
 #include <cmath>
 #include <memory>
 #include <QMessageBox>
+#include "datamanager.h"
 
 
 
-jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
+jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):QGraphicsView(parent)
 {
-
+    _datamanager=datamanager;
     current_line=nullptr;
     _currentVLine=nullptr;
     current_caption=nullptr;
@@ -66,18 +67,22 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent):QGraphicsView(parent)
     statDoor=false;
     statExit=false;
     _statHLine=false;
+    _statCopy=0;
     statLandmark=false;
     markedLandmark=nullptr;
     currentLandmarkRect=nullptr;
     currentPen.setColor(Qt::black);
     currentPen.setCosmetic(true);
+    currentPen.setWidth(2);
     this->scale(1/gl_scale_f,-1/gl_scale_f);
     _currentTrackedPoint=nullptr;
     _statLineEdit=false;
     intersection_point=nullptr;
+    _statDefConnections=0;
 
     lines_collided=false;
-    _assoDef=false;
+    _posDef=false;
+    _regionDef=false;
 
 
     //m_graphView->setFixedSize(1600, 900);
@@ -110,6 +115,31 @@ jpsGraphicsView::~jpsGraphicsView()
 {
     delete_all(true);
     delete Scene;
+}
+
+QGraphicsScene *jpsGraphicsView::GetScene()
+{
+    return Scene;
+}
+
+const qreal &jpsGraphicsView::GetTranslationX() const
+{
+    return translation_x;
+}
+
+const qreal &jpsGraphicsView::GetTranslationY() const
+{
+    return translation_y;
+}
+
+const qreal &jpsGraphicsView::GetScaleF() const
+{
+    return gl_scale_f;
+}
+
+void jpsGraphicsView::SetDatamanager(jpsDatamanager *datamanager)
+{
+    _datamanager=datamanager;
 }
 
 
@@ -182,6 +212,10 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
         //{
         //emit set_focus_textedit();
         current_line->setLine(current_line->line().x1(),current_line->line().y1(),translated_pos.x(),translated_pos.y());
+        if (current_line->line().isNull())
+            current_line->setVisible(false);
+        else
+            current_line->setVisible(true);
 
         //}
         //As line length has changed
@@ -223,7 +257,9 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                 emit no_drawing();
             }
             else
+            {
                 drawLine();
+            }
         }
         else if (statLandmark==true)
         {
@@ -231,12 +267,26 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
         }
         else
         {
+            if (_statDefConnections==1)
+            {
+                emit DefConnection1Completed();
+            }
             //LineEdit
-            if (_currentTrackedPoint!=nullptr && line_tracked==1)
+            else if (_currentTrackedPoint!=nullptr && line_tracked==1 && _statCopy==0)
             {
                 EditLine(_currentTrackedPoint);
                 _currentTrackedPoint=nullptr;
                 line_tracked=-1;
+            }
+            else if (_statCopy!=0)
+            {
+                if (_statCopy==1)
+                {
+                    _copyOrigin=return_Pos();
+                    _statCopy += 1;
+                }
+                else
+                    Copy_lines(return_Pos()-_copyOrigin);
             }
             else
             {
@@ -274,10 +324,13 @@ void jpsGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
 
 void jpsGraphicsView::unmark_all_lines()
 {
+    QPen pen = QPen(Qt::black,2);
+    pen.setCosmetic(true);
 
     for (int i=0; i<marked_lines.size();i++)
     {
-        marked_lines[i]->get_line()->setPen(QPen(QColor(marked_lines[i]->get_defaultColor()),0));
+        pen.setColor(QColor(marked_lines[i]->get_defaultColor()));
+        marked_lines[i]->get_line()->setPen(pen);
     }
     marked_lines.clear();
 }
@@ -292,14 +345,52 @@ void jpsGraphicsView::addLandmark()
                           +pixmap.height()/1000.));
     pixmapItem->setTransform(QTransform::fromScale(1,-1),true);
     pixmapItem->setTransform(QTransform::fromTranslate(translation_x,-translation_y), true);
-    QString name="Landmark"+QString::number(LLandmarks.size());
+    QString name="Landmark"+QString::number(_datamanager->GetLandmarkCounter());
     jpsLandmark* landmark = new jpsLandmark(pixmapItem,name,pixmapItem->scenePos());
+    //text immediately under the pixmap
+    QGraphicsTextItem* text = Scene->addText(name);
+    text->setPos(QPointF(landmark->GetPos().x(),
+                         landmark->GetPos().y()+0.2));// landmark->GetPos().x()+translation_x,landmark->GetPos().y()+translation_y);
+    //text->setScale(gl_scale_f);
 
-    LLandmarks.push_back(landmark);
+    text->setData(0,0.01);
+    text->setTransform(QTransform::fromScale(0.01,-0.01),true);
 
-    emit landmark_added();
+
+    landmark->SetPixMapText(text);
+
+    _datamanager->new_landmark(landmark);
 
 }
+
+void jpsGraphicsView::addLandmark(const QPointF &pos)
+{
+    QPixmap pixmap("../jupedsim/forms/statue.jpg");
+
+    QGraphicsPixmapItem* pixmapItem = Scene->addPixmap(pixmap);
+    pixmapItem->setScale(0.002);
+    pixmapItem->setTransform(QTransform::fromTranslate(pos.x()-pixmap.width()/1000.,pos.y()
+                          +pixmap.height()/1000.));
+    pixmapItem->setTransform(QTransform::fromScale(1,-1),true);
+    pixmapItem->setTransform(QTransform::fromTranslate(translation_x,-translation_y), true);
+    QString name="Landmark"+QString::number(_datamanager->GetLandmarkCounter());
+    jpsLandmark* landmark = new jpsLandmark(pixmapItem,name,pos);
+    //text immediately under the pixmap
+    QGraphicsTextItem* text = Scene->addText(name);
+    text->setPos(QPointF(landmark->GetPos().x(),
+                         landmark->GetPos().y()+0.2));// landmark->GetPos().x()+translation_x,landmark->GetPos().y()+translation_y);
+    //text->setScale(gl_scale_f);
+
+    text->setTransform(QTransform::fromTranslate(translation_x,-translation_y), true);
+    text->setData(0,0.01);
+    text->setTransform(QTransform::fromScale(0.01,-0.01),true);
+
+
+    landmark->SetPixMapText(text);
+
+    _datamanager->new_landmark(landmark);
+}
+
 
 void jpsGraphicsView::unmarkLandmark()
 {
@@ -313,36 +404,18 @@ void jpsGraphicsView::unmarkLandmark()
 
 }
 
-QList<jpsLandmark* > jpsGraphicsView::get_landmarks()
-{
-    return LLandmarks;
-}
+
 
 QGraphicsRectItem *jpsGraphicsView::GetCurrentSelectRect()
 {
     return currentSelectRect;
 }
 
-void jpsGraphicsView::ShowWaypoints(QList<ptrWaypoint> waypoints)
+void jpsGraphicsView::SetStatDefConnections(const int &stat)
 {
-    ClearWaypoints();
-
-    for (ptrWaypoint waypoint:waypoints)
-    {
-        QGraphicsEllipseItem* ellipse = Scene->addEllipse(waypoint->GetRect(),QPen(Qt::blue,0));
-        ellipse->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
-        QString string = waypoint->GetType() + "\n" + waypoint->GetCaption()+ "\n" + waypoint->GetText();
-        QGraphicsTextItem* text = Scene->addText(string);
-        text->setPos(waypoint->GetPos().x()+translation_x,waypoint->GetPos().y()+translation_y);
-        //text->setScale(gl_scale_f);
-        text->setData(0,gl_scale_f);
-        text->setTransform(QTransform::fromScale(gl_scale_f,-gl_scale_f),true);
-        _waypoints.push_back(ellipse);
-        _waypointLabels.push_back(text);
-    }
-
-
+    _statDefConnections=stat;
 }
+
 
 void jpsGraphicsView::ShowYAHPointer(const QPointF &pos, const qreal &dir)
 {
@@ -364,21 +437,13 @@ void jpsGraphicsView::ShowYAHPointer(const QPointF &pos, const qreal &dir)
 
 }
 
-void jpsGraphicsView::ClearWaypointLabels()
-{
-    for (QGraphicsTextItem* label:_waypointLabels)
-    {
-        delete label;
-    }
-    _waypointLabels.clear();
-}
 
 void jpsGraphicsView::ShowConnections(QList<ptrConnection> cons)
 {
     ClearConnections();
     for (ptrConnection con:cons)
     {
-        QGraphicsLineItem* line = Scene->addLine(QLineF(con->GetWaypoints().first->GetPos(),con->GetWaypoints().second->GetPos()),QPen(Qt::blue,0));
+        QGraphicsLineItem* line = Scene->addLine(QLineF(con->GetLandmarks().first->GetPos(),con->GetLandmarks().second->GetPos()),QPen(Qt::blue,0));
         _connections.push_back(line);
 
 
@@ -399,19 +464,6 @@ void jpsGraphicsView::ClearConnections()
 
 
 
-void jpsGraphicsView::ClearWaypoints()
-{
-
-    //Waypoints
-    for (QGraphicsEllipseItem* old_waypoint:_waypoints)
-    {
-        delete old_waypoint;
-    }
-    _waypoints.clear();
-
-    ClearWaypointLabels();
-
-}
 
 void jpsGraphicsView::ActivateLineGrid()
 {
@@ -445,13 +497,23 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
         {
             leftbutton_hold=false;
 
-            if (currentSelectRect!=nullptr)
+            //for connection setting
+            if (_statDefConnections==2)
             {
-                if (_assoDef)
+                emit DefConnection2Completed();
+            }
+            else if (currentSelectRect!=nullptr)
+            {
+                if (_posDef)
                 {
-                    //Waypoint definition
-                    emit AssoDefCompleted();
-                    _assoDef=false;
+                    //Landmark position definition
+                    emit PositionDefCompleted();
+                    _posDef=false;
+                }
+                else if (_regionDef)
+                {
+                    emit RegionDefCompleted();
+                    _regionDef=false;
                 }
                 else
                 {
@@ -483,13 +545,16 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 
 
 
-QPointF jpsGraphicsView::return_Pos()
+const QPointF &jpsGraphicsView::return_Pos() const
 {
     return translated_pos;
 }
 
 void jpsGraphicsView::delete_all(bool final)
 {
+    unmark_all_lines();
+    unmarkLandmark();
+
     if (!final)
     {
         int ret = QMessageBox::warning(this,"Delete?", "Do you really want to delete all elements?", QMessageBox::Yes | QMessageBox::No);
@@ -523,19 +588,13 @@ void jpsGraphicsView::delete_all(bool final)
 
     }
 
-    for (jpsLandmark* landmark:LLandmarks)
-    {
-        delete landmark->get_pixmap();
-        delete landmark;
-    }
-    for (QGraphicsEllipseItem* waypoint:_waypoints)
-    {
-        delete waypoint;
-    }
+    //delete landmarks
+
+    _datamanager->remove_all_landmarks();
+
 
     intersect_point_vector.clear();
     marked_lines.clear();
-    LLandmarks.clear();
 
 
     if (current_line!=nullptr)
@@ -782,6 +841,7 @@ void jpsGraphicsView::drawLine()
 
         // all two points of the line are inited with the cursorcoordinates
         current_line = Scene->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),currentPen);
+        current_line->setVisible(false);
         //current_line->translate(translation_x,translation_y);
         current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
         emit set_focus_textedit();
@@ -837,13 +897,17 @@ void jpsGraphicsView::select_line(jpsLineItem *mline)
 
     if (!marked_lines.contains(mline))
     {
-        mline->get_line()->setPen(QPen(Qt::red,0));
+        QPen pen = QPen(Qt::red,2);
+        pen.setCosmetic(true);
+        mline->get_line()->setPen(pen);
         marked_lines.push_back(mline);
         line_tracked=1;
     }
     else
     {
-        mline->get_line()->setPen(QPen(Qt::black,0));
+        QPen pen = QPen(Qt::black,2);
+        pen.setCosmetic(true);
+        mline->get_line()->setPen(pen);
         marked_lines.removeOne(mline);
     }
 }
@@ -856,6 +920,8 @@ void jpsGraphicsView::disable_drawing()
     statExit=false;
     statLandmark=false;
     _statLineEdit=false;
+    _statHLine=false;
+    _statCopy=0;
     // if drawing was canceled by pushing ESC
     if (current_line!=nullptr)
     {
@@ -874,8 +940,10 @@ void jpsGraphicsView::disable_drawing()
 
 jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const qreal &x2,const qreal &y2,const QString &type)
 {
+    QPen pen = QPen(Qt::black,2);
+    pen.setCosmetic(true);
 
-    current_line=Scene->addLine(x1,y1,x2,y2);
+    current_line=Scene->addLine(x1,y1,x2,y2,pen);
     current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
     jpsLineItem* newLine = new jpsLineItem(current_line);
     newLine->set_id(id_counter);
@@ -898,7 +966,8 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
         newLine->set_Wall();
     }
 
-    current_line->setPen(QPen(QColor(newLine->get_defaultColor()),0));
+    pen.setColor(newLine->get_defaultColor());
+    newLine->get_line()->setPen(pen);
     // if line has already been added before (from another room)
 
     for (int i=0; i<line_vector.size(); i++)
@@ -1100,6 +1169,8 @@ void jpsGraphicsView::Undo()
 {
     if (!_undoStack.IsEmpty())
     {
+        emit no_drawing();
+
         const LineAction recentAction = _undoStack.GetRecentAction();
 
         if (recentAction.GetName()=="LineDeleted")
@@ -1127,6 +1198,8 @@ void jpsGraphicsView::Redo()
 {
     if (!_redoStack.IsEmpty())
     {
+        emit no_drawing();
+
         const LineAction recentAction = _redoStack.GetRecentAction();
 
         if (recentAction.GetName()=="LineDeleted")
@@ -1283,9 +1356,9 @@ void jpsGraphicsView::translations(QPointF old_pos)
 //        grid_point_vector[i].setY(pos.y());
 //    }
 
-    for (jpsLandmark* landmark:LLandmarks)
+    for (jpsLandmark* landmark:_datamanager->get_landmarks())
     {
-        landmark->get_pixmap()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
+
 
     }
     if (currentLandmarkRect!=nullptr)
@@ -1296,20 +1369,51 @@ void jpsGraphicsView::translations(QPointF old_pos)
     {
         gridmap->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
-    for (QGraphicsEllipseItem* ellipse:_waypoints)
-    {
-        ellipse->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
-    }
     for (QGraphicsLineItem* lineItem:_yahPointer)
     {
         lineItem->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
-    for (QGraphicsTextItem* item:_waypointLabels)
+    for (jpsLandmark* landmark:_datamanager->get_landmarks())
     {
-        qreal scalef = item->data(0).toReal();
-        item->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
-        item->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
-        item->setTransform(QTransform::fromScale(scalef,scalef),true);
+        if (landmark->GetTextItem()!=nullptr)
+        {
+            qreal scalef = landmark->GetTextItem()->data(0).toReal();
+            landmark->GetTextItem()->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
+            landmark->GetTextItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
+            landmark->GetTextItem()->setTransform(QTransform::fromScale(scalef,scalef),true);
+        }
+
+        if (landmark->GetPixmapTextItem()!=nullptr)
+        {
+            qreal scalef = landmark->GetPixmapTextItem()->data(0).toReal();
+            landmark->GetPixmapTextItem()->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
+            landmark->GetPixmapTextItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
+            landmark->GetPixmapTextItem()->setTransform(QTransform::fromScale(scalef,scalef),true);
+        }
+
+        landmark->GetPixmap()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
+
+        if (landmark->GetEllipseItem()!=nullptr)
+            landmark->GetEllipseItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
+
+    for (jpsConnection* connection:_datamanager->GetAllConnections())
+    {
+        connection->GetLineItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
+
+    for (jpsRegion* region:_datamanager->GetRegions())
+    {
+        if (region->GetTextItem()!=nullptr)
+        {
+            qreal scalef = region->GetTextItem()->data(0).toReal();
+            region->GetTextItem()->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
+            region->GetTextItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
+            region->GetTextItem()->setTransform(QTransform::fromScale(scalef,scalef),true);
+        }
+
+        if (region->GetEllipseItem()!=nullptr)
+            region->GetEllipseItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
 
     for (QGraphicsLineItem* lineItem:_connections)
@@ -1454,9 +1558,14 @@ void jpsGraphicsView::ShowOrigin()
     }
 }
 
-void jpsGraphicsView::StatAssoDef()
+void jpsGraphicsView::StatPositionDef()
 {
-   _assoDef=!_assoDef;
+    _posDef=!_posDef;
+}
+
+void jpsGraphicsView::ChangeRegionStatDef()
+{
+    _regionDef=!_regionDef;
 }
 
 
@@ -1579,9 +1688,7 @@ void jpsGraphicsView::delete_landmark()
 {
     if (markedLandmark!=nullptr)
     {
-        LLandmarks.removeOne(markedLandmark);
-        delete markedLandmark->get_pixmap();
-        delete markedLandmark;
+        _datamanager->remove_landmark(markedLandmark);
         markedLandmark=nullptr;
         delete currentLandmarkRect;
         currentLandmarkRect=nullptr;
@@ -1593,10 +1700,10 @@ void jpsGraphicsView::catch_landmark()
 {
     if (currentSelectRect!=nullptr)
     {
-        for (jpsLandmark* landmark:LLandmarks)
+        for (jpsLandmark* landmark:_datamanager->get_landmarks())
         {
-            if (currentSelectRect->contains(QPointF(landmark->get_pixmap()->scenePos().x()-translation_x,
-                                                    landmark->get_pixmap()->scenePos().y()-translation_y)))
+            if (currentSelectRect->contains(QPointF(landmark->GetPixmap()->scenePos().x()-translation_x,
+                                                    landmark->GetPixmap()->scenePos().y()-translation_y)))
             {
                 select_landmark(landmark);
                 return;
@@ -1607,8 +1714,9 @@ void jpsGraphicsView::catch_landmark()
 
 void jpsGraphicsView::select_landmark(jpsLandmark* landmark)
 {
+    unmarkLandmark();
     currentLandmarkRect=Scene->addRect(
-                landmark->get_pixmap()->mapRectToScene(landmark->get_pixmap()->pixmap().rect()),QPen(Qt::red,0));
+                landmark->GetPixmap()->mapRectToScene(landmark->GetPixmap()->pixmap().rect()),QPen(Qt::red,0));
     markedLandmark=landmark;
 }
 
@@ -1766,6 +1874,7 @@ void jpsGraphicsView::en_disableHLine()
     statDoor=false;
     statWall=false;
     statLandmark=false;
+    _statCopy=0;
     if (_statHLine==false)
     {
         emit no_drawing();
@@ -1787,6 +1896,7 @@ void jpsGraphicsView::en_disableLandmark()
     statDoor=false;
     statWall=false;
     statExit=false;
+    _statCopy=0;
     if (statLandmark==false)
     {
         emit no_drawing();
@@ -1798,13 +1908,20 @@ bool jpsGraphicsView::statusExit()
     return statExit;
 }
 
+void jpsGraphicsView::start_Copy_function()
+{
+    _statCopy=1;
+}
 
-
-
-
-
-
-
-
-
-
+void jpsGraphicsView::Copy_lines(const QPointF& delta)
+{
+    for (jpsLineItem* line:marked_lines)
+    {
+        addLineItem(line->get_line()->line().p1().x()+delta.x(),
+                    line->get_line()->line().p1().y()+delta.y(),
+                    line->get_line()->line().p2().x()+delta.x(),
+                    line->get_line()->line().p2().y()+delta.y(),
+                    line->GetType());
+    }
+    _statCopy=0;
+}

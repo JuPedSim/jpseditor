@@ -33,9 +33,10 @@
     </property>
     <addaction name="action_ffnen_xml"/>
     <addaction name="action_ffnen"/>
+    <addaction name="action_ffnen_cogmap"/>
     <addaction name="actionSpeichern"/>
     <addaction name="actionSpeichern_dxf"/>
-    <addaction name="separator"/>
+    <addaction name="actionSpeichern_cogmap"/>
     <addaction name="separator"/>
     <addaction name="actionSettings"/>
     <addaction name="separator"/>
@@ -55,6 +56,7 @@
     <addaction name="separator"/>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
+    <addaction name="actionCopy"/>
     <addaction name="separator"/>
     <addaction name="actionWall"/>
     <addaction name="actionDoor"/>
@@ -67,6 +69,8 @@
     <addaction name="actionDelete_single_line"/>
     <addaction name="separator"/>
     <addaction name="actionRoom"/>
+    <addaction name="actionLandmark"/>
+    <addaction name="actionLandmarkWidget"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -558,6 +562,47 @@
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionSpeichern_cogmap">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/filesave.png</normaloff>:/filesave.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save CognitiveMap</string>
+   </property>
+   <property name="toolTip">
+    <string>Save CognitiveMap</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="action_ffnen_cogmap">
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/open.png</normaloff>:/open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Load Cognitive Map</string>
+   </property>
+   <property name="toolTip">
+    <string>Load Cognitive Map</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionCopy">
+   <property name="text">
+    <string>Copy</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
    </property>
   </action>
  </widget>

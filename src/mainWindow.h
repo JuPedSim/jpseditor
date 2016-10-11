@@ -1,7 +1,7 @@
 /**
  * \file        mainWindow.h
  * \date        Jun 26, 2015
- * \version     v0.7
+ * \version     v0.8.1
  * \copyright   <2009-2015> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
@@ -75,9 +75,12 @@ protected slots:
     //parseFiles
     void openFile();
     void openFileXML();
-    void openFileCMap();
+    void openFileCogMap();
     void saveFile();
     void saveAsDXF();
+
+    //cogmap
+    void SaveCogMapXML();
     
     //about
     void info();
@@ -106,7 +109,6 @@ protected slots:
     //Room and landmark def
     void define_room();
     void define_landmark();
-    void add_landmark();
     
     //view options
     void gridmode();
@@ -116,15 +118,18 @@ protected slots:
     
     //autosave
     void AutoSave();
-    
+
+
     //CMap
-    void RunCMap();
-    void UpdateCMap();
+    //void RunCMap();
+    //void UpdateCMap();
 
     //quit
     void closeEvent(QCloseEvent *event);
 
 
+private slots:
+    void on_actionCopy_triggered();
 };
 
 

@@ -1,7 +1,7 @@
 /**
  * \file        jpslandmark.cpp
  * \date        Jun 26, 2015
- * \version     v0.7
+ * \version     v0.8.1
  * \copyright   <2009-2015> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
@@ -22,106 +22,219 @@
  *
  * \section Description
  * This class is representing a landmark in the building which could be set by the user.
- * The usage of landmarks is not enabled in v0.7.
+ * The usage of landmarks is not enabled in v0.8.1.
  *
  **/
 
 #include "jpslandmark.h"
+#include<cmath>
 
 jpsLandmark::jpsLandmark()
 {
 
 }
 
-jpsLandmark::jpsLandmark(QGraphicsPixmapItem* pixmap, QString name, QPointF point)
+jpsLandmark::jpsLandmark(QGraphicsPixmapItem *pixmap, const QString &caption, const QPointF &realPos, const qreal &rA, const qreal &rB, const int &id, const QString &type)
 {
-    _name=name;
-    _pos=point;
+    _caption=caption;
+    _realPos=realPos;
+    _pos=realPos;
     _room=nullptr;
     _visibility=0;
     _pixmapItem=pixmap;
-
+    _a=rA;
+    _b=rB;
+    _id=id;
+    _type=type;
+    _rect=QRectF(realPos.x()-rA,realPos.y()-rB,rA*2,rB*2);
+    _textItem=nullptr;
+    _pixmapText=nullptr;
+    _ellipseItem=nullptr;
+    _region=nullptr;
 
 }
 
 jpsLandmark::~jpsLandmark()
 {
-    RemoveAllWaypoints();
+    delete _pixmapItem;
+    delete _ellipseItem;
+    delete _textItem;
+    delete _pixmapText;
 }
 
-void jpsLandmark::set_pixmap(QGraphicsPixmapItem *pixmap)
+void jpsLandmark::SetPixmap(QGraphicsPixmapItem *pixmap)
 {
     _pixmapItem=pixmap;
 }
 
-void jpsLandmark::set_name(QString name)
-{
-    _name=name;
 
-}
 
-void jpsLandmark::set_pos(QPointF pos)
-{
-    _pos=pos;
-}
-
-void jpsLandmark::set_room(jpsRoom *room)
+void jpsLandmark::SetRoom(jpsRoom *room)
 {
     _room=room;
 }
 
-void jpsLandmark::set_visibility(int visibility)
+void jpsLandmark::SetVisibility(int visibility)
 {
     _visibility=visibility;
 }
 
-QGraphicsPixmapItem* jpsLandmark::get_pixmap()
+QGraphicsPixmapItem* jpsLandmark::GetPixmap() const
 {
     return _pixmapItem;
 }
 
-QString jpsLandmark::get_name()
-{
-    return _name;
-}
 
-const QPointF &jpsLandmark::get_pos()
-{
-    return _pos;
-}
 
-jpsRoom *jpsLandmark::get_room()
+jpsRoom *jpsLandmark::GetRoom() const
 {
     return _room;
 }
 
-int jpsLandmark::get_visibility()
+int jpsLandmark::GetVisibility() const
 {
     return _visibility;
 }
 
-void jpsLandmark::AddWaypoint(ptrWaypoint waypoint)
+
+const QPointF &jpsLandmark::GetPos() const
 {
-    _waypoints.push_back(waypoint);
+    return _pos;
+
 }
 
-void jpsLandmark::RemoveWaypoint(ptrWaypoint waypoint)
+const QPointF &jpsLandmark::GetRealPos() const
 {
-    delete waypoint.get();
-    _waypoints.removeOne(waypoint);
+    return _realPos;
 }
 
-QList<ptrWaypoint> jpsLandmark::GetWaypoints()
+const QRectF &jpsLandmark::GetRect() const
 {
-    return _waypoints;
+    return _rect;
 }
 
-void jpsLandmark::RemoveAllWaypoints()
+const double& jpsLandmark::GetA() const
 {
-    for (ptrWaypoint waypoint:_waypoints)
+    return _a;
+}
+
+const double& jpsLandmark::GetB() const
+{
+    return _b;
+}
+
+const int &jpsLandmark::GetId() const
+{
+    return _id;
+}
+
+QGraphicsEllipseItem *jpsLandmark::GetEllipseItem() const
+{
+    return _ellipseItem;
+}
+
+const QString &jpsLandmark::GetCaption() const
+{
+    return _caption;
+}
+
+const QString &jpsLandmark::GetType() const
+{
+    return _type;
+}
+
+QGraphicsTextItem *jpsLandmark::GetTextItem() const
+{
+    return _textItem;
+}
+
+QGraphicsTextItem *jpsLandmark::GetPixmapTextItem() const
+{
+    return _pixmapText;
+}
+
+const QList<jpsConnection *> &jpsLandmark::GetConnections() const
+{
+    return _connections;
+}
+
+
+void jpsLandmark::SetPos(const QPointF& point)
+{
+    _pos=point;
+    _rect.setRect(point.x(),point.y(),_rect.width(),_rect.height());
+}
+
+void jpsLandmark::SetRealPos(const QPointF &point)
+{
+    _realPos=point;
+}
+
+void jpsLandmark::SetRect(const QRectF& rect)
+{
+    _rect=rect;
+    _a=std::fabs(_rect.width()/2.0);
+    _b=std::fabs(_rect.height()/2.0);
+    _pos=_rect.center();
+}
+
+void jpsLandmark::SetEllipseItem(QGraphicsEllipseItem *ellipseItem)
+{
+    _ellipseItem=ellipseItem;
+}
+
+void jpsLandmark::SetId(const int &id)
+{
+    _id=id;
+}
+
+void jpsLandmark::SetCaption(const QString &string)
+{
+    _caption=string;
+    if (_textItem!=nullptr)
+        _textItem->setPlainText(_caption);
+
+    if (_pixmapText!=nullptr)
+        _pixmapText->setPlainText(_caption);
+}
+
+void jpsLandmark::SetType(const QString &type)
+{
+    _type=type;
+}
+
+void jpsLandmark::SetTextItem(QGraphicsTextItem *textItem)
+{
+    _textItem=textItem;
+}
+
+void jpsLandmark::SetPixMapText(QGraphicsTextItem *textItem)
+{
+    _pixmapText=textItem;
+}
+
+void jpsLandmark::NewConnection(jpsConnection *newConnection)
+{
+    _connections.push_back(newConnection);
+}
+
+void jpsLandmark::RemoveConnection(jpsConnection *connection)
+{
+    if (_connections.contains(connection))
     {
-        delete waypoint.get();
+        _connections.removeOne(connection);
     }
-    _waypoints.clear();
 }
+
+void jpsLandmark::SetRegion(jpsRegion *region)
+{
+    _region=region;
+}
+
+jpsRegion *jpsLandmark::GetRegion() const
+{
+    return _region;
+}
+
+
 

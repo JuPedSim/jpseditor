@@ -107,11 +107,12 @@ set( SRCS
     src/widgetsettings.cpp
     src/jpsyahpointer.cpp
     src/jpsconnection.cpp
-    src/UndoFramework/action.cpp
-    src/UndoFramework/lineaction.cpp
-    src/UndoFramework/actionstack.cpp
+	src/jpsregion.cpp
     dxflib/src/dl_writer_ascii.cpp
     dxflib/src/dl_dxf.cpp
+    src/UndoFramework/action.cpp
+    src/UndoFramework/actionstack.cpp
+    src/UndoFramework/lineaction.cpp
   )  
 # all header files that should be treated with moc
 set( HDR
@@ -131,9 +132,7 @@ set( HDR
     src/widgetsettings.h
     src/jpsyahpointer.h
     src/jpsconnection.h
-    src/UndoFramework/action.h
-    src/UndoFramework/lineaction.h
-    src/UndoFramework/actionstack.h
+	src/jpsregion.h
     dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h
     dxflib/src/dl_global.h
@@ -145,6 +144,9 @@ set( HDR
     dxflib/src/dl_creationadapter.h
     dxflib/src/dl_codes.h
     dxflib/src/dl_attributes.h
+    src/UndoFramework/action.h
+    src/UndoFramework/actionstack.h
+    src/UndoFramework/lineaction.h
  
   )
 
@@ -458,6 +460,7 @@ if(APPLE OR WIN32)
   if(${QT4_INSTALLED})
     include(DeployQt4)
     install_qt4_executable("${EXECUTABLE}" "qsqlite")
+
   elseif(${QT5_INSTALLED})
     include(DeployQt5)
     install_qt5_executable("${EXECUTABLE}" "qsqlite")

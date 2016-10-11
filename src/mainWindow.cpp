@@ -1,7 +1,7 @@
 /**
  * \file        mainWindow.cpp
  * \date        Jun 26, 2015
- * \version     v0.7
+ * \version     v0.8.1
  * \copyright   <2009-2015> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
@@ -47,6 +47,7 @@ MWindow :: MWindow() {
 
     mview = new jpsGraphicsView(this);
     dmanager = new jpsDatamanager(this,mview);
+    mview->SetDatamanager(dmanager);
 
     //Roomwidget
     rwidget=nullptr;
@@ -94,10 +95,11 @@ MWindow :: MWindow() {
     connect(actionBeenden, SIGNAL(triggered(bool)),this,SLOT(close()));
     connect(action_ffnen,SIGNAL(triggered(bool)),this,SLOT(openFile()));
     connect(action_ffnen_xml,SIGNAL(triggered(bool)),this,SLOT(openFileXML()));
+    connect(action_ffnen_cogmap,SIGNAL(triggered(bool)),this,SLOT(openFileCogMap()));
     connect(actionSpeichern,SIGNAL(triggered(bool)),this,SLOT(saveFile()));
     connect(actionSpeichern_dxf,SIGNAL(triggered(bool)),this,SLOT(saveAsDXF()));
     connect(actionSettings,SIGNAL(triggered(bool)),this,SLOT(Settings()));
-    connect(action_ffnen_CogMap,SIGNAL(triggered(bool)),this,SLOT(openFileCMap()));
+    //connect(action_ffnen_CogMap,SIGNAL(triggered(bool)),this,SLOT(openFileCMap()));
     // Tab Help
     connect(action_ber,SIGNAL(triggered(bool)),this,SLOT(info()));
     // Tab Tools
@@ -126,7 +128,6 @@ MWindow :: MWindow() {
     connect(mview,SIGNAL(remove_all()),this,SLOT(remove_all_lines()));
     connect(mview,SIGNAL(set_focus_textedit()),length_edit,SLOT(setFocus()));
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
-    connect(mview,SIGNAL(landmark_added()),this,SLOT(add_landmark()));
     connect(mview,SIGNAL(LineLengthChanged()),this,SLOT(ShowLineLength()));
     // Mark all lines
     QAction *str_a = new QAction(this);
@@ -142,11 +143,13 @@ MWindow :: MWindow() {
     // Landmark specifications
     connect(actionLandmarkWidget,SIGNAL(triggered(bool)),this,SLOT(define_landmark()));
     //CMap
-    connect(actionRun_visualisation,SIGNAL(triggered(bool)),this,SLOT(RunCMap()));
-    connect(_cMapTimer,SIGNAL(timeout()),this,SLOT(UpdateCMap()));
+//    connect(actionRun_visualisation,SIGNAL(triggered(bool)),this,SLOT(RunCMap()));
+//    connect(_cMapTimer,SIGNAL(timeout()),this,SLOT(UpdateCMap()));
+//    connect(actionSpeichern_cogmap,SIGNAL(triggered()),this,SLOT(SaveCogMapXML()));
     //Undo Redo
     connect(actionUndo,SIGNAL(triggered(bool)),mview,SLOT(Undo()));
     connect(actionRedo,SIGNAL(triggered(bool)),mview,SLOT(Redo()));
+
 }
 
 MWindow::~MWindow()
@@ -193,37 +196,33 @@ void MWindow::AutoSave()
     }
 }
 
-void MWindow::RunCMap()
-{
 
-    double frameRate = dmanager->GetCMapFrameRate();
-    _cMapFrame=1;
-    if (frameRate==0)
-    {
-        statusBar()->showMessage(tr("No cognitive map has been loaded!"),10000);
-        return;
-    }
-    _cMapTimer->setInterval(1/frameRate*1000);
-    _cMapTimer->start();
-}
+//void MWindow::RunCMap()
+//{
 
-void MWindow::UpdateCMap()
-{
-    _cMapFrame++;
-    if (_cMapFrame>dmanager->GetLastCMapFrame())
-    {
-        _cMapTimer->stop();
-        dmanager->ShowCMapFrame(1);
-        return;
-    }
-    dmanager->ShowCMapFrame(_cMapFrame);
-}
+//    double frameRate = dmanager->GetCMapFrameRate();
+//    _cMapFrame=1;
+//    if (frameRate==0)
+//    {
+//        statusBar()->showMessage(tr("No cognitive map has been loaded!"),10000);
+//        return;
+//    }
+//    _cMapTimer->setInterval(1/frameRate*1000);
+//    _cMapTimer->start();
+//}
 
-void MWindow::add_landmark()
-{
-    jpsLandmark* landmark = mview->get_landmarks().last();
-    dmanager->new_landmark(landmark);
-}
+//void MWindow::UpdateCMap()
+//{
+//    _cMapFrame++;
+//    if (_cMapFrame>dmanager->GetLastCMapFrame())
+//    {
+//        _cMapTimer->stop();
+//        dmanager->ShowCMapFrame(1);
+//        return;
+//    }
+//    dmanager->ShowCMapFrame(_cMapFrame);
+//}
+
 
 void MWindow::Settings()
 {
@@ -281,12 +280,14 @@ void MWindow::openFileXML()
     //RoutingFile
     QString fileNameRouting= fileName.split(".").first()+"_routing.xml";
     QFile fileRouting(fileNameRouting);
+    bool statusFileRouting=true;
     if (!fileRouting.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        return;
+        statusFileRouting=false;
+
     }
 
-    if (!dmanager->readXML(file) || !dmanager->readRoutingXML(fileRouting))
+    if (!dmanager->readXML(file))
     {
         QMessageBox::critical(this,
                               "OpenFileXML",
@@ -295,8 +296,14 @@ void MWindow::openFileXML()
         statusBar()->showMessage("XML-File could not be parsed!",10000);
     }
 
+
+
     else
     {
+        //optional: load routing file
+        if (statusFileRouting==true)
+            dmanager->readRoutingXML(fileRouting);
+
         //AutoZoom to drawing
         mview->AutoZoom();
         statusBar()->showMessage("XML-File successfully loaded!",10000);
@@ -304,7 +311,7 @@ void MWindow::openFileXML()
 
 }
 
-void MWindow::openFileCMap()
+void MWindow::openFileCogMap()
 {
     QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
     QFile file(fileName);
@@ -327,7 +334,6 @@ void MWindow::openFileCMap()
     {
 
         statusBar()->showMessage("Cognitive map successfully loaded!",10000);
-        dmanager->ShowCMapFrame(1);
     }
 }
 
@@ -378,6 +384,20 @@ void MWindow::saveAsDXF()
         dmanager->writeDXF(fName);
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("DXF-File successfully saved!"),10000);
+    }
+}
+
+void MWindow::SaveCogMapXML()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,tr("Save CognitiveMap XML"),"",tr("XML-Files (*.xml)"));
+    if (fileName.isEmpty()) return;
+    QFile file(fileName);
+
+    if(file.open(QIODevice::WriteOnly|QIODevice::Text))
+    {
+        dmanager->WriteCognitiveMapXML(file);
+        //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
+        statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
     }
 }
 
@@ -455,6 +475,7 @@ void MWindow::disableDrawing()
     this->actionExit->setChecked(false);
     this->actionLandmark->setChecked(false);
     this->actionHLine->setChecked(false);
+    this->actionCopy->setChecked(false);
 }
 
 void MWindow::objectsnap()
@@ -527,7 +548,6 @@ void MWindow::define_landmark()
     else
     {
         lwidget->close();
-        mview->ClearWaypoints();
         lwidget=nullptr;
         actionLandmarkWidget->setChecked(false);
     }
@@ -543,6 +563,7 @@ void MWindow::en_selectMode()
     actionExit->setChecked(false);
     actionHLine->setChecked(false);
     actionLandmark->setChecked(false);
+    actionCopy->setChecked(false);
     length_edit->clearFocus();
 }
 
@@ -594,14 +615,8 @@ void MWindow::closeEvent(QCloseEvent *event)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
+void MWindow::on_actionCopy_triggered()
+{
+    actionCopy->setChecked(true);
+    mview->start_Copy_function();
+}

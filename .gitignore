@@ -2,3 +2,4 @@ build/
 Makefile
 bin/
 ui_*
+.idea/
