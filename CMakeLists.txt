@@ -20,15 +20,15 @@ ENDIF (POLICY CMP0043)
 IF (POLICY CMP0020)
 CMAKE_POLICY (SET CMP0020 OLD) # keep old POLICY (2.8.10 and lower) The OLD behavior for this policy is not to link executables to
 ENDIF (POLICY CMP0020)			#qtmain.lib automatically when they link to the QtCore IMPORTEDtarget 
-project(JPSeditor)
+project(jpseditor)
 
 
 
 set(README_FILE "${CMAKE_SOURCE_DIR}/README.md")
 set(CMAKE_COLOR_MAKEFILE ON)
 set(JPSEDITOR_MAJOR_VERSION 0)
-set(JPSEDITOR_MINOR_VERSION 7)
-set(JPSEDITOR_PATCH_VERSION 0)
+set(JPSEDITOR_MINOR_VERSION 8)
+set(JPSEDITOR_PATCH_VERSION 1)
 set(JPSEDITOR_VERSION
   ${JPSEDITOR_MAJOR_VERSION}.${JPSEDITOR_MINOR_VERSION}.${JPSEDITOR_PATCH_VERSION})
 message( STATUS "JPSEDITOR_VERSION: " ${JPSEDITOR_VERSION} )
@@ -246,13 +246,13 @@ if(${QT4_INSTALLED})
   QT4_WRAP_UI( UI_HDRS ${UIS} )
   QT4_ADD_RESOURCES( RCS ${RCS} )
   include( ${QT_USE_FILE} )
-  ADD_EXECUTABLE( JPSeditor MACOSX_BUNDLE WIN32
+  ADD_EXECUTABLE( jpseditor MACOSX_BUNDLE WIN32
   ${SRCS}
   ${MOC_HDRS}
   ${UI_HDRS} 
   ${RCS}
   )
-  TARGET_LINK_LIBRARIES( JPSeditor ${QT_LIBRARIES})
+  TARGET_LINK_LIBRARIES( jpseditor ${QT_LIBRARIES})
 elseif( ${QT5_INSTALLED})
   message(STATUS "Working with Qt5")
   # http://www.kdab.com/using-cmake-with-qt-5/
@@ -262,14 +262,14 @@ elseif( ${QT5_INSTALLED})
   qt5_add_resources( RCS ${RCS} )
   #qt5_use_package(JPSeditor Widgets)
 
-  ADD_EXECUTABLE( JPSeditor MACOSX_BUNDLE WIN32
+  ADD_EXECUTABLE( jpseditor MACOSX_BUNDLE WIN32
   ${SRCS}
   ${MOC_HDRS}
   ${UI_HDRS} 
   ${RCS}
   )
- qt5_use_modules(JPSeditor Widgets)
- target_link_libraries(JPSeditor ${Qt5Widgets_LIBRARIES})
+ qt5_use_modules(jpseditor Widgets)
+ target_link_libraries(jpseditor ${Qt5Widgets_LIBRARIES})
 else()
   message(FATAL_ERROR "QT NOT BE FOUND - ABORT")
 endif() 
@@ -280,7 +280,7 @@ IF(APPLE)
 ENDIF(APPLE)
 
 
-SET_TARGET_PROPERTIES( JPSeditor PROPERTIES MACOSX_BUNDLE TRUE)
+SET_TARGET_PROPERTIES( jpseditor PROPERTIES MACOSX_BUNDLE TRUE)
 #----------------------------------------------------------------------
 # enable as many warnings as possible
 set(warning_flags "-Wall -Wextra")
@@ -321,18 +321,18 @@ message(STATUS "Building ${PROJECT_NAME} in ${CMAKE_BUILD_TYPE} mode")
 #--------------------------------------------------------------------------------
 SET(plugin_dest_dir bin)
 SET(qtconf_dest_dir bin)
-SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/JPSeditor")
+SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/jpseditor")
 IF(APPLE)
-  SET(plugin_dest_dir JPSeditor.app/Contents/MacOS)
-  SET(qtconf_dest_dir JPSeditor.app/Contents/Resources)
-  SET(APPS "\${CMAKE_INSTALL_PREFIX}/JPSeditor.app")  
+  SET(plugin_dest_dir jpseditor.app/Contents/MacOS)
+  SET(qtconf_dest_dir jpseditor.app/Contents/Resources)
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/jpseditor.app")  
 ENDIF(APPLE)
 
 IF(WIN32)
-  SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/JPSeditor.exe")
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/jpseditor.exe")
 ENDIF(WIN32)
 
-INSTALL(TARGETS JPSeditor
+INSTALL(TARGETS jpseditor
   BUNDLE DESTINATION . COMPONENT Runtime
   RUNTIME DESTINATION bin COMPONENT Runtime
   # PERMISSIONS OWNER_EXECUTE 600
@@ -390,9 +390,9 @@ INSTALL(CODE "
 IF(APPLE)
   # set how it shows up in the Info.plist file
   SET(MACOSX_EDIT_ICON jupedsim.icns)
-  set_target_properties(JPSeditor PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Resources/Info.plist.in)
+  set_target_properties(jpseditor PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Resources/Info.plist.in)
   SET(MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2015 Forschungszentrum Juelich. All rights reserved.")
-  SET(MACOSX_BUNDLE_BUNDLE_NAME "JPSeditor")
+  SET(MACOSX_BUNDLE_BUNDLE_NAME "jpseditor")
   SET(MACOSX_BUNDLE_BUNDLE_VERSION "${JPSEDITOR_VERSION}")
   SET(MACOSX_BUNDLE_LONG_VERSION_STRING "version ${JPSEDITOR_VERSION}")
   SET(MACOSX_BUNDLE_SHORT_VERSION_STRING "${JPSEDITOR_VERSION}")
