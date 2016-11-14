@@ -439,12 +439,33 @@ elseif(APPLE) # todo test this for apple
    elseif(UNIX)
      # tested with success in 
      # Linux dhcppc5 3.2.0-4-686-pae #1 SMP Debian 3.2.68-1+deb7u2 i686 GNU/Linux
-    set(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
-endif()
-include(CPack)
+     set(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
+       SET(CPACK_GENERATOR "DEB")
+
+       SET(CPACK_PACKAGE_DESCRIPTION "simulation core of JuPedSim")
+       SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Geometry editor of JuPedSim, a framework for simulation and analysis of pedestrian dynamics")
+       #SET(CPACK_PACKAGE_VENDOR "nowardev")
+       SET(CPACK_PACKAGE_CONTACT "m.chraibi@fz-juelich.de")
+       SET(CPACK_PACKAGE_VERSION_MAJOR "${JPSEDITOR_MAJOR_VERSION}")
+       SET(CPACK_PACKAGE_VERSION_MINOR "${JPSEDITOR_MINOR_VERSION}")
+       SET(CPACK_PACKAGE_VERSION_PATCH "${JPSEDITOR_PATCH_VERSION}")
+       SET(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${JPSEDITOR_VERSION}")
+       SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${JPSEDITOR_VERSION}")
+       #SET(CPACK_DEBIAN_PACKAGE_DEPENDS " Boost (>= 1.59) ")
+       SET(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+       SET( CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://jupedsim.org")
+       SET(CPACK_DEBIAN_PACKAGE_SUGGESTS, "jpsvis, jpsreport, jpscor")
+       SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+       SET(CPACK_DEBIAN_PACKAGE_SECTION "science")
+       SET(CPACK_DEBIAN_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 
 
-message (STATUS "bin ins" ${BIN_INSTALL_DIR})
+
+     endif()
+     include(CPack)
+
+
+     message (STATUS "bin ins" ${BIN_INSTALL_DIR})
 set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "${BIN_INSTALL_DIR}")
 include(InstallRequiredSystemLibraries)
 
