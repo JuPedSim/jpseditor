@@ -342,20 +342,22 @@ INSTALL(TARGETS jpseditor
 # Install needed Qt plugins by copying directories from the qt installation
 # One can cull what gets copied by using 'REGEX "..." EXCLUDE'
 # todo should we check qt version here?
+if(APPLE)
 INSTALL(DIRECTORY "${QT_PLUGINS_DIR}/imageformats" DESTINATION ${plugin_dest_dir}/plugins
   # DIRECTORY_PERMISSIONS
   # OWNER_WRITE OWNER_READ  OWNER_EXECUTE
   # GROUP_WRITE GROUP_READ  GROUP_EXECUTE
   # WORLD_WRITE WORLD_READ WORLD_EXECUTE
   COMPONENT Runtime)
-
+endif()
 #--------------------------------------------------------------------------------
 # install a qt.conf file
 # this inserts some cmake code into the install script to write the file
+if(APPLE)
 INSTALL(CODE "
     file(WRITE \"\${CMAKE_INSTALL_PREFIX}/${qtconf_dest_dir}/qt.conf\" \"\")
     " COMPONENT Runtime)
-
+endif()
 
 #--------------------------------------------------------------------------------
 # Use BundleUtilities to get all other dependencies for the application to work.
@@ -375,13 +377,15 @@ endif()
 # An alternative is the do a configure_file() on a script and use install(SCRIPT  ...).
 # Note that the image plugins depend on QtSvg and QtXml, and it got those copied
 # over.
-INSTALL(CODE "
-    file(GLOB_RECURSE QTPLUGINS
-      \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
-    include(BundleUtilities)
-    fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
-    " COMPONENT Runtime)
-
+#
+if(APPLE)
+INSTALL(CODE "              
+     file(GLOB_RECURSE QTPLUGINS
+       \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
+       image
+     fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
+     " COMPONENT Runtime)
+endif()
 
 
 
