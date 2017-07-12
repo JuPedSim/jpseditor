@@ -57,7 +57,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     ui->classBox->addItem("Office");
     ui->classBox->addItem("Lobby");
     ui->classBox->addItem("Entrance");
-
+    ui->classBox->addItem("stair");
 
     //SIGNALS AND SLOTS
     //close

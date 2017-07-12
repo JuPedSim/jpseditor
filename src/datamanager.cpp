@@ -600,6 +600,9 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
         stream->writeAttribute("id",QString::number(roomlist[i]->get_id()));
         stream->writeAttribute("caption",roomlist[i]->get_name());
         stream->writeAttribute("class",roomlist[i]->get_type());
+        stream->writeAttribute("A_x",QString::number(roomlist[i]->get_ax()));
+        stream->writeAttribute("B_y",QString::number(roomlist[i]->get_by()));
+        stream->writeAttribute("C_z",QString::number(roomlist[i]->get_cz()));
 
         //walls
         QList<jpsLineItem* > wallList=roomlist[i]->get_listWalls();
@@ -1515,7 +1518,12 @@ void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
 
     /* We'll add it to the room. */
     roomlist.last()->set_id(attributes.value("id").toString().toInt());
-
+    if(attributes.hasAttribute("A_x"))
+         roomlist.last()->set_ax(attributes.value("A_x").toString().toFloat());
+    else
+      roomlist.last()->set_ax(0.0);
+    roomlist.last()->set_by(attributes.value("B_y").toString().toFloat());
+    roomlist.last()->set_cz(attributes.value("C_z").toString().toFloat());
     /* We'll add it to the room. */
     roomlist.last()->change_name(attributes.value("caption").toString());
     if(attributes.hasAttribute("class"))
@@ -1524,6 +1532,9 @@ void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
             roomlist.last()->set_type("Not specified");
         else
             roomlist.last()->set_type(attributes.value("class").toString());
+        if (attributes.value("class").toString()=="stair"){
+             /*@todo: calculate Ax, B_y and C_z*/
+        }
     }
     this->parseWalls(xmlReader,roomlist.last());
     this->parseObstacles(xmlReader,roomlist.last());

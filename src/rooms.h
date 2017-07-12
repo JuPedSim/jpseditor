@@ -49,6 +49,12 @@ public:
     void activate();
     QVector<QPointF> get_vertices() const;
     void set_id(int id_room);
+    void set_ax(float ax);
+    void set_by(float by);
+    void set_cz(float cz);
+    float get_ax();
+    float get_by();
+    float get_cz();
     int get_id();
     QPointF get_center();
     void highlight();
@@ -68,6 +74,9 @@ public:
 private:
     int id;
     bool highlighted;
+    float A_x;
+    float B_y;
+    float C_z;
     QString name;
     QList<jpsLineItem*> item_list;
     QString _type;

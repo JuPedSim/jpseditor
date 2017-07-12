@@ -40,7 +40,9 @@ jpsRoom::jpsRoom(int id_room)
     name=string.append(QString::number(id));
     highlighted=false;
     _type="Not specified";
-
+    A_x=0.0; //plane equation: A_x . x + B_y . y + C_z = z
+    B_y=0.0;
+    C_z=0.0;
 }
 
 void jpsRoom::addWall(QList <jpsLineItem *> newWalls)
@@ -293,6 +295,31 @@ int jpsRoom::get_id()
 {
     return id;
 }
+float jpsRoom::get_ax()
+{
+     return A_x;
+}
+void jpsRoom::set_ax(float AX)
+{
+     A_x=AX;
+}
 
+float jpsRoom::get_by()
+{
+     return B_y;     
+}
+void jpsRoom::set_by(float BY)
+{
+     B_y=BY;
+}
+
+float jpsRoom::get_cz()
+{
+     return C_z;     
+}
+void jpsRoom::set_cz(float CZ)
+{
+     C_z=CZ;
+}
 
 
