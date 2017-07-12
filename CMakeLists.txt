@@ -186,9 +186,9 @@ endif()
 
 #
 
-# default qt version is 4
+# default qt version is 5
 if("${DESIRED_QT_VERSION}" STREQUAL "")
-  set(DESIRED_QT_VERSION "4")
+  set(DESIRED_QT_VERSION "5")
 endif()
 
 # qt version > 5 or qt version < 3 are not supported
