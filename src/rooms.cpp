@@ -405,6 +405,14 @@ void jpsRoom::correctPlaneCoefficients()
      float b = ((1-P3_x/P1_x*1)*d-(P3_z-P3_x/P1_x*P1_z)*c)/(P3_y-P3_x/P1_x*P1_y);
      float a = (d-P1_z*c-P1_y*b)/P1_x;
 
+     // std::cout << "P1 = ("<<P1_x << ", " << P1_y << ", "<<elevation_1<<")\n";
+     // std::cout << "P2 = ("<<P2_x << ", " << P2_y << ", "<<elevation_1<<")\n";
+     // std::cout << "P3 = ("<<P3_x << ", " << P3_y << ", "<<elevation_2<<")\n";
+     // std::cout <<"a = " << a << "  b = " << b << " c = " << c << "\n";
+     // std::cout <<"ax = " << -a/c << "  by = " << -b/c << " cz = " << d/c << "\n";
+     
+ 
+
      set_ax(-a/c);
      set_by(-b/c);
      set_cz(d/c);
