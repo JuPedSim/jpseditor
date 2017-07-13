@@ -322,22 +322,22 @@ void jpsRoom::set_cz(float CZ)
      C_z=CZ;
 }
 
-float jpsRoom::get_up()
+QPointF jpsRoom::get_up()
 {
      return up;
 }
 
-void jpsRoom::set_up(_up)
+void jpsRoom::set_up(QPointF _up)
 {
      up = _up;
 }
 
-float jpsRoom::get_down()
+QPointF jpsRoom::get_down()
 {
      return down;
 }
 
-void jpsRoom::set_down(_down)
+void jpsRoom::set_down(QPointF _down)
 {
      down = _down;
 }

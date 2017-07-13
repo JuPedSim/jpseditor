@@ -597,13 +597,21 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
     for (int i=0; i<roomlist.size(); i++)
     {
         stream->writeStartElement("subroom");
-        stream->writeAttribute("id",QString::number(roomlist[i]->get_id()));
+        stream->writeAttribute("id",QString::number(roomlist[i]->get_id())); // @todo:
+                                                                             // does
+                                                                             // not
+                                                                             // work
+                                                                             // with
+                                                                             // files
+                                                                             // having
+                                                                             // more
+                                                                             // than
+                                                                             // two rooms
         stream->writeAttribute("caption",roomlist[i]->get_name());
         stream->writeAttribute("class",roomlist[i]->get_type());
         stream->writeAttribute("A_x",QString::number(roomlist[i]->get_ax()));
         stream->writeAttribute("B_y",QString::number(roomlist[i]->get_by()));
         stream->writeAttribute("C_z",QString::number(roomlist[i]->get_cz()));
-
         //walls
         QList<jpsLineItem* > wallList=roomlist[i]->get_listWalls();
         for (int j=0; j<wallList.size(); j++)
@@ -633,9 +641,23 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
                 writeObstacles(stream ,obstaclelist[k],lines);
             }
         }
-
+        // if stair write up and down
+        if (roomlist[i]->get_type() == "stair"){
+             // <up>
+             stream->writeStartElement("up");
+             stream->writeAttribute("px",QString::number( roomlist[i]->get_up().x()  ));
+             stream->writeAttribute("py",QString::number( roomlist[i]->get_up().y()  ));
+             stream->writeEndElement();
+             // </up>
+             // <down>
+             stream->writeStartElement("down");
+             stream->writeAttribute("px",QString::number( roomlist[i]->get_down().x()  ));
+             stream->writeAttribute("py",QString::number( roomlist[i]->get_down().y()  ));
+             stream->writeEndElement(); 
+             // </down>
+        }
         stream->writeEndElement();//subroom
-    }
+    }// for i
 
 
     //Crossings
@@ -1532,9 +1554,6 @@ void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
             roomlist.last()->set_type("Not specified");
         else
             roomlist.last()->set_type(attributes.value("class").toString());
-        if (attributes.value("class").toString()=="stair"){
-             /*@todo: calculate Ax, B_y and C_z*/
-        }
     }
     this->parseWalls(xmlReader,roomlist.last());
     this->parseObstacles(xmlReader,roomlist.last());
@@ -1587,8 +1606,16 @@ void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, jpsRoom *room)
             room->addWall(lineItem);
 
         }
-
-    }
+        else if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
+                 xmlReader.name() == "up")
+        { // subroom is a stair?
+        //      /*@todo: calculate Ax, B_y and C_z*/
+             QPointF up = this->parseUp(xmlReader);
+             QPointF down = this->parseDown(xmlReader);
+             roomlist.last()->set_up(up);
+             roomlist.last()->set_down(down);
+        }
+    } // while  subroom
 
 }
 
@@ -1684,6 +1711,28 @@ void jpsDatamanager::parseCrossings(QXmlStreamReader &xmlReader)
     }
 
 }
+QPointF jpsDatamanager::parseUp(QXmlStreamReader &xmlReader)
+{
+     // find <up>
+    while(xmlReader.name() != "up")
+    {
+        xmlReader.readNext();
+    }
+    qreal x1=xmlReader.attributes().value("px").toString().toFloat();
+    qreal y1=xmlReader.attributes().value("py").toString().toFloat();
+    return QPointF(x1, y1); 
+}
+QPointF jpsDatamanager::parseDown(QXmlStreamReader &xmlReader)
+{
+     // find <down>
+    while(xmlReader.name() != "down")
+    {
+        xmlReader.readNext();
+    }
+    qreal x1=xmlReader.attributes().value("px").toString().toFloat();
+    qreal y1=xmlReader.attributes().value("py").toString().toFloat();
+    return QPointF(x1, y1); 
+}
 
 void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
 {
@@ -1691,7 +1740,7 @@ void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
     QString caption = xmlReader.attributes().value("caption").toString();
     QString type = xmlReader.attributes().value("type").toString();
     int room_id = xmlReader.attributes().value("subroom1_id").toString().toInt();
-
+    
     // go to first vertex
     while(xmlReader.name() != "vertex")
     {
