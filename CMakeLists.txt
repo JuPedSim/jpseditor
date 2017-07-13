@@ -20,6 +20,8 @@ ENDIF (POLICY CMP0043)
 IF (POLICY CMP0020)
 CMAKE_POLICY (SET CMP0020 OLD) # keep old POLICY (2.8.10 and lower) The OLD behavior for this policy is not to link executables to
 ENDIF (POLICY CMP0020)			#qtmain.lib automatically when they link to the QtCore IMPORTEDtarget 
+cmake_policy(SET CMP0025 NEW) #fixes error No known features for CXX compiler (on mac)
+
 project(JPSeditor)
 
 
