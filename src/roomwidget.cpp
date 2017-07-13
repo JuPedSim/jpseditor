@@ -57,7 +57,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     ui->classBox->addItem("Office");
     ui->classBox->addItem("Lobby");
     ui->classBox->addItem("Entrance");
-    ui->classBox->addItem("stair");
+    ui->classBox->addItem("Stair");
 
     //SIGNALS AND SLOTS
     //close
@@ -68,7 +68,8 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     //tab room
     connect(ui->new_room_button,SIGNAL(clicked(bool)),this,SLOT(new_room()));
     connect(ui->delete_room,SIGNAL(clicked(bool)),this,SLOT(delete_room()));
-    connect(ui->apply_name_button,SIGNAL(clicked(bool)),this,SLOT(change_roomname()));
+    connect(ui->chname_edit, SIGNAL( returnPressed() ), this, SLOT(change_roomname()));
+
     connect(ui->add_button,SIGNAL(clicked(bool)),this,SLOT(addWall()));
     connect(ui->list_rooms,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(showWallsAndType()));
     connect(ui->list_rooms,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showWallsAndType()));

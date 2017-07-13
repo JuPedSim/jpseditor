@@ -77,6 +77,8 @@ private:
     float A_x;
     float B_y;
     float C_z;
+    float up;
+    float down;
     QString name;
     QList<jpsLineItem*> item_list;
     QString _type;

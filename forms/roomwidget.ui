@@ -182,19 +182,6 @@
      <string>Roomname:</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="apply_name_button">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>200</y>
-      <width>81</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Apply Name</string>
-    </property>
-   </widget>
    <widget class="Line" name="line_2">
     <property name="geometry">
      <rect>
@@ -212,7 +199,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>280</y>
+      <y>300</y>
       <width>121</width>
       <height>28</height>
      </rect>
@@ -224,14 +211,14 @@
    <widget class="QPushButton" name="highlight">
     <property name="geometry">
      <rect>
-      <x>202</x>
-      <y>280</y>
+      <x>190</x>
+      <y>300</y>
       <width>101</width>
       <height>28</height>
      </rect>
     </property>
     <property name="text">
-     <string>Highlight Room</string>
+     <string>Highlight </string>
     </property>
    </widget>
    <widget class="QComboBox" name="classBox">
@@ -241,7 +228,7 @@
     <property name="geometry">
      <rect>
       <x>100</x>
-      <y>240</y>
+      <y>260</y>
       <width>111</width>
       <height>21</height>
      </rect>
@@ -251,7 +238,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>240</y>
+      <y>260</y>
       <width>91</width>
       <height>16</height>
      </rect>
@@ -263,6 +250,37 @@
     </property>
     <property name="text">
      <string>Roomtype:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>230</y>
+      <width>91</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Elevation:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="z_edit">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>230</y>
+      <width>41</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0</string>
     </property>
    </widget>
   </widget>
