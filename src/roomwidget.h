@@ -55,6 +55,7 @@ protected slots:
     void new_room();
     void delete_room();
     void change_roomname();
+    void change_elevation();
     void addWall();
     void removeWall();
     void showWallsAndType();

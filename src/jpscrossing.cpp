@@ -71,7 +71,10 @@ void jpsCrossing::add_rooms(jpsRoom *room1, jpsRoom *room2)
     roomList.clear();
     roomList.push_back(room1);
     room1->AddDoor(this);
-    if (room2!=0L)
+    if(room1->get_type() != "stair")
+         this->set_elevation(room1->get_elevation());
+
+    if (room2!=nullptr)
     {
         roomList.push_back(room2);
         room2->AddDoor(this);
@@ -88,4 +91,13 @@ void jpsCrossing::SetStatExit(bool stat)
 bool jpsCrossing::IsExit()
 {
     return _isExit;
+}
+float jpsCrossing::get_elevation()
+{
+     return _elevation;
+}
+
+void jpsCrossing::set_elevation(float elevation)
+{
+     _elevation = elevation;
 }

@@ -609,6 +609,7 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
                                                                              // two rooms
         stream->writeAttribute("caption",roomlist[i]->get_name());
         stream->writeAttribute("class",roomlist[i]->get_type());
+        roomlist[i]->correctPlaneCoefficients();
         stream->writeAttribute("A_x",QString::number(roomlist[i]->get_ax()));
         stream->writeAttribute("B_y",QString::number(roomlist[i]->get_by()));
         stream->writeAttribute("C_z",QString::number(roomlist[i]->get_cz()));
@@ -1545,7 +1546,11 @@ void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
     else
       roomlist.last()->set_ax(0.0);
     roomlist.last()->set_by(attributes.value("B_y").toString().toFloat());
-    roomlist.last()->set_cz(attributes.value("C_z").toString().toFloat());
+    auto elevation = attributes.value("C_z").toString().toFloat();
+    
+    roomlist.last()->set_cz(elevation);
+    roomlist.last()->set_elevation(elevation);
+
     /* We'll add it to the room. */
     roomlist.last()->change_name(attributes.value("caption").toString());
     if(attributes.hasAttribute("class"))

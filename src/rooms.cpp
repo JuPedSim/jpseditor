@@ -43,6 +43,7 @@ jpsRoom::jpsRoom(int id_room)
     A_x=0.0; //plane equation: A_x . x + B_y . y + C_z = z
     B_y=0.0;
     C_z=0.0;
+    _elevation=0;
 }
 
 void jpsRoom::addWall(QList <jpsLineItem *> newWalls)
@@ -324,20 +325,87 @@ void jpsRoom::set_cz(float CZ)
 
 QPointF jpsRoom::get_up()
 {
-     return up;
+     return _up;
 }
 
-void jpsRoom::set_up(QPointF _up)
+void jpsRoom::set_up(QPointF up)
 {
-     up = _up;
+     _up = up;
 }
 
 QPointF jpsRoom::get_down()
 {
-     return down;
+     return _down;
 }
 
-void jpsRoom::set_down(QPointF _down)
+void jpsRoom::set_down(QPointF down)
 {
-     down = _down;
+     _down = down;
+}
+
+
+float jpsRoom::get_elevation()
+{
+     return _elevation;
+}
+
+void jpsRoom::set_elevation(float elevation)
+{
+     _elevation = elevation;
+}
+
+
+void jpsRoom::correctPlaneCoefficients()
+{
+    if(this->get_type()!="stair")
+    {
+        this->set_ax(0);
+        this->set_by(0);
+        this->set_cz(this->get_elevation());
+        return;
+    }
+     QPointF P1(0,0), P2(0,0), P3(0,0); /// plane is defined by three non-collinear points
+     float elevation_1=0, elevation_2=0;
+     P1 = _doorList[0]->get_cLine()->get_line()->line().p1();
+     P2 = _doorList[0]->get_cLine()->get_line()->line().p2();
+     elevation_1 = _doorList[0]->get_elevation();
+     
+     //from _doortList get three points with two different elevations 
+     for (int i=1; i<_doorList.size(); i++)
+     {
+          if(_doorList[i]->get_elevation() != _doorList[0]->get_elevation()){
+               P3 = _doorList[i]->get_cLine()->get_line()->line().p1();
+               elevation_2 = _doorList[i]->get_elevation();
+               break;
+          }
+     // @todo: check if the 3 points are collinear.
+     }
+
+     // variables for convenience
+     float P1_x = P1.x();
+     float P1_y = P1.y();
+     float P1_z = elevation_1;
+
+     float P2_x = P2.x();
+     float P2_y = P2.y();
+     float P2_z = elevation_1;
+
+     float P3_x = P3.x();
+     float P3_y = P3.y();
+     float P3_z = elevation_2;
+
+
+     float d = 1.0;
+     // Thanks M. Osterkamp
+     float c = (((1-P3_x/P1_x*1)-((P3_y-P3_x/P1_x*P1_y)/(P2_y-P2_x/P1_x*P1_y))
+                 *(1-P2_x/P1_x*1))/((P3_z-P3_x/P1_x*P1_z)
+                                    -((P3_y-P3_x/P1_x*P1_y)/(P2_y-P2_x/P1_x*P1_y))
+                                    *(P2_z-P2_x/P1_x*P1_z)))*d;
+
+     float b = ((1-P3_x/P1_x*1)*d-(P3_z-P3_x/P1_x*P1_z)*c)/(P3_y-P3_x/P1_x*P1_y);
+     float a = (d-P1_z*c-P1_y*b)/P1_x;
+
+     set_ax(-a/c);
+     set_by(-b/c);
+     set_cz(d/c);
 }

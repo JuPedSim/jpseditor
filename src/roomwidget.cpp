@@ -69,7 +69,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->new_room_button,SIGNAL(clicked(bool)),this,SLOT(new_room()));
     connect(ui->delete_room,SIGNAL(clicked(bool)),this,SLOT(delete_room()));
     connect(ui->chname_edit, SIGNAL( returnPressed() ), this, SLOT(change_roomname()));
-
+    connect(ui->elevation_edit, SIGNAL(returnPressed()), this, SLOT(change_elevation()));
     connect(ui->add_button,SIGNAL(clicked(bool)),this,SLOT(addWall()));
     connect(ui->list_rooms,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(showWallsAndType()));
     connect(ui->list_rooms,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showWallsAndType()));
@@ -212,6 +212,18 @@ void roomWidget::delete_room()
     }
 }
 
+void roomWidget::change_elevation()
+{
+    if (ui->list_rooms->currentItem()!=0L)
+    {
+        int crow=ui->list_rooms->currentRow();
+
+        datamanager->get_roomlist()[crow]->set_elevation(ui->elevation_edit->text().toFloat());
+        this->show_rooms();
+
+    }
+
+}
 void roomWidget::change_roomname()
 {
     if (ui->list_rooms->currentItem()!=0L)
@@ -295,6 +307,9 @@ void roomWidget::showWallsAndType()
             }
 
             ShowRoomType(crow);
+            QString elevation = QString::number(datamanager->get_roomlist()[crow]->get_elevation());
+            ui->elevation_edit->setText( elevation);
+
         }
     }
 }
@@ -754,6 +769,7 @@ void roomWidget::highlight_room()
     {
         int cRow=ui->list_rooms->currentRow();
         datamanager->get_roomlist()[cRow]->highlight();
+        
     }
 
 }
