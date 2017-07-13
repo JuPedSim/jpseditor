@@ -52,9 +52,13 @@ public:
     void set_ax(float ax);
     void set_by(float by);
     void set_cz(float cz);
+    void set_up(float up);
+    void set_down(float down);
     float get_ax();
     float get_by();
     float get_cz();
+    float get_up();
+    float get_down();
     int get_id();
     QPointF get_center();
     void highlight();
