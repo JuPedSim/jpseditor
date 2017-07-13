@@ -270,7 +270,7 @@
      <string>Elevation:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="z_edit">
+   <widget class="QLineEdit" name="elevation_edit">
     <property name="geometry">
      <rect>
       <x>100</x>
