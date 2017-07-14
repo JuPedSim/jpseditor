@@ -183,6 +183,7 @@ void roomWidget::show_obstacles()
     for (int i=0; i<obslist.size(); i++)
     {
         ui->list_obstacles->addItem(obslist[i]->get_name());
+        ui->chname_edit_obs->setText(obslist[i]->get_name());
     }
     ui->list_obstacles->setCurrentRow(obslist.size()-1);
 

@@ -71,7 +71,7 @@ void jpsCrossing::add_rooms(jpsRoom *room1, jpsRoom *room2)
     roomList.clear();
     roomList.push_back(room1);
     room1->AddDoor(this);
-    if(room1->get_type() != "stair")     //  assuming a crossing can
+    if(room1->get_type().toUpper() != "STAIR")     //  assuming a crossing can
                                          //  not separate two stairs
          this->set_elevation(room1->get_elevation());
     else

@@ -351,19 +351,23 @@ float jpsRoom::get_elevation()
 
 void jpsRoom::set_elevation(float elevation)
 {
+     if(this->get_type().toUpper() != "STAIR") // only for horizontal floors
+          for (auto crossing: _doorList)
+               crossing->set_elevation(elevation);
+
      _elevation = elevation;
 }
 
-
 void jpsRoom::correctPlaneCoefficients()
 {
-    if(this->get_type()!="stair")
+    if(this->get_type().toUpper() != "STAIR")
     {
         this->set_ax(0);
         this->set_by(0);
         this->set_cz(this->get_elevation());
         return;
     }
+
      QPointF P1(0,0), P2(0,0), P3(0,0); /// plane is defined by three non-collinear points
      float elevation_1=0, elevation_2=0;
      P1 = _doorList[0]->get_cLine()->get_line()->line().p1();
