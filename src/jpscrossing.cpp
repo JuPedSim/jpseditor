@@ -25,7 +25,7 @@
  *
  **/
 
-
+#include <iostream>
 #include "jpscrossing.h"
 
 
@@ -71,19 +71,17 @@ void jpsCrossing::add_rooms(jpsRoom *room1, jpsRoom *room2)
     roomList.clear();
     roomList.push_back(room1);
     room1->AddDoor(this);
-    if(room1->get_type().toUpper() != "STAIR")     //  assuming a crossing can
-                                         //  not separate two stairs
+    if(room1->get_type().toUpper() != "STAIR")  // assuming a crossing can
+                                               //  not separate two stairs
          this->set_elevation(room1->get_elevation());
-    else
-         this->set_elevation(room2->get_elevation());
 
     if (room2!=nullptr)
     {
+         if(room2->get_type().toUpper() != "STAIR")
+              this->set_elevation(room2->get_elevation());
         roomList.push_back(room2);
         room2->AddDoor(this);
     }
-
-
 }
 
 void jpsCrossing::SetStatExit(bool stat)

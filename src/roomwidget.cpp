@@ -407,28 +407,15 @@ void roomWidget::disable_roomSelectionCrossings()
 }
 
 void roomWidget::add_rooms_to_crossing()
-{
+{    
     if (ui->crossingList->currentItem()!=0L)
-    {
+    {    
         int cCrossingRow=ui->crossingList->currentRow();
+        
         if (ui->roomBox1->currentIndex()!=-1 && ui->roomBox2->currentIndex()!=-1)
         {
             int cRoomRow1=ui->roomBox1->currentIndex();
-            int cRoomRow2=ui->roomBox2->currentIndex();
-
-//            if (datamanager->get_roomlist()[cRoomRow2]->get_id()==-1)
-//            {
-//                QList<jpsLineItem* > exits;
-//                exits.push_back(datamanager->get_crossingList()[cCrossingRow]->get_cLine());
-//                datamanager->new_exit(exits);
-
-//                datamanager->remove_crossing(datamanager->get_crossingList()[cCrossingRow]);
-
-//                datamanager->get_exitList().last()->add_rooms(datamanager->get_roomlist()[cRoomRow1]);
-
-//            }
-//            else
-
+            int cRoomRow2=ui->roomBox2->currentIndex();            
             if (ui->roomBox2->currentText()=="OUTSIDE")
             {
                 datamanager->get_crossingList()[cCrossingRow]->add_rooms(datamanager->get_roomlist()[cRoomRow1]);
