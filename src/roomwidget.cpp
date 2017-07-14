@@ -136,11 +136,12 @@ void roomWidget::show_crossings()
 
     for (jpsCrossing* crossing:datamanager->get_crossingList())
     {
-        QString string = "Door ";
-        string.append("x1:"+QString::number(crossing->get_cLine()->get_line()->line().x1()));
-        string.append(" x2:"+QString::number(crossing->get_cLine()->get_line()->line().x2()));
-        string.append(" y1:"+QString::number(crossing->get_cLine()->get_line()->line().y1()));
-        string.append(" y2:"+QString::number(crossing->get_cLine()->get_line()->line().y2()));
+        QString string = "";
+        string.sprintf("[%+04.3f, %+04.3f] - [%+04.3f, %+04.3f]", 
+                       crossing->get_cLine()->get_line()->line().x1(),
+                       crossing->get_cLine()->get_line()->line().x2(),
+                       crossing->get_cLine()->get_line()->line().y1(), 
+                       crossing->get_cLine()->get_line()->line().y2());
         ui->crossingList->addItem(string);
 
     }
@@ -299,11 +300,13 @@ void roomWidget::showWallsAndType()
 
             for (int i=0; i<walllist.size(); i++)
             {
-                QString string = "Wall ";
-                string.append("x1:"+QString::number(walllist[i]->get_line()->line().x1()));
-                string.append(" x2:"+QString::number(walllist[i]->get_line()->line().x2()));
-                string.append(" y1:"+QString::number(walllist[i]->get_line()->line().y1()));
-                string.append(" y2:"+QString::number(walllist[i]->get_line()->line().y2()));
+                QString string = "";
+                string.sprintf("[%+04.3f, %+04.3f] - [%+04.3f, %+04.3f]", 
+                               walllist[i]->get_line()->line().x1(),
+                               walllist[i]->get_line()->line().x2(),
+                               walllist[i]->get_line()->line().y1(), 
+                               walllist[i]->get_line()->line().y2());
+
                 ui->listWalls->addItem(string);
             }
 
@@ -652,11 +655,13 @@ void roomWidget::showWallsObs()
 
             for (int i=0; i<walllist.size(); i++)
             {
-                QString string = "Wall ";
-                string.append("x1:"+QString::number(walllist[i]->get_line()->line().x1()));
-                string.append(" x2:"+QString::number(walllist[i]->get_line()->line().x2()));
-                string.append(" y1:"+QString::number(walllist[i]->get_line()->line().y1()));
-                string.append(" y2:"+QString::number(walllist[i]->get_line()->line().y2()));
+                QString string = "";
+                string.sprintf("[%+04.3f, %+04.3f] - [%+04.3f, %+04.3f]", 
+                               walllist[i]->get_line()->line().x1(),
+                               walllist[i]->get_line()->line().x2(),
+                               walllist[i]->get_line()->line().y1(),
+                               walllist[i]->get_line()->line().y2());
+                
                 ui->listWallsObs->addItem(string);
             }
         }
