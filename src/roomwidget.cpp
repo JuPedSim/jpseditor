@@ -308,7 +308,9 @@ void roomWidget::showWallsAndType()
 
             ShowRoomType(crow);
             QString elevation = QString::number(datamanager->get_roomlist()[crow]->get_elevation());
-            ui->elevation_edit->setText( elevation);
+            ui->elevation_edit->setText(elevation);
+            QString room_name = datamanager->get_roomlist()[crow]->get_name();
+            ui->chname_edit->setText(room_name);
 
         }
     }
