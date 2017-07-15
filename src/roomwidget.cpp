@@ -221,7 +221,7 @@ void roomWidget::change_elevation()
         int crow=ui->list_rooms->currentRow();
 
         datamanager->get_roomlist()[crow]->set_elevation(ui->elevation_edit->text().toFloat());
-        this->show_rooms();
+        
 
     }
 
