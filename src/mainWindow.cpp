@@ -406,20 +406,13 @@ void MWindow::info(){
 
 
 
-    QString info = "JuPedSim v0.8 alpha\n\
-    JPSeditor v0.8 alpha\n\
-    ====================\n\
-    \n\
-    Erik Andresen drafted this on 27 Jun 2016\n\
-    \n\
-    We are proud to announce the first alpha release of our software JPSeditor (part of JuPedSim for simulating pedestrians evacuations). Please note that it is a pre release version for developers only. We are working hard towards the final release for this version.\n\
-    \n\
-    JPSeditor is a graphical user interface to create the geometry of a scenario simulated by JuPedSim. It comes with set of CAD- and further tools to simplify the creation of proper xml-files incorporating information about the scenario' geometry.\n\
-    \n\
-    Tutorial\n\
-    ========\n\
-    \n\
-    To highlight some features of JuPedSim we have uploaded some videos on our [YouTube channel](https://www.youtube.com/user/JuPedSim) including a tutorial showing how to use the editor.";
+    QString info = "\
+    JPSeditor (version 0.8.1) is a tool\n\
+    to create and process geometries for\n\
+    JuPedSim.\n\
+    2017. All rights reserved.";
+    
+   
 
     QMessageBox messageBox;
     messageBox.information(0,tr("About..."),info);
