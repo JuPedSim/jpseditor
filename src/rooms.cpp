@@ -153,7 +153,6 @@ void jpsRoom::highlight()
         {
             item_list[i]->get_line()->setPen(pen);
             item_list[i]->set_defaultColor("darkGreen");
-            std::cout<< "width:" << item_list[i]->get_line()->pen().width() << "\n";
         }
         highlighted=true;
     }
@@ -164,7 +163,6 @@ void jpsRoom::highlight()
         {             
              item_list[i]->get_line()->setPen(pen);
             item_list[i]->set_defaultColor("black");
-            std::cout<< ">> width:" << item_list[i]->get_line()->pen().width() << "\n";
         }
         highlighted=false;
     }
@@ -426,3 +424,7 @@ void jpsRoom::correctPlaneCoefficients()
      set_by(-b/c);
      set_cz(d/c);
 }
+
+bool jpsRoom::is_highlighted()
+{
+     return highlighted;}

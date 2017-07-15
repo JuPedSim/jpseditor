@@ -76,7 +76,7 @@ public:
     float get_elevation();
     void set_elevation(float elevation);
     void correctPlaneCoefficients(); /// calculates the coefficients A_x, B_y and C_z for stairs
-
+    bool is_highlighted();
 private:
     int id;
     bool highlighted;
