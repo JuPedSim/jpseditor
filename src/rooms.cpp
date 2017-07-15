@@ -158,7 +158,7 @@ void jpsRoom::highlight()
     }
     else
     {   
-         pen.setWidth(1);
+         pen.setWidth(4);
         for (int i=0; i<item_list.size(); i++)
         {             
              item_list[i]->get_line()->setPen(pen);

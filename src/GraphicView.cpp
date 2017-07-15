@@ -324,7 +324,7 @@ void jpsGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
 
 void jpsGraphicsView::unmark_all_lines()
 {
-    QPen pen = QPen(Qt::black,2);
+    QPen pen = QPen(Qt::black,4);
     pen.setCosmetic(true);
 
     for (int i=0; i<marked_lines.size();i++)
@@ -897,7 +897,7 @@ void jpsGraphicsView::select_line(jpsLineItem *mline)
 
     if (!marked_lines.contains(mline))
     {
-        QPen pen = QPen(Qt::red,2);
+        QPen pen = QPen(Qt::red,4);
         pen.setCosmetic(true);
         mline->get_line()->setPen(pen);
         marked_lines.push_back(mline);
@@ -905,7 +905,7 @@ void jpsGraphicsView::select_line(jpsLineItem *mline)
     }
     else
     {
-        QPen pen = QPen(Qt::black,2);
+        QPen pen = QPen(Qt::black,4);
         pen.setCosmetic(true);
         mline->get_line()->setPen(pen);
         marked_lines.removeOne(mline);
@@ -940,7 +940,7 @@ void jpsGraphicsView::disable_drawing()
 
 jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const qreal &x2,const qreal &y2,const QString &type)
 {
-    QPen pen = QPen(Qt::black,2);
+    QPen pen = QPen(Qt::black,4);
     pen.setCosmetic(true);
 
     current_line=Scene->addLine(x1,y1,x2,y2,pen);
