@@ -141,25 +141,30 @@ QPointF jpsRoom::get_center()
 
     return mean;
 }
-
-
 void jpsRoom::highlight()
 {
+     QPen pen = QPen(Qt::black, 5);
+     pen.setCosmetic(true);
+
     if (!highlighted)
     {
+         pen.setColor(Qt::darkGreen);
         for (int i=0; i<item_list.size(); i++)
         {
-            item_list[i]->get_line()->setPen(QPen(Qt::darkGreen,0));
+            item_list[i]->get_line()->setPen(pen);
             item_list[i]->set_defaultColor("darkGreen");
+            std::cout<< "width:" << item_list[i]->get_line()->pen().width() << "\n";
         }
         highlighted=true;
     }
     else
-    {
+    {   
+         pen.setWidth(1);
         for (int i=0; i<item_list.size(); i++)
-        {
-            item_list[i]->get_line()->setPen(QPen(Qt::black,0));
+        {             
+             item_list[i]->get_line()->setPen(pen);
             item_list[i]->set_defaultColor("black");
+            std::cout<< ">> width:" << item_list[i]->get_line()->pen().width() << "\n";
         }
         highlighted=false;
     }
