@@ -76,7 +76,6 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->listWalls,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(selectWall()));
     connect(ui->remove_button,SIGNAL(clicked(bool)),this,SLOT(removeWall()));
     connect(ui->caption,SIGNAL(clicked(bool)),this,SLOT(shhi_roomCaption()));
-    connect(ui->caption,SIGNAL(clicked(bool)),this,SLOT(change_label()));
     connect(ui->highlight,SIGNAL(clicked(bool)),this,SLOT(highlight_room()));
     connect(ui->classBox,SIGNAL(activated(int)),this,SLOT(ChangeRoomType()));
     connect(ui->classBox,SIGNAL(currentIndexChanged(int)),this,SLOT(ChangeRoomType()));
@@ -235,24 +234,16 @@ void roomWidget::change_roomname()
         if (shhi_roomCaption()==false)
         {
             int crow=ui->list_rooms->currentRow();
-
-                datamanager->get_roomlist()[crow]->change_name(ui->chname_edit->text());
-
+            datamanager->get_roomlist()[crow]->change_name(ui->chname_edit->text());
             shhi_roomCaption();
             this->show_rooms();
-
-
         }
         else
         {
             shhi_roomCaption();
-
             int crow=ui->list_rooms->currentRow();
-
-                datamanager->get_roomlist()[crow]->change_name(ui->chname_edit->text());
-
-                this->show_rooms();
-
+            datamanager->get_roomlist()[crow]->change_name(ui->chname_edit->text());
+            this->show_rooms();
         }
     }
 }
@@ -294,11 +285,15 @@ void roomWidget::showWallsAndType()
     if (ui->list_rooms->currentItem()!=0L)
     {
         int crow=ui->list_rooms->currentRow();
+        bool show = graphview->is_hide_roomCaption(datamanager->get_roomlist()[crow]->get_name());
+        if(show)
+             ui->caption->setText("Show Caption");
+        else
+             ui->caption->setText("Hide Caption");
 
         if (!datamanager->get_roomlist().isEmpty())
         {
             QList<jpsLineItem *> walllist=datamanager->get_roomlist()[crow]->get_listWalls();
-
             for (int i=0; i<walllist.size(); i++)
             {
                 QString string = "";
@@ -619,13 +614,6 @@ void roomWidget::change_obsName()
         this->show_obstacles();
     }
 }
-void roomWidget::change_label()
-{    
-     if(ui->caption->text() == "Show Caption")
-          ui->caption->setText("Hide Caption");
-     else
-          ui->caption->setText("Show Caption");
-}
 
 void roomWidget::addWallObs()
 {
@@ -764,12 +752,18 @@ void roomWidget::disable_roomSelectionObs()
 
 bool roomWidget::shhi_roomCaption() // obstacles!!!!!!!
 {
+     bool show;
     if (ui->list_rooms->currentItem()!=0L)
     {
         int cRow=ui->list_rooms->currentRow();
         QString roomName = datamanager->get_roomlist()[cRow]->get_name();
         QPointF roomCenter = datamanager->get_roomlist()[cRow]->get_center();
-        return graphview->show_hide_roomCaption(roomName,roomCenter.x(),roomCenter.y());
+        show = graphview->show_hide_roomCaption(roomName,roomCenter.x(),roomCenter.y());
+        if(show)
+             ui->caption->setText("Hide Caption");
+        else
+             ui->caption->setText("Show Caption");
+        return show;
     }
     return false;
 }

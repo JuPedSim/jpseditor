@@ -1096,6 +1096,20 @@ qreal jpsGraphicsView::ReturnLineLength()
     return current_line->line().length();
 }
 
+bool jpsGraphicsView::is_hide_roomCaption(QString name)
+{
+    for (int i=0; i<caption_list.size(); i++)
+    {
+        if (caption_list[i]->toPlainText()==name)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+
 bool jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
 {
     // if caption exits, it is supposed to be hided:
