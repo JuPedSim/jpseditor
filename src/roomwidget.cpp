@@ -125,7 +125,7 @@ void roomWidget::show_rooms()
     {
         ui->list_rooms->addItem(roomlist[i]->get_name());
     }
-    ui->list_rooms->setCurrentRow(roomlist.size()-1);
+    //ui->list_rooms->setCurrentRow(roomlist.size()-1); //why this line?
 
 }
 
@@ -250,7 +250,7 @@ void roomWidget::change_roomname()
 
                 datamanager->get_roomlist()[crow]->change_name(ui->chname_edit->text());
 
-            this->show_rooms();
+                this->show_rooms();
 
         }
     }
