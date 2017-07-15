@@ -86,6 +86,7 @@ protected slots:
     bool shhi_roomCaption();
     void highlight_room();
     void highlight_obs();
+    void change_label();
 //    void autoAssignDoors();
 //    void autoAssignExits();
     void ChangeRoomType();

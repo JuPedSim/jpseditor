@@ -76,6 +76,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->listWalls,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(selectWall()));
     connect(ui->remove_button,SIGNAL(clicked(bool)),this,SLOT(removeWall()));
     connect(ui->caption,SIGNAL(clicked(bool)),this,SLOT(shhi_roomCaption()));
+    connect(ui->caption,SIGNAL(clicked(bool)),this,SLOT(change_label()));
     connect(ui->highlight,SIGNAL(clicked(bool)),this,SLOT(highlight_room()));
     connect(ui->classBox,SIGNAL(activated(int)),this,SLOT(ChangeRoomType()));
     connect(ui->classBox,SIGNAL(currentIndexChanged(int)),this,SLOT(ChangeRoomType()));
@@ -617,6 +618,13 @@ void roomWidget::change_obsName()
 
         this->show_obstacles();
     }
+}
+void roomWidget::change_label()
+{    
+     if(ui->caption->text() == "Show Caption")
+          ui->caption->setText("Hide Caption");
+     else
+          ui->caption->setText("Show Caption");
 }
 
 void roomWidget::addWallObs()
