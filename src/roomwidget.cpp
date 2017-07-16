@@ -93,7 +93,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
 //    connect(ui->roomBox_exits,SIGNAL(activated(int)),this,SLOT(add_rooms_to_exit()));
 //    connect(ui->removeExitButton,SIGNAL(clicked(bool)),this,SLOT(delete_exit()));
 //    connect(ui->exitList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(select_exit()));
-//    connect(ui->auto_assign_exits,SIGNAL(clicked(bool)),this,SLOT(autoAssignExits()));
+//   connect(ui->auto_assign_exits,SIGNAL(clicked(bool)),this,SLOT(autoAssignExits()));
     //tab obstacles
     connect(ui->new_obs_button,SIGNAL(clicked(bool)),this,SLOT(new_obstacle()));
     connect(ui->delete_obs,SIGNAL(clicked(bool)),this,SLOT(delete_obstacle()));
