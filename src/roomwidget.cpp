@@ -299,7 +299,7 @@ void roomWidget::showWallsAndType()
             for (int i=0; i<walllist.size(); i++)
             {
                 QString string = "";
-                string.sprintf("[%+04.3f, %+04.3f] - [%+04.3f, %+04.3f]", 
+                string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]", 
                                walllist[i]->get_line()->line().x1(),
                                walllist[i]->get_line()->line().x2(),
                                walllist[i]->get_line()->line().y1(), 
@@ -662,7 +662,7 @@ void roomWidget::showWallsObs()
             for (int i=0; i<walllist.size(); i++)
             {
                 QString string = "";
-                string.sprintf("[%+04.3f, %+04.3f] - [%+04.3f, %+04.3f]", 
+                string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]", 
                                walllist[i]->get_line()->line().x1(),
                                walllist[i]->get_line()->line().x2(),
                                walllist[i]->get_line()->line().y1(),
@@ -670,6 +670,11 @@ void roomWidget::showWallsObs()
                 
                 ui->listWallsObs->addItem(string);
             }
+            QString obs_name = datamanager->get_obstaclelist()[crow]->get_name();
+            ui->chname_edit_obs->setText(obs_name);
+            QString in_room = datamanager->get_obstaclelist()[crow]->get_room()->get_name();
+            ui->roomBox_obs->setCurrentText(in_room);
+            
         }
     }
 }

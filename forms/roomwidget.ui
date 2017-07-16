@@ -179,7 +179,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Roomname:</string>
+     <string>Name:</string>
     </property>
    </widget>
    <widget class="Line" name="line_2">
@@ -205,7 +205,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Hide/Show Caption</string>
+     <string>Show Caption</string>
     </property>
    </widget>
    <widget class="QPushButton" name="highlight">
@@ -249,7 +249,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Roomtype:</string>
+     <string>Type:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_11">
@@ -709,7 +709,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Hide/Show Caption</string>
+     <string>Show Caption</string>
     </property>
    </widget>
    <widget class="QPushButton" name="highlight_obs">
@@ -722,7 +722,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Highlight Obst</string>
+     <string>Highlight</string>
     </property>
    </widget>
   </widget>
