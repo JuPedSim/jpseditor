@@ -63,7 +63,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     //close
     connect(ui->closeButton,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_room()));
     connect(ui->closeButton_2,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_room()));
-    //connect(ui->closeButton_3,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_room()));
+    connect(ui->closeButton_3,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_room()));
     connect(ui->closeButton_4,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_room()));
     //tab room
     connect(ui->new_room_button,SIGNAL(clicked(bool)),this,SLOT(new_room()));
@@ -76,7 +76,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->listWalls,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(selectWall()));
     connect(ui->remove_button,SIGNAL(clicked(bool)),this,SLOT(removeWall()));
     connect(ui->caption,SIGNAL(clicked(bool)),this,SLOT(shhi_roomCaption()));
-    connect(ui->highlight,SIGNAL(clicked(bool)),this,SLOT(highlight_room()));
+    //connect(ui->highlight,SIGNAL(clicked(bool)),this,SLOT(highlight_room()));
     connect(ui->classBox,SIGNAL(activated(int)),this,SLOT(ChangeRoomType()));
     connect(ui->classBox,SIGNAL(currentIndexChanged(int)),this,SLOT(ChangeRoomType()));
     //tab crossing
@@ -106,7 +106,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->list_obstacles,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(enable_roomSelectionObs()));
     connect(ui->roomBox_obs,SIGNAL(activated(int)),this,SLOT(add_room_to_obs()));
     connect(ui->caption_obs,SIGNAL(clicked(bool)),this,SLOT(shhi_roomCaption_obs()));
-    connect(ui->highlight_obs,SIGNAL(clicked(bool)),this,SLOT(highlight_obs()));
+    //connect(ui->highlight_obs,SIGNAL(clicked(bool)),this,SLOT(highlight_obs()));
     
 
     //lines in graphview deleted
