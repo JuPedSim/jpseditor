@@ -105,7 +105,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->remove_button_obs,SIGNAL(clicked(bool)),this,SLOT(removeWallObs()));
     connect(ui->list_obstacles,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(enable_roomSelectionObs()));
     connect(ui->roomBox_obs,SIGNAL(activated(int)),this,SLOT(add_room_to_obs()));
-    connect(ui->caption_obs,SIGNAL(clicked(bool)),this,SLOT(shhi_roomCaption()));
+    connect(ui->caption_obs,SIGNAL(clicked(bool)),this,SLOT(shhi_roomCaption_obs()));
     connect(ui->highlight_obs,SIGNAL(clicked(bool)),this,SLOT(highlight_obs()));
     
 
@@ -288,11 +288,12 @@ void roomWidget::showWallsAndType()
     {
         int crow=ui->list_rooms->currentRow();
         bool show = graphview->is_hide_roomCaption(datamanager->get_roomlist()[crow]->get_name());
-        if(show)
+        if(show){
              ui->caption->setText("Show Caption");
-        else
+        }
+        else{
              ui->caption->setText("Hide Caption");
-
+        }
         if (!datamanager->get_roomlist().isEmpty())
         {
             QList<jpsLineItem *> walllist=datamanager->get_roomlist()[crow]->get_listWalls();
@@ -658,6 +659,13 @@ void roomWidget::showWallsObs()
         if (!datamanager->get_obstaclelist().isEmpty())
         {
             QList<jpsLineItem *> walllist=datamanager->get_obstaclelist()[crow]->get_listWalls();
+            bool show = graphview->is_hide_roomCaption(datamanager->get_obstaclelist()[crow]->get_room()->get_name());
+            if(show){
+                 ui->caption_obs->setText("Show Caption");
+            }
+            else{
+                 ui->caption_obs->setText("Hide Caption");
+            }
 
             for (int i=0; i<walllist.size(); i++)
             {
@@ -757,7 +765,8 @@ void roomWidget::disable_roomSelectionObs()
     ui->is_in->setEnabled(false);
 }
 
-bool roomWidget::shhi_roomCaption() // obstacles!!!!!!!
+bool roomWidget::shhi_roomCaption() // @todo: This updates the caption for
+                                    // obstacles too! Not clean!
 {
      bool show;
     if (ui->list_rooms->currentItem()!=0L)
@@ -774,6 +783,28 @@ bool roomWidget::shhi_roomCaption() // obstacles!!!!!!!
     }
     return false;
 }
+
+bool roomWidget::shhi_roomCaption_obs()
+{
+     bool show;
+     if (ui->list_obstacles->currentItem()!=0L)
+     {
+          int cRow=ui->list_obstacles->currentRow();
+          datamanager->get_obstaclelist()[cRow]->highlight();
+          QString roomName = datamanager->get_obstaclelist()[cRow]->get_room()->get_name();
+          QPointF roomCenter = datamanager->get_obstaclelist()[cRow]->get_room()->get_center();
+          show = graphview->show_hide_roomCaption(roomName,roomCenter.x(),roomCenter.y());
+          if(show)
+               ui->caption_obs->setText("Hide Caption");
+          else
+               ui->caption_obs->setText("Show Caption");
+          return show;
+     }
+     return false;
+}
+
+
+
 
 void roomWidget::highlight_room()
 {
