@@ -87,6 +87,9 @@ protected slots:
     bool shhi_roomCaption_obs();
     void highlight_room();
     void highlight_obs();
+    void highlight_room(jpsRoom *);
+    void highlight_obs(jpsRoom *);
+
 
 //    void autoAssignDoors();
 //    void autoAssignExits();

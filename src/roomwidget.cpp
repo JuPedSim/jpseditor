@@ -287,7 +287,8 @@ void roomWidget::showWallsAndType()
     if (ui->list_rooms->currentItem()!=0L)
     {
         int crow=ui->list_rooms->currentRow();
-        bool show = graphview->is_hide_roomCaption(datamanager->get_roomlist()[crow]->get_name());
+        auto room = datamanager->get_roomlist()[crow];
+        bool show = graphview->is_hide_roomCaption(room->get_name());
         if(show){
              ui->caption->setText("Show Caption");
         }
@@ -296,7 +297,7 @@ void roomWidget::showWallsAndType()
         }
         if (!datamanager->get_roomlist().isEmpty())
         {
-            QList<jpsLineItem *> walllist=datamanager->get_roomlist()[crow]->get_listWalls();
+            QList<jpsLineItem *> walllist=room->get_listWalls();
             for (int i=0; i<walllist.size(); i++)
             {
                 QString string = "";
@@ -308,21 +309,11 @@ void roomWidget::showWallsAndType()
 
                 ui->listWalls->addItem(string);
             }
-            
             ShowRoomType(crow);
-            QString elevation = QString::number(datamanager->get_roomlist()[crow]->get_elevation());
+            QString elevation = QString::number(room->get_elevation());
             ui->elevation_edit->setText(elevation);
-            QString room_name = datamanager->get_roomlist()[crow]->get_name();
-            ui->chname_edit->setText(room_name);
-            if(!datamanager->get_roomlist()[crow]->is_highlighted())
-                 highlight_room();
-            
-            for(auto r: datamanager->get_roomlist())
-                 if(datamanager->get_roomlist()[crow]->get_name() != r->get_name())
-                      if(r->is_highlighted())
-                           r->highlight();
-            
-
+            ui->chname_edit->setText(room->get_name());
+            highlight_room(room);
         }
     }
 }
@@ -680,9 +671,10 @@ void roomWidget::showWallsObs()
             }
             QString obs_name = datamanager->get_obstaclelist()[crow]->get_name();
             ui->chname_edit_obs->setText(obs_name);
-            QString in_room = datamanager->get_obstaclelist()[crow]->get_room()->get_name();
-            ui->roomBox_obs->setCurrentText(in_room);
-            
+            auto room = datamanager->get_obstaclelist()[crow]->get_room();
+            QString room_name = room->get_name();
+            ui->roomBox_obs->setCurrentText(room_name);
+            highlight_obs(room);
         }
     }
 }
@@ -806,7 +798,7 @@ bool roomWidget::shhi_roomCaption_obs()
 
 
 
-void roomWidget::highlight_room()
+void roomWidget::highlight_room() //@todo: rename -> highlight_current_room()
 {
     if (ui->list_rooms->currentItem()!=0L)
     {
@@ -817,8 +809,9 @@ void roomWidget::highlight_room()
 
 }
 
-void roomWidget::highlight_obs()
+void roomWidget::highlight_obs() //@todo: rename highlight_current_obstacle
 {
+
     if (ui->list_obstacles->currentItem()!=0L)
     {
         int cRow=ui->list_obstacles->currentRow();
@@ -864,19 +857,54 @@ void roomWidget::ShowRoomType(int& cRow) const
 
 }
 
+void roomWidget::highlight_room(jpsRoom * room)
+{
 
+     // unhighlight other obstacles
+     for(auto o: datamanager->get_obstaclelist())
+          if(o->is_highlighted())
+               o->highlight(); 
+     
+     // highlight room
+     if(!room->is_highlighted())
+          highlight_room();
+            
+     for(auto r: datamanager->get_roomlist())
+          if(room->get_name() != r->get_name())
+               if(r->is_highlighted())
+                    r->highlight();
 
+}
+void roomWidget::highlight_obs(jpsRoom * room)
+{
+     QString room_name = room->get_name();
+     int cRow=ui->list_obstacles->currentRow();
+     QString obs_name = datamanager->get_obstaclelist()[cRow]->get_name();
+     
+     // first unhighlight all rooms
+     //  (evt. highlighted in the room tab)
+     for(auto r: datamanager->get_roomlist())
+          if(r->is_highlighted())
+               r->highlight();
 
+     // highlight containing room
+     if(!room->is_highlighted())
+          room->highlight();
 
+     highlight_obs();
+            
 
+     //// unhighlight other obstacles if being highlighted 
+     for(auto o: datamanager->get_obstaclelist())
+          if(obs_name != o->get_name())
+               if(o->is_highlighted())
+                    o->highlight(); 
+            
+     // // unhighlight other rooms 
+     for(auto r: datamanager->get_roomlist())
+          if(room_name != r->get_name())
+               if(r->is_highlighted())
+                    r->highlight(); 
+ 
 
-
-
-
-
-
-
-
-
-
-
+}
