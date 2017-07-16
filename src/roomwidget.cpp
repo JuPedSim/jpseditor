@@ -97,7 +97,8 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     //tab obstacles
     connect(ui->new_obs_button,SIGNAL(clicked(bool)),this,SLOT(new_obstacle()));
     connect(ui->delete_obs,SIGNAL(clicked(bool)),this,SLOT(delete_obstacle()));
-    connect(ui->apply_name_button_obs,SIGNAL(clicked(bool)),this,SLOT(change_obsName()));
+    //connect(ui->apply_name_button_obs,SIGNAL(clicked(bool)),this,SLOT(change_obsName()));
+    connect(ui->chname_edit_obs, SIGNAL( returnPressed() ), this, SLOT(change_obsName()));
     connect(ui->add_button_obs,SIGNAL(clicked(bool)),this,SLOT(addWallObs()));
     connect(ui->list_obstacles,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(showWallsObs()));
     connect(ui->listWallsObs,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(selectWallObs()));
@@ -106,6 +107,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->roomBox_obs,SIGNAL(activated(int)),this,SLOT(add_room_to_obs()));
     connect(ui->caption_obs,SIGNAL(clicked(bool)),this,SLOT(shhi_roomCaption()));
     connect(ui->highlight_obs,SIGNAL(clicked(bool)),this,SLOT(highlight_obs()));
+    
 
     //lines in graphview deleted
     connect(graphview,SIGNAL(lines_deleted()),this,SLOT(show_all()));

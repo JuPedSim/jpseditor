@@ -14,7 +14,7 @@
    <string>TabWidget</string>
   </property>
   <property name="currentIndex">
-   <number>0</number>
+   <number>2</number>
   </property>
   <widget class="QWidget" name="widget">
    <attribute name="title">
@@ -534,19 +534,6 @@
     </property>
     <property name="text">
      <string>Remove</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="apply_name_button_obs">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>130</y>
-      <width>81</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Apply Name</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_9">
