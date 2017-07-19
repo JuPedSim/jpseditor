@@ -261,15 +261,6 @@ QPolygonF jpsRoom::RoomAsSortedPolygon() const
             i=-1;
         }
     }
-
-
-    for (QPointF point:points)
-    {
-        std::cout << point.x() << " " << point.y() << std::endl;
-
-    }
-    std::cout << "----------------------------" << std::endl;
-
     return QPolygonF(points);
 }
 

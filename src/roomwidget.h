@@ -90,7 +90,8 @@ protected slots:
     void highlight_room(jpsRoom *);
     void highlight_obs(jpsRoom *);
 
-
+    void autoAssigneObstacles();
+    void autoAssigneObstacle(jpsObstacle *);
 //    void autoAssignDoors();
 //    void autoAssignExits();
     void ChangeRoomType();
