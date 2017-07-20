@@ -31,6 +31,9 @@
 #include <iostream>
 #include <QGraphicsLineItem>
 #include "jpscrossing.h"
+#ifdef TRACE_LOGGING
+#include "dtrace.h"
+#endif
 
 
 jpsRoom::jpsRoom(int id_room)
@@ -48,12 +51,13 @@ jpsRoom::jpsRoom(int id_room)
 
 void jpsRoom::addWall(QList <jpsLineItem *> newWalls)
 {
+    dtrace("Enter jpsRoom::removeWall(newWall)");     
     for (int i=0; i<newWalls.size(); i++)
     {
         if (newWalls[i]->is_Wall() && !item_list.contains(newWalls[i]))
             item_list.push_back(newWalls[i]);
     }
-
+    dtrace("Leave jpsRoom::removeWall(newWall)");
 }
 
 void jpsRoom::addWall(jpsLineItem *newWall)
@@ -63,10 +67,12 @@ void jpsRoom::addWall(jpsLineItem *newWall)
 
 void jpsRoom::removeWall(QList <jpsLineItem *> wall)
 {
+     dtrace("Enter jpsRoom::removeWall(wall)");   
     for (int i=0; i<wall.size(); i++)
     {
         item_list.removeOne(wall[i]);
     }
+     dtrace("Leave jpsRoom::removeWall");
 }
 
 QString jpsRoom::get_name()
@@ -143,6 +149,7 @@ QPointF jpsRoom::get_center()
 }
 void jpsRoom::highlight()
 {
+     dtrace("Enter jpsRoom::highlight. highlight=<%d>", highlight);
      QPen pen = QPen(Qt::black, 5);
      pen.setCosmetic(true);
 
@@ -166,6 +173,7 @@ void jpsRoom::highlight()
         }
         highlighted=false;
     }
+    dtrace("Enter jpsRoom::highlight. highlight=<%d>", highlight);
 }
 
 QString jpsRoom::get_type()
@@ -354,6 +362,10 @@ void jpsRoom::set_elevation(float elevation)
 
 void jpsRoom::correctPlaneCoefficients()
 {
+     dtrace("Enter correctPlaneCoefficients");
+     dtrace("\t room=<%s> of type=<%s>", 
+            this->get_name().toStdString().c_str(),
+            this->get_type().toStdString().c_str());
     if(this->get_type().toUpper() != "STAIR")
     {
         this->set_ax(0);
@@ -391,8 +403,11 @@ void jpsRoom::correctPlaneCoefficients()
      float P3_x = P3.x();
      float P3_y = P3.y();
      float P3_z = elevation_2;
-
-
+     dtrace("\t P1=(%.2f, %.2f, %.2f), P2=(%.2f, %.2f, %.2f), P3=(%.2f, %.2f, %.2f)",
+            P1_x, P1_y, P1_z, 
+            P2_x, P2_y, P2_z, 
+            P3_x, P3_y, P3_z
+          );
      float d = 1.0;
      // Thanks M. Osterkamp
      float c = (((1-P3_x/P1_x*1)-((P3_y-P3_x/P1_x*P1_y)/(P2_y-P2_x/P1_x*P1_y))
@@ -402,18 +417,12 @@ void jpsRoom::correctPlaneCoefficients()
 
      float b = ((1-P3_x/P1_x*1)*d-(P3_z-P3_x/P1_x*P1_z)*c)/(P3_y-P3_x/P1_x*P1_y);
      float a = (d-P1_z*c-P1_y*b)/P1_x;
-
-     // std::cout << "P1 = ("<<P1_x << ", " << P1_y << ", "<<elevation_1<<")\n";
-     // std::cout << "P2 = ("<<P2_x << ", " << P2_y << ", "<<elevation_1<<")\n";
-     // std::cout << "P3 = ("<<P3_x << ", " << P3_y << ", "<<elevation_2<<")\n";
-     // std::cout <<"a = " << a << "  b = " << b << " c = " << c << "\n";
-     // std::cout <<"ax = " << -a/c << "  by = " << -b/c << " cz = " << d/c << "\n";
-     
- 
-
+     dtrace("\t a = %.2f, b = %.2f, c= %.2f", a, b, c);
      set_ax(-a/c);
      set_by(-b/c);
      set_cz(d/c);
+     dtrace("\t ax = %.2f, by = %.2f, cz= %.2f", -a/c, -b/c, d/c);
+     dtrace("Leave correctPlaneCoefficients");
 }
 
 bool jpsRoom::is_highlighted()
