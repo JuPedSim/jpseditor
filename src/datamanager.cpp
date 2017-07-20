@@ -83,14 +83,11 @@ void jpsDatamanager::change_roomName(jpsRoom* room, QString name)
 
 void jpsDatamanager::remove_all_rooms()
 {
-    //std::cout << roomlist.first()->get_name().toStdString() << std::endl;
     for (int i=0; i<roomlist.size(); i++)
     {
         delete roomlist[i];
     }
     roomlist.clear();
-
-
 }
 
 QList<jpsRoom *> jpsDatamanager::get_roomlist()
@@ -148,10 +145,9 @@ void jpsDatamanager::new_crossing(QList <jpsLineItem *> newCrossings)
     {
         if (newCrossings[i]->is_Door())
         {
-            jpsCrossing* newCrossing = new jpsCrossing(newCrossings[i]);
-            crossingList.push_back(newCrossing);
+             jpsCrossing* newCrossing = new jpsCrossing(newCrossings[i]);
+             crossingList.push_back(newCrossing);
         }
-
     }
 }
 
@@ -746,14 +742,11 @@ void jpsDatamanager::AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem *
 void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
     stream->writeStartElement("crossings");
-
-
     for (int i=0; i<crossingList.size(); i++)
     {
         if (crossingList[i]->IsExit()==false)
         {
             stream->writeStartElement("crossing");
-
             stream->writeAttribute("id",QString::number(i));
             stream->writeAttribute("subroom1_id",QString::number(crossingList[i]->get_roomList()[0]->get_id()));
             stream->writeAttribute("subroom2_id",QString::number(crossingList[i]->get_roomList()[1]->get_id()));
@@ -765,10 +758,7 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
             stream->writeAttribute("px",QString::number(crossingList[i]->get_cLine()->get_line()->line().x2()));
             stream->writeAttribute("py",QString::number(crossingList[i]->get_cLine()->get_line()->line().y2()));
             stream->writeEndElement();//vertex
-
             stream->writeEndElement();//crossing
-
-
         }
         else
         {
@@ -777,9 +767,6 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
         }
         lines.removeOne(crossingList[i]->get_cLine());
     }
-
-
-
 }
 
 void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)

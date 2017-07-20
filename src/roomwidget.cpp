@@ -326,20 +326,20 @@ void roomWidget::selectWall()
         }
         int cWallRow=ui->listWalls->currentRow();
         int cRoomRow=ui->list_rooms->currentRow();
-
         graphview->select_line(datamanager->get_roomlist()[cRoomRow]->get_listWalls()[cWallRow]);
-
     }
 }
 
 void roomWidget::new_crossing()
 {
-    if (graphview->get_markedLines().size()>0)
-    {
-        datamanager->new_crossing(graphview->get_markedLines());
+     if (graphview->get_markedLines().size()>0)
+     {
+          datamanager->new_crossing(graphview->get_markedLines());
+          int count_crossings = datamanager->get_crossingList().size();
+          jpsCrossing * crossing = datamanager->get_crossingList()[count_crossings-1];
+          autoAssignCrossing(crossing);
     }
     show_crossings();
-
 }
 
 void roomWidget::enable_roomSelectionCrossings()
@@ -372,8 +372,10 @@ void roomWidget::enable_roomSelectionCrossings()
                 if (cRoomlist.size()>1)
                 {
                     int index = datamanager->get_roomlist().indexOf(cRoomlist[0]);
+
                     ui->roomBox1->setCurrentIndex(index);
                     index = datamanager->get_roomlist().indexOf(cRoomlist[1]);
+
                     ui->roomBox2->setCurrentIndex(index);
                 }
                 else if (cRoomlist.size()>0 && datamanager->get_crossingList()[cCrossingRow]->IsExit())
@@ -455,9 +457,8 @@ void roomWidget::select_crossing()
             graphview->unmark_all_lines();
         }
         int cCrossRow=ui->crossingList->currentRow();
-
         graphview->select_line(datamanager->get_crossingList()[cCrossRow]->get_cLine());
-
+        autoAssignCrossing(datamanager->get_crossingList()[cCrossRow]);                     
     }
 }
 
@@ -617,7 +618,7 @@ void roomWidget::addWallObs()
             int crow=ui->list_obstacles->currentRow();
             jpsObstacle * obstacle = datamanager->get_obstaclelist()[crow];
             obstacle->addWall(graphview->get_markedLines());
-            autoAssigneObstacle(obstacle);
+            autoAssignObstacle(obstacle);
             this->showWallsObs();
         }
     }
@@ -840,14 +841,13 @@ void roomWidget::autoAssigneObstacles()
              }
              if(obstacle->get_vertices().size() == counterIn)
              {
-                  std::cout << ">> Obstacle " << obstacle->get_name().toStdString() << " is in  room " << room->get_name().toStdString() << std::endl;
                   obstacle->set_room(room);
              }
         }
     }   
 }
 
-void roomWidget::autoAssigneObstacle(jpsObstacle * obstacle)
+void roomWidget::autoAssignObstacle(jpsObstacle * obstacle)
 {
     for (jpsRoom* room: datamanager->get_roomlist())
     {
@@ -860,10 +860,50 @@ void roomWidget::autoAssigneObstacle(jpsObstacle * obstacle)
         }
         if(counter == obstacle->get_vertices().size())
         {
-             std::cout << "Obstacle " << obstacle->get_name().toStdString() << " is in  room " << room->get_name().toStdString() << std::endl;
              obstacle->set_room(room);
         }   
     }
+}
+void roomWidget::autoAssignCrossing(jpsCrossing * crossing)
+{
+     int roomCounter=0; // counts number of added rooms. crossing needs two.
+     for (jpsRoom* room: datamanager->get_roomlist())
+     {
+         QList<jpsLineItem* > walls = room->get_listWalls();
+         int pointCounter = 0; //counts number of common points
+         for (jpsLineItem* wall: walls)
+         {
+              if (wall->get_line()->line().p1()==crossing->get_cLine()->get_line()->line().p1() ||
+                  wall->get_line()->line().p1()==crossing->get_cLine()->get_line()->line().p2() ||
+                  wall->get_line()->line().p2()==crossing->get_cLine()->get_line()->line().p1() ||
+                  wall->get_line()->line().p2()==crossing->get_cLine()->get_line()->line().p2())
+              {
+                   pointCounter++;
+
+              }
+         }
+         if (pointCounter>=2 && roomCounter==0)
+         {
+              crossing->add_rooms(room);
+              roomCounter++;
+              int index = datamanager->get_roomlist().indexOf(room);
+              ui->roomBox1->setCurrentIndex(index);
+         }
+         else if (pointCounter>=2 && roomCounter==1)
+         {
+              roomCounter++;
+              crossing->add_rooms(crossing->get_roomList()[0],room);
+              int index = datamanager->get_roomlist().indexOf(room);
+              ui->roomBox2->setCurrentIndex(index);
+              break;
+         }
+     }
+     if(roomCounter == 1)
+     {
+          int numRooms = datamanager->get_roomlist().size();
+          ui->roomBox2->setCurrentIndex(numRooms);
+     }
+     add_rooms_to_crossing();
 }
 //void roomWidget::autoAssignDoors()
 //{
