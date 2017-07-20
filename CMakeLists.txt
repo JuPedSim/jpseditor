@@ -118,6 +118,7 @@ set( SRCS
   )  
 # all header files that should be treated with moc
 set( HDR
+    src/dtrace.h
     src/mainWindow.h 
     src/GraphicView.h
     src/graphicscene.h
@@ -305,8 +306,10 @@ if(CMAKE_COMPILER_IS_GNUCXX)
   message( STATUS "Using g++ " ${CMAKE_CXX_COMPILER_VERSION})
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
-if(CMAKE_BUILD_TYPE MATCHES Debug)
+if(CMAKE_BUILD_TYPE MATCHES Debug) 
+  
   set(CMAKE_CXX_LDFLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
+  set(CMAKE_CXX_FLAGS_DEBUG          "${CMAKE_CXX_FLAGS_DEBUG} -DTRACE_LOGGING")
   message(STATUS "Debug flags: "  ${CMAKE_CXX_FLAGS} " " ${CMAKE_CXX_FLAGS_DEBUG} )
 else(CMAKE_BUILD_TYPE MATCHES Debug)
   set(CMAKE_BUILD_TYPE Release)
