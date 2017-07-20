@@ -26,13 +26,15 @@
  *
  **/
 
-
 #include "datamanager.h"
 #include <iostream>
 #include <utility>
 #include <random>
 #include <chrono>
 #include <QFileDialog>
+#ifdef TRACE_LOGGING
+#include "dtrace.h"
+#endif
 
 jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 {
@@ -49,19 +51,24 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 
 jpsDatamanager::~jpsDatamanager()
 {
+     dtrace("Enter jpsDatamanager::~jpsDatamanager");
     //remove_all(); vmiew->delete_all() does this work
     remove_all();
+    dtrace("Leave jpsDatamanager::~jpsDatamanager");
 }
 
 void jpsDatamanager::new_room()
 {
+     dtrace("Enter jpsDatamanager::new_room. room_id_counter = %d", room_id_counter);
     jpsRoom* new_room = new jpsRoom(this->room_id_counter);
     roomlist.push_back(new_room);
     room_id_counter+=1;
+    dtrace("Leave jpsDatamanager::new_room. room_id_counter = %d", room_id_counter);
 }
 
 void jpsDatamanager::remove_room(jpsRoom *room)
 {
+     dtrace("Enter jpsDatamanager::remove_room. room_id_counter = %d", room_id_counter);
     //if (roomlist.size()>0)
     //{
     int roomID=room->get_id();
@@ -74,73 +81,86 @@ void jpsDatamanager::remove_room(jpsRoom *room)
 
     room_id_counter-=1;
     //}
+    dtrace("Leave jpsDatamanager::remove_room. room_id_counter = %d", room_id_counter);
 }
 
 void jpsDatamanager::change_roomName(jpsRoom* room, QString name)
 {
+     dtrace("Enter jpsDatamanager::change_roomName with name=<%s>", name.toStdString().c_str());
     room->change_name(name);
+    dtrace("Leave jpsDatamanager::change_roomName");
 }
 
 void jpsDatamanager::remove_all_rooms()
 {
+     dtrace("Enter jpsDatamanager::remove_all_rooms");
     for (int i=0; i<roomlist.size(); i++)
     {
         delete roomlist[i];
     }
     roomlist.clear();
+    dtrace("Leave jpsDatamanager::remove_all_rooms");
 }
 
 QList<jpsRoom *> jpsDatamanager::get_roomlist()
 {
+    dtrace("Enter/return jpsDatamanager::get_roomlist");
     return this->roomlist;
 }
-
-
-
 void jpsDatamanager::new_obstacle()
 {
+     dtrace("Enter: jpsDatamanager::new_obstacle. obs_id_counter = %d", obs_id_counter);
     jpsObstacle* new_obs = new jpsObstacle(this->obs_id_counter);
     obstaclelist.push_back(new_obs);
     obs_id_counter+=1;
+    dtrace("Leave jpsDatamanager::new_obstacle obs_id_counte = %d", obs_id_counter);
 }
 
 void jpsDatamanager::remove_obstacle(jpsObstacle *obs)
 {
+     dtrace("Enter: jpsDatamanager::remove_obstacle. obs_id_counter = %d", obs_id_counter);
     if (obstaclelist.size()>0)
     {
         obstaclelist.removeOne(obs);
         delete obs;
         obs_id_counter-=1;
     }
+    dtrace("Leave jpsDatamanager::remove_obstacle. obs_id_counter = %d", obs_id_counter);
 }
 
 void jpsDatamanager::change_obstacleName(jpsObstacle* obs, QString name)
 {
+     dtrace("Enter jpsDatamanager::change_obstacleName with name=<%s>", name.toStdString().c_str());
     obs->change_name(name);
+    dtrace("Leave jpsDatamanager::change_obstacleName");
 }
 
 void jpsDatamanager::remove_all_obstacles()
 {
-
+    dtrace("Enter jpsDatamanager::remove_all_obstacles");
     for (int i=0; i<obstaclelist.size(); i++)
     {
         delete obstaclelist[i];
     }
     obstaclelist.clear();
+    dtrace("Leave jpsDatamanager::remove_all_obstacles");
 }
 
 QList<jpsObstacle *> jpsDatamanager::get_obstaclelist()
 {
+    dtrace("Enter/Return jpsDatamanager::get_obstaclelist");
     return obstaclelist;
 }
 
 QList<jpsCrossing *> jpsDatamanager::get_crossingList()
 {
+    dtrace("Enter/Return jpsDatamanager::get_crossinglist");
     return crossingList;
 }
 
 void jpsDatamanager::new_crossing(QList <jpsLineItem *> newCrossings)
 {
+    dtrace("Enter jpsDatamanager::new_crossing QList");
     for (int i=0; i<newCrossings.size(); i++)
     {
         if (newCrossings[i]->is_Door())
@@ -149,48 +169,60 @@ void jpsDatamanager::new_crossing(QList <jpsLineItem *> newCrossings)
              crossingList.push_back(newCrossing);
         }
     }
+    dtrace("Leave jpsDatamanager::new_crossing QList");
 }
 
 void jpsDatamanager::new_crossing(jpsLineItem *newCrossing)
 {
+     dtrace("Enter jpsDatamanager::new_crossing");
     if (newCrossing->is_Door())
     {
         jpsCrossing* newCros = new jpsCrossing(newCrossing);
         crossingList.push_back(newCros);
     }
+    dtrace("Leave jpsDatamanager::new_crossing");
 }
 
 void jpsDatamanager::remove_crossing(jpsCrossing *crossing)
 {
+     dtrace("Enter jpsDatamanager::remove_crossing. crossingList.size() = %d", crossingList.size());
     if (crossingList.size()>0)
     {
         crossingList.removeOne(crossing);
         delete crossing;
     }
+    dtrace("Leave jpsDatamanager::remove_crossing. crossingList.size() = %d", crossingList.size());
 }
 
 void jpsDatamanager::change_crossingName(jpsCrossing *crossing, QString name)
 {
+    dtrace("Enter jpsDatamanager::change_crossingName with name = <%s>",
+           name.toStdString().c_str());
     crossingList[crossingList.indexOf(crossing)]->change_name(name);
+    dtrace("Leave jpsDatamanager::change_crossingName");
 }
 
 void jpsDatamanager::remove_all_crossings()
 {
+     dtrace("Enter jpsDatamanager::remove_all_crossings");
     for (int i=0; i<crossingList.size(); i++)
     {
         delete crossingList[i];
     }
     crossingList.clear();
+    dtrace("Leave jpsDatamanager::remove_all_crossings");
 }
 
 
 QList<jpsExit *> jpsDatamanager::get_exitList()
 {
+     dtrace("Enter/Return jpsDatamanager::get_exitList");
     return exitList;
 }
 
 void jpsDatamanager::new_exit(QList <jpsLineItem *> newExits)
 {
+    dtrace("Enter jpsDatamanager::new_exit QList");
     for (int i=0; i<newExits.size(); i++)
     {
         //if (newExits[i]->is_Exit())
@@ -199,31 +231,37 @@ void jpsDatamanager::new_exit(QList <jpsLineItem *> newExits)
         exitList.push_back(newExit);
         //}
     }
+    dtrace("Leave jpsDatamanager::new_exit QList");
 }
 
 void jpsDatamanager::new_exit(jpsLineItem *newExit)
 {
+     dtrace("Enter jpsDatamanager::new_exit");
     jpsExit* newEx = new jpsExit(newExit);
     exitList.push_back(newEx);
+    dtrace("Leave jpsDatamanager::new_exit");
 }
 
 void jpsDatamanager::remove_exit(jpsExit *exit)
 {
+     dtrace("Enter jpsDatamanager::remove_exit");
     if (exitList.size()>0)
     {
         exitList.removeOne(exit);
         delete exit;
-
     }
+    dtrace("Leave jpsDatamanager::remove_exit");
 }
 
 void jpsDatamanager::remove_all_exits()
 {
+     dtrace("Enter jpsDatamanager::remove_all_exits");
     for (int i=0; i<exitList.size(); i++)
     {
         delete exitList[i];
     }
     exitList.clear();
+    dtrace("Leave jpsDatamanager::remove_all_exits");
 }
 
 QList<jpsLandmark *> jpsDatamanager::get_landmarks()
@@ -343,6 +381,7 @@ const int &jpsDatamanager::GetRegionCounter() const
 
 void jpsDatamanager::writeXML(QFile &file)
 {
+     dtrace("Enter jpsDatamanager::writeXML");
     QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
     QList<jpsLineItem* > lines = _mView->get_line_vector();
 
@@ -361,6 +400,7 @@ void jpsDatamanager::writeXML(QFile &file)
     stream->writeEndDocument();
 
     delete stream;
+    dtrace("Leave jpsDatamanager::writeXML");
 }
 
 void jpsDatamanager::writeRoutingXML(QFile &file) // Construction side
@@ -467,6 +507,7 @@ void jpsDatamanager::WriteRegions(QXmlStreamWriter *stream, bool fuzzy)
 
 void jpsDatamanager::AutoSaveXML(QFile &file)
 {
+    dtrace("Enter jpsDatamanager::AutoSaveXML");
     QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
     QList<jpsLineItem* > lines = _mView->get_line_vector();
 
@@ -488,12 +529,13 @@ void jpsDatamanager::AutoSaveXML(QFile &file)
     stream->writeEndElement();//geometry
 
     stream->writeEndDocument();
-
+    dtrace("Leave jpsDatamanager::AutoSaveXML");
     delete stream;
 }
 
 void jpsDatamanager::writeHeader(QXmlStreamWriter *stream)
 {
+     dtrace("Enter jpsDatamanager::writeHeader");
     stream->setAutoFormatting(true);
     stream->writeStartDocument("1.0",true);
 
@@ -503,10 +545,12 @@ void jpsDatamanager::writeHeader(QXmlStreamWriter *stream)
     stream->writeAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
     stream->writeAttribute("xsi:noNamespaceSchemaLocation","http://xsd.jupedsim.org/jps_geometry.xsd");
     stream->writeAttribute("unit","m");
+    dtrace("Leave jpsDatamanager::writeHeader");
 }
 
 void jpsDatamanager::writeRoutingHeader(QXmlStreamWriter *stream)
 {
+     dtrace("Enter jpsDatamanager::writeRoutingHeader");
     stream->setAutoFormatting(true);
     stream->writeStartDocument("1.0",true);
 
@@ -516,6 +560,7 @@ void jpsDatamanager::writeRoutingHeader(QXmlStreamWriter *stream)
     stream->writeAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
     stream->writeAttribute("xsi:noNamespaceSchemaLocation","http://xsd.jupedsim.org/jps_routing.xsd");
     stream->writeAttribute("unit","m");
+    dtrace("Leave jpsDatamanager::writeRoutingHeader");
 }
 
 void jpsDatamanager::writeHLines(QXmlStreamWriter *stream, QList<jpsLineItem *> &hLines)
@@ -585,6 +630,7 @@ QString jpsDatamanager::RoomIDHLine(jpsLineItem *lineItem)
 
 void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
+     dtrace(" Enter jpsDatamanager::writeRooms");
     ///rooms
     stream->writeStartElement("room");
     stream->writeAttribute("id","0");
@@ -663,12 +709,12 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
     stream->writeEndElement();//crossings
 
     stream->writeEndElement();//room
-
-
+    dtrace(" Leave jpsDatamanager::writeRooms");
 }
 
 void jpsDatamanager::AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
+     dtrace("Enter jpsDatamanager::AutoSaveRooms");
     ///rooms
     stream->writeStartElement("room");
     stream->writeAttribute("id","0");
@@ -736,11 +782,12 @@ void jpsDatamanager::AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem *
     stream->writeEndElement();//crossings
 
     stream->writeEndElement();//room
-
+    dtrace("Leave jpsDatamanager::AutoSaveRooms");
 }
 
 void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
+     dtrace("Enter jpsDatamanager::writeCrossings");
     stream->writeStartElement("crossings");
     for (int i=0; i<crossingList.size(); i++)
     {
@@ -767,12 +814,12 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
         }
         lines.removeOne(crossingList[i]->get_cLine());
     }
+    dtrace("Leave jpsDatamanager::writeCrossings");
 }
 
 void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
-
-
+    dtrace("Enter jpsDatamanager::writeTransitions");
     for (int i=0; i<exitList.size(); i++)
     {
         stream->writeStartElement("transition");
@@ -796,8 +843,7 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineIte
         stream->writeEndElement();//transition
         lines.removeOne(exitList[i]->get_cLine());
     }
-
-
+    dtrace("Leave jpsDatamanager::writeTransitions");
 }
 
 void jpsDatamanager::writeObstacles(QXmlStreamWriter *stream, jpsObstacle* obs, QList<jpsLineItem* >& lines)
@@ -837,6 +883,7 @@ void jpsDatamanager::writeObstacles(QXmlStreamWriter *stream, jpsObstacle* obs, 
 
 void jpsDatamanager::writeNotAssignedWalls(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
+     dtrace("Enter jpsDatamanager::writeNotAssignedWalls");
     /// save lines which are not assigned to a room yet
     QList<jpsLineItem *> walls;
     for (jpsLineItem* line:lines)
@@ -876,12 +923,12 @@ void jpsDatamanager::writeNotAssignedWalls(QXmlStreamWriter *stream, QList<jpsLi
     }
 
     stream->writeEndElement();//subroom
-
-
+    dtrace("Leave jpsDatamanager::writeNotAssignedWalls");
 }
 
 void jpsDatamanager::writeNotAssignedDoors(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
+     dtrace("Enter jpsDatamanager::writeNotAssignedDoors");
     for (jpsLineItem* line:lines)
     {
         if (line->is_Door())
@@ -904,9 +951,8 @@ void jpsDatamanager::writeNotAssignedDoors(QXmlStreamWriter *stream, QList<jpsLi
 
             lines.removeOne(line);
         }
-
     }
-
+    dtrace("Leave jpsDatamanager::writeNotAssignedDoors");
 }
 
 void jpsDatamanager::writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
@@ -1185,6 +1231,7 @@ qreal jpsDatamanager::MakeItFuzzy(const qreal& mean, const qreal &std)
 
 int jpsDatamanager::GetNumberOfMainTargets() const
 {
+    dtrace("Enter jpsDatamanager::GetNumberOfMainTargets");
     int counter=0;
     for (jpsLandmark* landmark:_landmarks)
     {
@@ -1193,11 +1240,13 @@ int jpsDatamanager::GetNumberOfMainTargets() const
             counter++;
         }
     }
+    dtrace("Leave jpsDatamanager::GetNumberOfMainTargets");
     return counter;
 }
 
 void jpsDatamanager::remove_all()
 {
+    dtrace("Enter jpsDatamanager::remove_all");
     remove_all_crossings();
     remove_all_exits();
     remove_all_obstacles();
@@ -1207,11 +1256,12 @@ void jpsDatamanager::remove_all()
     RemoveAllRegions();
     room_id_counter=0;
     obs_id_counter=0;
-
+    dtrace("Leave jpsDatamanager::remove_all");
 }
 
 void jpsDatamanager::remove_marked_lines()
 {
+     dtrace("Enter jpsDatamanager::remove_marked_lines");
     QList<jpsLineItem* > marked_lines = _mView->get_markedLines();
     for (int i=0; i<marked_lines.size(); i++)
     {
@@ -1230,7 +1280,6 @@ void jpsDatamanager::remove_marked_lines()
                 cList[j]->removeWall(delete_candidates);
             }
         }
-
         else
         {
             QList<jpsCrossing* > cList= this->get_crossingList();
@@ -1242,10 +1291,9 @@ void jpsDatamanager::remove_marked_lines()
                     break;
                 }
             }
-
         }
-
     }
+     dtrace("Leave jpsDatamanager::remove_marked_lines");
 }
 
 void jpsDatamanager::set_view(jpsGraphicsView *view)
@@ -2050,6 +2098,7 @@ void jpsDatamanager::writeDXFObjects(DL_Dxf *dxf, DL_WriterA *dw)
 
 QString jpsDatamanager::check_printAbility()
 {
+     dtrace("Enter jpsDatamanager::check_printAbility");
     if (roomlist.size()<1)
     {
         QString string = "No rooms defined! Save XML-file not possible!";
@@ -2082,7 +2131,7 @@ QString jpsDatamanager::check_printAbility()
 
     }
 
-
+    dtrace("Leave jpsDatamanager::check_printAbility");
     return "";
 }
 
@@ -2348,24 +2397,3 @@ jpsRegion* jpsDatamanager::ParseRegion(QXmlStreamReader &xmlReader)
 //{
 //    return _lastCMapFrame;
 //}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
