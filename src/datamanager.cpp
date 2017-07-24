@@ -795,8 +795,15 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
         {
             stream->writeStartElement("crossing");
             stream->writeAttribute("id",QString::number(i));
-            stream->writeAttribute("subroom1_id",QString::number(crossingList[i]->get_roomList()[0]->get_id()));
-            stream->writeAttribute("subroom2_id",QString::number(crossingList[i]->get_roomList()[1]->get_id()));
+            auto roomList = crossingList[i]->get_roomList();
+            if(roomList.size()){
+                 stream->writeAttribute("subroom1_id",QString::number(crossingList[i]->get_roomList()[0]->get_id()));
+                 stream->writeAttribute("subroom2_id",QString::number(crossingList[i]->get_roomList()[1]->get_id()));
+            }
+            else{
+                 stream->writeAttribute("subroom1_id", -2); //dummy values
+                 stream->writeAttribute("subroom2_id", -2);                                  
+            }
             stream->writeStartElement("vertex");
             stream->writeAttribute("px",QString::number(crossingList[i]->get_cLine()->get_line()->line().x1()));
             stream->writeAttribute("py",QString::number(crossingList[i]->get_cLine()->get_line()->line().y1()));
