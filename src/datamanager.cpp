@@ -801,8 +801,8 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
                  stream->writeAttribute("subroom2_id",QString::number(crossingList[i]->get_roomList()[1]->get_id()));
             }
             else{
-                 stream->writeAttribute("subroom1_id", -2); //dummy values
-                 stream->writeAttribute("subroom2_id", -2);                                  
+                 stream->writeAttribute("subroom1_id", "-2"); //dummy values
+                 stream->writeAttribute("subroom2_id", "-2");                                  
             }
             stream->writeStartElement("vertex");
             stream->writeAttribute("px",QString::number(crossingList[i]->get_cLine()->get_line()->line().x1()));

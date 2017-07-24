@@ -149,7 +149,7 @@ QPointF jpsRoom::get_center()
 }
 void jpsRoom::highlight()
 {
-     dtrace("Enter jpsRoom::highlight. highlight=<%d>", highlight);
+     dtrace("Enter jpsRoom::highlight. highlighted=<%d>", highlighted);
      QPen pen = QPen(Qt::black, 5);
      pen.setCosmetic(true);
 
@@ -173,7 +173,7 @@ void jpsRoom::highlight()
         }
         highlighted=false;
     }
-    dtrace("Enter jpsRoom::highlight. highlight=<%d>", highlight);
+    dtrace("Enter jpsRoom::highlight. highlight=<%d>", highlighted);
 }
 
 QString jpsRoom::get_type()
