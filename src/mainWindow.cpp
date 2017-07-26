@@ -481,11 +481,13 @@ void MWindow::gridmode()
 void MWindow::show_coords()
 {
     QPointF point = mview->return_Pos();
-    QString string = "x: ";
-    string.append(QString::number(point.x()));
-    string.append(" y: ");
-    string.append(QString::number(point.y()));
-    string.append(" [m]");
+    QString string = "";
+    string.sprintf("(%.2f, %5.2f)", point.x(), point.y());
+    
+    // string.append(QString::number(point.x()));
+    // string.append(" y: ");
+    // string.append(QString::number(point.y()));
+    // string.append(" [m]");
     infoLabel->setText(string);
 }
 
