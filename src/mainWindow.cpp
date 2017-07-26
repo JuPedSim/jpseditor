@@ -31,12 +31,6 @@
 #include "mainWindow.h"
 #include "GraphicView.h"
 #include <iostream>
-#ifdef TRACE_LOGGING
-#include "dtrace.h"
-#endif
-
-
-
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QShortcut>
