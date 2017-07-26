@@ -49,6 +49,16 @@ public:
     void activate();
     QVector<QPointF> get_vertices() const;
     void set_id(int id_room);
+    void set_ax(float ax);
+    void set_by(float by);
+    void set_cz(float cz);
+    void set_up(QPointF up);
+    void set_down(QPointF down);
+    float get_ax();
+    float get_by();
+    float get_cz();
+    QPointF get_up();
+    QPointF get_down();
     int get_id();
     QPointF get_center();
     void highlight();
@@ -63,16 +73,23 @@ public:
      * @return SortedPolygon: QPolygonF
      */
     QPolygonF RoomAsSortedPolygon() const;
-
-
+    float get_elevation();
+    void set_elevation(float elevation);
+    void correctPlaneCoefficients(); /// calculates the coefficients A_x, B_y and C_z for stairs
+    bool is_highlighted();
 private:
     int id;
     bool highlighted;
+    float A_x;
+    float B_y;
+    float C_z;
+    QPointF _up;
+    QPointF _down;
     QString name;
     QList<jpsLineItem*> item_list;
     QString _type;
     QList<jpsCrossing* > _doorList;
-
+    float _elevation; /// this makes only sense for horizontal rooms. 
 };
 
 

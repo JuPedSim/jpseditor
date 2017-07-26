@@ -55,6 +55,7 @@ protected slots:
     void new_room();
     void delete_room();
     void change_roomname();
+    void change_elevation();
     void addWall();
     void removeWall();
     void showWallsAndType();
@@ -83,8 +84,15 @@ protected slots:
     void enable_roomSelectionObs();
     void disable_roomSelectionObs();
     bool shhi_roomCaption();
+    bool shhi_roomCaption_obs();
     void highlight_room();
     void highlight_obs();
+    void highlight_room(jpsRoom *);
+    void highlight_obs(jpsRoom *);
+
+    void autoAssigneObstacles();
+    void autoAssignObstacle(jpsObstacle *);
+    void autoAssignCrossing(jpsCrossing *);
 //    void autoAssignDoors();
 //    void autoAssignExits();
     void ChangeRoomType();

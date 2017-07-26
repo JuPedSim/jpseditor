@@ -144,6 +144,8 @@ public:
 
     //RoomCaption
     bool show_hide_roomCaption(QString name, qreal x, qreal y);
+    // return true if caption is hided
+    bool is_hide_roomCaption(QString name);
 
     //Undo Framework
     void RecordUndoLineAction(const QString &name, const QString &type, const int &itemID, const QLineF &oldLine);
