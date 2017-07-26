@@ -31,6 +31,9 @@
 #include "mainWindow.h"
 #include "GraphicView.h"
 #include <iostream>
+#ifdef TRACE_LOGGING
+#include "dtrace.h"
+#endif
 
 
 
@@ -506,9 +509,11 @@ void MWindow::delete_marked_lines()
 void MWindow::send_length()
 {
     qreal length = length_edit->text().toFloat();
-    mview->take_l_from_lineEdit(length);
+    if(length != 0 )
+    {
+         mview->take_l_from_lineEdit(length);
+    }
     length_edit->clear();
-
 }
 
 void MWindow::define_room()
