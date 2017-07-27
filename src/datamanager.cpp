@@ -46,7 +46,7 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
     _frameRate=0;
     _landmarkCounter=0;
     _regionCounter=0;
-
+    roomlist= QList<jpsRoom *> ();
 }
 
 jpsDatamanager::~jpsDatamanager()
@@ -507,6 +507,7 @@ void jpsDatamanager::WriteRegions(QXmlStreamWriter *stream, bool fuzzy)
 
 void jpsDatamanager::AutoSaveXML(QFile &file)
 {
+     return ; //todo: temporary deactivate. Crashes often
     dtrace("Enter jpsDatamanager::AutoSaveXML");
     QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
     QList<jpsLineItem* > lines = _mView->get_line_vector();

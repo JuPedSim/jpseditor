@@ -363,17 +363,17 @@ void jpsRoom::set_elevation(float elevation)
 void jpsRoom::correctPlaneCoefficients()
 {
      dtrace("Enter correctPlaneCoefficients");
-     dtrace("\t room=<%s> of type=<%s>", 
+     dtrace("\t room=<%s> of type=<%s> has %d doors",
             this->get_name().toStdString().c_str(),
-            this->get_type().toStdString().c_str());
-    if(this->get_type().toUpper() != "STAIR")
+            this->get_type().toStdString().c_str(),
+            (int)_doorList.size());
+    if(_doorList.size() == 0 || this->get_type().toUpper() != "STAIR")
     {
         this->set_ax(0);
         this->set_by(0);
         this->set_cz(this->get_elevation());
         return;
-    }
-
+    }    
      QPointF P1(0,0), P2(0,0), P3(0,0); /// plane is defined by three non-collinear points
      float elevation_1=0, elevation_2=0;
      P1 = _doorList[0]->get_cLine()->get_line()->line().p1();

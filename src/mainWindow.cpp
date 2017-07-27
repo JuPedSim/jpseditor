@@ -131,6 +131,9 @@ MWindow :: MWindow() {
     str_a->setShortcut(Qt::Key_A | Qt::CTRL);
     connect(str_a, SIGNAL(triggered(bool)), mview, SLOT(SelectAllLines()));
     this->addAction(str_a);
+    QAction *str_del = new QAction(this);
+    str_del->setShortcut(Qt::Key_D | Qt::CTRL);
+    connect(str_del,SIGNAL(triggered(bool)),this,SLOT(remove_all_lines()));
     //connect(mview,SIGNAL(DoubleClick()),this,SLOT(en_selectMode()));
     // Autosave
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
