@@ -1017,10 +1017,10 @@ void roomWidget::StartAutoDef()
     _roomDef=nullptr;
 
 
-    RoomIdentification roomIdent(datamanager->get_roomlist());
-    roomIdent.LoadDataFile();
-    roomIdent.CalcMeansAndStds();
-    roomIdent.IdentifyRooms();
+   // RoomIdentification roomIdent(datamanager->get_roomlist());
+  //  roomIdent.LoadDataFile();
+   // roomIdent.CalcMeansAndStds();
+   // roomIdent.IdentifyRooms();
 
 
 
