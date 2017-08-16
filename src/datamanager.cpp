@@ -33,6 +33,9 @@
 #include <random>
 #include <chrono>
 #include <QFileDialog>
+#include <windows.h>
+
+using myClock = std::chrono::high_resolution_clock;
 
 jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 {
@@ -44,6 +47,12 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
     _frameRate=0;
     _landmarkCounter=0;
     _regionCounter=0;
+
+    myClock::duration d = myClock::now().time_since_epoch();
+
+    auto seed = d.count();
+
+    _generator=std::default_random_engine(seed);
 
 }
 
@@ -62,6 +71,14 @@ void jpsDatamanager::new_room()
 
 void jpsDatamanager::remove_room(jpsRoom *room)
 {
+
+    //set room to nullptr in doors
+    for (jpsCrossing* crossing: get_crossingList())
+    {
+        // will only be removed if room is in crossings roomlist
+        crossing->RemoveRoom(room);
+    }
+
     //if (roomlist.size()>0)
     //{
     int roomID=room->get_id();
@@ -73,6 +90,7 @@ void jpsDatamanager::remove_room(jpsRoom *room)
             otherroom->set_id(otherroom->get_id()-1);
 
     room_id_counter-=1;
+
     //}
 }
 
@@ -159,6 +177,12 @@ void jpsDatamanager::new_crossing(jpsLineItem *newCrossing)
 {
     if (newCrossing->is_Door())
     {
+        for (jpsCrossing* crossing:crossingList)
+        {
+            if (crossing->get_cLine()==newCrossing)
+                return;
+        }
+
         jpsCrossing* newCros = new jpsCrossing(newCrossing);
         crossingList.push_back(newCros);
     }
@@ -168,6 +192,11 @@ void jpsDatamanager::remove_crossing(jpsCrossing *crossing)
 {
     if (crossingList.size()>0)
     {
+        for (jpsRoom * room:roomlist)
+        {
+            // door will only be removed if belongs to room (see method removeDoor of jpsRoom)
+            room->removeDoor(crossing);
+        }
         crossingList.removeOne(crossing);
         delete crossing;
     }
@@ -393,6 +422,17 @@ void jpsDatamanager::writeRoutingXML(QFile &file) // Construction side
 
 }
 
+void jpsDatamanager::writeLineItems(QFile &file)
+{
+
+    for (jpsLineItem* line:_mView->get_line_vector())
+    {
+        QString string = QString::number(line->get_line()->line().p1().x())+ "," + QString::number(line->get_line()->line().p1().y())+ ";\n"+
+                QString::number(line->get_line()->line().p2().x())+ "," + QString::number(line->get_line()->line().p2().y())+ "; \n";
+        file.write(string.toAscii());
+    }
+}
+
 void jpsDatamanager::WriteCognitiveMapXML(QFile &file, bool fuzzy)
 {
     QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
@@ -408,6 +448,21 @@ void jpsDatamanager::WriteCognitiveMapXML(QFile &file, bool fuzzy)
     stream->writeEndDocument();
 
     delete stream;
+}
+
+void jpsDatamanager::WriteCognitiveMapXML(QFile &file, int k, double m, double p0)
+{
+    QXmlStreamWriter stream(&file);
+    WriteCognitiveMapHeader(&stream);
+
+    //write regions incl. their landmarks and connections
+    stream.writeStartElement("regions");
+    WriteRegions(&stream,k,m,p0);
+    stream.writeEndElement();//regions
+
+    stream.writeEndElement();//cognitiveMap
+
+    stream.writeEndDocument();
 }
 
 void jpsDatamanager::WriteCognitiveMapHeader(QXmlStreamWriter *stream)
@@ -436,17 +491,17 @@ void jpsDatamanager::WriteRegions(QXmlStreamWriter *stream, bool fuzzy)
         qreal a = region->GetA();
         qreal b = region->GetB();
 
-        if (fuzzy)
-        {
-            px = MakeItFuzzy(px,a/2.0);
-            py = MakeItFuzzy(py,b/2.0);
-            a = MakeItFuzzy(a,a/2.0);
-            if (a<0.5)
-                a=0.5;
-            b= MakeItFuzzy(b,b/2.0);
-            if (b<0.5)
-                b=0.5;
-        }
+//        if (fuzzy)
+//        {
+//            px = MakeItFuzzy(px,a/2.0);
+//            py = MakeItFuzzy(py,b/2.0);
+//            a = MakeItFuzzy(a,a/2.0);
+//            if (a<0.5)
+//                a=0.5;
+//            b= MakeItFuzzy(b,b/2.0);
+//            if (b<0.5)
+//                b=0.5;
+//        }
 
 
         stream->writeAttribute("id",QString::number(id));
@@ -459,6 +514,40 @@ void jpsDatamanager::WriteRegions(QXmlStreamWriter *stream, bool fuzzy)
 
         stream->writeStartElement("landmarks");
         WriteLandmarks(region,stream,fuzzy);
+        stream->writeEndElement();//landmarks
+
+        stream->writeStartElement("connections");
+        WriteConnections(region,stream);
+        stream->writeEndElement();//connections
+
+        stream->writeEndElement();//region
+    }
+}
+
+void jpsDatamanager::WriteRegions(QXmlStreamWriter *stream, int k, double m, double p0)
+{
+    for (jpsRegion* region:_regions)
+    {
+        stream->writeStartElement("region");
+
+        int id = region->GetId();
+        QString caption = region->GetCaption();
+        qreal px = region->GetPos().x();
+        qreal py = region->GetPos().y();
+        qreal a = region->GetA();
+        qreal b = region->GetB();
+
+
+        stream->writeAttribute("id",QString::number(id));
+        stream->writeAttribute("caption",caption);
+        stream->writeAttribute("px",QString::number(px));
+        stream->writeAttribute("py",QString::number(py));
+        stream->writeAttribute("a",QString::number(a));
+        stream->writeAttribute("b",QString::number(b));
+
+
+        stream->writeStartElement("landmarks");
+        WriteLandmarks(region,stream,k,m,p0);
         stream->writeEndElement();//landmarks
 
         stream->writeStartElement("connections");
@@ -562,7 +651,7 @@ QString jpsDatamanager::RoomIDHLine(jpsLineItem *lineItem)
 
     for (jpsRoom* room:roomlist)
     {
-        QPolygonF rPolygon = room->RoomAsSortedPolygon();
+        QPolygonF rPolygon = room->RoomAsSortedPolygon(room->GetOuterPolygon());
         if (rPolygon.containsPoint(lineItem->get_line()->line().p1(),Qt::OddEvenFill) ||
                 rPolygon.contains(lineItem->get_line()->line().p1()))
         {
@@ -956,17 +1045,17 @@ void jpsDatamanager::WriteLandmarks(jpsRegion* cRegion, QXmlStreamWriter *stream
             qreal a = landmark->GetA();
             qreal b = landmark->GetB();
 
-            if (fuzzy)
-            {
-                px = MakeItFuzzy(px,a/5.0);
-                py = MakeItFuzzy(py,b/5.0);
-                a = MakeItFuzzy(a,a/3.0);
-                if (a<0.5)
-                    a=0.5;
-                b = MakeItFuzzy(b,b/3.0);
-                if (b<0.5)
-                    b=0.5;
-            }
+//            if (fuzzy)
+//            {
+//                px = MakeItFuzzy(px,a/5.0);
+//                py = MakeItFuzzy(py,b/5.0);
+//                a = MakeItFuzzy(a,a/3.0);
+//                if (a<0.5)
+//                    a=0.5;
+//                b = MakeItFuzzy(b,b/3.0);
+//                if (b<0.5)
+//                    b=0.5;
+//            }
 
 
             stream->writeStartElement("landmark");
@@ -997,6 +1086,61 @@ void jpsDatamanager::WriteLandmarks(jpsRegion* cRegion, QXmlStreamWriter *stream
 
 }
 
+void jpsDatamanager::WriteLandmarks(jpsRegion *cRegion, QXmlStreamWriter *stream, int k, double m, double p0)
+{
+    //cut some landmarks and/or their connections
+    _ConnectionsAfterLandmarkLoose=_landmarkConnections;
+    _landmarksAfterLoose=_landmarks;
+
+    CutOutLandmarks(k,m,p0);
+
+    for (jpsLandmark* landmark:_landmarksAfterLoose)
+    {
+        if (landmark->GetRegion()==cRegion)
+        {
+            int id = landmark->GetId();
+            QString caption = landmark->GetCaption();
+            QString type = landmark->GetType();
+            if (type=="Main Target")
+                type="main";
+            int id_subroom;
+            if (landmark->GetRoom()!=nullptr)
+                id_subroom = landmark->GetRoom()->get_id();
+            else
+                id_subroom = -1;
+            qreal pxreal = landmark->GetRealPos().x();
+            qreal pyreal = landmark->GetRealPos().y();
+            qreal px = landmark->GetPos().x();
+            qreal py = landmark->GetPos().y();
+            qreal a = landmark->GetA();
+            qreal b = landmark->GetB();
+
+            stream->writeStartElement("landmark");
+
+            stream->writeAttribute("id",QString::number(id));
+            stream->writeAttribute("caption",caption);
+            stream->writeAttribute("type",type);
+            stream->writeAttribute("room1_id","0");
+            if (landmark->GetRoom()!=nullptr)
+                stream->writeAttribute("subroom1_id",QString::number(id_subroom));
+            else
+                stream->writeAttribute("subroom1_id","NaN");
+            stream->writeAttribute("pxreal",QString::number(pxreal));
+            stream->writeAttribute("pyreal",QString::number(pyreal));
+            stream->writeAttribute("px",QString::number(px));
+            stream->writeAttribute("py",QString::number(py));
+            stream->writeAttribute("a",QString::number(a));
+            stream->writeAttribute("b",QString::number(b));
+
+            stream->writeStartElement("associations");
+            //
+            stream->writeEndElement();//associations
+            stream->writeEndElement();//landmark
+        }
+
+    }
+}
+
 void jpsDatamanager::CutOutLandmarks()
 {
     using myClock = std::chrono::high_resolution_clock;
@@ -1005,7 +1149,15 @@ void jpsDatamanager::CutOutLandmarks()
     int statcutMainTarget= numberMainTargets;
 
     int number;
-    int n=0;
+
+    myClock::duration d = myClock::now().time_since_epoch();
+
+    auto seed = d.count();
+
+    std::default_random_engine generator(seed);
+
+    std::discrete_distribution<int> distribution({ 100,0 });
+
     for (jpsLandmark* landmark:_landmarksAfterLoose)
     {
         // at least one main target will be kept
@@ -1017,15 +1169,10 @@ void jpsDatamanager::CutOutLandmarks()
                 continue;
         }
 
-        myClock::duration d = myClock::now().time_since_epoch();
 
-        auto seed = d.count()+n;
-
-        std::default_random_engine generator(seed);
-
-        std::discrete_distribution<int> distribution({ 30,70 });
 
         number = distribution(generator);
+
 
         if (!number)
         {
@@ -1034,10 +1181,82 @@ void jpsDatamanager::CutOutLandmarks()
             _landmarksAfterLoose.removeOne(landmark);
             BridgeLostLandmark(landmark);
         }
-        n++;
+
 
     }
 
+}
+
+void jpsDatamanager::CutOutLandmarks(int k, double m, double p0)
+{
+
+
+    //int numberMainTargets = GetNumberOfMainTargets();
+    //int statcutMainTarget= numberMainTargets;
+
+    int number=-1;
+
+
+    QList<jpsLandmark* > cLandmarks = _landmarksAfterLoose;
+    double prob=GetProbability(k,m,p0);
+
+
+
+    for (jpsLandmark* landmark:cLandmarks)
+    {
+//        // at least one main target will be kept
+//        if (landmark->GetType()=="main" || landmark->GetType()=="Main Target")
+//        {
+//            if (numberMainTargets==1)
+//                continue;
+//            else if (statcutMainTarget==1)
+//                continue;
+//        }
+
+        double newProb=prob;
+
+//        if (landmark->GetId()==0 || landmark->GetId()==8 || landmark->GetId()==1 || landmark->GetId()==5 || landmark->GetId()==12
+//                || landmark->GetId()==11)
+
+//        {
+//            newProb=2.0*prob;
+//            if (newProb>1.0)
+//                newProb=1.0;
+//        }
+        //else if (landmark->GetId()==11 || landmark->GetId()==7 || landmark->GetId()==12 || landmark->GetId()==4
+        //          || landmark->GetId()==3 || landmark->GetId()==9 || landmark->GetId()==13)
+        //         newProb=prob;
+
+
+//        if (landmark->GetId()==12)
+//            std::cout << "12 " << newProb << std::endl;
+
+//        else if (landmark->GetId()==10)
+//            std::cout << "10 " << newProb << std::endl;
+
+
+        std::discrete_distribution<int> distribution({ newProb*100.0,100.0-newProb*100.0 });
+
+        number = distribution(_generator);
+
+        if (number)
+        {
+            _landmarksAfterLoose.removeOne(landmark);
+            BridgeLostLandmark(landmark);
+        }
+
+
+    }
+}
+
+double jpsDatamanager::GetProbability(int k, double m, double p0)
+{
+    double val = p0+m*k;
+    if (val>1)
+        val=1;
+    else if (val<0)
+        val=0;
+    return val;
 }
 
 void jpsDatamanager::BridgeLostLandmark(jpsLandmark *landmark)
@@ -1045,58 +1264,60 @@ void jpsDatamanager::BridgeLostLandmark(jpsLandmark *landmark)
     // if landmark was removed from the landmarknetwork adjacent connected
     // landmarks will be connected with each other (if random engine returns 1)
 
-    using myClock = std::chrono::high_resolution_clock;
+    //using myClock = std::chrono::high_resolution_clock;
 
     QList<jpsLandmark* > connectedLandmarks;
     QList<jpsConnection* > connections = landmark->GetConnections();
 
-    int n=0;
+    //int n=0;
+
+    //myClock::duration d = myClock::now().time_since_epoch();
+
+    //auto seed = d.count();
+
+    //std::default_random_engine generator(seed);
+
+    //std::discrete_distribution<int> distribution({ 0, 100 });
 
     for (jpsConnection* connection:connections)
     {
         _ConnectionsAfterLandmarkLoose.removeOne(connection);
 
-        myClock::duration d = myClock::now().time_since_epoch();
 
-        auto seed = d.count()+n;
+//        int number = distribution(generator);
+//        //std::cout << number << std::endl;
 
-        std::default_random_engine generator(seed);
-
-        std::discrete_distribution<int> distribution({ 20, 80 });
-
-        int number = distribution(generator);
-
-        if (number)
-        {
-            std::pair<jpsLandmark*, jpsLandmark*> lPair = connection->GetLandmarks();
-            if (lPair.first!=landmark)
-                connectedLandmarks.push_back(lPair.first);
-            else
-                connectedLandmarks.push_back(lPair.second);
-        }
-        n++;
+//        if (number)
+//        {
+//            std::pair<jpsLandmark*, jpsLandmark*> lPair = connection->GetLandmarks();
+//            if (lPair.first!=landmark)
+//                connectedLandmarks.push_back(lPair.first);
+//            else
+//                connectedLandmarks.push_back(lPair.second);
+//        }
+        //n++;
     }
 
-    for (jpsLandmark* connectedLandmark:connectedLandmarks)
-    {
-        for (jpsLandmark* connectedLandmark2:connectedLandmarks)
-        {
-            if (connectedLandmark!=connectedLandmark2)
-            {
-                bool status=false;
-                jpsConnection* newConnection = new jpsConnection(connectedLandmark,connectedLandmark2);
-                for (jpsConnection* connection:_ConnectionsAfterLandmarkLoose)
-                {
-                    if (*connection==*newConnection)
-                    {
-                        status=true;
-                    }
-                }
-                if (!status)
-                    _ConnectionsAfterLandmarkLoose.push_back(newConnection);
-            }
-        }
-    }
+//    for (jpsLandmark* connectedLandmark:connectedLandmarks)
+//    {
+//        for (jpsLandmark* connectedLandmark2:connectedLandmarks)
+//        {
+//            if (connectedLandmark!=connectedLandmark2)
+//            {
+//                bool status=false;
+//                jpsConnection* newConnection = new jpsConnection(connectedLandmark,connectedLandmark2);
+//                for (jpsConnection* connection:_ConnectionsAfterLandmarkLoose)
+//                {
+//                    if (*connection==*newConnection)
+//                    {
+//                        status=true;
+//                    }
+//                }
+//                if (!status)
+//                    _ConnectionsAfterLandmarkLoose.push_back(newConnection);
+//            }
+//        }
+//    }
 
 }
 
@@ -1152,6 +1373,39 @@ void jpsDatamanager::CreateAndSaveASimilarCogMap(const int& id)
             WriteCognitiveMapXML(file,true);
 
     }
+
+}
+
+void jpsDatamanager::CreateAndSaveASimilarCogMap(int id, int k, double m, double p0)
+{
+
+    QString filename;
+    //FreeConsole();
+//    if (id==0)
+//    {
+//        _currentCogMapFileName = QFileDialog::getSaveFileName(this->parent_widget,QFileDialog::tr("Save CognitiveMap XML"),"",QFileDialog::tr("XML-Files (*.xml)"));
+//        if (_currentCogMapFileName.isEmpty()) return;
+//        _currentCogMapFileName.remove(".xml");
+//        filename=_currentCogMapFileName+QString::number(id)+"_"+QString::number(k)+"_"+QString::number(m)+"_"+QString::number(p0)+".xml";
+        QString qstring = QString::number(m)+"_"+QString::number(p0);
+        std::string str="mkdir \"D:/Dokumente/paper/WayfindingAndCognitiveMapsForPedestrianModels/simulations/cogmap/cogmaps/zweiteIteration/"+qstring.toStdString();
+        //system(str.c_str());
+        system(str.c_str());
+//   }
+//    else
+//    {
+    filename="D:/Dokumente/paper/WayfindingAndCognitiveMapsForPedestrianModels/simulations/cogmap/cogmaps/zweiteIteration/"+QString::number(m)+"_"+QString::number(p0)+"/"+"cogmap"+QString::number(id)+"0.xml";
+    //}
+    QFile file(filename);
+
+
+    if(file.open(QIODevice::WriteOnly|QIODevice::Text))
+    {
+
+        WriteCognitiveMapXML(file,k,m,p0);
+
+    }
+
 
 }
 
@@ -1218,7 +1472,7 @@ void jpsDatamanager::remove_marked_lines()
             }
         }
 
-        else
+        else if (marked_lines[i]->is_Door() || marked_lines[i]->is_Exit())
         {
             QList<jpsCrossing* > cList= this->get_crossingList();
             for (int j=0; j<cList.size(); j++)
@@ -1959,17 +2213,23 @@ void jpsDatamanager::writeDXFEntities(DL_Dxf *dxf, DL_WriterA *dw)
 
     QList<jpsLineItem* > lines = _mView->get_line_vector();
 
-    DL_Attributes attribute("mainlayer", 256, 256, -1, "BYLAYER");
 
-    for (int i=0; i<lines.size(); i++)
+    DL_Attributes attributeW("wall", 256, 256, -1, "BYLAYER");
+    DL_Attributes attributeD("door", 16, 78, 139, "BYLAYER");
+
+    for (jpsLineItem* lineItem:lines)
     {
-        DL_LineData linedata(lines[i]->get_line()->line().x1(),
-                    lines[i]->get_line()->line().y1(),
+        DL_LineData linedata(lineItem->get_line()->line().x1(),
+                    lineItem->get_line()->line().y1(),
                     0.0,
-                    lines[i]->get_line()->line().x2(),
-                    lines[i]->get_line()->line().y2(),
+                    lineItem->get_line()->line().x2(),
+                    lineItem->get_line()->line().y2(),
                     0.0);
-        dxf->writeLine(*dw,linedata,attribute);
+
+        if (lineItem->is_Wall())
+            dxf->writeLine(*dw,linedata,attributeW);
+        else
+            dxf->writeLine(*dw,linedata,attributeD);
 
     }
 
@@ -2192,6 +2452,59 @@ void jpsDatamanager::ParseConnection(jpsRegion *actRegion, QXmlStreamReader &xml
     NewConnection(currentConnection);
 }
 
+bool jpsDatamanager::ReadLineFile(QFile &file)
+{
+
+    QVector<jpsLineItem*> lineItems = _mView->get_line_vector().toVector();
+    QTextStream in(&file);
+
+    while ( !in.atEnd() )
+    {       
+        QString Qline = in.readLine();
+        if (Qline.startsWith("Room"))
+        {
+            this->new_room();
+        }
+        else
+        {
+
+            QStringList strList=Qline.split(",");
+
+            QPointF point1=QPointF(strList[0].split("_")[0].toDouble(),strList[0].split("_")[1].toDouble());
+            QPointF point2=QPointF(strList[1].split("_")[0].toDouble(),strList[1].split("_")[1].toDouble());
+
+            QLineF line=QLineF(point1,point2);
+
+            for (jpsLineItem* lineItem:lineItems)
+            {
+                if (LineIsEqual(lineItem->get_line()->line(),line))
+                {
+                  if (lineItem->is_Wall())
+                    this->roomlist.back()->addWall(lineItem);
+                  else if (lineItem->is_Door())
+                  {
+                      this->new_crossing(lineItem);
+
+                      for (jpsCrossing* crossing:crossingList)
+                      {
+                          if (crossing->get_cLine()==lineItem)
+                              crossing->SetRoom(this->roomlist.back());
+                      }
+                  }
+                }
+            }
+        }
+    }
+
+    //for (jpsRoom* room:this->roomlist)
+    //{
+    //    _mView->show_hide_roomCaption(room->get_name(),room->get_center().x(),room->get_center().y());
+    //}
+
+    return true;
+
+}
+
 jpsRegion* jpsDatamanager::ParseRegion(QXmlStreamReader &xmlReader)
 {
     int id = xmlReader.attributes().value("id").toString().toInt();
@@ -2299,7 +2612,25 @@ jpsRegion* jpsDatamanager::ParseRegion(QXmlStreamReader &xmlReader)
 
 
 
-
+bool LineIsEqual(const QLineF& line1, const QLineF& line2, double eps)
+{
+   if ((line1.p1().x()>=line2.p1().x()-eps && line1.p1().x()<=line2.p1().x()+eps) &&
+          (line1.p1().y()>=line2.p1().y()-eps && line1.p1().y()<=line2.p1().y()+eps) &&
+           (line1.p2().x()>=line2.p2().x()-eps && line1.p2().x()<=line2.p2().x()+eps) &&
+           (line1.p2().y()>=line2.p2().y()-eps && line1.p2().y()<=line2.p2().y()+eps))
+   {
+       return true;
+   }
+   else if ((line1.p1().x()>=line2.p2().x()-eps && line1.p1().x()<=line2.p2().x()+eps) &&
+               (line1.p1().y()>=line2.p2().y()-eps && line1.p1().y()<=line2.p2().y()+eps) &&
+                (line1.p2().x()>=line2.p1().x()-eps && line1.p2().x()<=line2.p1().x()+eps) &&
+                (line1.p2().y()>=line2.p1().y()-eps && line1.p2().y()<=line2.p1().y()+eps))
+   {
+       return true;
+   }
+   else
+       return false;
+}
 
 
 

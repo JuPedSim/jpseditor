@@ -128,6 +128,7 @@ public:
     // Write XML
     void writeXML(QFile &file);
     void writeRoutingXML(QFile &file);
+    void writeLineItems(QFile & file);
 
     void AutoSaveXML(QFile &file);
     void writeHeader(QXmlStreamWriter *stream);
@@ -146,13 +147,19 @@ public:
 
     //Write Cognitive Map XML
     void WriteCognitiveMapXML(QFile &file, bool fuzzy=false);
+    void WriteCognitiveMapXML(QFile &file, int k, double m, double p0);
     void WriteCognitiveMapHeader(QXmlStreamWriter *stream);
     void WriteRegions(QXmlStreamWriter *stream, bool fuzzy=false);
+    void WriteRegions(QXmlStreamWriter *stream, int k, double m, double p0);
     void WriteLandmarks(jpsRegion *cRegion, QXmlStreamWriter *stream, bool fuzzy=false);
+    void WriteLandmarks(jpsRegion *cRegion, QXmlStreamWriter *stream, int k , double m, double p0);
     void CutOutLandmarks();
+    void CutOutLandmarks(int k, double m, double p0);
+    double GetProbability(int k, double m, double p0);
     void BridgeLostLandmark(jpsLandmark* landmark);
     void WriteConnections(jpsRegion *cRegion, QXmlStreamWriter *stream);
     void CreateAndSaveASimilarCogMap(const int &id);
+    void CreateAndSaveASimilarCogMap(int id, int k, double m, double p0);
     qreal MakeItFuzzy(const qreal &mean, const qreal& std);
     int GetNumberOfMainTargets() const;
 
@@ -175,6 +182,9 @@ public:
     void ParseYAHPointer(QXmlStreamReader &xmlReader, const int &frame);
     void ParseLandmark(jpsRegion* actRegion, QXmlStreamReader &xmlReader);
     void ParseConnection(jpsRegion* actRegion, QXmlStreamReader &xmlReader);
+
+    // read line file
+    bool ReadLineFile(QFile &file);
 
 //    //Show Cognitive Map
 //    void ShowCMapFrame(const int& frame) const;
@@ -209,9 +219,13 @@ private:
 
     QString _currentCogMapFileName;
 
+    std::default_random_engine _generator;
+
 
 
 };
 
+//check if two lines are equal with certain tolerance; heading direction of line does not matter
+bool LineIsEqual(const QLineF& line1, const QLineF& line2, double eps=0.1);
 
 #endif // DATAMANAGER_H

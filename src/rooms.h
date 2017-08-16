@@ -42,41 +42,57 @@ public:
     ~jpsRoom(){}
     void addWall(QList<jpsLineItem *> newWalls);
     void addWall(jpsLineItem* newWall);
+    void addinnerWall(QList<jpsLineItem *> newWalls, int id_polygon=0);
+    void addinnerWall(jpsLineItem* newWall, int id_polygon=0);
     void removeWall(QList<jpsLineItem *> wall);
+    const QList<jpsCrossing *> &GetDoors() const;
+    void removeDoor(jpsCrossing* crossing);
     QString get_name();
     void change_name(QString name);
     QList<jpsLineItem*> get_listWalls();
     void activate();
-    QVector<QPointF> get_vertices() const;
+    //QVector<QPointF> get_vertices() const;
     void set_id(int id_room);
     int get_id();
     QPointF get_center();
-    void highlight();
-    QString get_type();
+    void highlight(const QString &color="random");
+    QString get_type() const;
     void set_type(const QString &string);
     QList<QPointF> GetDoorVertices() const;
     //bool ContainsDoor(jpsLineItem* lineItem) const;
     void AddDoor(jpsCrossing *door);
-    QPolygonF RoomAsPolygon() const;
-    /**
-     * @brief RoomAsSortedPolygon
-     * @return SortedPolygon: QPolygonF
-     */
-    QPolygonF RoomAsSortedPolygon() const;
+    void AddInnerDoor(jpsCrossing *door, int id_polygon=0);
+    //QPolygonF RoomAsPolygon() const;
+    QVector<QPointF> RoomAsSortedPolygon(const QVector<QLineF> &lines) const;
+    const QVector<QLineF>& GetOuterPolygon() const;
+    qreal GetArea() const;
+
+    //void GatherData() const;
+
+//    void SortPolygon();
+    void IdentifyInnerOuter();
+
+    // calculate attributes
+    QRectF CalculateBoundingBox() const;
+    qreal CalculateArea(const QVector<QLineF> &poly) const;
 
 
 private:
     int id;
     bool highlighted;
     QString name;
-    QList<jpsLineItem*> item_list;
+    QList<jpsLineItem*> wall_list;
+    QVector<QLineF> outer_polygon;
+    QVector<QVector<QLineF>> inner_polygons;
+//    QVector<QPointF> sorted_polygon;
     QString _type;
     QList<jpsCrossing* > _doorList;
+    qreal _area;
 
 };
 
+bool EqualsPoint(const QPointF& point1, const QPointF& point2, double eps=0.001);
 
-
-
+QColor rndColors(int seed);
 
 #endif // ROOMS_H

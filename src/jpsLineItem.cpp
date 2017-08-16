@@ -66,6 +66,8 @@ QString jpsLineItem::GetType()
         return "Wall";
     else if (IsHLine())
         return "HLine";
+    else
+        return "Exit";
 }
 
 void jpsLineItem::set_id(int id)

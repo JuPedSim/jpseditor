@@ -33,17 +33,17 @@ To highlight some features of JuPedSim we have uploaded some videos on our [YouT
 Installing
 ==========
 
-This version comes with no installer. So just download the archive corresponding to your architecture and unzip them and you are ready to go. The binaries are only available for windows at the moment. For other architectures (Linux, OSX) you will need to compile the sources. See the section [Compiling from sources](#compiling-from-sources).
+This version comes with an installer for Windows. So just download it, start it and follow the instructions. The installer is only available for windows at the moment. For other architectures (Linux, OSX) you will need to compile the sources. See the section [Compiling from sources](#compiling-from-sources).
 
 Uninstalling
 ============
 
-As JuPedSim comes with no installer, you just need to delete the unziped directory.
+In the installing directory you will find an executable to uninstall JuPedSim completely (including registry files) if you have used the installer on windows. Otherwise you just need to delete the directory in which you have put the JuPedSim files.
 
 Running
 =======
 
-Start the application by clicking on the binary file. (For example .exe)
+Start the application by clicking on the binary file. (For example .exe). If you have used the installer on windows you can open a command shell and type the name of the application you want to invoke. The invokation from the command shell works from any directory since the installer has added the installation directory of JuPedSim to the system path.
 
 System Requirements
 ==============

@@ -33,6 +33,9 @@
 #include "datamanager.h"
 #include "GraphicView.h"
 
+class RoomDefinition;
+class RoomIdentification;
+
 
 
 namespace Ui {
@@ -50,6 +53,8 @@ public:
     void show_crossings();
     void show_exits();
     void show_obstacles();
+    void StartAutoDef();
+    void GatherRTData();
 
 protected slots:
     void new_room();
@@ -84,16 +89,21 @@ protected slots:
     void disable_roomSelectionObs();
     bool shhi_roomCaption();
     void highlight_room();
+    void HighlightAllRooms();
     void highlight_obs();
 //    void autoAssignDoors();
 //    void autoAssignExits();
     void ChangeRoomType();
 
 
+
+
 private:
     Ui::roomWidget *ui;
     jpsDatamanager *datamanager;
     jpsGraphicsView *graphview;
+    RoomDefinition *_roomDef;
+    RoomIdentification *_roomIdent;
 
     //
     void ShowRoomType(int &cRow) const;

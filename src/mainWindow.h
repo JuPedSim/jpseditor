@@ -69,6 +69,8 @@ private:
     QTimer *_cMapTimer;
     int _cMapFrame;
 
+    bool _statScale;
+
 
 protected slots:
     
@@ -76,6 +78,7 @@ protected slots:
     void openFile();
     void openFileXML();
     void openFileCogMap();
+    void OpenLineFile();
     void saveFile();
     void saveAsDXF();
 
@@ -105,9 +108,13 @@ protected slots:
     void lines_deleted();
     void remove_all_lines();
     void ShowLineLength();
+    void ScaleLines();
+    void enableScale();
+
     
     //Room and landmark def
     void define_room();
+    void autoDefine_room();
     void define_landmark();
     
     //view options
@@ -118,6 +125,10 @@ protected slots:
     
     //autosave
     void AutoSave();
+
+    //gather data
+    void GatherData();
+
 
 
     //CMap

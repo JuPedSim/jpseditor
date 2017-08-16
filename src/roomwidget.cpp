@@ -31,6 +31,9 @@
 #include "rooms.h"
 #include <iostream>
 
+#include "./AutomaticRoomIdentification/roomdefinition.h"
+#include "./AutomaticRoomIdentification/roomidentification.h"
+
 
 
 roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsView *gview) :
@@ -42,6 +45,10 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     //rooms->setGeometry(QRect(10,80,291,81));
     datamanager=dmanager;
     graphview=gview;
+
+    _roomDef= nullptr;
+    _roomIdent = nullptr;
+
     show_rooms();
     show_crossings();
     show_exits();
@@ -76,6 +83,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->remove_button,SIGNAL(clicked(bool)),this,SLOT(removeWall()));
     connect(ui->caption,SIGNAL(clicked(bool)),this,SLOT(shhi_roomCaption()));
     connect(ui->highlight,SIGNAL(clicked(bool)),this,SLOT(highlight_room()));
+    connect(ui->highlight_all,SIGNAL(clicked(bool)),this,SLOT(HighlightAllRooms()));
     connect(ui->classBox,SIGNAL(activated(int)),this,SLOT(ChangeRoomType()));
     connect(ui->classBox,SIGNAL(currentIndexChanged(int)),this,SLOT(ChangeRoomType()));
     //tab crossing
@@ -108,6 +116,11 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
 
     //lines in graphview deleted
     connect(graphview,SIGNAL(lines_deleted()),this,SLOT(show_all()));
+
+
+
+
+
 
 }
 
@@ -216,28 +229,28 @@ void roomWidget::change_roomname()
     if (ui->list_rooms->currentItem()!=0L)
     {
         // if there is a roomCaption it should be hided before the change of the name is done
-        if (shhi_roomCaption()==false)
-        {
+        //if (shhi_roomCaption()==false)
+       // {
             int crow=ui->list_rooms->currentRow();
 
-                datamanager->get_roomlist()[crow]->change_name(ui->chname_edit->text());
+            datamanager->get_roomlist()[crow]->change_name(ui->chname_edit->text());
 
-            shhi_roomCaption();
+        //    shhi_roomCaption();
             this->show_rooms();
 
 
-        }
-        else
-        {
-            shhi_roomCaption();
+       // }
+      //  else
+//        {
+//            shhi_roomCaption();
 
-            int crow=ui->list_rooms->currentRow();
+//            int crow=ui->list_rooms->currentRow();
 
-                datamanager->get_roomlist()[crow]->change_name(ui->chname_edit->text());
+//                datamanager->get_roomlist()[crow]->change_name(ui->chname_edit->text());
 
-            this->show_rooms();
+//            this->show_rooms();
 
-        }
+//        }
     }
 }
 
@@ -431,7 +444,7 @@ void roomWidget::add_rooms_to_crossing()
 
 void roomWidget::delete_crossing()
 {
-    if (ui->crossingList->currentItem()!=0L)
+    if (ui->crossingList->currentItem()!=nullptr)
     {
         int index = ui->crossingList->currentRow();
         datamanager->remove_crossing(datamanager->get_crossingList()[index]);
@@ -757,6 +770,18 @@ void roomWidget::highlight_room()
 
 }
 
+void roomWidget::HighlightAllRooms()
+{
+    for (jpsRoom* room:datamanager->get_roomlist())
+    {
+        if (room->get_type()=="Corridor")
+            room->highlight("darkMagenta");
+        else
+            room->highlight("darkGreen");
+    }
+
+}
+
 void roomWidget::highlight_obs()
 {
     if (ui->list_obstacles->currentItem()!=0L)
@@ -793,6 +818,45 @@ void roomWidget::ChangeRoomType()
             datamanager->get_roomlist()[cRoomRow]->set_type(ui->classBox->currentText());
         }
     }
+
+}
+
+void roomWidget::StartAutoDef()
+{
+    //for (jpsRoom* room:datamanager->get_roomlist())
+    //{
+     //   room->IdentifyInnerOuter();
+    //    room->CalculateBoundingBox();
+  //      room->GatherData();
+//
+    //}
+
+
+    _roomDef = new RoomDefinition(graphview->get_line_vector(),datamanager);
+    _roomDef->SetUpRoomsAndDoors();
+    delete _roomDef;
+    _roomDef=nullptr;
+
+
+    RoomIdentification roomIdent(datamanager->get_roomlist());
+    roomIdent.LoadDataFile();
+    roomIdent.CalcMeansAndStds();
+    roomIdent.IdentifyRooms();
+
+
+
+    // show_rooms();
+    // show_crossings();
+
+
+}
+
+void roomWidget::GatherRTData()
+{
+    _roomIdent = new RoomIdentification(datamanager->get_roomlist());
+    _roomIdent->GatherData();
+    delete _roomIdent;
+    _roomIdent=nullptr;
 
 }
 

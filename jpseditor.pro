@@ -52,16 +52,17 @@ HEADERS += \
     dxflib/src/dl_creationadapter.h \
     dxflib/src/dl_codes.h \
     dxflib/src/dl_attributes.h \
-    src/jpswaypoint.h \
     src/widgetlandmark.h \
     src/graphicscene.h \
     src/widgetsettings.h \
-    src/jpsyahpointer.h \
     src/jpsconnection.h \
     src/UndoFramework/actionstack.h \
     src/UndoFramework/action.h \
     src/UndoFramework/lineaction.h \
-    src/jpsregion.h
+    src/jpsregion.h \
+    src/AutomaticRoomIdentification/roomID.h\
+    src/AutomaticRoomIdentification/roomdefinition.h \
+    src/AutomaticRoomIdentification/roomidentification.h
 
 
 SOURCES += \
@@ -78,17 +79,18 @@ SOURCES += \
     src/jpslandmark.cpp \
     dxflib/src/dl_writer_ascii.cpp \
     dxflib/src/dl_dxf.cpp \
-    src/jpswaypoint.cpp \
     src/widgetlandmark.cpp \
     src/graphicscene.cpp \
     src/widgetsettings.cpp \
-    src/jpsyahpointer.cpp \
     src/jpsconnection.cpp \
     src/UndoFramework/actionstack.cpp \
     src/UndoFramework/action.cpp \
     src/UndoFramework/lineaction.cpp \
-    src/jpsregion.cpp
+    src/jpsregion.cpp \
+    src/AutomaticRoomIdentification/roomdefinition.cpp \
+    src/AutomaticRoomIdentification/roomidentification.cpp
 
+INCLUDEPATH += D:/boost_1_59_0/boost_1_59_0
 
 RESOURCES +=  forms/Ressource.qrc
 

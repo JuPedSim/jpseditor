@@ -125,6 +125,7 @@ public:
     qreal ReturnLineLength();
     void start_Copy_function();
     void Copy_lines(const QPointF& delta);
+    void ScaleLines(const double& factor);
 
     // Landmark
     void delete_landmark();

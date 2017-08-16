@@ -42,6 +42,8 @@ public:
     jpsLineItem *get_cLine();
     void change_name(QString name);
     void add_rooms(jpsRoom* room1, jpsRoom* room2=0L);
+    void SetRoom(jpsRoom* room);
+    void RemoveRoom(jpsRoom* room);
     void SetStatExit(bool stat);
     bool IsExit();
 

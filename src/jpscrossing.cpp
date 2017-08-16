@@ -27,7 +27,7 @@
 
 
 #include "jpscrossing.h"
-
+#include <iostream>
 
 jpsCrossing::jpsCrossing(jpsLineItem *line)
 {
@@ -71,13 +71,36 @@ void jpsCrossing::add_rooms(jpsRoom *room1, jpsRoom *room2)
     roomList.clear();
     roomList.push_back(room1);
     room1->AddDoor(this);
-    if (room2!=0L)
+    if (room2!=nullptr)
     {
         roomList.push_back(room2);
-        room2->AddDoor(this);
+       room2->AddDoor(this);
     }
 
 
+}
+
+void jpsCrossing::SetRoom(jpsRoom *room)
+{
+    if (roomList.size()==2)
+        std::cout << "Hier!" << std::endl;
+    if (!roomList.contains(room))
+    {
+        roomList.push_back(room);
+        room->AddDoor(this);
+    }
+}
+
+void jpsCrossing::RemoveRoom(jpsRoom *room)
+{
+    for (jpsRoom* myRoom:roomList)
+    {
+        if (room==myRoom)
+        {
+            roomList.removeOne(room);
+            break;
+        }
+    }
 }
 
 void jpsCrossing::SetStatExit(bool stat)

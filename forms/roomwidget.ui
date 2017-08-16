@@ -265,6 +265,19 @@
      <string>Roomtype:</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="highlight_all">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>10</y>
+      <width>131</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Highlight all rooms</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QWidget" name="tab">
    <attribute name="title">

@@ -1925,3 +1925,12 @@ void jpsGraphicsView::Copy_lines(const QPointF& delta)
     }
     _statCopy=0;
 }
+
+void jpsGraphicsView::ScaleLines(const double &factor)
+{
+    for (jpsLineItem* lineItem:line_vector)
+    {
+        lineItem->get_line()->setLine(QLineF(lineItem->get_line()->line().p1()*factor,lineItem->get_line()->line().p2()*factor));
+    }
+
+}
