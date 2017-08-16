@@ -53,33 +53,47 @@ public:
     void activate();
     //QVector<QPointF> get_vertices() const;
     void set_id(int id_room);
+    void set_ax(float ax);
+    void set_by(float by);
+    void set_cz(float cz);
+    void set_up(QPointF up);
+    void set_down(QPointF down);
+    float get_ax();
+    float get_by();
+    float get_cz();
+    QPointF get_up();
+    QPointF get_down();
     int get_id();
     QPointF get_center();
     void highlight(const QString &color="random");
     QString get_type() const;
     void set_type(const QString &string);
     QList<QPointF> GetDoorVertices() const;
-    //bool ContainsDoor(jpsLineItem* lineItem) const;
+
     void AddDoor(jpsCrossing *door);
     void AddInnerDoor(jpsCrossing *door, int id_polygon=0);
-    //QPolygonF RoomAsPolygon() const;
     QVector<QPointF> RoomAsSortedPolygon(const QVector<QLineF> &lines) const;
     const QVector<QLineF>& GetOuterPolygon() const;
     qreal GetArea() const;
-
-    //void GatherData() const;
-
-//    void SortPolygon();
+    QVector<QPointF> get_vertices() const;
     void IdentifyInnerOuter();
 
     // calculate attributes
     QRectF CalculateBoundingBox() const;
     qreal CalculateArea(const QVector<QLineF> &poly) const;
 
-
+    float get_elevation();
+    void set_elevation(float elevation);
+    void correctPlaneCoefficients(); /// calculates the coefficients A_x, B_y and C_z for stairs
+    bool is_highlighted();
 private:
     int id;
     bool highlighted;
+    float A_x;
+    float B_y;
+    float C_z;
+    QPointF _up;
+    QPointF _down;
     QString name;
     QList<jpsLineItem*> wall_list;
     QVector<QLineF> outer_polygon;
@@ -89,6 +103,7 @@ private:
     QList<jpsCrossing* > _doorList;
     qreal _area;
 
+    float _elevation; /// this makes only sense for horizontal rooms. 
 };
 
 bool EqualsPoint(const QPointF& point1, const QPointF& point2, double eps=0.001);

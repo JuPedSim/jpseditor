@@ -25,9 +25,13 @@
  *
  **/
 
-
+#include <iostream>
 #include "jpscrossing.h"
 #include <iostream>
+
+
+#include "dtrace.h"
+
 
 jpsCrossing::jpsCrossing(jpsLineItem *line)
 {
@@ -68,16 +72,30 @@ void jpsCrossing::change_name(QString name)
 
 void jpsCrossing::add_rooms(jpsRoom *room1, jpsRoom *room2)
 {
+     dtrace("Enter jpsCrossing::add_rooms");
+     dtrace("\t room1 = <%s> of type <%s>", 
+            room1->get_name().toStdString().c_str(),
+            room1->get_type().toStdString().c_str()
+          );
     roomList.clear();
     roomList.push_back(room1);
     room1->AddDoor(this);
+    if(room1->get_type().toUpper() != "STAIR")  // assuming a crossing can
+                                               //  not separate two stairs
+         this->set_elevation(room1->get_elevation());
+
     if (room2!=nullptr)
     {
+         dtrace("\t room2 = <%s> of type <%s>", 
+                room2->get_name().toStdString().c_str(),
+                room2->get_type().toStdString().c_str()
+              );
+         if(room2->get_type().toUpper() != "STAIR")
+              this->set_elevation(room2->get_elevation());
         roomList.push_back(room2);
        room2->AddDoor(this);
     }
-
-
+    dtrace("Leave jpsCrossing::add_rooms");
 }
 
 void jpsCrossing::SetRoom(jpsRoom *room)
@@ -111,4 +129,13 @@ void jpsCrossing::SetStatExit(bool stat)
 bool jpsCrossing::IsExit()
 {
     return _isExit;
+}
+float jpsCrossing::get_elevation()
+{
+     return _elevation;
+}
+
+void jpsCrossing::set_elevation(float elevation)
+{
+     _elevation = elevation;
 }

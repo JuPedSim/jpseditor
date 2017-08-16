@@ -46,6 +46,8 @@ public:
     void RemoveRoom(jpsRoom* room);
     void SetStatExit(bool stat);
     bool IsExit();
+    float get_elevation();
+    void set_elevation(float elevation);
 
 
 private:
@@ -54,7 +56,7 @@ private:
     jpsLineItem *cLine;
     int cId;
     bool _isExit;
-
+    float _elevation;
 };
 
 #endif // JPSCROSSING_H

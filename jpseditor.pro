@@ -62,7 +62,8 @@ HEADERS += \
     src/jpsregion.h \
     src/AutomaticRoomIdentification/roomID.h\
     src/AutomaticRoomIdentification/roomdefinition.h \
-    src/AutomaticRoomIdentification/roomidentification.h
+    src/AutomaticRoomIdentification/roomidentification.h \
+    src/dtrace.h
 
 
 SOURCES += \
@@ -89,6 +90,7 @@ SOURCES += \
     src/jpsregion.cpp \
     src/AutomaticRoomIdentification/roomdefinition.cpp \
     src/AutomaticRoomIdentification/roomidentification.cpp
+
 
 INCLUDEPATH += D:/boost_1_59_0/boost_1_59_0
 

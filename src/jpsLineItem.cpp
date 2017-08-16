@@ -67,7 +67,7 @@ QString jpsLineItem::GetType()
     else if (IsHLine())
         return "HLine";
     else
-        return "Exit";
+        return "NOT_KNOWN";
 }
 
 void jpsLineItem::set_id(int id)

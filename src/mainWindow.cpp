@@ -31,9 +31,6 @@
 #include "mainWindow.h"
 #include "GraphicView.h"
 #include <iostream>
-
-
-
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QShortcut>
@@ -139,6 +136,9 @@ MWindow :: MWindow() {
     str_a->setShortcut(Qt::Key_A | Qt::CTRL);
     connect(str_a, SIGNAL(triggered(bool)), mview, SLOT(SelectAllLines()));
     this->addAction(str_a);
+    QAction *str_del = new QAction(this);
+    str_del->setShortcut(Qt::Key_D | Qt::CTRL);
+    connect(str_del,SIGNAL(triggered(bool)),this,SLOT(remove_all_lines()));
     //connect(mview,SIGNAL(DoubleClick()),this,SLOT(en_selectMode()));
     // Autosave
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
@@ -474,20 +474,13 @@ void MWindow::info(){
 
 
 
-    QString info = "JuPedSim v0.8 alpha\n\
-    JPSeditor v0.8 alpha\n\
-    ====================\n\
-    \n\
-    Erik Andresen drafted this on 27 Jun 2016\n\
-    \n\
-    We are proud to announce the first alpha release of our software JPSeditor (part of JuPedSim for simulating pedestrians evacuations). Please note that it is a pre release version for developers only. We are working hard towards the final release for this version.\n\
-    \n\
-    JPSeditor is a graphical user interface to create the geometry of a scenario simulated by JuPedSim. It comes with set of CAD- and further tools to simplify the creation of proper xml-files incorporating information about the scenario' geometry.\n\
-    \n\
-    Tutorial\n\
-    ========\n\
-    \n\
-    To highlight some features of JuPedSim we have uploaded some videos on our [YouTube channel](https://www.youtube.com/user/JuPedSim) including a tutorial showing how to use the editor.";
+    QString info = "\
+    JPSeditor (version 0.8.1) is a tool\n\
+    to create and process geometries for\n\
+    JuPedSim.\n\
+    2017. All rights reserved.";
+    
+   
 
     QMessageBox messageBox;
     messageBox.information(0,tr("About..."),info);
@@ -559,11 +552,8 @@ void MWindow::gridmode()
 void MWindow::show_coords()
 {
     QPointF point = mview->return_Pos();
-    QString string = "x: ";
-    string.append(QString::number(point.x()));
-    string.append(" y: ");
-    string.append(QString::number(point.y()));
-    string.append(" [m]");
+    QString string = "";
+    string.sprintf("(%.2f, %5.2f)", point.x(), point.y());
     infoLabel->setText(string);
 }
 
@@ -580,13 +570,13 @@ void MWindow::delete_marked_lines()
 
 void MWindow::send_length()
 {
-    if (!_statScale)
-    {
-        qreal length = length_edit->text().toFloat();
-        mview->take_l_from_lineEdit(length);
-        length_edit->clear();
-    }
 
+    qreal length = length_edit->text().toFloat();
+    if(length != 0 )
+    {
+         mview->take_l_from_lineEdit(length);
+    }
+    length_edit->clear();
 }
 
 void MWindow::define_room()
