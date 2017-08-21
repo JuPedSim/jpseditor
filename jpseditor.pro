@@ -23,6 +23,9 @@ TARGET = JuPedSim
 CONFIG += qt xml gui;
 CONFIG += c++11
 QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -static
+QMAKE_CXXFLAGS += -static-libgcc
+QMAKE_CXXFLAGS += -static-libstdc++
 
 FORMS += \
     forms/mainwindow.ui \

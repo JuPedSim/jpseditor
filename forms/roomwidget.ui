@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>320</width>
+    <width>316</width>
     <height>579</height>
    </rect>
   </property>
@@ -114,6 +114,9 @@
        <property name="text">
         <string>New </string>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+Alt+N</string>
+       </property>
       </widget>
      </item>
      <item>
@@ -137,6 +140,9 @@
        <property name="text">
         <string>Close</string>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+L</string>
+       </property>
       </widget>
      </item>
     </layout>
@@ -159,6 +165,9 @@
        <property name="text">
         <string>Add</string>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+Alt+A</string>
+       </property>
       </widget>
      </item>
      <item>
@@ -168,6 +177,9 @@
        </property>
        <property name="text">
         <string>Delete </string>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+Alt+R</string>
        </property>
       </widget>
      </item>
@@ -728,6 +740,38 @@
    </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>new_room_button</tabstop>
+  <tabstop>list_rooms</tabstop>
+  <tabstop>delete_room</tabstop>
+  <tabstop>closeButton</tabstop>
+  <tabstop>highlight_all</tabstop>
+  <tabstop>chname_edit</tabstop>
+  <tabstop>elevation_edit</tabstop>
+  <tabstop>classBox</tabstop>
+  <tabstop>add_button</tabstop>
+  <tabstop>remove_button</tabstop>
+  <tabstop>caption</tabstop>
+  <tabstop>listWalls</tabstop>
+  <tabstop>crossingList</tabstop>
+  <tabstop>auto_assign_doors</tabstop>
+  <tabstop>addCrossingButton</tabstop>
+  <tabstop>removeCrossingButton</tabstop>
+  <tabstop>closeButton_2</tabstop>
+  <tabstop>roomBox1</tabstop>
+  <tabstop>roomBox2</tabstop>
+  <tabstop>closeButton_4</tabstop>
+  <tabstop>listWallsObs</tabstop>
+  <tabstop>list_obstacles</tabstop>
+  <tabstop>new_obs_button</tabstop>
+  <tabstop>delete_obs</tabstop>
+  <tabstop>closeButton_3</tabstop>
+  <tabstop>chname_edit_obs</tabstop>
+  <tabstop>caption_obs</tabstop>
+  <tabstop>roomBox_obs</tabstop>
+  <tabstop>add_button_obs</tabstop>
+  <tabstop>remove_button_obs</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

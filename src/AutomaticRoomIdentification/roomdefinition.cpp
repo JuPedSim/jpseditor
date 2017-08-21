@@ -41,9 +41,9 @@ void RoomDefinition::SetUpRoomsAndDoors()
         floorPlan.push_back(lineasVector2);
     }
 
-    std::cout << "Starting" << std::endl;
+    //std::cout << "Starting" << std::endl;
     std::vector<std::list<double>> roomList = getRooms(floorPlan);
-    std::cout << "Found rooms" << std::endl;
+    //std::cout << "Found rooms" << std::endl;
     // *** end of Nicks code ***
 
 

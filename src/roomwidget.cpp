@@ -860,12 +860,25 @@ void roomWidget::highlight_room() //@todo: rename -> highlight_current_room()
 
 void roomWidget::HighlightAllRooms()
 {
+    //unhighlight all rooms first
+
+    for (jpsRoom* room:datamanager->get_roomlist())
+    {
+        if (room->is_highlighted())
+            room->highlight();
+    }
+
+
+    for (jpsRoom* room:datamanager->get_roomlist())
+    {
+        if (room->get_type()!="Corridor")
+            room->highlight("darkGreen");
+    }
+
     for (jpsRoom* room:datamanager->get_roomlist())
     {
         if (room->get_type()=="Corridor")
             room->highlight("darkMagenta");
-        else
-            room->highlight("darkGreen");
     }
 
 }
@@ -1017,10 +1030,10 @@ void roomWidget::StartAutoDef()
     _roomDef=nullptr;
 
 
-   // RoomIdentification roomIdent(datamanager->get_roomlist());
-  //  roomIdent.LoadDataFile();
-   // roomIdent.CalcMeansAndStds();
-   // roomIdent.IdentifyRooms();
+    RoomIdentification roomIdent(datamanager->get_roomlist());
+    roomIdent.LoadDataFile();
+    roomIdent.CalcMeansAndStds();
+    roomIdent.IdentifyRooms();
 
 
 
@@ -1056,15 +1069,16 @@ void roomWidget::highlight_room(jpsRoom * room)
      for(auto o: datamanager->get_obstaclelist())
           if(o->is_highlighted())
                o->highlight(); 
-     
-     // highlight room
-     if(!room->is_highlighted())
-          highlight_room();
             
      for(auto r: datamanager->get_roomlist())
           if(room->get_name() != r->get_name())
                if(r->is_highlighted())
                     r->highlight();
+
+     // highlight room
+     if(!room->is_highlighted())
+          highlight_room();
+
      dtrace("Leave roomWidget::highlight_room()");
 }
 void roomWidget::highlight_obs(jpsRoom * room)

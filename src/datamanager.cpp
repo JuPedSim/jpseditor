@@ -472,7 +472,7 @@ void jpsDatamanager::writeLineItems(QFile &file)
     {
         QString string = QString::number(line->get_line()->line().p1().x())+ "," + QString::number(line->get_line()->line().p1().y())+ ";\n"+
                 QString::number(line->get_line()->line().p2().x())+ "," + QString::number(line->get_line()->line().p2().y())+ "; \n";
-        file.write(string.toAscii());
+        file.write(string.toUtf8());
     }
 }
 
