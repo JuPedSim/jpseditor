@@ -1,8 +1,8 @@
-JuPedSim v0.8 alpha
-JPSeditor v0.8 alpha
+JuPedSim v0.8.2 alpha
+JPSeditor v0.8.2 alpha
 ====================
 
-Erik Andresen drafted this on 27 Jun 2016
+Erik Andresen drafted this on 21 Aug 2017
 
 We are proud to announce the first alpha release of our software JPSeditor (part of JuPedSim for simulating pedestrians evacuations). Please note that it is a pre release version for developers only. We are working hard towards the final release for this version.
 
@@ -21,7 +21,7 @@ Features
 	- Zooming 
 	- Line editing
 	- ...
-- Tools for room and door declarations
+- Tools for automatic room and door declarations
 
 
 Tutorial
