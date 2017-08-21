@@ -630,6 +630,9 @@
    <property name="text">
     <string>Gather Room Type Data</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
  </widget>
  <resources>
