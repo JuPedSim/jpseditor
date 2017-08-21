@@ -79,7 +79,7 @@ protected slots:
     void SetLandmarkToRegion();
     void ShowHideRegion();
     void ShowRegions();
-
+    //make it fuzzy
     void CreateSimilarMaps();
 
 private:

@@ -31,9 +31,6 @@
 #include "mainWindow.h"
 #include "GraphicView.h"
 #include <iostream>
-
-
-
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QShortcut>
@@ -90,6 +87,8 @@ MWindow :: MWindow() {
     _cMapTimer = new QTimer(this);
     //_cMapTimer=nullptr;
 
+    _statScale=false;
+
     //Signals and Slots
     // Tab File
     connect(actionBeenden, SIGNAL(triggered(bool)),this,SLOT(close()));
@@ -113,15 +112,18 @@ MWindow :: MWindow() {
     connect(actionDelete_lines,SIGNAL(triggered(bool)),this,SLOT(delete_lines()));
     connect(actionDelete_single_line,SIGNAL(triggered(bool)),this,SLOT(delete_marked_lines()));
     connect(actionRoom,SIGNAL(triggered(bool)),this,SLOT(define_room()));
+    connect(actionAuto_Definition,SIGNAL(triggered(bool)),this,SLOT(autoDefine_room()));
     connect(actionSelect_Mode,SIGNAL(triggered(bool)),this,SLOT(en_selectMode()));
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
+    connect(actionScale,SIGNAL(triggered(bool)),this,SLOT(enableScale()));
     // Tab View
     connect(actionRotate_90_deg_clockwise,SIGNAL(triggered(bool)),this,SLOT(rotate()));
     connect(actionShow_Point_of_Origin,SIGNAL(triggered(bool)),this,SLOT(ShowOrigin()));
     // Length edit
     connect(length_edit,SIGNAL(returnPressed()),this,SLOT(send_length()));
+    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(ScaleLines()));
     // mview
     connect(mview,SIGNAL(no_drawing()),this,SLOT(en_selectMode()));
     connect(mview,SIGNAL(remove_marked_lines()),this,SLOT(lines_deleted()));
@@ -134,6 +136,9 @@ MWindow :: MWindow() {
     str_a->setShortcut(Qt::Key_A | Qt::CTRL);
     connect(str_a, SIGNAL(triggered(bool)), mview, SLOT(SelectAllLines()));
     this->addAction(str_a);
+    QAction *str_del = new QAction(this);
+    str_del->setShortcut(Qt::Key_D | Qt::CTRL);
+    connect(str_del,SIGNAL(triggered(bool)),this,SLOT(remove_all_lines()));
     //connect(mview,SIGNAL(DoubleClick()),this,SLOT(en_selectMode()));
     // Autosave
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
@@ -149,6 +154,9 @@ MWindow :: MWindow() {
     //Undo Redo
     connect(actionUndo,SIGNAL(triggered(bool)),mview,SLOT(Undo()));
     connect(actionRedo,SIGNAL(triggered(bool)),mview,SLOT(Redo()));
+
+    // room type data gathering
+    connect(actionGather_data,SIGNAL(triggered(bool)),this, SLOT(GatherData()));
 
 }
 
@@ -194,6 +202,28 @@ void MWindow::AutoSave()
         if (routingFile.open(QIODevice::WriteOnly|QIODevice::Text))
             dmanager->writeRoutingXML(routingFile);
     }
+}
+
+void MWindow::GatherData()
+{
+    if (rwidget==nullptr)
+    {
+        rwidget = new roomWidget(this,this->dmanager,this->mview);
+        //rwidget->setGeometry(QRect(QPoint(5,75), rwidget->size()));
+        rwidget->setAttribute(Qt::WA_DeleteOnClose);
+        rwidget->GatherRTData();
+        rwidget->close();
+        rwidget=nullptr;
+        actionRoom->setChecked(false);
+        //rwidget->show();
+
+    }
+    else
+    {
+        rwidget->GatherRTData();
+    }
+
+    statusBar()->showMessage(tr("Data gathered"),10000);
 }
 
 
@@ -308,6 +338,7 @@ void MWindow::openFileXML()
         mview->AutoZoom();
         statusBar()->showMessage("XML-File successfully loaded!",10000);
     }
+    file.close();
 
 }
 
@@ -335,6 +366,35 @@ void MWindow::openFileCogMap()
 
         statusBar()->showMessage("Cognitive map successfully loaded!",10000);
     }
+    file.close();
+}
+
+void MWindow::OpenLineFile()
+{
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Open Lines"),"",tr("txt-File (*.txt)"));
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        statusBar()->showMessage("Line-File could not be opened!",10000);
+        return;
+
+    }
+
+    if (!dmanager->ReadLineFile(file))
+    {
+        statusBar()->showMessage("Line-File could not be parsed!",10000);
+    }
+    //if(file.open(QIODevice::ReadOnly|QIODevice::Text)) {
+      //  textEdit->setPlainText(QString::fromUtf8(file.readAll()));
+     //   statusBar()->showMessage(tr("Datei erfolgreich geladen"),5000);
+    //}
+    else
+    {
+
+        statusBar()->showMessage("Line-File successfully loaded!",10000);
+    }
+    file.close();
 }
 
 void MWindow::saveFile(){
@@ -342,6 +402,12 @@ void MWindow::saveFile(){
     _filename=fileName;
     if (fileName.isEmpty()) return;
     QFile file(fileName);
+
+    QString fileNameLines=fileName.split(".").first()+"_lines.xml";
+
+    QFile LinesFile(fileNameLines);
+    if (LinesFile.open(QIODevice::WriteOnly|QIODevice::Text))
+        dmanager->writeLineItems(LinesFile);
 
     if(file.open(QIODevice::WriteOnly|QIODevice::Text))
     {
@@ -364,6 +430,8 @@ void MWindow::saveFile(){
         QFile routingFile(fileNameRouting);
         if (routingFile.open(QIODevice::WriteOnly|QIODevice::Text))
             dmanager->writeRoutingXML(routingFile);
+
+
 
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
@@ -406,20 +474,13 @@ void MWindow::info(){
 
 
 
-    QString info = "JuPedSim v0.8 alpha\n\
-    JPSeditor v0.8 alpha\n\
-    ====================\n\
-    \n\
-    Erik Andresen drafted this on 27 Jun 2016\n\
-    \n\
-    We are proud to announce the first alpha release of our software JPSeditor (part of JuPedSim for simulating pedestrians evacuations). Please note that it is a pre release version for developers only. We are working hard towards the final release for this version.\n\
-    \n\
-    JPSeditor is a graphical user interface to create the geometry of a scenario simulated by JuPedSim. It comes with set of CAD- and further tools to simplify the creation of proper xml-files incorporating information about the scenario' geometry.\n\
-    \n\
-    Tutorial\n\
-    ========\n\
-    \n\
-    To highlight some features of JuPedSim we have uploaded some videos on our [YouTube channel](https://www.youtube.com/user/JuPedSim) including a tutorial showing how to use the editor.";
+    QString info = "\
+    JPSeditor (version 0.8.1) is a tool\n\
+    to create and process geometries for\n\
+    JuPedSim.\n\
+    2017. All rights reserved.";
+    
+   
 
     QMessageBox messageBox;
     messageBox.information(0,tr("About..."),info);
@@ -491,11 +552,8 @@ void MWindow::gridmode()
 void MWindow::show_coords()
 {
     QPointF point = mview->return_Pos();
-    QString string = "x: ";
-    string.append(QString::number(point.x()));
-    string.append(" y: ");
-    string.append(QString::number(point.y()));
-    string.append(" [m]");
+    QString string = "";
+    string.sprintf("(%.2f, %5.2f)", point.x(), point.y());
     infoLabel->setText(string);
 }
 
@@ -512,10 +570,13 @@ void MWindow::delete_marked_lines()
 
 void MWindow::send_length()
 {
-    qreal length = length_edit->text().toFloat();
-    mview->take_l_from_lineEdit(length);
-    length_edit->clear();
 
+    qreal length = length_edit->text().toFloat();
+    if(length != 0 )
+    {
+         mview->take_l_from_lineEdit(length);
+    }
+    length_edit->clear();
 }
 
 void MWindow::define_room()
@@ -534,6 +595,28 @@ void MWindow::define_room()
         rwidget=nullptr;
         actionRoom->setChecked(false);
     }
+}
+
+void MWindow::autoDefine_room()
+{
+    if (rwidget==nullptr)
+    {
+        rwidget = new roomWidget(this,this->dmanager,this->mview);
+        //rwidget->setGeometry(QRect(QPoint(5,75), rwidget->size()));
+        rwidget->setAttribute(Qt::WA_DeleteOnClose);
+        rwidget->StartAutoDef();
+        rwidget->close();
+        rwidget=nullptr;
+        actionRoom->setChecked(false);
+        //rwidget->show();
+
+    }
+    else
+    {
+        rwidget->StartAutoDef();
+    }
+
+    statusBar()->showMessage(tr("Rooms and doors are set."),10000);
 }
 
 void MWindow::define_landmark()
@@ -590,6 +673,22 @@ void MWindow::ShowLineLength()
 {
     length_edit->setText(QString::number(mview->ReturnLineLength()));
     length_edit->selectAll();
+}
+
+void MWindow::ScaleLines()
+{
+    if (_statScale)
+    {
+        qreal factor = length_edit->text().toFloat();
+        mview->ScaleLines(factor);
+        length_edit->clear();
+        _statScale=false;
+    }
+}
+
+void MWindow::enableScale()
+{
+    _statScale=true;
 }
 
 void MWindow::rotate()

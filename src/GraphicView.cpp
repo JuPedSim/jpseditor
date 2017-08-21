@@ -897,7 +897,7 @@ void jpsGraphicsView::select_line(jpsLineItem *mline)
 
     if (!marked_lines.contains(mline))
     {
-        QPen pen = QPen(Qt::red,2);
+        QPen pen = QPen(Qt::red,4);
         pen.setCosmetic(true);
         mline->get_line()->setPen(pen);
         marked_lines.push_back(mline);
@@ -905,7 +905,7 @@ void jpsGraphicsView::select_line(jpsLineItem *mline)
     }
     else
     {
-        QPen pen = QPen(Qt::black,2);
+        QPen pen = QPen(Qt::black,4);
         pen.setCosmetic(true);
         mline->get_line()->setPen(pen);
         marked_lines.removeOne(mline);
@@ -940,7 +940,7 @@ void jpsGraphicsView::disable_drawing()
 
 jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const qreal &x2,const qreal &y2,const QString &type)
 {
-    QPen pen = QPen(Qt::black,2);
+    QPen pen = QPen(Qt::black,4);
     pen.setCosmetic(true);
 
     current_line=Scene->addLine(x1,y1,x2,y2,pen);
@@ -1095,6 +1095,20 @@ qreal jpsGraphicsView::ReturnLineLength()
 {
     return current_line->line().length();
 }
+
+bool jpsGraphicsView::is_hide_roomCaption(QString name)
+{
+    for (int i=0; i<caption_list.size(); i++)
+    {
+        if (caption_list[i]->toPlainText()==name)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+
 
 bool jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
 {
@@ -1924,4 +1938,13 @@ void jpsGraphicsView::Copy_lines(const QPointF& delta)
                     line->GetType());
     }
     _statCopy=0;
+}
+
+void jpsGraphicsView::ScaleLines(const double &factor)
+{
+    for (jpsLineItem* lineItem:line_vector)
+    {
+        lineItem->get_line()->setLine(QLineF(lineItem->get_line()->line().p1()*factor,lineItem->get_line()->line().p2()*factor));
+    }
+
 }

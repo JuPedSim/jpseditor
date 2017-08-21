@@ -502,11 +502,28 @@ void widgetLandmark::CreateSimilarMaps()
 {
     int numberMaps = ui->spinBox_numberMaps->value();
 
-    for (int i=0; i<numberMaps; ++i)
+    int k=1;
+
+    for (int i=1; i<=numberMaps; ++i)
     {
-        _dmanager->CreateAndSaveASimilarCogMap(i);
+        double m = 0.3;
+        if (i==int(5.01/47.0*numberMaps) || i==int(8.01/47.0*numberMaps) || i==int(11.01/47.0*numberMaps) || i==int(15.01/47.0*numberMaps) || i==int(17.01/47.0*numberMaps) || i==int(18.01/47.0*numberMaps) || i==int(25.01/47.0*numberMaps) || i==int(38.01/47.0*numberMaps) || i==int(43.01/47.0*numberMaps))
+            ++k;
+        for (size_t a=1; a<=1; ++a)
+        {
+            double p0=-7.0*m;
+            //int id=0;
+            for (size_t b=1; b<=10; ++b)
+            {
+                _dmanager->CreateAndSaveASimilarCogMap(i,k,m,p0);
+
+                p0+=1.0/9.0;
+                //++id;
+            }
+
+            m+=0.025;
+        }
     }
-    //ui->progressBar->setVisible(false);
 }
 
 

@@ -57,6 +57,7 @@
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
     <addaction name="actionCopy"/>
+    <addaction name="actionScale"/>
     <addaction name="separator"/>
     <addaction name="actionWall"/>
     <addaction name="actionDoor"/>
@@ -69,8 +70,10 @@
     <addaction name="actionDelete_single_line"/>
     <addaction name="separator"/>
     <addaction name="actionRoom"/>
+    <addaction name="actionAuto_Definition"/>
     <addaction name="actionLandmark"/>
     <addaction name="actionLandmarkWidget"/>
+    <addaction name="actionGather_data"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -115,6 +118,7 @@
    <addaction name="actionDelete_single_line"/>
    <addaction name="separator"/>
    <addaction name="actionRoom"/>
+   <addaction name="actionAuto_Definition"/>
    <addaction name="separator"/>
    <addaction name="actionLandmarkWidget"/>
    <addaction name="actionLandmark"/>
@@ -131,7 +135,7 @@
     <string>Load DXF</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+O</string>
+    <string>Ctrl+Alt+O</string>
    </property>
   </action>
   <action name="actionSpeichern">
@@ -211,7 +215,7 @@
     <string>Wall</string>
    </property>
    <property name="shortcut">
-    <string>Space</string>
+    <string>W</string>
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
@@ -394,7 +398,7 @@
     <string>Load XML</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Alt+O</string>
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionRotate_90_deg_clockwise">
@@ -479,7 +483,7 @@
     <string>Settings</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+E</string>
+    <string>Ctrl+,</string>
    </property>
   </action>
   <action name="action_ffnen_CogMap">
@@ -537,7 +541,7 @@
     <string>Redo PaintEvent</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Y</string>
+    <string/>
    </property>
   </action>
   <action name="actionHLine">
@@ -583,6 +587,9 @@
    </property>
   </action>
   <action name="action_ffnen_cogmap">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="Ressource.qrc">
      <normaloff>:/open.png</normaloff>:/open.png</iconset>
@@ -603,6 +610,28 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionScale">
+   <property name="text">
+    <string>Scale</string>
+   </property>
+  </action>
+  <action name="actionAuto_Definition">
+   <property name="icon">
+    <iconset resource="Ressource.qrc">
+     <normaloff>:/autoRoom.png</normaloff>:/autoRoom.png</iconset>
+   </property>
+   <property name="text">
+    <string>Auto Definition</string>
+   </property>
+  </action>
+  <action name="actionGather_data">
+   <property name="text">
+    <string>Gather Room Type Data</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
  </widget>
