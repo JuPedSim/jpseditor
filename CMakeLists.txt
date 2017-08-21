@@ -29,8 +29,8 @@ project(JPSeditor)
 set(README_FILE "${CMAKE_SOURCE_DIR}/README.md")
 set(CMAKE_COLOR_MAKEFILE ON)
 set(JPSEDITOR_MAJOR_VERSION 0)
-set(JPSEDITOR_MINOR_VERSION 7)
-set(JPSEDITOR_PATCH_VERSION 0)
+set(JPSEDITOR_MINOR_VERSION 8)
+set(JPSEDITOR_PATCH_VERSION 1)
 set(JPSEDITOR_VERSION
   ${JPSEDITOR_MAJOR_VERSION}.${JPSEDITOR_MINOR_VERSION}.${JPSEDITOR_PATCH_VERSION})
 message( STATUS "JPSEDITOR_VERSION: " ${JPSEDITOR_VERSION} )
@@ -249,13 +249,13 @@ if(${QT4_INSTALLED})
   QT4_WRAP_UI( UI_HDRS ${UIS} )
   QT4_ADD_RESOURCES( RCS ${RCS} )
   include( ${QT_USE_FILE} )
-  ADD_EXECUTABLE( JPSeditor MACOSX_BUNDLE WIN32
+  ADD_EXECUTABLE( jpseditor MACOSX_BUNDLE WIN32
   ${SRCS}
   ${MOC_HDRS}
   ${UI_HDRS} 
   ${RCS}
   )
-  TARGET_LINK_LIBRARIES( JPSeditor ${QT_LIBRARIES})
+  TARGET_LINK_LIBRARIES( jpseditor ${QT_LIBRARIES})
 elseif( ${QT5_INSTALLED})
   message(STATUS "Working with Qt5")
   # http://www.kdab.com/using-cmake-with-qt-5/
@@ -265,14 +265,14 @@ elseif( ${QT5_INSTALLED})
   qt5_add_resources( RCS ${RCS} )
   #qt5_use_package(JPSeditor Widgets)
 
-  ADD_EXECUTABLE( JPSeditor MACOSX_BUNDLE WIN32
+  ADD_EXECUTABLE( jpseditor MACOSX_BUNDLE WIN32
   ${SRCS}
   ${MOC_HDRS}
   ${UI_HDRS} 
   ${RCS}
   )
- qt5_use_modules(JPSeditor Widgets)
- target_link_libraries(JPSeditor ${Qt5Widgets_LIBRARIES})
+ qt5_use_modules(jpseditor Widgets)
+ target_link_libraries(jpseditor ${Qt5Widgets_LIBRARIES})
 else()
   message(FATAL_ERROR "QT NOT BE FOUND - ABORT")
 endif() 
@@ -283,7 +283,7 @@ IF(APPLE)
 ENDIF(APPLE)
 
 
-SET_TARGET_PROPERTIES( JPSeditor PROPERTIES MACOSX_BUNDLE TRUE)
+SET_TARGET_PROPERTIES( jpseditor PROPERTIES MACOSX_BUNDLE TRUE)
 #----------------------------------------------------------------------
 # enable as many warnings as possible
 set(warning_flags "-Wall -Wextra")
@@ -326,18 +326,18 @@ message(STATUS "Building ${PROJECT_NAME} in ${CMAKE_BUILD_TYPE} mode")
 #--------------------------------------------------------------------------------
 SET(plugin_dest_dir bin)
 SET(qtconf_dest_dir bin)
-SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/JPSeditor")
+SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/jpseditor")
 IF(APPLE)
-  SET(plugin_dest_dir JPSeditor.app/Contents/MacOS)
-  SET(qtconf_dest_dir JPSeditor.app/Contents/Resources)
-  SET(APPS "\${CMAKE_INSTALL_PREFIX}/JPSeditor.app")  
+  SET(plugin_dest_dir jpseditor.app/Contents/MacOS)
+  SET(qtconf_dest_dir jpseditor.app/Contents/Resources)
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/jpseditor.app")  
 ENDIF(APPLE)
 
 IF(WIN32)
-  SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/JPSeditor.exe")
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/jpseditor.exe")
 ENDIF(WIN32)
 
-INSTALL(TARGETS JPSeditor
+INSTALL(TARGETS jpseditor
   BUNDLE DESTINATION . COMPONENT Runtime
   RUNTIME DESTINATION bin COMPONENT Runtime
   # PERMISSIONS OWNER_EXECUTE 600
@@ -347,20 +347,22 @@ INSTALL(TARGETS JPSeditor
 # Install needed Qt plugins by copying directories from the qt installation
 # One can cull what gets copied by using 'REGEX "..." EXCLUDE'
 # todo should we check qt version here?
+if(APPLE)
 INSTALL(DIRECTORY "${QT_PLUGINS_DIR}/imageformats" DESTINATION ${plugin_dest_dir}/plugins
   # DIRECTORY_PERMISSIONS
   # OWNER_WRITE OWNER_READ  OWNER_EXECUTE
   # GROUP_WRITE GROUP_READ  GROUP_EXECUTE
   # WORLD_WRITE WORLD_READ WORLD_EXECUTE
   COMPONENT Runtime)
-
+endif()
 #--------------------------------------------------------------------------------
 # install a qt.conf file
 # this inserts some cmake code into the install script to write the file
+if(APPLE)
 INSTALL(CODE "
     file(WRITE \"\${CMAKE_INSTALL_PREFIX}/${qtconf_dest_dir}/qt.conf\" \"\")
     " COMPONENT Runtime)
-
+endif()
 
 #--------------------------------------------------------------------------------
 # Use BundleUtilities to get all other dependencies for the application to work.
@@ -380,13 +382,15 @@ endif()
 # An alternative is the do a configure_file() on a script and use install(SCRIPT  ...).
 # Note that the image plugins depend on QtSvg and QtXml, and it got those copied
 # over.
-INSTALL(CODE "
-    file(GLOB_RECURSE QTPLUGINS
-      \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
-    include(BundleUtilities)
-    fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
-    " COMPONENT Runtime)
-
+#
+if(APPLE)
+INSTALL(CODE "              
+     file(GLOB_RECURSE QTPLUGINS
+       \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
+       image
+     fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
+     " COMPONENT Runtime)
+endif()
 
 
 
@@ -395,9 +399,9 @@ INSTALL(CODE "
 IF(APPLE)
   # set how it shows up in the Info.plist file
   SET(MACOSX_EDIT_ICON jupedsim.icns)
-  set_target_properties(JPSeditor PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Resources/Info.plist.in)
+  set_target_properties(jpseditor PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Resources/Info.plist.in)
   SET(MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2015 Forschungszentrum Juelich. All rights reserved.")
-  SET(MACOSX_BUNDLE_BUNDLE_NAME "JPSeditor")
+  SET(MACOSX_BUNDLE_BUNDLE_NAME "jpseditor")
   SET(MACOSX_BUNDLE_BUNDLE_VERSION "${JPSEDITOR_VERSION}")
   SET(MACOSX_BUNDLE_LONG_VERSION_STRING "version ${JPSEDITOR_VERSION}")
   SET(MACOSX_BUNDLE_SHORT_VERSION_STRING "${JPSEDITOR_VERSION}")
@@ -444,12 +448,33 @@ elseif(APPLE) # todo test this for apple
    elseif(UNIX)
      # tested with success in 
      # Linux dhcppc5 3.2.0-4-686-pae #1 SMP Debian 3.2.68-1+deb7u2 i686 GNU/Linux
-    set(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
-endif()
-include(CPack)
+     set(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
+       SET(CPACK_GENERATOR "DEB")
+
+       SET(CPACK_PACKAGE_DESCRIPTION "simulation core of JuPedSim")
+       SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Geometry editor of JuPedSim, a framework for simulation and analysis of pedestrian dynamics")
+       #SET(CPACK_PACKAGE_VENDOR "nowardev")
+       SET(CPACK_PACKAGE_CONTACT "m.chraibi@fz-juelich.de")
+       SET(CPACK_PACKAGE_VERSION_MAJOR "${JPSEDITOR_MAJOR_VERSION}")
+       SET(CPACK_PACKAGE_VERSION_MINOR "${JPSEDITOR_MINOR_VERSION}")
+       SET(CPACK_PACKAGE_VERSION_PATCH "${JPSEDITOR_PATCH_VERSION}")
+       SET(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${JPSEDITOR_VERSION}")
+       SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${JPSEDITOR_VERSION}")
+       #SET(CPACK_DEBIAN_PACKAGE_DEPENDS " Boost (>= 1.59) ")
+       SET(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+       SET( CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://jupedsim.org")
+       SET(CPACK_DEBIAN_PACKAGE_SUGGESTS, "jpsvis, jpsreport, jpscor")
+       SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+       SET(CPACK_DEBIAN_PACKAGE_SECTION "science")
+       SET(CPACK_DEBIAN_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 
 
-message (STATUS "bin ins" ${BIN_INSTALL_DIR})
+
+     endif()
+     include(CPack)
+
+
+     message (STATUS "bin ins" ${BIN_INSTALL_DIR})
 set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "${BIN_INSTALL_DIR}")
 include(InstallRequiredSystemLibraries)
 
@@ -465,7 +490,8 @@ if(APPLE OR WIN32)
   if(${QT4_INSTALLED})
     include(DeployQt4)
     install_qt4_executable("${EXECUTABLE}" "qsqlite")
-  elseif(${QT4_INSTALLED})
+
+  elseif(${QT5_INSTALLED})
     include(DeployQt5)
     install_qt5_executable("${EXECUTABLE}" "qsqlite")
   endif()
