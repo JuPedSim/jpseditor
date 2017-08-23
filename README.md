@@ -1,4 +1,7 @@
-JPSeditor v0.8.2 alpha
+JuPedSim v0.8.2 alpha
+
+JPSeditor
+====================
 
 
 Erik Andresen drafted this on 21 Aug 2017
@@ -31,6 +34,7 @@ Installing
 ==========
 
 This version comes with an installer for Windows. So just download it, start it and follow the instructions. The installer is only available for windows at the moment. For other architectures (Linux, OSX) you will need to compile the sources. See the section [Compiling from sources](#compiling-from-sources).
+
 
 Uninstalling
 ============
