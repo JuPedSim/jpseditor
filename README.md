@@ -1,8 +1,8 @@
-
 JuPedSim v0.8.2 alpha
 
 JPSeditor
 ====================
+
 
 Erik Andresen drafted this on 21 Aug 2017
 
