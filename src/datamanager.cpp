@@ -30,16 +30,11 @@
 #include "datamanager.h"
 #include <iostream>
 #include <utility>
-#include <random>
 #include <chrono>
 #include <QFileDialog>
-#include <windows.h>
-
-using myClock = std::chrono::high_resolution_clock;
-
-
 #include "dtrace.h"
 
+using myClock = std::chrono::high_resolution_clock;
 
 
 jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
@@ -48,7 +43,7 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
     _mView=view;
     room_id_counter=0;
     obs_id_counter=0;
-    _frameRate=0;
+    //_frameRate=0;
     _landmarkCounter=0;
     _regionCounter=0;
 
@@ -1087,6 +1082,7 @@ void jpsDatamanager::writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLi
 
 
 }
+
 
 void jpsDatamanager::WriteLandmarks(jpsRegion* cRegion, QXmlStreamWriter *stream, bool fuzzy)
 {
@@ -2655,76 +2651,6 @@ jpsRegion* jpsDatamanager::ParseRegion(QXmlStreamReader &xmlReader)
 
 }
 
-
-
-//void jpsDatamanager::ParseYAHPointer(QXmlStreamReader &xmlReader, const int& frame)
-//{
-//    qreal x = xmlReader.attributes().value("x").toString().toFloat();
-//    qreal y = xmlReader.attributes().value("y").toString().toFloat();
-//    qreal angle = xmlReader.attributes().value("dir").toString().toFloat();
-//    if (_yahPointer==nullptr)
-//    {
-//        _yahPointer = new jpsYAHPointer(x,y,angle);
-//        _yahPointer->SetFirstFrame(frame);
-//        _yahPointer->SetLastFrame(frame);
-//    }
-//    else
-//    {
-//        _yahPointer->SetPos(QPointF(x,y));
-//        _yahPointer->SetDirection(angle);
-//        _yahPointer->SetLastFrame(frame);
-//    }
-
-//}
-
-
-
-//}
-
-//void jpsDatamanager::ShowCMapFrame(const int& frame) const
-//{
-//    mView->ShowYAHPointer(_yahPointer->GetPosWhenFrame(frame),_yahPointer->GetDirWhenFrame(frame));
-
-//    QList<ptrWaypoint > wayPCandidates;
-
-//    for (ptrWaypoint waypoint:_waypointsInCMap)
-//    {
-//        if (waypoint->OccursInFrame(frame))
-//        {
-//            wayPCandidates.push_back(waypoint);
-
-//            if (waypoint->IsCurrentInFrame(frame))
-//                waypoint->SetText("Next target");
-//            else if (waypoint->Visited(frame))
-//                waypoint->SetText("Already visited");
-//            else
-//                waypoint->SetText("");
-//        }
-//    }
-//    QList<ptrConnection> conCandidates;
-//    for (ptrConnection connection:_connectionsInCMap)
-//    {
-//        if (connection->OccursInFrame(frame))
-//        {
-//            conCandidates.push_back(connection);
-//        }
-//    }
-
-//    mView->ShowConnections(conCandidates);
-//    mView->ShowWaypoints(wayPCandidates);
-
-//}
-
-
-//const double &jpsDatamanager::GetCMapFrameRate() const
-//{
-//    return _frameRate;
-//}
-
-//const int &jpsDatamanager::GetLastCMapFrame() const
-//{
-//    return _lastCMapFrame;
-//}
 
 
 
