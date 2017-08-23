@@ -33,7 +33,6 @@
 #include <random>
 #include <chrono>
 #include <QFileDialog>
-#include <windows.h>
 
 using myClock = std::chrono::high_resolution_clock;
 

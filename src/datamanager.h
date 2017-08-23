@@ -42,7 +42,7 @@
 #include "GraphicView.h"
 #include "jpsconnection.h"
 #include "jpsregion.h"
-
+#include <random>
 
 #include "../dxflib/src/dl_creationadapter.h"
 #include "../dxflib/src/dl_dxf.h"
