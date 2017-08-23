@@ -113,6 +113,8 @@ set( SRCS
     src/UndoFramework/action.cpp
     src/UndoFramework/actionstack.cpp
     src/UndoFramework/lineaction.cpp
+	src/AutomaticRoomIdentification/roomdefinition.cpp 
+    src/AutomaticRoomIdentification/roomidentification.cpp
   )  
 # all header files that should be treated with moc
 set( HDR
@@ -146,6 +148,10 @@ set( HDR
     src/UndoFramework/action.h
     src/UndoFramework/actionstack.h
     src/UndoFramework/lineaction.h
+	src/AutomaticRoomIdentification/roomID.h
+    src/AutomaticRoomIdentification/roomdefinition.h 
+    src/AutomaticRoomIdentification/roomidentification.h 
+    src/dtrace.h
  
   )
 
