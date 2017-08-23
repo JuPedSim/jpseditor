@@ -40,7 +40,6 @@
 #include "jpsexit.h"
 #include "jpsobstacle.h"
 #include "GraphicView.h"
-#include "jpsyahpointer.h"
 #include "jpsconnection.h"
 #include "jpsregion.h"
 
@@ -211,10 +210,8 @@ private:
     //CognitiveMap
     //QList<jpsLandmark* > _landmarksInCMap;
     //QList<ptrConnection> _connectionsInCMap;
-    jpsYAHPointer* _yahPointer;
     double _frameRate;
     int _lastCMapFrame;
-
     int _landmarkCounter;
     int _regionCounter;
 

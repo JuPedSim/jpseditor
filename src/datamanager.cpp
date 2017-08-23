@@ -48,7 +48,6 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
     _mView=view;
     room_id_counter=0;
     obs_id_counter=0;
-    _yahPointer=nullptr;
     _frameRate=0;
     _landmarkCounter=0;
     _regionCounter=0;
