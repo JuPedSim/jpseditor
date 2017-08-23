@@ -152,7 +152,7 @@ public:
     void WriteRegions(QXmlStreamWriter *stream, bool fuzzy=false);
     void WriteRegions(QXmlStreamWriter *stream, int k, double m, double p0);
     void WriteLandmarks(jpsRegion *cRegion, QXmlStreamWriter *stream, bool fuzzy=false);
-    void WriteLandmarks(jpsRegion *cRegion, QXmlStreamWriter *stream, int k , double m, double p0);
+    void WriteLandmarks(jpsRegion *cRegion, QXmlStreamWriter *stream, int k, double m, double p0);
     void CutOutLandmarks();
     void CutOutLandmarks(int k, double m, double p0);
     double GetProbability(int k, double m, double p0);
@@ -210,8 +210,8 @@ private:
     //CognitiveMap
     //QList<jpsLandmark* > _landmarksInCMap;
     //QList<ptrConnection> _connectionsInCMap;
-    double _frameRate;
-    int _lastCMapFrame;
+    //double _frameRate;
+    //int _lastCMapFrame;
     int _landmarkCounter;
     int _regionCounter;
 
