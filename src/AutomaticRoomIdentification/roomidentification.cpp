@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <numeric>
+#include <cmath>
 
 RoomIdentification::RoomIdentification()
 {
