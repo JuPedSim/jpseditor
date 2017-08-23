@@ -104,10 +104,8 @@ set( SRCS
     src/jpsexit.cpp
     src/jpsobstacle.cpp 
     src/jpslandmark.cpp
-    src/jpswaypoint.cpp
     src/widgetlandmark.cpp
     src/widgetsettings.cpp
-    src/jpsyahpointer.cpp
     src/jpsconnection.cpp
 	src/jpsregion.cpp
     dxflib/src/dl_writer_ascii.cpp
@@ -130,10 +128,8 @@ set( HDR
     src/jpsexit.h     
     src/jpsobstacle.h
     src/jpslandmark.h
-    src/jpswaypoint.h
     src/widgetlandmark.h
     src/widgetsettings.h
-    src/jpsyahpointer.h
     src/jpsconnection.h
 	src/jpsregion.h
     dxflib/src/dl_writer_ascii.h
