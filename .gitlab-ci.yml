@@ -5,8 +5,6 @@ variables:
 before_script:
   - nproc=`grep -c '^processor' /proc/cpuinfo`
   - echo "nproc = $nproc"
-
-   
    
 #========== Pipeline ==================
 stages:
