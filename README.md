@@ -1,4 +1,4 @@
-JuPedSim v0.8.2 alpha
+[![Build Status](https://gitlab.version.fz-juelich.de/jupedsim/jpseditor/badges/develop/build.svg)](https://gitlab.version.fz-juelich.de/JuPedSim/jpseditor/pipelines)[![GitHub license](https://img.shields.io/badge/license-GPL-blue.svg)](https://raw.githubusercontent.com/JuPedSim/jpscore/master/LICENSE)
 
 JPSeditor
 ====================
