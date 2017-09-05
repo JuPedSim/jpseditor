@@ -76,7 +76,7 @@ void jpsExit::set_type(QString type)
     _type=type;
 }
 
-void jpsExit::add_rooms(jpsRoom *room1, jpsRoom *room2)
+void jpsExit::set_rooms(jpsRoom *room1, jpsRoom *room2)
 {
     roomList.clear();
     roomList.push_back(room1);

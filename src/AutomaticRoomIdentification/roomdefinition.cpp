@@ -2,7 +2,7 @@
 #include "../datamanager.h"
 #include "../jpsLineItem.h"
 #include "./djsf.h"
-#include "./RoomID.h"
+#include "./roomID.h"
 #include "roomidentification.h"
 
 RoomDefinition::RoomDefinition()
@@ -87,7 +87,7 @@ void RoomDefinition::SetUpRoomsAndDoors()
     RemoveRoomsWithoutDoors();
 
     // set contigous ids after removing outside
-    int idCounter=0;
+    int idCounter=1;
     for (jpsRoom* room:_dManager->get_roomlist())
     {
         room->set_id(idCounter);
@@ -105,8 +105,6 @@ void RoomDefinition::SetUpRoomsAndDoors()
             crossing->get_cLine()->set_Exit();
         }
     }
-
-
 
 }
 

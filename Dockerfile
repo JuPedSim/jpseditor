@@ -34,7 +34,7 @@ USER jupedsim
 # install jpscore
 RUN mkdir -p /home/jupedsim/workspace
 RUN cd /home/jupedsim/workspace \
-    && git clone --depth=5 https://cst.version.fz-juelich.de/jupedsim/jpseditor.git \
+    && git clone --depth=5 https://gitlab.version.fz-juelich.de/jupedsim/jpseditor.git \
     && cd jpseditor \
     && mkdir -p build \
     && cd build \

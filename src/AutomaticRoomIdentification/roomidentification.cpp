@@ -6,6 +6,8 @@
 #include <QTextStream>
 #include <numeric>
 #include <iostream>
+#include <cmath>
+
 
 RoomIdentification::RoomIdentification()
 {

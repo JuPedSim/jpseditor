@@ -32,9 +32,8 @@
 #include <utility>
 #include <chrono>
 #include <QFileDialog>
-#include "dtrace.h"
-
 using myClock = std::chrono::high_resolution_clock;
+#include "dtrace.h"
 
 
 jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
@@ -726,12 +725,14 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
     // stairs
     for (jpsRoom* room:roomlist)
     {
-        if (room->get_type()=="stair")
+        if (room->get_type()=="Stair")
         {
             stream->writeStartElement("room");
-            stream->writeAttribute("id",std::to_string(room->get_id()));
+            stream->writeAttribute("id",QString::number(room->get_id()));
             stream->writeAttribute("caption","stair");
-            writeSubRoom(stream,room);
+            writeSubRoom(stream,room,lines);
+            stream->writeStartElement("crossings");
+            stream->writeEndElement();//crossings
             stream->writeEndElement();//room
         }
     }
@@ -743,9 +744,9 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
 
     for (int i=0; i<roomlist.size(); i++)
     {
-        if (roomlist[i]->get_type()!="stair")
+        if (roomlist[i]->get_type()!="Stair")
         {
-            writeSubRoom(stream,roomlist[i]);
+            writeSubRoom(stream,roomlist[i],lines);
         }
     }// for i
 
@@ -759,19 +760,10 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
     dtrace(" Leave jpsDatamanager::writeRooms");
 }
 
-void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, const jpsRoom *room)
+void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, jpsRoom *room, QList<jpsLineItem *> &lines)
 {
     stream->writeStartElement("subroom");
-    stream->writeAttribute("id",QString::number(room->get_id())); // @todo:
-                                                                         // does
-                                                                         // not
-                                                                         // work
-                                                                         // with
-                                                                         // files
-                                                                         // having
-                                                                         // more
-                                                                         // than
-                                                                         // two rooms
+    stream->writeAttribute("id",QString::number(room->get_id()));
     stream->writeAttribute("caption",room->get_name());
     stream->writeAttribute("class",room->get_type());
     room->correctPlaneCoefficients();
@@ -780,7 +772,7 @@ void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, const jpsRoom *room)
     stream->writeAttribute("C_z",QString::number(room->get_cz()));
     //walls
     QList<jpsLineItem* > wallList=room->get_listWalls();
-    for (int j=0; j<wallList.size(); j++)
+    for (int j=0; j<wallList.size(); ++j)
     {
         stream->writeStartElement("polygon");
         stream->writeAttribute("caption","wall");
@@ -797,6 +789,9 @@ void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, const jpsRoom *room)
 
         stream->writeEndElement(); //polygon
 
+        //remove wall from lines
+        lines.removeOne(wallList[j]);
+
     }
 
 
@@ -808,7 +803,7 @@ void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, const jpsRoom *room)
         }
     }
     // if stair write up and down
-    if (room->get_type() == "stair"){
+    if (room->get_type() == "Stair"){
          // <up>
          stream->writeStartElement("up");
          stream->writeAttribute("px",QString::number( room->get_up().x()  ));
@@ -886,10 +881,10 @@ void jpsDatamanager::AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem *
 
         stream->writeEndElement();//subroom
     }
-    /// Not assigned lines
+    // Not assigned lines
     writeNotAssignedWalls(stream,lines);
 
-    ///Crossings
+    //Crossings
     writeCrossings(stream,lines);
     writeNotAssignedDoors(stream,lines);
     stream->writeEndElement();//crossings
@@ -904,7 +899,7 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
     stream->writeStartElement("crossings");
     for (int i=0; i<crossingList.size(); i++)
     {
-        if (crossingList[i]->IsExit()==false)
+        if (crossingList[i]->IsExit()==false && crossingList[i]->get_roomList()[0]->get_type()!="Stair" && crossingList[i]->get_roomList()[1]->get_type()!="Stair")
         {
             stream->writeStartElement("crossing");
             stream->writeAttribute("id",QString::number(i));
@@ -930,7 +925,16 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
         else
         {
             this->new_exit(crossingList[i]->get_cLine());
-            exitList.back()->add_rooms(crossingList[i]->get_roomList()[0]);
+            if (crossingList[i]->get_roomList().size()>1)
+            {
+                // mention stair id first
+                if (crossingList[i]->get_roomList()[0]->get_type()=="Stair")
+                    exitList.back()->set_rooms(crossingList[i]->get_roomList()[0], crossingList[i]->get_roomList()[1]);
+                else
+                    exitList.back()->set_rooms(crossingList[i]->get_roomList()[1], crossingList[i]->get_roomList()[0]);
+            }
+            else
+                exitList.back()->set_rooms(crossingList[i]->get_roomList()[0]);
         }
         lines.removeOne(crossingList[i]->get_cLine());
     }
@@ -947,10 +951,34 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineIte
         stream->writeAttribute("id",QString::number(i));
         stream->writeAttribute("caption","NaN");
         stream->writeAttribute("type","NaN");
-        stream->writeAttribute("room1_id","0");
-        stream->writeAttribute("subroom1_id",QString::number(exitList[i]->get_roomList()[0]->get_id()));
-        stream->writeAttribute("room2_id","-1");
-        stream->writeAttribute("subroom2_id","-1");
+        // transition to stair
+        if (exitList[i]->get_roomList().size()==1 && exitList[i]->get_roomList()[0]->get_type()=="Stair")
+        {
+            //stair id
+            stream->writeAttribute("room1_id",QString::number(exitList[i]->get_roomList()[0]->get_id()));
+            stream->writeAttribute("subroom1_id",QString::number(exitList[i]->get_roomList()[0]->get_id()));
+            //floor id
+            stream->writeAttribute("room2_id","-1");
+            stream->writeAttribute("subroom2_id","-1");
+        }
+        else if (exitList[i]->get_roomList().size()==2)
+        {
+            //stair id
+            stream->writeAttribute("room1_id",QString::number(exitList[i]->get_roomList()[0]->get_id()));
+            stream->writeAttribute("subroom1_id",QString::number(exitList[i]->get_roomList()[0]->get_id()));
+            //floor id
+            stream->writeAttribute("room2_id","0");
+            stream->writeAttribute("subroom2_id",QString::number(exitList[i]->get_roomList()[1]->get_id()));
+        }
+        else
+        {
+            //floor id
+            stream->writeAttribute("room1_id","0");
+            stream->writeAttribute("subroom1_id",QString::number(exitList[i]->get_roomList()[0]->get_id()));
+            //outside
+            stream->writeAttribute("room2_id","-1");
+            stream->writeAttribute("subroom2_id","-1");
+        }
         stream->writeStartElement("vertex");
         stream->writeAttribute("px",QString::number(exitList[i]->get_cLine()->get_line()->line().x1()));
         stream->writeAttribute("py",QString::number(exitList[i]->get_cLine()->get_line()->line().y1()));
