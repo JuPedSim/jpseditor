@@ -40,6 +40,8 @@ void RoomDefinition::SetUpRoomsAndDoors()
                                     line.p2().y()};
         floorPlan.push_back(lineasVector2);
     }
+    if (floorPlan.empty())
+        return;
 
     //std::cout << "Starting" << std::endl;
     std::vector<std::list<double>> roomList = getRooms(floorPlan);

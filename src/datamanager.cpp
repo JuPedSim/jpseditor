@@ -41,7 +41,7 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 {
     parent_widget=parent;
     _mView=view;
-    room_id_counter=0;
+    room_id_counter=1;
     obs_id_counter=0;
     //_frameRate=0;
     _landmarkCounter=0;
@@ -721,76 +721,32 @@ QString jpsDatamanager::RoomIDHLine(jpsLineItem *lineItem)
 
 void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
+
      dtrace(" Enter jpsDatamanager::writeRooms");
-    ///rooms
+    // stairs
+    for (jpsRoom* room:roomlist)
+    {
+        if (room->get_type()=="stair")
+        {
+            stream->writeStartElement("room");
+            stream->writeAttribute("id",std::to_string(room->get_id()));
+            stream->writeAttribute("caption","stair");
+            writeSubRoom(stream,room);
+            stream->writeEndElement();//room
+        }
+    }
+
+    //rooms
     stream->writeStartElement("room");
     stream->writeAttribute("id","0");
-    stream->writeAttribute("caption","hall");
+    stream->writeAttribute("caption","floor");
 
     for (int i=0; i<roomlist.size(); i++)
     {
-        stream->writeStartElement("subroom");
-        stream->writeAttribute("id",QString::number(roomlist[i]->get_id())); // @todo:
-                                                                             // does
-                                                                             // not
-                                                                             // work
-                                                                             // with
-                                                                             // files
-                                                                             // having
-                                                                             // more
-                                                                             // than
-                                                                             // two rooms
-        stream->writeAttribute("caption",roomlist[i]->get_name());
-        stream->writeAttribute("class",roomlist[i]->get_type());
-        roomlist[i]->correctPlaneCoefficients();
-        stream->writeAttribute("A_x",QString::number(roomlist[i]->get_ax()));
-        stream->writeAttribute("B_y",QString::number(roomlist[i]->get_by()));
-        stream->writeAttribute("C_z",QString::number(roomlist[i]->get_cz()));
-        //walls
-        QList<jpsLineItem* > wallList=roomlist[i]->get_listWalls();
-        for (int j=0; j<wallList.size(); j++)
+        if (roomlist[i]->get_type()!="stair")
         {
-            stream->writeStartElement("polygon");
-            stream->writeAttribute("caption","wall");
-
-            stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x1()));
-            stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y1()));
-            stream->writeEndElement(); //vertex
-
-            stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x2()));
-            stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y2()));
-            stream->writeEndElement(); //vertex
-
-            stream->writeEndElement(); //polygon
-
+            writeSubRoom(stream,roomlist[i]);
         }
-
-
-        for (int k=0; k<obstaclelist.size(); k++)
-        {
-            if (roomlist[i]==obstaclelist[k]->get_room())
-            {
-                writeObstacles(stream ,obstaclelist[k],lines);
-            }
-        }
-        // if stair write up and down
-        if (roomlist[i]->get_type() == "stair"){
-             // <up>
-             stream->writeStartElement("up");
-             stream->writeAttribute("px",QString::number( roomlist[i]->get_up().x()  ));
-             stream->writeAttribute("py",QString::number( roomlist[i]->get_up().y()  ));
-             stream->writeEndElement();
-             // </up>
-             // <down>
-             stream->writeStartElement("down");
-             stream->writeAttribute("px",QString::number( roomlist[i]->get_down().x()  ));
-             stream->writeAttribute("py",QString::number( roomlist[i]->get_down().y()  ));
-             stream->writeEndElement(); 
-             // </down>
-        }
-        stream->writeEndElement();//subroom
     }// for i
 
 
@@ -801,6 +757,72 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
 
     stream->writeEndElement();//room
     dtrace(" Leave jpsDatamanager::writeRooms");
+}
+
+void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, const jpsRoom *room)
+{
+    stream->writeStartElement("subroom");
+    stream->writeAttribute("id",QString::number(room->get_id())); // @todo:
+                                                                         // does
+                                                                         // not
+                                                                         // work
+                                                                         // with
+                                                                         // files
+                                                                         // having
+                                                                         // more
+                                                                         // than
+                                                                         // two rooms
+    stream->writeAttribute("caption",room->get_name());
+    stream->writeAttribute("class",room->get_type());
+    room->correctPlaneCoefficients();
+    stream->writeAttribute("A_x",QString::number(room->get_ax()));
+    stream->writeAttribute("B_y",QString::number(room->get_by()));
+    stream->writeAttribute("C_z",QString::number(room->get_cz()));
+    //walls
+    QList<jpsLineItem* > wallList=room->get_listWalls();
+    for (int j=0; j<wallList.size(); j++)
+    {
+        stream->writeStartElement("polygon");
+        stream->writeAttribute("caption","wall");
+
+        stream->writeStartElement("vertex");
+        stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x1()));
+        stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y1()));
+        stream->writeEndElement(); //vertex
+
+        stream->writeStartElement("vertex");
+        stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x2()));
+        stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y2()));
+        stream->writeEndElement(); //vertex
+
+        stream->writeEndElement(); //polygon
+
+    }
+
+
+    for (int k=0; k<obstaclelist.size(); k++)
+    {
+        if (room==obstaclelist[k]->get_room())
+        {
+            writeObstacles(stream ,obstaclelist[k],lines);
+        }
+    }
+    // if stair write up and down
+    if (room->get_type() == "stair"){
+         // <up>
+         stream->writeStartElement("up");
+         stream->writeAttribute("px",QString::number( room->get_up().x()  ));
+         stream->writeAttribute("py",QString::number( room->get_up().y()  ));
+         stream->writeEndElement();
+         // </up>
+         // <down>
+         stream->writeStartElement("down");
+         stream->writeAttribute("px",QString::number( room->get_down().x()  ));
+         stream->writeAttribute("py",QString::number( room->get_down().y()  ));
+         stream->writeEndElement();
+         // </down>
+    }
+    stream->writeEndElement();//subroom
 }
 
 void jpsDatamanager::AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
@@ -918,7 +940,7 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
 void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
     dtrace("Enter jpsDatamanager::writeTransitions");
-    for (int i=0; i<exitList.size(); i++)
+    for (int i=0; i<exitList.size(); ++i)
     {
         stream->writeStartElement("transition");
 

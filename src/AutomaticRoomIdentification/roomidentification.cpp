@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <numeric>
+#include <iostream>
 
 RoomIdentification::RoomIdentification()
 {
@@ -18,13 +19,14 @@ RoomIdentification::RoomIdentification(const QList<jpsRoom *> &rooms):_rooms(roo
 
 void RoomIdentification::IdentifyRooms()
 {
+
     for (jpsRoom * room:_rooms)
     {
         if (room->GetArea()==0.0)
             room->IdentifyInnerOuter();
-        double area= room->GetArea();
-        QRectF bBox = room->CalculateBoundingBox();
-        double ratioBBoxArea=(bBox.width()*bBox.height())/area;
+        double area =  room->GetArea();
+        QRectF bBox =  room->CalculateBoundingBox();
+        double ratioBBoxArea= (bBox.width()*bBox.height())/area;
         double ratioBBox=0.0;
         if (bBox.width()<bBox.height())
             ratioBBox=bBox.width()/bBox.height();
@@ -56,11 +58,20 @@ void RoomIdentification::IdentifyRooms()
         diffNumDoors=std::fabs(numberDoors-_circRoom._meanNumDoors);
         penalty_circ+=diffNumDoors/_circRoom._stdNumDoors;
 
-
-        if (penalty_circ>penalty_common)
+        // add 2.3 to penalty_circ to increase accuracy of correct declaration. The value has been found by trial
+        if (2.3+penalty_circ>penalty_common)
+        {
             room->set_type("Office");
+            //std::cout << "Office" << std::endl;
+            //std::cout << "Circ " << penalty_circ << std::endl;
+            //std::cout << "Common " << penalty_common << std::endl;
+        }
         else
+        {
+            //std::cout << "Corridor" << std::endl;
             room->set_type("Corridor");
+
+        }
 
     }
 }
@@ -92,8 +103,9 @@ void RoomIdentification::GatherData()
 
         QString type = room->get_type();
 
+
         std::ofstream data;
-        std::string filename = "./Roomtypedata/roomtypedata.txt";
+        std::string filename = "roomtypedata.txt";
         data.open(filename , std::ofstream::out | std::ofstream::app);
         data << type.toStdString() << ";" << std::to_string(area) << ";"
                    << std::to_string((bBox.width()*bBox.height())/area) << ";" << std::to_string(ratioBBox) << ";"
@@ -107,7 +119,7 @@ void RoomIdentification::GatherData()
 void RoomIdentification::LoadDataFile()
 {
 
-    QString fileName="./Roomtypedata/roomtypedata.txt";
+    QString fileName="roomtypedata.txt";
     QFile file(fileName);
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))

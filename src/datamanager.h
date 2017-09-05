@@ -136,6 +136,7 @@ public:
     void writeHLines(QXmlStreamWriter *stream, QList<jpsLineItem* >& hLines);
     QString RoomIDHLine(jpsLineItem* lineItem);
     void writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
+    void writeRoom(QXmlStreamWriter *stream, const jpsRoom* room);
     void AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
