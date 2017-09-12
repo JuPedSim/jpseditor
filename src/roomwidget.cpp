@@ -1019,14 +1019,6 @@ void roomWidget::ChangeRoomType()
 
 void roomWidget::StartAutoDef()
 {
-    //for (jpsRoom* room:datamanager->get_roomlist())
-    //{
-     //   room->IdentifyInnerOuter();
-    //    room->CalculateBoundingBox();
-  //      room->GatherData();
-//
-    //}
-
 
     _roomDef = new RoomDefinition(graphview->get_line_vector(),datamanager);
     _roomDef->SetUpRoomsAndDoors();
@@ -1034,10 +1026,10 @@ void roomWidget::StartAutoDef()
     _roomDef=nullptr;
 
 
-    //RoomIdentification roomIdent(datamanager->get_roomlist());
-    //roomIdent.LoadDataFile();
-    //roomIdent.CalcMeansAndStds();
-    //roomIdent.IdentifyRooms();
+    RoomIdentification roomIdent(datamanager->get_roomlist());
+    roomIdent.LoadDataFile();
+    roomIdent.CalcMeansAndStds();
+    roomIdent.IdentifyRooms();
 
 
 

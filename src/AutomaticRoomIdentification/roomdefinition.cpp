@@ -40,6 +40,8 @@ void RoomDefinition::SetUpRoomsAndDoors()
                                     line.p2().y()};
         floorPlan.push_back(lineasVector2);
     }
+    if (floorPlan.empty())
+        return;
 
     //std::cout << "Starting" << std::endl;
     std::vector<std::list<double>> roomList = getRooms(floorPlan);
@@ -85,7 +87,7 @@ void RoomDefinition::SetUpRoomsAndDoors()
     RemoveRoomsWithoutDoors();
 
     // set contigous ids after removing outside
-    int idCounter=0;
+    int idCounter=1;
     for (jpsRoom* room:_dManager->get_roomlist())
     {
         room->set_id(idCounter);
@@ -103,8 +105,6 @@ void RoomDefinition::SetUpRoomsAndDoors()
             crossing->get_cLine()->set_Exit();
         }
     }
-
-
 
 }
 

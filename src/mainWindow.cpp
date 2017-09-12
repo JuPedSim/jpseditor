@@ -403,11 +403,11 @@ void MWindow::saveFile(){
     if (fileName.isEmpty()) return;
     QFile file(fileName);
 
-    QString fileNameLines=fileName.split(".").first()+"_lines.xml";
+    //QString fileNameLines=fileName.split(".").first()+"_lines.xml";
 
-    QFile LinesFile(fileNameLines);
-    if (LinesFile.open(QIODevice::WriteOnly|QIODevice::Text))
-        dmanager->writeLineItems(LinesFile);
+    //QFile LinesFile(fileNameLines);
+    //if (LinesFile.open(QIODevice::WriteOnly|QIODevice::Text))
+    //    dmanager->writeLineItems(LinesFile);
 
     if(file.open(QIODevice::WriteOnly|QIODevice::Text))
     {
