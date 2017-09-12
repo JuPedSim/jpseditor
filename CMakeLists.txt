@@ -27,6 +27,7 @@ ENDIF (POLICY CMP0025)
 
 project(JPSeditor)
 
+MESSAGE( STATUS "System ........................................ ${CMAKE_SYSTEM_NAME} (${CMAKE_SYSTEM_VERSION}, ${CMAKE_SYSTEM_PROCESSOR})" )
 
 
 set(README_FILE "${CMAKE_SOURCE_DIR}/README.md")
@@ -36,16 +37,20 @@ set(JPSEDITOR_MINOR_VERSION 8)
 set(JPSEDITOR_PATCH_VERSION 2)
 set(JPSEDITOR_VERSION
   ${JPSEDITOR_MAJOR_VERSION}.${JPSEDITOR_MINOR_VERSION}.${JPSEDITOR_PATCH_VERSION})
-message( STATUS "JPSEDITOR_VERSION: " ${JPSEDITOR_VERSION} )
+
+if("${CMAKE_BUILD_TYPE}" STREQUAL "")
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
+message( STATUS "Generating  ................................... ${PROJECT_NAME} (${JPSEDITOR_VERSION}) -- ${CMAKE_BUILD_TYPE}")
 
 
 # ------------------------- Begin Generic CMake Variable Logging ------------------
-message(STATUS  "The system is: ${CMAKE_SYSTEM_NAME} - ${CMAKE_SYSTEM_VERSION} - ${CMAKE_SYSTEM_PROCESSOR}")
 # the compiler used for C files 
-message( STATUS "CMAKE_C_COMPILER: " ${CMAKE_C_COMPILER} )
+# message( STATUS "CMAKE_C_COMPILER: " ${CMAKE_C_COMPILER} )
 
 # the compiler used for C++ files 
-message( STATUS "CMAKE_CXX_COMPILER: " ${CMAKE_CXX_COMPILER} )
+# message( STATUS "CMAKE_CXX_COMPILER: " ${CMAKE_CXX_COMPILER} )
 # ------------------------- End of Generic CMake Variable Logging ------------------
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
@@ -58,13 +63,11 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/bin")
 # Debug messages
-message( STATUS "CMAKE_BINARY_DIR: " ${CMAKE_BINARY_DIR} )
-message( STATUS "CMAKE_SOURCE_DIR: " ${CMAKE_SOURCE_DIR} )
-message( STATUS "CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR} )
-message( STATUS "CMAKE_RUNTIME_OUTPUT_DIRECTORY: " ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} )
-message( STATUS "EXECUTABLE_OUTPUT_PATH: " ${EXECUTABLE_OUTPUT_PATH} )
-message( STATUS "CMAKE_VERBOSE_MAKEFILE: " ${CMAKE_VERBOSE_MAKEFILE} )
-
+message( STATUS "CMAKE_BINARY_DIR .............................. " ${CMAKE_BINARY_DIR} )
+message( STATUS "CMAKE_SOURCE_DIR .............................. " ${CMAKE_SOURCE_DIR} )
+message( STATUS "CMAKE_CURRENT_SOURCE_DIR ...................... " ${CMAKE_CURRENT_SOURCE_DIR} )
+message( STATUS "CMAKE_RUNTIME_OUTPUT_DIRECTORY ................ " ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} )
+message( STATUS "EXECUTABLE_OUTPUT_PATH ........................ " ${EXECUTABLE_OUTPUT_PATH} )
 
 # we need this to be able to include headers produced by uic in our code
 # (CMAKE_BINARY_DIR holds a path to the build directory, while INCLUDE_DIRECTORIES() works just like INCLUDEPATH from qmake)
@@ -80,17 +83,17 @@ message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
 
 #--------------------
 if (NOT MSVC)
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-if(COMPILER_SUPPORTS_CXX11)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-elseif(COMPILER_SUPPORTS_CXX0X)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-else()
-  message(AUTHOR_WARNING "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
-endif()
-message(STATUS "Checking for C++11 compiler - available")
+  include(CheckCXXCompilerFlag)
+  CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+  CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+  if(COMPILER_SUPPORTS_CXX11)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  elseif(COMPILER_SUPPORTS_CXX0X)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+  else()
+    message(AUTHOR_WARNING "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Use a different C++ compiler.")
+  endif()
+  message(STATUS "Checking for C++11 compiler ................... yes")
 endif()
 #---------------------
 
@@ -184,24 +187,29 @@ ENDIF (WIN32)
 #--------------- here comes QT. Version problem (4 or 5?)
 # cmake does not provide findqt5-modules
 
-message(STATUS "QT_Qmake_executable " ${QT_QMAKE_EXECUTABLE})
-if($QT_QMAKE_EXECUTABLE STREQUAL "")
+if("${QT_QMAKE_EXECUTABLE}" STREQUAL "")
   FIND_PROGRAM(QT_QMAKE_EXECUTABLE NAMES qmake)
-  if (NOT QT_QMAKE_EXECUTABLE)
-    message(WARNING "QT not found - abort.")
+  if ("${QT_QMAKE_EXECUTABLE}" STREQUAL "")
+    message(FATTAL_ERROR "QT not found - abort.")
   endif()
 endif()
-
-#
-
-# default qt version is 5
-if("${DESIRED_QT_VERSION}" STREQUAL "")
-  set(DESIRED_QT_VERSION "5")
+message(STATUS "QT_Qmake_executable ........................... " ${QT_QMAKE_EXECUTABLE})
+execute_process(COMMAND ${QT_QMAKE_EXECUTABLE} -query QT_VERSION OUTPUT_VARIABLE QT_VERSION)
+message(STATUS "QT_VERSION .................................... " ${QT_VERSION})
+# qt version > 5 or qt version < 3 are not supported
+if( ${QT_VERSION} VERSION_GREATER 6 OR ${QT_VERSION} VERSION_LESS 3)
+  message(FATAL_ERROR "QT version " ${DESIRED_QT_VERSION} " not supported. Try 4 or 5")
 endif()
 
-# qt version > 5 or qt version < 3 are not supported
-if( ${DESIRED_QT_VERSION} VERSION_GREATER 5 OR ${DESIRED_QT_VERSION} VERSION_LESS 3)
-  message(FATAL_ERROR "QT version " ${DESIRED_QT_VERSION} " not supported. Try 4 or 5")
+
+if("${DESIRED_QT_VERSION}" STREQUAL "")
+  if( ${QT_VERSION} VERSION_GREATER 4.99 AND ${QT_VERSION} VERSION_LESS 6)
+    set(DESIRED_QT_VERSION 5)
+  endif()
+
+  if( ${QT_VERSION} VERSION_GREATER 3.99 AND ${QT_VERSION} VERSION_LESS 5)
+    set(DESIRED_QT_VERSION 4)
+  endif()
 endif()
 
 # find packages according to qt version
@@ -214,7 +222,7 @@ if("${DESIRED_QT_VERSION}" STREQUAL "5")
   FIND_PACKAGE(Qt5Xml REQUIRED)
 #-----------------------------------------------------
   set(QT5_INSTALLED TRUE)
-  MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
+  # MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
 elseif("${DESIRED_QT_VERSION}" STREQUAL "4")
  
   #   QT4_INSTALLED is set to TRUE if qt4 is found and
@@ -223,19 +231,16 @@ elseif("${DESIRED_QT_VERSION}" STREQUAL "4")
   set(QT4_INSTALLED TRUE)
 endif()
 
-
-
-
-message(STATUS "DESIRED_QT_VERSION " ${DESIRED_QT_VERSION})
-if(QT5_INSTALLED)
-  message(STATUS "QT5_INSTALLED: " ${QT5_INSTALLED})
-elseif(QT4_INSTALLED )
-  message(STATUS "QT4_INSTALLED: " ${QT4_INSTALLED})
-elseif(QT3_INSTALLED)
-  message(STATUS "QT3_INSTALLED: " ${QT3_INSTALLED})
-else()
-  message(SEND_ERROR "No supported Qt found.")
-endif()
+message(STATUS "DESIRED_QT_VERSION ............................ " ${DESIRED_QT_VERSION})
+# if(QT5_INSTALLED)
+#   message(STATUS "QT5_INSTALLED: " ${QT5_INSTALLED})
+# elseif(QT4_INSTALLED )
+#   message(STATUS "QT4_INSTALLED: " ${QT4_INSTALLED})
+# elseif(QT3_INSTALLED)
+#   message(STATUS "QT3_INSTALLED: " ${QT3_INSTALLED})
+# else()
+#   message(SEND_ERROR "No supported Qt found.")
+# endif()
 # Disable automatic conversion from QString to ASCII 8-bit strings (char *)
 # (Keeps code compatible with Qt/Mac/64bit)
 if(APPLE)
@@ -305,10 +310,10 @@ endif()
 
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  message(STATUS "Using Clang " ${CMAKE_CXX_COMPILER_VERSION})
+    message(STATUS "Using compiler ................................ Clang (${CMAKE_CXX_COMPILER_VERSION})")
 endif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 if(CMAKE_COMPILER_IS_GNUCXX)
-  message( STATUS "Using g++ " ${CMAKE_CXX_COMPILER_VERSION})
+    message( STATUS "Using compiler ................................ g++ (${CMAKE_CXX_COMPILER_VERSION}")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug) 
@@ -316,16 +321,15 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   set(CMAKE_CXX_LDFLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
   set(CMAKE_CXX_FLAGS_DEBUG          "${CMAKE_CXX_FLAGS_DEBUG} -DTRACE_LOGGING")
   message(STATUS "Debug flags: "  ${CMAKE_CXX_FLAGS} " " ${CMAKE_CXX_FLAGS_DEBUG} )
+  message(STATUS "Debug flags ..................................."  ${CMAKE_CXX_FLAGS} " " ${CMAKE_CXX_FLAGS_DEBUG} )               
 else(CMAKE_BUILD_TYPE MATCHES Debug)
-  set(CMAKE_BUILD_TYPE Release)
-  message(STATUS "Release flags: " ${CMAKE_CXX_FLAGS} " ,  " ${CMAKE_CXX_FLAGS_RELEASE} )
+  message(STATUS "Release flags ................................." ${CMAKE_CXX_FLAGS} " ,  " ${CMAKE_CXX_FLAGS_RELEASE} )
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 # PGI ++ Flags
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "PGI")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --c++11 -Minform=inform")	
 endif()
-message(STATUS "Building ${PROJECT_NAME} in ${CMAKE_BUILD_TYPE} mode")
 #--------------------------------------------------------------------------------
 # Now the installation stuff below
 #--------------------------------------------------------------------------------
@@ -479,7 +483,7 @@ elseif(APPLE) # todo test this for apple
      include(CPack)
 
 
-     message (STATUS "bin ins" ${BIN_INSTALL_DIR})
+#     message (STATUS "bin ins" ${BIN_INSTALL_DIR})
 set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "${BIN_INSTALL_DIR}")
 include(InstallRequiredSystemLibraries)
 
