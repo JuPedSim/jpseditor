@@ -17,7 +17,7 @@
    <string/>
   </property>
   <property name="currentIndex">
-   <number>0</number>
+   <number>1</number>
   </property>
   <widget class="QWidget" name="widget">
    <property name="toolTip">
@@ -469,9 +469,6 @@
       <widget class="QComboBox" name="roomBox2">
        <property name="enabled">
         <bool>false</bool>
-       </property>
-       <property name="currentText">
-        <string/>
        </property>
       </widget>
      </item>

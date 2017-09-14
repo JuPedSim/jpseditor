@@ -693,6 +693,7 @@ QString jpsDatamanager::RoomIDHLine(jpsLineItem *lineItem)
 
     for (jpsRoom* room:roomlist)
     {
+        room->IdentifyInnerOuter();
         QPolygonF rPolygon = room->RoomAsSortedPolygon(room->GetOuterPolygon());
         if (rPolygon.containsPoint(lineItem->get_line()->line().p1(),Qt::OddEvenFill) ||
                 rPolygon.contains(lineItem->get_line()->line().p1()))
@@ -921,6 +922,8 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
             stream->writeAttribute("py",QString::number(crossingList[i]->get_cLine()->get_line()->line().y2()));
             stream->writeEndElement();//vertex
             stream->writeEndElement();//crossing
+
+            lines.removeOne(crossingList[i]->get_cLine());
         }
         else
         {
@@ -936,7 +939,7 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
             else
                 exitList.back()->set_rooms(crossingList[i]->get_roomList()[0]);
         }
-        lines.removeOne(crossingList[i]->get_cLine());
+
     }
     dtrace("Leave jpsDatamanager::writeCrossings");
 }
