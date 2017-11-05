@@ -358,11 +358,15 @@ void roomWidget::new_crossing()
      dtrace("Enter roomWidget::new_crossing");
      if (graphview->get_markedLines().size()>0)
      {
-          datamanager->new_crossing(graphview->get_markedLines());
           int count_crossings = datamanager->get_crossingList().size();
-          jpsCrossing * crossing = datamanager->get_crossingList()[count_crossings-1];
-          autoAssignCrossing(crossing);
-    }
+          datamanager->new_crossing(graphview->get_markedLines());
+          int new_count_crossings = datamanager->get_crossingList().size();
+          int  diff_crossings = new_count_crossings -  count_crossings;
+          // for(int c=1; c <= diff_crossings; c++){
+          //      jpsCrossing * crossing = datamanager->get_crossingList()[new_count_crossings-c];
+          //      autoAssignCrossing(crossing);
+          // }
+     }
     show_crossings();
     dtrace("Leave roomWidget::new_crossing");
 }
@@ -492,7 +496,7 @@ void roomWidget::select_crossing()
         }
         int cCrossRow=ui->crossingList->currentRow();
         graphview->select_line(datamanager->get_crossingList()[cCrossRow]->get_cLine());
-        autoAssignCrossing(datamanager->get_crossingList()[cCrossRow]);                     
+        // autoAssignCrossing(datamanager->get_crossingList()[cCrossRow]);                     
     }
 }
 
@@ -1015,14 +1019,6 @@ void roomWidget::ChangeRoomType()
 
 void roomWidget::StartAutoDef()
 {
-    //for (jpsRoom* room:datamanager->get_roomlist())
-    //{
-     //   room->IdentifyInnerOuter();
-    //    room->CalculateBoundingBox();
-  //      room->GatherData();
-//
-    //}
-
 
     _roomDef = new RoomDefinition(graphview->get_line_vector(),datamanager);
     _roomDef->SetUpRoomsAndDoors();

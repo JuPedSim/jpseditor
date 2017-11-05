@@ -44,7 +44,7 @@ public:
     int get_id();
     void set_id(int id);
     void set_type(QString type);
-    void add_rooms(jpsRoom* room1, jpsRoom* room2=0L);
+    void set_rooms(jpsRoom* room1, jpsRoom* room2=nullptr);
 
 private:
     QList<jpsRoom *> roomList;

@@ -4,7 +4,7 @@
 
 #include <QLineF>
 #include <QList>
-
+#include <vector>
 class jpsDatamanager;
 class jpsLineItem;
 
