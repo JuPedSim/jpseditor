@@ -1,7 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## v0.8.2 [unreleased]
+## v0.8.3 [Unreleased]
+
+
+
+## v0.8.2 [06 Nov 2017]
 
 ### Added 
 - Aug 2017 Automatic room definition
