@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 
 
 
-## v0.8.2 [06 Nov 2017]
+## v0.8.2 [06.11.2017]
 
 ### Added 
 - Aug 2017 Automatic room definition
@@ -20,7 +20,7 @@ All notable changes to this project will be documented in this file.
 - Jul 2017 Heap error when deleting room
 
 
-## v0.8.1 [11 Oct 2016]
+## v0.8.1 [11.10.2016]
 
 ### Added
 
