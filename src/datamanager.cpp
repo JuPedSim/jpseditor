@@ -2018,9 +2018,11 @@ void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, jpsObstacle *room)
 
 void jpsDatamanager::parseCrossings(QXmlStreamReader &xmlReader)
 {
+     dtrace("Enter jpsDatamanager::parseCrossings");
     int id = xmlReader.attributes().value("id").toString().toInt();
     int room_id1 = xmlReader.attributes().value("subroom1_id").toString().toInt();
     int room_id2 = xmlReader.attributes().value("subroom2_id").toString().toInt();
+    dtrace("\t id = %d, room_id1 %d, room_id2  %d,", id, room_id1, room_id2);
 
     // go to first vertex
     while(xmlReader.name() != "vertex")
@@ -2038,7 +2040,7 @@ void jpsDatamanager::parseCrossings(QXmlStreamReader &xmlReader)
 
     qreal x2=xmlReader.attributes().value("px").toString().toFloat();
     qreal y2=xmlReader.attributes().value("py").toString().toFloat();
-
+    dtrace("\t x1 = %.2f, y1 = %.2f, x2 = %.2f y2 = %.2f", x1, y1, x2, y2);
     jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"Door");
 
     if (id!=-2)
@@ -2062,12 +2064,13 @@ void jpsDatamanager::parseCrossings(QXmlStreamReader &xmlReader)
                 room2 = roomlist[i];
             }
         }
-        if (room1!=nullptr && room2!=nullptr)
+        if (room1!=nullptr && room2!=nullptr){
             crossing->add_rooms(room1,room2);
-
+            dtrace("\t added two rooms");
+        }
         crossingList.push_back(crossing);
     }
-
+    dtrace("Leave jpsDatamanager::parseCrossings");
 }
 QPointF jpsDatamanager::parseUp(QXmlStreamReader &xmlReader)
 {
@@ -2094,11 +2097,13 @@ QPointF jpsDatamanager::parseDown(QXmlStreamReader &xmlReader)
 
 void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
 {
+     dtrace("Enter jpsDatamanager::parseTransitions");
     int id = xmlReader.attributes().value("id").toString().toInt();
     QString caption = xmlReader.attributes().value("caption").toString();
     QString type = xmlReader.attributes().value("type").toString();
     int room_id = xmlReader.attributes().value("subroom1_id").toString().toInt();
-    
+    int room_id2 = xmlReader.attributes().value("subroom2_id").toString().toInt();
+    dtrace("\t id= %d, caption=%s, type = %s, room_id = %d", id, caption.toStdString().c_str(), type.toStdString().c_str(), room_id);
     // go to first vertex
     while(xmlReader.name() != "vertex")
     {
@@ -2115,7 +2120,7 @@ void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
 
     qreal x2=xmlReader.attributes().value("px").toString().toFloat();
     qreal y2=xmlReader.attributes().value("py").toString().toFloat();
-
+    dtrace("\t x1 = %.2f, y1 = %.2f, x2 = %.2f y2 = %.2f", x1, y1, x2, y2);
     jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"Exit");
     if (id!=-2)
     {
@@ -2123,18 +2128,35 @@ void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
         exit->set_id(id);
         exit->change_name(caption);
         //exit->set_type(type);
-
+        jpsRoom* room1 = nullptr;
+        jpsRoom* room2 = nullptr;
+        ///find rooms which belong to transition
         for (int i=0; i<roomlist.size(); i++)
         {
-            if (roomlist[i]->get_id()==room_id)
-            {
-                exit->add_rooms(roomlist[i]);
-            }
+             if (roomlist[i]->get_id()==room_id)
+             {
+                  room1 = roomlist[i];
+             }
+             else if (roomlist[i]->get_id()==room_id2)
+             {
+                  room2 = roomlist[i];
+             }
         }
+        if (room1!=nullptr && room2!=nullptr){
+            exit->add_rooms(room1,room2);
+            dtrace("\t added two rooms");
+        }
+        else if (room1!=nullptr)
+             exit->add_rooms(room1);
+        else if (room2!=nullptr)
+             exit->add_rooms(room2);
+        else
+             std::cout << "ERROR: Transition has no rooms!\n";
+
         exit->SetStatExit(true);
         crossingList.push_back(exit);
     }
-
+    dtrace("Leave jpsDatamanager::parseTransitions");
 }
 
 void jpsDatamanager::parseObstacles(QXmlStreamReader &xmlReader, jpsRoom *room)
