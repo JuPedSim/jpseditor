@@ -2103,7 +2103,7 @@ void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
     QString type = xmlReader.attributes().value("type").toString();
     int room_id = xmlReader.attributes().value("subroom1_id").toString().toInt();
     int room_id2 = xmlReader.attributes().value("subroom2_id").toString().toInt();
-    dtrace("\t id= %d, caption=%s, type = %s, room_id = %d", id, caption.toStdString().c_str(), type.toStdString().c_str(), room_id);
+    dtrace("\t id= %d, caption=%s, type = %s, room_id = %d, room_id2 = %d", id, caption.toStdString().c_str(), type.toStdString().c_str(), room_id, room_id2);
     // go to first vertex
     while(xmlReader.name() != "vertex")
     {
@@ -2146,10 +2146,15 @@ void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
             exit->add_rooms(room1,room2);
             dtrace("\t added two rooms");
         }
-        else if (room1!=nullptr)
+        else if (room1!=nullptr){
              exit->add_rooms(room1);
-        else if (room2!=nullptr)
-             exit->add_rooms(room2);
+             dtrace("\t add room1");
+        }
+             
+        else if (room2!=nullptr){
+             exit->add_rooms(room2);             
+             dtrace("\t add room2");
+        }
         else
              std::cout << "ERROR: Transition has no rooms!\n";
 

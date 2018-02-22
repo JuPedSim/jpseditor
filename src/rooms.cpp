@@ -296,9 +296,16 @@ void jpsRoom::AddInnerDoor(jpsCrossing *door, int id_polygon)
 
 QVector<QPointF> jpsRoom::RoomAsSortedPolygon(const QVector<QLineF>& lines) const
 {
+     dtrace("Enter jpsRoom::RoomAsSortedPolygon");
     QVector<QLineF> clines=lines;
-    QVector<QPointF> points;
-
+     QVector<QPointF> points = {};
+    if(lines.size() == 0)
+    {
+         dtrace("\t empty lines!!");
+         dtrace("Leave jpsRoom::RoomAsSortedPolygon with ERROR");         
+         return points;
+         
+    }
     points.push_back(lines.first().p1());
     points.push_back(lines.first().p2());
 
@@ -330,7 +337,7 @@ QVector<QPointF> jpsRoom::RoomAsSortedPolygon(const QVector<QLineF>& lines) cons
 //    }
 //    std::cout << "----------------------------" << std::endl;
 
-
+    dtrace("Leave jpsRoom::RoomAsSortedPolygon");         
     return points;
 }
 
