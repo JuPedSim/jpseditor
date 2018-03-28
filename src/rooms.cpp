@@ -53,7 +53,7 @@ jpsRoom::jpsRoom(int id_room)
 
 void jpsRoom::addWall(QList <jpsLineItem *> newWalls)
 {
-    dtrace("Enter jpsRoom::removeWall(newWall)");     
+    dtrace("Enter jpsRoom::removeWall(newWall)");
     for (int i=0; i<newWalls.size(); i++)
     {
         addWall(newWalls[i]);
@@ -91,7 +91,7 @@ void jpsRoom::addinnerWall(jpsLineItem *newWall, int id_polygon)
 
 void jpsRoom::removeWall(QList <jpsLineItem *> wall)
 {
-     dtrace("Enter jpsRoom::removeWall(wall)");   
+     dtrace("Enter jpsRoom::removeWall(wall)");
     for (int i=0; i<wall.size(); i++)
     {
         wall_list.removeOne(wall[i]);
@@ -508,7 +508,7 @@ void jpsRoom::set_ax(float AX)
 
 float jpsRoom::get_by()
 {
-     return B_y;     
+     return B_y;
 }
 void jpsRoom::set_by(float BY)
 {
@@ -517,7 +517,7 @@ void jpsRoom::set_by(float BY)
 
 float jpsRoom::get_cz()
 {
-     return C_z;     
+     return C_z;
 }
 void jpsRoom::set_cz(float CZ)
 {
@@ -592,14 +592,14 @@ void jpsRoom::correctPlaneCoefficients()
         this->set_by(0);
         this->set_cz(this->get_elevation());
         return;
-    }    
+    }
      QPointF P1(0,0), P2(0,0), P3(0,0); /// plane is defined by three non-collinear points
      float elevation_1=0, elevation_2=0;
      P1 = _doorList[0]->get_cLine()->get_line()->line().p1();
      P2 = _doorList[0]->get_cLine()->get_line()->line().p2();
      elevation_1 = _doorList[0]->get_elevation();
-     
-     //from _doortList get three points with two different elevations 
+
+     //from _doortList get three points with two different elevations
      for (int i=1; i<_doorList.size(); i++)
      {
           if(_doorList[i]->get_elevation() != _doorList[0]->get_elevation()){
@@ -623,8 +623,8 @@ void jpsRoom::correctPlaneCoefficients()
      float P3_y = P3.y();
      float P3_z = elevation_2;
      dtrace("\t P1=(%.2f, %.2f, %.2f), P2=(%.2f, %.2f, %.2f), P3=(%.2f, %.2f, %.2f)",
-            P1_x, P1_y, P1_z, 
-            P2_x, P2_y, P2_z, 
+            P1_x, P1_y, P1_z,
+            P2_x, P2_y, P2_z,
             P3_x, P3_y, P3_z
           );
      float d = 1.0;
