@@ -8,7 +8,8 @@ All notable changes to this project will be documented in this file.
 ## v0.8.2 [06.11.2017]
 
 ### Added 
-- Aug 2017 Automatic room definition
+- Automatic stair definition: 1. define type (stair) and two different elevations of the rooms.
+- Aug 2017 Automatic room definition (still buggy)
 - Jul 2017 Auto door and obstacle assignment
 
 ### Changed
