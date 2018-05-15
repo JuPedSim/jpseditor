@@ -91,9 +91,20 @@ void GraphicScene::DrawLineGrid(QPainter *painter, const QRectF &rect)
     for (qreal y = top; y < rect.bottom()-_translationY; y += _gridSize)
         lines.append(QLineF(rect.left(), y+_translationY, rect.right(), y+_translationY));
 
+    QRectF origin(-0.5,-0.5,1,1);
+    QLineF xaxis(0,0,0,100000);
+    QLineF yaxis(0,0,100000,0);
+
     //qDebug() << lines.size();
     painter->setPen(QPen(Qt::gray,0));
     painter->drawLines(lines.data(), lines.size());
+
+    //draw orgin and x y axis
+    painter->setPen(QPen(Qt::red,0));
+    painter->drawRect(origin);
+    painter->fillRect(origin, Qt::red);
+    painter->drawLine(xaxis);
+    painter->drawLine(yaxis);
 }
 
 void GraphicScene::DrawPointGrid(QPainter *painter, const QRectF &rect)
