@@ -149,7 +149,8 @@ MWindow :: MWindow() {
 //    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(send_length()));
 //    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(ScaleLines()));
     // X Y edit
-
+    connect(x_edit,SIGNAL(returnPressed()),this,SLOT(send_xy()));
+    connect(y_edit,SIGNAL(returnPressed()),this,SLOT(send_xy()));
 
     // mview
     connect(mview,SIGNAL(no_drawing()),this,SLOT(en_selectMode()));
@@ -605,6 +606,23 @@ void MWindow::send_length()
     }
     length_edit->clear();
 }
+
+void MWindow::send_xy()
+{
+    qreal x = x_edit->text().toFloat();
+    qreal y = x_edit->text().toFloat();
+
+    QPointF endpoint;
+    endpoint.setX(x);
+    endpoint.setY(y);
+
+    if(x != 0 )
+    {
+         mview->take_endpoint_from_xyEdit(endpoint);
+    }
+    x_edit->clear();
+}
+
 
 void MWindow::define_room()
 {

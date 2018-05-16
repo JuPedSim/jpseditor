@@ -115,6 +115,7 @@ protected slots:
     void ScaleLines();
     void enableScale();
 
+    void send_xy();
     
     //Room and landmark def
     void define_room();
