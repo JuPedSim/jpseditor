@@ -1,9 +1,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## v0.8.3 [Unreleased]
+## v0.8.3 [16.05.2018]
+### Added
+- Now user can type x and y to define endpoint for line and Hline.  !7
 
+### Changed
+-  Defining length is removed for the feature !7
 
+### Bug fixed
+- Add Origin and X Y Axis Marks !6
 
 ## v0.8.2 [06.11.2017]
 
