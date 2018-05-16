@@ -85,6 +85,7 @@ public:
     // global functions
     qreal get_scale_f();
     void take_l_from_lineEdit(const qreal &length);
+    void take_endpoint_from_xyEdit(const QPointF &endpoint);
     void disable_drawing();
     bool use_anglesnap(QGraphicsLineItem *currentline, int accuracy);
     void use_gridmode();

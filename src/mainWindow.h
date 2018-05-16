@@ -59,8 +59,12 @@ private:
     jpsGraphicsView* mview;
     //QVBoxLayout* VBox;
     QLineEdit* length_edit;
+    QLineEdit* x_edit;
+    QLineEdit* y_edit;
     QLabel* label1;
     QLabel* label2;
+    QLabel* label_x;
+    QLabel* label_y;
     QLabel* infoLabel;
     QString _filename;
     QTimer *timer;
@@ -111,6 +115,7 @@ protected slots:
     void ScaleLines();
     void enableScale();
 
+    void send_xy();
     
     //Room and landmark def
     void define_room();
