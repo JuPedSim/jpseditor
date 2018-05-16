@@ -53,16 +53,36 @@ MWindow :: MWindow() {
     //WidgetSettings
     _settings=nullptr;
 
+    //StaturBar
+
     length_edit = new QLineEdit();
     length_edit->setMaximumWidth(75);
+
+    x_edit = new QLineEdit();
+    x_edit->setMaximumWidth(45);
+
+    y_edit = new QLineEdit();
+    y_edit->setMaximumWidth(45);
+
+    infoLabel= new QLabel();
+    infoLabel->setMinimumWidth(135);
+
+    label_x = new QLabel();
+    label_x->setMinimumWidth(10);
+    label_x->setText("X :");
+
+    label_y = new QLabel();
+    label_y->setMinimumWidth(10);
+    label_y->setText("Y :");
+
     label1 = new QLabel();
     label1->setMinimumWidth(90);
     label1->setText("Length of Line :");
+
     label2 = new QLabel();
     label2->setMinimumWidth(300);
     label2->setText("[m]");
-    infoLabel= new QLabel();
-    infoLabel->setMinimumWidth(135);
+
 
     //filename of saved project
     _filename="";
@@ -74,9 +94,13 @@ MWindow :: MWindow() {
     //this->setMaximumSize(1920,1080);
     this->showMaximized();
     statusBar()->addPermanentWidget(infoLabel);
-    statusBar()->addPermanentWidget(label1);
-    statusBar()->addPermanentWidget(length_edit);
-    statusBar()->addPermanentWidget(label2);
+    statusBar()->addPermanentWidget(label_x);
+    statusBar()->addPermanentWidget(x_edit);
+    statusBar()->addPermanentWidget(label_y);
+    statusBar()->addPermanentWidget(y_edit);
+//    statusBar()->addPermanentWidget(label1);
+//    statusBar()->addPermanentWidget(length_edit);
+//    statusBar()->addPermanentWidget(label2);
 
     //Timer needed for autosave function
     // timer will trigger autosave every 5th minute
@@ -122,8 +146,12 @@ MWindow :: MWindow() {
     connect(actionRotate_90_deg_clockwise,SIGNAL(triggered(bool)),this,SLOT(rotate()));
     connect(actionShow_Point_of_Origin,SIGNAL(triggered(bool)),this,SLOT(ShowOrigin()));
     // Length edit
-    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(send_length()));
-    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(ScaleLines()));
+//    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(send_length()));
+//    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(ScaleLines()));
+    // X Y edit
+    connect(x_edit,SIGNAL(returnPressed()),this,SLOT(send_xy()));
+    connect(y_edit,SIGNAL(returnPressed()),this,SLOT(send_xy()));
+
     // mview
     connect(mview,SIGNAL(no_drawing()),this,SLOT(en_selectMode()));
     connect(mview,SIGNAL(remove_marked_lines()),this,SLOT(lines_deleted()));
@@ -578,6 +606,23 @@ void MWindow::send_length()
     }
     length_edit->clear();
 }
+
+void MWindow::send_xy()
+{
+    qreal x = x_edit->text().toFloat();
+    qreal y = x_edit->text().toFloat();
+
+    QPointF endpoint;
+    endpoint.setX(x);
+    endpoint.setY(y);
+
+    if(x != 0 )
+    {
+         mview->take_endpoint_from_xyEdit(endpoint);
+    }
+    x_edit->clear();
+}
+
 
 void MWindow::define_room()
 {
