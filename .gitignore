@@ -1,7 +1,0 @@
-build/
-Makefile
-bin/
-ui_*
-.idea/
-/src/AutomaticRoomIdentification/graphnetwork.cpp
-/src/AutomaticRoomIdentification/graphnetwork.h
