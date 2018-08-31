@@ -1,16 +1,33 @@
 ---
 layout: page
-title: About me
-subtitle: Why you'd want to go on a date with me
+title: JPSeditor
+subtitle:  Editing of geometry and project files
 ---
 
-My name is Inigo Montoya. I have the following qualities:
 
-- I rock a great mustache
-- I'm extremely loyal to my family
 
-What else do you need?
+`JPSeditor` is a graphical user interface to create the geometry of a scenario simulated by `JuPedSim`.
+It comes with set of CAD- and further tools to simplify the creation of proper xml-files
+incorporating information about the scenario' geometry.
 
-### my history
 
-To be honest, I'm having some trouble remembering right now, so why don't you just watch [my movie](http://en.wikipedia.org/wiki/The_Princess_Bride_%28film%29) and it will answer **all** your questions.
+## Installation
+
+See README.md
+
+## Features
+
+- DXF Import / Export
+- CAD features
+    - Point and line grid
+    - object snap
+    - Orthomode
+    - Zooming
+    - Line editing
+    - ...
+- Tools for room and door declarations
+
+
+## Tutorials
+
+See the following [tutorial](https://www.youtube.com/watch?v=DR_3TX8MFxM)
