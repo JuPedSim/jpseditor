@@ -2,6 +2,8 @@
 layout: post
 title: JPSeditor Roadmap
 permalink: 2018-09-01-roadmap.html
+published: true
+date: '2018-09-02'
 ---
 
 # JPSeditor Roadmap
