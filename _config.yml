@@ -4,8 +4,8 @@
 # baseurl is the website's URL without the hostname
 
 # If you are building a simple GitHub user page (http://username.github.io) then use these settings:
-#url: "http://username.github.io"
-#baseurl: "/jpseditor"
+#url: "http://jupedsim.github.io/"
+#baseurl: ""
 
 # If you are building a GitHub project page then use these settings:
 url: "http://jupedsim.github.io/jpseditor/"
@@ -145,7 +145,7 @@ title-separator: "-"
 # --- Don't need to touch anything below here (but you can if you want) --- #
 
 # Output options (more information on Jekyll's site)
-timezone: "America/Vancouver"
+timezone: "Berlin"
 markdown: kramdown
 highlighter: rouge
 permalink: /:year-:month-:day-:title/
@@ -240,6 +240,3 @@ prose:
 plugins:
   - jekyll-paginate
   - jekyll-sitemap
-
-# Beautiful Jekyll / Dean Attali
-# 2fc73a3a967e97599c9763d05e564189
