@@ -1,12 +1,10 @@
 ---
 layout: post
 title: JPSeditor Roadmap
-permalink: 2018-09-01-roadmap.html
+permalink: 2018-09-02-JPSeditor_Roadmap.html
 published: true
 date: '2018-09-02'
 ---
-
-# JPSeditor Roadmap
 
 Welcome, JPSeditor users!
 
@@ -14,7 +12,7 @@ About Four years after the first commit, JPSeditor has grown up to a massive too
 
  Therefore there's a lot of ideas and plans about JPSeditor to share. Let’s dive right in!
  
- ## Developing strategy
+## Developing strategy
  
  Right now in the [JPSeditor repository](https://github.com/JuPedSim/jpseditor) there are two branches: master and Beta. The branch "master" is always ready to release new versions, and a bunch of new features have been implemented in the branch "Beta".
  
@@ -24,7 +22,7 @@ About Four years after the first commit, JPSeditor has grown up to a massive too
  
  Unlike with others git flows, the "Beta" branch in JPSeditor project isn't a branch to develop from master (A new branch "dev" will be created from master), rather than a branch to test new features and just for developers. **All new ideas will be implemented and tested in "Beta"**. So at the End the "Beta" won't merged in "master", but the features do.
  
- ## Releasing rhythm
+## Releasing rhythm
  
  We always want to provide a stable version for users, who will use JPSeditor for studying and experiments. Stability is the life for Them. At the same time we want collecting the issues and bugs from users directly. So the releasing rhythm of JPSeditor will be:
  
@@ -33,7 +31,7 @@ About Four years after the first commit, JPSeditor has grown up to a massive too
  
  With this releasing strategy, we hope that JPSeditor can serve two types of user in the meantime.
  
- ## one more bad news
+## one more bad news
  
  Before four years, the goal of JPSeditor project is building a tool to draw geometry for [JPScore](http://www.jupedsim.org/jpscore/), and now, JPSeditor almost became the tool what we imagined. But unfortunately, we won't release JPSeditor version 1.0.
  
