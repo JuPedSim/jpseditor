@@ -616,10 +616,8 @@ void MWindow::send_xy()
     endpoint.setX(x);
     endpoint.setY(y);
 
-    if(x != 0 )
-    {
-         mview->take_endpoint_from_xyEdit(endpoint);
-    }
+    mview->take_endpoint_from_xyEdit(endpoint);
+
     x_edit->clear();
 }
 
