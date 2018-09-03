@@ -499,20 +499,17 @@ void MWindow::SaveCogMapXML()
 
 
 void MWindow::info(){
-
-
-
+    /*
+     * JPSeditor version information
+     * */
     QString info = "\
-    JPSeditor (version 0.8.1) is a tool\n\
+    JPSeditor (version 0.8.4) is a tool\n\
     to create and process geometries for\n\
     JuPedSim.\n\
-    2017. All rights reserved.";
-    
-   
+    2018. All rights reserved.";
 
     QMessageBox messageBox;
     messageBox.information(0,tr("About..."),info);
-
 }
 
 void MWindow::anglesnap()
