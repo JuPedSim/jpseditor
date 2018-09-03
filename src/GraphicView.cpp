@@ -940,7 +940,13 @@ void jpsGraphicsView::disable_drawing()
 
 jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const qreal &x2,const qreal &y2,const QString &type)
 {
-    QPen pen = QPen(Qt::black,4);
+    /*
+     * add Lineitem when prase a XML file
+     */
+
+    qDebug() << "Enter jpsGraphicsView::addLineItem";
+    QPen pen = QPen(Qt::black,2);
+
     pen.setCosmetic(true);
 
     current_line=Scene->addLine(x1,y1,x2,y2,pen);
@@ -987,7 +993,8 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
     }
 
     current_line=nullptr;
-
+    
+    qDebug() << "Leave jpsGraphicsView::addLineItem";
     return newLine;
 
 }

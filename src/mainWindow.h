@@ -79,11 +79,11 @@ private:
 protected slots:
     
     //parseFiles
-    void openFile();
+    void openFileDXF();
     void openFileXML();
     void openFileCogMap();
     void OpenLineFile();
-    void saveFile();
+    void saveAsXML();
     void saveAsDXF();
 
     //cogmap

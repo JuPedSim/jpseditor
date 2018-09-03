@@ -116,10 +116,10 @@ MWindow :: MWindow() {
     //Signals and Slots
     // Tab File
     connect(actionBeenden, SIGNAL(triggered(bool)),this,SLOT(close()));
-    connect(action_ffnen,SIGNAL(triggered(bool)),this,SLOT(openFile()));
+    connect(action_ffnen,SIGNAL(triggered(bool)),this,SLOT(openFileDXF()));
     connect(action_ffnen_xml,SIGNAL(triggered(bool)),this,SLOT(openFileXML()));
     connect(action_ffnen_cogmap,SIGNAL(triggered(bool)),this,SLOT(openFileCogMap()));
-    connect(actionSpeichern,SIGNAL(triggered(bool)),this,SLOT(saveFile()));
+    connect(actionSpeichern,SIGNAL(triggered(bool)),this,SLOT(saveAsXML()));
     connect(actionSpeichern_dxf,SIGNAL(triggered(bool)),this,SLOT(saveAsDXF()));
     connect(actionSettings,SIGNAL(triggered(bool)),this,SLOT(Settings()));
     //connect(action_ffnen_CogMap,SIGNAL(triggered(bool)),this,SLOT(openFileCMap()));
@@ -305,7 +305,7 @@ void MWindow::ShowOrigin()
     mview->ShowOrigin();
 }
 
-void MWindow::openFile(){
+void MWindow::openFileDXF(){
 
     QString fileName=QFileDialog::getOpenFileName(this,tr("Open DXF"),"",tr("DXF-Drawings (*.dxf)"));
     //QFile file(fileName);
@@ -425,7 +425,7 @@ void MWindow::OpenLineFile()
     file.close();
 }
 
-void MWindow::saveFile(){
+void MWindow::saveAsXML(){
     QString fileName = QFileDialog::getSaveFileName(this,tr("Save XML"),"",tr("XML-Files (*.xml)"));
     _filename=fileName;
     if (fileName.isEmpty()) return;
