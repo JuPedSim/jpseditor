@@ -91,6 +91,7 @@ void jpsDatamanager::remove_room(jpsRoom *room)
     int roomID=room->get_id();
     roomlist.removeOne(room);
     delete room;
+    room = nullptr;
     //change IDs of other room with ID greater than roomID
     for (jpsRoom* otherroom:roomlist)
         if (otherroom->get_id()>roomID)
@@ -115,6 +116,7 @@ void jpsDatamanager::remove_all_rooms()
     for (int i=0; i<roomlist.size(); i++)
     {
         delete roomlist[i];
+        roomlist[i] = nullptr;
     }
     roomlist.clear();
     dtrace("Leave jpsDatamanager::remove_all_rooms");
