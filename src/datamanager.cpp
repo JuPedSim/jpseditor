@@ -91,7 +91,7 @@ void jpsDatamanager::remove_room(jpsRoom *room)
     int roomID=room->get_id();
     roomlist.removeOne(room);
     delete room;
-    room = nullptr;@
+    room = nullptr;
     //change IDs of other room with ID greater than roomID
     for (jpsRoom* otherroom:roomlist)
         if (otherroom->get_id()>roomID)
