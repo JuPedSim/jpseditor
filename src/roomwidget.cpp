@@ -30,7 +30,7 @@
 #include "ui_roomwidget.h"
 #include "rooms.h"
 #include <iostream>
-
+#include <QDebug>
 #include "./AutomaticRoomIdentification/roomdefinition.h"
 #include "./AutomaticRoomIdentification/roomidentification.h"
 
@@ -84,7 +84,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->list_rooms,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showWallsAndType()));
     connect(ui->listWalls,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(selectWall()));
     connect(ui->remove_button,SIGNAL(clicked(bool)),this,SLOT(removeWall()));
-    connect(ui->caption,SIGNAL(clicked(bool)),this,SLOT(shhi_roomCaption()));
+    connect(ui->caption,SIGNAL(clicked(bool)),this,SLOT(switchRoomCaption()));
     connect(ui->highlight_all,SIGNAL(clicked(bool)),this,SLOT(HighlightAllRooms()));
     //connect(ui->highlight,SIGNAL(clicked(bool)),this,SLOT(highlight_room()));
     connect(ui->classBox,SIGNAL(activated(int)),this,SLOT(ChangeRoomType()));
@@ -251,12 +251,12 @@ void roomWidget::change_roomname()
             int crow=ui->list_rooms->currentRow();
 
             datamanager->get_roomlist()[crow]->change_name(ui->chname_edit->text());
-            shhi_roomCaption();
+        switchRoomCaption();
             this->show_rooms();
     }
     else
     {
-        shhi_roomCaption();
+        switchRoomCaption();
         int crow=ui->list_rooms->currentRow();
         datamanager->get_roomlist()[crow]->change_name(ui->chname_edit->text());
         this->show_rooms();
@@ -799,25 +799,27 @@ void roomWidget::disable_roomSelectionObs()
     dtrace("Leave roomWidget::disable_roomSelectionObs");
 }
 
-bool roomWidget::shhi_roomCaption() // @todo: This updates the caption for
-                                    // obstacles too! Not clean!
+bool roomWidget::switchRoomCaption()
 {
-     dtrace("Enter roomWidget::shhi_roomCaption");
-     bool show;
+    qDebug() << "Enter roomWidget::switchRoomCaption";
+
+    bool show;
     if (ui->list_rooms->currentItem()!=0L)
     {
         int cRow=ui->list_rooms->currentRow();
         QString roomName = datamanager->get_roomlist()[cRow]->get_name();
         QPointF roomCenter = datamanager->get_roomlist()[cRow]->get_center();
         show = graphview->show_hide_roomCaption(roomName,roomCenter.x(),roomCenter.y());
+
         if(show)
              ui->caption->setText("Hide Caption");
         else
              ui->caption->setText("Show Caption");
-        dtrace("Leave roomWidget::shhi_roomCaption with show=%d", show);
+
         return show;
     }
-    dtrace("Leave roomWidget::shhi_roomCaption with false");
+
+    qDebug() << "Leave roomWidget::switchRoomCaption with false";
     return false;
 }
 

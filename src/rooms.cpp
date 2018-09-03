@@ -169,6 +169,8 @@ QVector<QPointF> jpsRoom::get_vertices() const
 
 QPointF jpsRoom::get_center()
 {
+    IdentifyInnerOuter(); // write outer_polygon
+
     QVector<QPointF> vertices = RoomAsSortedPolygon(outer_polygon);
     qreal sum_x=0;
     qreal sum_y=0;
@@ -184,6 +186,7 @@ QPointF jpsRoom::get_center()
 
     return mean;
 }
+
 void jpsRoom::highlight(const QString& color)
 {
      dtrace("Enter jpsRoom::highlight. highlighted=<%d>", highlighted);
@@ -298,7 +301,8 @@ QVector<QPointF> jpsRoom::RoomAsSortedPolygon(const QVector<QLineF>& lines) cons
 {
      dtrace("Enter jpsRoom::RoomAsSortedPolygon");
     QVector<QLineF> clines=lines;
-     QVector<QPointF> points = {};
+    QVector<QPointF> points = {};
+
     if(lines.size() == 0)
     {
          dtrace("\t empty lines!!");
@@ -306,6 +310,7 @@ QVector<QPointF> jpsRoom::RoomAsSortedPolygon(const QVector<QLineF>& lines) cons
          return points;
          
     }
+
     points.push_back(lines.first().p1());
     points.push_back(lines.first().p2());
 
