@@ -24,8 +24,8 @@ CONFIG += qt xml gui;
 CONFIG += c++11
 QMAKE_CXXFLAGS += -std=c++11
 QMAKE_CXXFLAGS += -static
-QMAKE_CXXFLAGS += -static-libgcc
-QMAKE_CXXFLAGS += -static-libstdc++
+#QMAKE_CXXFLAGS += -static-libgcc
+#QMAKE_CXXFLAGS += -static-libstdc++
 
 FORMS += \
     forms/mainwindow.ui \
@@ -97,7 +97,8 @@ SOURCES += \
 
 INCLUDEPATH += D:/boost_1_59_0/boost_1_59_0
 
-RESOURCES +=  forms/Ressource.qrc
+RESOURCES += \ 
+    Resources/resources.qrc
 
 RC_FILE = icons/jpseditor.rc
 #osx fix

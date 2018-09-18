@@ -14,7 +14,7 @@
    <string>JPSeditor</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="Ressource.qrc">
+   <iconset>
     <normaloff>:/jupedsim.png</normaloff>:/jupedsim.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget"/>
@@ -31,13 +31,14 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="action_ffnen_cogmap"/>
     <addaction name="action_ffnen_xml"/>
     <addaction name="action_ffnen"/>
-    <addaction name="action_ffnen_cogmap"/>
     <addaction name="actionSpeichern"/>
     <addaction name="actionSpeichern_dxf"/>
     <addaction name="actionSpeichern_cogmap"/>
     <addaction name="separator"/>
+    <addaction name="action_ber"/>
     <addaction name="actionSettings"/>
     <addaction name="separator"/>
     <addaction name="actionBeenden"/>
@@ -46,45 +47,56 @@
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="action_ber"/>
+    <addaction name="actionOnline_Help"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="actionSelect_Mode"/>
+    <addaction name="actionRoom"/>
+    <addaction name="actionAuto_Definition"/>
+    <addaction name="actionGather_data"/>
+    <addaction name="actionLandmarkWidget"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actiongridmode"/>
+    <addaction name="actionShow_Point_of_Origin"/>
+    <addaction name="actionRotate_90_deg_clockwise"/>
+    <addaction name="separator"/>
+    <addaction name="actionanglesnap"/>
+    <addaction name="actionObjectsnap"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
     <addaction name="separator"/>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
     <addaction name="actionCopy"/>
     <addaction name="actionScale"/>
     <addaction name="separator"/>
+    <addaction name="actionDelete_lines"/>
+    <addaction name="actionDelete_single_line"/>
+    <addaction name="actionClear_all_Rooms_and_Doors"/>
+   </widget>
+   <widget class="QMenu" name="menuDraw">
+    <property name="title">
+     <string>Draw</string>
+    </property>
     <addaction name="actionWall"/>
     <addaction name="actionDoor"/>
     <addaction name="actionHLine"/>
-    <addaction name="separator"/>
-    <addaction name="actiongridmode"/>
-    <addaction name="actionObjectsnap"/>
-    <addaction name="actionanglesnap"/>
-    <addaction name="actionDelete_lines"/>
-    <addaction name="actionDelete_single_line"/>
-    <addaction name="separator"/>
-    <addaction name="actionRoom"/>
-    <addaction name="actionAuto_Definition"/>
     <addaction name="actionLandmark"/>
-    <addaction name="actionLandmarkWidget"/>
-    <addaction name="actionGather_data"/>
-   </widget>
-   <widget class="QMenu" name="menuView">
-    <property name="title">
-     <string>View</string>
-    </property>
-    <addaction name="actionRotate_90_deg_clockwise"/>
-    <addaction name="actionShow_Point_of_Origin"/>
    </widget>
    <addaction name="menuDatei"/>
-   <addaction name="menuTools"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuDraw"/>
    <addaction name="menuView"/>
+   <addaction name="menuTools"/>
    <addaction name="menuHilfe"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -99,34 +111,24 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionSelect_Mode"/>
-   <addaction name="separator"/>
    <addaction name="actionUndo"/>
    <addaction name="actionRedo"/>
+   <addaction name="actionDelete_single_line"/>
    <addaction name="separator"/>
    <addaction name="actionWall"/>
    <addaction name="actionDoor"/>
    <addaction name="actionHLine"/>
+   <addaction name="actionLandmark"/>
    <addaction name="separator"/>
    <addaction name="actiongridmode"/>
-   <addaction name="separator"/>
    <addaction name="actionObjectsnap"/>
    <addaction name="separator"/>
-   <addaction name="actionanglesnap"/>
-   <addaction name="separator"/>
-   <addaction name="actionDelete_lines"/>
-   <addaction name="separator"/>
-   <addaction name="actionDelete_single_line"/>
-   <addaction name="separator"/>
    <addaction name="actionRoom"/>
-   <addaction name="actionAuto_Definition"/>
-   <addaction name="separator"/>
-   <addaction name="actionLandmarkWidget"/>
-   <addaction name="actionLandmark"/>
   </widget>
   <action name="action_ffnen">
    <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/open.png</normaloff>:/open.png</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/folder-open.svg</normaloff>:/inAppIcons/Icons/folder-open.svg</iconset>
    </property>
    <property name="text">
     <string>Load DXF</string>
@@ -137,11 +139,14 @@
    <property name="shortcut">
     <string>Ctrl+Alt+O</string>
    </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
   </action>
   <action name="actionSpeichern">
    <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/filesave.png</normaloff>:/filesave.png</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/save.svg</normaloff>:/inAppIcons/Icons/save.svg</iconset>
    </property>
    <property name="text">
     <string>Save as XML</string>
@@ -149,13 +154,13 @@
    <property name="toolTip">
     <string>Save as XML</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionBeenden">
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/man-gimp1.png</normaloff>:/man-gimp1.png</iconset>
    </property>
    <property name="text">
@@ -175,29 +180,29 @@
    <property name="toolTip">
     <string>About</string>
    </property>
-   <property name="shortcut">
-    <string>F1</string>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actiongridmode">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="enabled">
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/Grid.png</normaloff>:/Grid.png</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/Grid.png</normaloff>:/inAppIcons/Icons/Grid.png</iconset>
    </property>
    <property name="text">
-    <string>Gridmode</string>
+    <string>Show Grid</string>
    </property>
    <property name="toolTip">
     <string>Gridmode</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+G</string>
+    <string>Meta+G</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionWall">
@@ -208,29 +213,26 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/Wall.png</normaloff>:/Wall.png</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/wall.svg</normaloff>:/inAppIcons/Icons/wall.svg</iconset>
    </property>
    <property name="text">
     <string>Wall</string>
    </property>
    <property name="shortcut">
-    <string>W</string>
+    <string>Meta+W</string>
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
    </property>
   </action>
   <action name="actionObjectsnap">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="enabled">
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/snap.png</normaloff>:/snap.png</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/snaping.png</normaloff>:/inAppIcons/Icons/snaping.png</iconset>
    </property>
    <property name="text">
     <string>Object snap</string>
@@ -239,19 +241,22 @@
     <string>Object snap</string>
    </property>
    <property name="shortcut">
-    <string>O</string>
+    <string>Meta+O</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionDelete_lines">
    <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/DeleteAll.png</normaloff>:/DeleteAll.png</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/minus-square.svg</normaloff>:/inAppIcons/Icons/minus-square.svg</iconset>
    </property>
    <property name="text">
     <string>Delete all</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+Del</string>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionDelete_single_line">
@@ -259,8 +264,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/Delete.png</normaloff>:/Delete.png</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/trash-alt.svg</normaloff>:/inAppIcons/Icons/trash-alt.svg</iconset>
    </property>
    <property name="text">
     <string>Delete selected lines</string>
@@ -269,7 +274,10 @@
     <string>Delete selected lines</string>
    </property>
    <property name="shortcut">
-    <string>Del</string>
+    <string>Ctrl+Backspace</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionDoor">
@@ -280,8 +288,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/Door.png</normaloff>:/Door.png</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/door-open.svg</normaloff>:/inAppIcons/Icons/door-open.svg</iconset>
    </property>
    <property name="text">
     <string>Door</string>
@@ -290,7 +298,7 @@
     <string>Door</string>
    </property>
    <property name="shortcut">
-    <string>D</string>
+    <string>Meta+D</string>
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
@@ -304,7 +312,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/Exit.png</normaloff>:/Exit.png</iconset>
    </property>
    <property name="text">
@@ -312,9 +320,6 @@
    </property>
    <property name="toolTip">
     <string>Exit</string>
-   </property>
-   <property name="shortcut">
-    <string>E</string>
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
@@ -328,20 +333,20 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/Room.png</normaloff>:/Room.png</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/rooms.png</normaloff>:/inAppIcons/Icons/rooms.png</iconset>
    </property>
    <property name="text">
-    <string>Rooms</string>
+    <string>Define Rooms</string>
    </property>
    <property name="toolTip">
     <string>Define Room</string>
    </property>
    <property name="shortcut">
-    <string>R</string>
+    <string>Meta+R</string>
    </property>
    <property name="iconVisibleInMenu">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionSelect_Mode">
@@ -355,17 +360,14 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/basicCursor.png</normaloff>:/basicCursor.png</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/hand-pointer.svg</normaloff>:/inAppIcons/Icons/hand-pointer.svg</iconset>
    </property>
    <property name="text">
     <string>Select Mode</string>
    </property>
    <property name="toolTip">
     <string>Select Mode</string>
-   </property>
-   <property name="shortcut">
-    <string>Esc</string>
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
@@ -373,8 +375,8 @@
   </action>
   <action name="actionSpeichern_dxf">
    <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/filesave.png</normaloff>:/filesave.png</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/save.svg</normaloff>:/inAppIcons/Icons/save.svg</iconset>
    </property>
    <property name="text">
     <string>Save as DXF</string>
@@ -382,14 +384,14 @@
    <property name="toolTip">
     <string>Save as DXF</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+Alt+S</string>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
    </property>
   </action>
   <action name="action_ffnen_xml">
    <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/open.png</normaloff>:/open.png</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/folder-open.svg</normaloff>:/inAppIcons/Icons/folder-open.svg</iconset>
    </property>
    <property name="text">
     <string>Load XML</string>
@@ -400,13 +402,23 @@
    <property name="shortcut">
     <string>Ctrl+O</string>
    </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
   </action>
   <action name="actionRotate_90_deg_clockwise">
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/rotate.png</normaloff>:/inAppIcons/Icons/rotate.png</iconset>
+   </property>
    <property name="text">
     <string>Rotate (90 deg clockwise)</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+R</string>
+    <string>Meta+R</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionLandmark">
@@ -414,11 +426,11 @@
     <bool>true</bool>
    </property>
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/statue.jpg</normaloff>:/statue.jpg</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/landmark.svg</normaloff>:/inAppIcons/Icons/landmark.svg</iconset>
    </property>
    <property name="text">
     <string>Landmark</string>
@@ -426,29 +438,31 @@
    <property name="toolTip">
     <string>Landmark</string>
    </property>
+   <property name="shortcut">
+    <string>Meta+L</string>
+   </property>
    <property name="visible">
-    <bool>false</bool>
+    <bool>true</bool>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionLandmarkWidget">
-   <property name="checkable">
+   <property name="enabled">
     <bool>true</bool>
    </property>
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/statue_specs.jpg</normaloff>:/statue_specs.jpg</iconset>
-   </property>
    <property name="text">
-    <string>LandmarkSpecs</string>
+    <string>Edit Landmark </string>
    </property>
    <property name="toolTip">
     <string>LandmarkSpecs</string>
    </property>
+   <property name="shortcut">
+    <string>Meta+Shift+L</string>
+   </property>
    <property name="visible">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionanglesnap">
@@ -459,8 +473,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/anglesnap.PNG</normaloff>:/anglesnap.PNG</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/plus.svg</normaloff>:/inAppIcons/Icons/plus.svg</iconset>
    </property>
    <property name="text">
     <string>Orthomode</string>
@@ -469,7 +483,10 @@
     <string>Orthomode</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+H</string>
+    <string>Meta+S</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionSettings">
@@ -488,7 +505,7 @@
   </action>
   <action name="action_ffnen_CogMap">
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/open.png</normaloff>:/open.png</iconset>
    </property>
    <property name="text">
@@ -504,8 +521,18 @@
    </property>
   </action>
   <action name="actionShow_Point_of_Origin">
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/flag.svg</normaloff>:/inAppIcons/Icons/flag.svg</iconset>
+   </property>
    <property name="text">
     <string>Show Point of Origin</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+O</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionUndo">
@@ -513,8 +540,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/Undo-icon.png</normaloff>:/Undo-icon.png</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/undo.svg</normaloff>:/inAppIcons/Icons/undo.svg</iconset>
    </property>
    <property name="text">
     <string>Undo</string>
@@ -528,11 +555,14 @@
    <property name="visible">
     <bool>true</bool>
    </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
   </action>
   <action name="actionRedo">
    <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/Redo-Icon.png</normaloff>:/Redo-Icon.png</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/redo.svg</normaloff>:/inAppIcons/Icons/redo.svg</iconset>
    </property>
    <property name="text">
     <string>Redo</string>
@@ -541,7 +571,10 @@
     <string>Redo PaintEvent</string>
    </property>
    <property name="shortcut">
-    <string/>
+    <string>Ctrl+Shift+Z</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionHLine">
@@ -552,8 +585,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/HLine.png</normaloff>:/HLine.png</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/hline.png</normaloff>:/inAppIcons/Icons/hline.png</iconset>
    </property>
    <property name="text">
     <string>HLine</string>
@@ -562,7 +595,7 @@
     <string>HLine</string>
    </property>
    <property name="shortcut">
-    <string>H</string>
+    <string>Meta+H</string>
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
@@ -573,7 +606,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/filesave.png</normaloff>:/filesave.png</iconset>
    </property>
    <property name="text">
@@ -591,7 +624,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="Ressource.qrc">
+    <iconset>
      <normaloff>:/open.png</normaloff>:/open.png</iconset>
    </property>
    <property name="text">
@@ -602,6 +635,9 @@
    </property>
    <property name="visible">
     <bool>false</bool>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionCopy">
@@ -618,10 +654,6 @@
    </property>
   </action>
   <action name="actionAuto_Definition">
-   <property name="icon">
-    <iconset resource="Ressource.qrc">
-     <normaloff>:/autoRoom.png</normaloff>:/autoRoom.png</iconset>
-   </property>
    <property name="text">
     <string>Auto Definition</string>
    </property>
@@ -634,9 +666,26 @@
     <bool>true</bool>
    </property>
   </action>
+  <action name="actionClear_all_Rooms_and_Doors">
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/eraser.svg</normaloff>:/inAppIcons/Icons/eraser.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Clear all Rooms and Doors</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionOnline_Help">
+   <property name="text">
+    <string>Online Help</string>
+   </property>
+  </action>
  </widget>
  <resources>
-  <include location="Ressource.qrc"/>
+  <include location="../Resources/resources.qrc"/>
  </resources>
  <connections/>
 </ui>
