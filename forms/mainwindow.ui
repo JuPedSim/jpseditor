@@ -191,7 +191,7 @@
    </property>
    <property name="icon">
     <iconset resource="../Resources/resources.qrc">
-     <normaloff>:/inAppIcons/Icons/Grid.png</normaloff>:/inAppIcons/Icons/Grid.png</iconset>
+     <normaloff>:/inAppIcons/Icons/grid.png</normaloff>:/inAppIcons/Icons/grid.png</iconset>
    </property>
    <property name="text">
     <string>Show Grid</string>
