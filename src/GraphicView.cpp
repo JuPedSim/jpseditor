@@ -1129,9 +1129,8 @@ bool jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
             return false;
         }
     }
+
     // if caption does not exit yet:
-
-
     current_caption=Scene->addText(name);
 
     current_caption->setX(x+translation_x);

@@ -222,16 +222,19 @@ void roomWidget::new_room()
 void roomWidget::delete_room()
 { 
     dtrace("Enter roomWidget::delete_room");
-    if (ui->list_rooms->currentItem()!=0L)
+    if (ui->list_rooms->currentItem()!=nullptr)
     {
         int cRow=ui->list_rooms->currentRow();
 
-        QString roomName = datamanager->get_roomlist()[cRow]->get_name();
-        QPointF roomCenter = datamanager->get_roomlist()[cRow]->get_center();
-        graphview->show_hide_roomCaption(roomName,roomCenter.x(),roomCenter.y());
+//        QString roomName = datamanager->get_roomlist()[cRow]->get_name();
+//        QPointF roomCenter = datamanager->get_roomlist()[cRow]->get_center();
+//        graphview->show_hide_roomCaption(roomName,roomCenter.x(),roomCenter.y());
+
+        switchRoomCaption();
 
         datamanager->remove_room(datamanager->get_roomlist()[cRow]);
         ui->list_rooms->setCurrentRow(-1);
+
         this->show_rooms();
     }
     dtrace("Leave roomWidget::delete_room");
@@ -247,6 +250,7 @@ void roomWidget::change_elevation()
     }
     dtrace("Leave roomWidget::change_elevation");
 }
+
 void roomWidget::change_roomname()
 { 
     dtrace("Enter roomWidget::change_roomname");
@@ -809,6 +813,7 @@ bool roomWidget::switchRoomCaption()
     qDebug() << "Enter roomWidget::switchRoomCaption";
 
     bool show;
+
     if (ui->list_rooms->currentItem()!=0L)
     {
         int cRow=ui->list_rooms->currentRow();
