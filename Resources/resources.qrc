@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/inAppIcons">
-        <file>Icons/anglesnap.PNG</file>
+        <file>Icons/anglesnap.png</file>
         <file>Icons/autoRoom.png</file>
         <file>Icons/basicCursor.png</file>
         <file>Icons/Delete.png</file>

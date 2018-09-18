@@ -134,8 +134,6 @@ protected slots:
     //gather data
     void GatherData();
 
-
-
     //CMap
     //void RunCMap();
     //void UpdateCMap();
