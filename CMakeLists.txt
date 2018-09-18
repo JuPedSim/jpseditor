@@ -171,7 +171,7 @@ set( UIS
 
 # and finally a resource file
 set( RCS
-    forms/Ressource.qrc
+        Resources/resources.qrc
   )
 
 

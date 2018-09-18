@@ -34,6 +34,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QShortcut>
+#include <QDesktopServices>
+#include <QUrl>
 
 MWindow :: MWindow() {
 
@@ -758,4 +760,10 @@ void MWindow::on_actionCopy_triggered()
 {
     actionCopy->setChecked(true);
     mview->start_Copy_function();
+}
+
+void MWindow::on_actionOnline_Help_triggered()
+{
+    QString JPSeditor = "http://www.jupedsim.org/jpseditor/";
+    QDesktopServices::openUrl(QUrl(JPSeditor));
 }

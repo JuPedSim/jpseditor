@@ -146,6 +146,7 @@ protected slots:
 
 private slots:
     void on_actionCopy_triggered();
+    void on_actionOnline_Help_triggered();
 };
 
 
