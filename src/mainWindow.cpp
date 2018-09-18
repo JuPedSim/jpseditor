@@ -767,3 +767,12 @@ void MWindow::on_actionOnline_Help_triggered()
     QString JPSeditor = "http://www.jupedsim.org/jpseditor/";
     QDesktopServices::openUrl(QUrl(JPSeditor));
 }
+
+void MWindow::on_actionClear_all_Rooms_and_Doors_triggered()
+{
+    dmanager->remove_all();
+    rwidget->show_rooms();
+    rwidget->show_crossings();
+    rwidget->show_exits();
+    rwidget->show_obstacles();
+}
