@@ -13,13 +13,13 @@
  # You should have received a copy of the GNU Lesser General Public License
  # along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
  #
- # copyright   <2009-2014> Forschungszentrum Juelich GmbH.
+ # copyright   <2009-2018> Forschungszentrum Juelich GmbH.
  
  # Compatibility with Qt4 and Qt5
 greaterThan(QT_MAJOR_VERSION, 4):QT += widgets
 
 TEMPLATE = app
-TARGET = JuPedSim
+TARGET = JPSeditor
 CONFIG += qt xml gui;
 CONFIG += c++11
 QMAKE_CXXFLAGS += -std=c++11
