@@ -31,8 +31,4 @@ About Four years after the first commit, JPSeditor has grown up to a massive too
  
  With this releasing strategy, we hope that JPSeditor can serve two types of user in the meantime.
  
-## one more bad news
- 
- Before four years, the goal of JPSeditor project is building a tool to draw geometry for [JPScore](http://www.jupedsim.org/jpscore/), and now, JPSeditor almost became the tool what we imagined. But unfortunately, we won't release JPSeditor version 1.0.
- 
- The reason why we won't release version 1.0, let's talk about it in the next post.
+We hope you enjoy the JPSeditor, and if you have any questions, please contact us with @t.zhong@fz-juelich.de.
