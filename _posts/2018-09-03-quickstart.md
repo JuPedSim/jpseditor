@@ -1,8 +1,8 @@
 ---
 layout: post
-title: 
+title: JPSeditor Quick Start
 permalink: 2018-09-03-quickstart.html
-published: false
+published: true
 date: '2018-09-03'
 ---
 
