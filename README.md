@@ -1,3 +1,1 @@
-# JPSeditor
-
-This is the documentation for [JuPedSim](http://jupedsim.org/jpseditor)
+This is the branch for [JPSeditor](http://jupedsim.org/jpseditor)
