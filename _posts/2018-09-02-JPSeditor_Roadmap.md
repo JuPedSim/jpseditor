@@ -31,4 +31,4 @@ About Four years after the first commit, JPSeditor has grown up to a massive too
  
  With this releasing strategy, we hope that JPSeditor can serve two types of user in the meantime.
  
-We hope you enjoy the JPSeditor, and if you have any questions, please contact us with @t.zhong@fz-juelich.de.
+We hope you enjoy the JPSeditor, and if you have any questions, please contact us with <t.zhong@fz-juelich.de>.
