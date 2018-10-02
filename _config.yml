@@ -8,8 +8,8 @@
 #baseurl: ""
 
 # If you are building a GitHub project page then use these settings:
-#url: "http://jupedsim.github.io/jpseditor/"
-#baseurl: "/jpseditor"
+url: "http://jupedsim.github.io/jpseditor/"
+baseurl: "/jpseditor"
 
 # Of course don't forget to change the username and projectname to YOUR username and project
 
