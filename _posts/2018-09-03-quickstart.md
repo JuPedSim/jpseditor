@@ -34,7 +34,7 @@ Whatever OS you are using, we prepared corresponding installation packages.
 
 In JPSeditor there are three areas: Menu Bar (with red frame) and Tool Bar(with blue frame) and canvas.(grid area)
 
-![](img/surface.png)
+![](https://github.com/JuPedSim/jpseditor/blob/gh-pages/_posts/img/surface.png)
 
 In the Menu Bar you can find any functions of JPSeditor, in the Tool Bar there are usual tools you need to draw. For example, walls, doors, and help lines.
 
