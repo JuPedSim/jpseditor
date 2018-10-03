@@ -1,7 +1,7 @@
 ---
 layout: post
 title: JPSeditor Roadmap
-permalink: 2018-09-02-JPSeditor_Roadmap.html
+permalink: 2018-09-02-JPSeditor_roadmap.html
 published: true
 date: '2018-09-02'
 ---

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Importing error from JPSvis to JPSeditor
-permalink: 2018-10-02-Known_Issue_1.html
+permalink: 2018-10-02-Known_issue_1.html
 published: true
 date: '2018-10-02'
 ---
