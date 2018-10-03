@@ -26,7 +26,7 @@ About Four years after the first commit, JPSeditor has grown up to a massive too
  
  We always want to provide a stable version for users, who will use JPSeditor for studying and experiments. Stability is the life for Them. At the same time we want collecting the issues and bugs from users directly. So the releasing rhythm of JPSeditor will be:
  
- * At 1st of every month, the stable version will be released from "master" as a installation package. The version number will be 0.8.x or 0.9.x;
+ * At 1st Friday of every month, the stable version will be released from "master" as a installation package. The version number will be 0.8.x or 0.9.x;
  * Every 3 months, a beta version version will be released from "Beta" for seed users. The version number will be 0.9 beta or 1.0 beta.
  
  With this releasing strategy, we hope that JPSeditor can serve two types of user in the meantime.
