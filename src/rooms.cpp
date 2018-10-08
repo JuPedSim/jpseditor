@@ -1,8 +1,8 @@
 /**
  * \file        rooms.cpp
- * \date        Jun 26, 2015
- * \version     v0.8.1
- * \copyright   <2009-2015> Forschungszentrum Jülich GmbH. All rights reserved.
+ * \date        Oct-01-2018
+ * \version     v0.8.4
+ * \copyright   <2009-2018> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
  * This file is part of JuPedSim.
@@ -32,7 +32,7 @@
 #include <fstream>
 #include <QGraphicsLineItem>
 #include "jpscrossing.h"
-
+#include <QDebug>
 #include "dtrace.h"
 
 
@@ -169,6 +169,14 @@ QVector<QPointF> jpsRoom::get_vertices() const
 
 QPointF jpsRoom::get_center()
 {
+    qDebug() << "Enter jpsRoom::get_center";
+    IdentifyInnerOuter(); // write outer_polygon
+
+    if(outer_polygon.size()==0){
+        QPointF  origin(0,0);
+        return origin;
+    }
+
     QVector<QPointF> vertices = RoomAsSortedPolygon(outer_polygon);
     qreal sum_x=0;
     qreal sum_y=0;
@@ -182,8 +190,10 @@ QPointF jpsRoom::get_center()
     mean.setX(sum_x/vertices.size());
     mean.setY(sum_y/vertices.size());
 
+    qDebug() << "Leave jpsRoom::get_center";
     return mean;
 }
+
 void jpsRoom::highlight(const QString& color)
 {
      dtrace("Enter jpsRoom::highlight. highlighted=<%d>", highlighted);
@@ -298,7 +308,8 @@ QVector<QPointF> jpsRoom::RoomAsSortedPolygon(const QVector<QLineF>& lines) cons
 {
      dtrace("Enter jpsRoom::RoomAsSortedPolygon");
     QVector<QLineF> clines=lines;
-     QVector<QPointF> points = {};
+    QVector<QPointF> points = {};
+
     if(lines.size() == 0)
     {
          dtrace("\t empty lines!!");
@@ -306,6 +317,7 @@ QVector<QPointF> jpsRoom::RoomAsSortedPolygon(const QVector<QLineF>& lines) cons
          return points;
          
     }
+
     points.push_back(lines.first().p1());
     points.push_back(lines.first().p2());
 
@@ -354,17 +366,24 @@ qreal jpsRoom::GetArea() const
 
 void jpsRoom::IdentifyInnerOuter()
 {
-
+    qDebug() << "Enter jpsRoom::IdentifyInnerOuter";
     QList<QLineF> lines;
 
-    for (jpsLineItem* lineItem:wall_list)
-    {
-        lines.append(lineItem->get_line()->line());
+
+    if (wall_list.isEmpty()==false){
+        for (jpsLineItem* lineItem:wall_list)
+        {
+            lines.append(lineItem->get_line()->line());
+        }
+        for (jpsCrossing* crossing:_doorList)
+        {
+            lines.append(crossing->get_cLine()->get_line()->line());
+        }
+    } else{
+        outer_polygon = {};
+        return;
     }
-    for (jpsCrossing* crossing:_doorList)
-    {
-        lines.append(crossing->get_cLine()->get_line()->line());
-    }
+
 
     QVector<QVector<QLineF>> polygons;
 
@@ -440,7 +459,7 @@ void jpsRoom::IdentifyInnerOuter()
 
     inner_polygons=polygons;
 
-
+    qDebug() << "Leave jpsRoom::IdentifyInnerOuter";
 }
 
 

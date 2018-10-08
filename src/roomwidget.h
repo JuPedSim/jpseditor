@@ -1,8 +1,8 @@
 /**
  * \file        roomwidget.h
- * \date        Jun 26, 2015
- * \version     v0.8.1
- * \copyright   <2009-2015> Forschungszentrum Jülich GmbH. All rights reserved.
+ * \date        Oct-01-2018
+ * \version     v0.8.4
+ * \copyright   <2009-2018> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
  * This file is part of JuPedSim.
@@ -88,7 +88,7 @@ protected slots:
     void add_room_to_obs();
     void enable_roomSelectionObs();
     void disable_roomSelectionObs();
-    bool shhi_roomCaption();
+    bool switchRoomCaption();
     bool shhi_roomCaption_obs();
     void highlight_room();
     void HighlightAllRooms();

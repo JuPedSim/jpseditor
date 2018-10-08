@@ -1,8 +1,8 @@
 /**
  * \file        GraphicView.cpp
- * \date        Jun 26, 2015
- * \version     v0.8.1
- * \copyright   <2009-2015> Forschungszentrum Jülich GmbH. All rights reserved.
+ * \date        Oct-01-2018
+ * \version     v0.8.4
+ * \copyright   <2009-2018> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
  * This file is part of JuPedSim.
@@ -940,7 +940,13 @@ void jpsGraphicsView::disable_drawing()
 
 jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const qreal &x2,const qreal &y2,const QString &type)
 {
-    QPen pen = QPen(Qt::black,4);
+    /*
+     * add Lineitem when prase a XML file
+     */
+
+    qDebug() << "Enter jpsGraphicsView::addLineItem";
+    QPen pen = QPen(Qt::black,2);
+
     pen.setCosmetic(true);
 
     current_line=Scene->addLine(x1,y1,x2,y2,pen);
@@ -987,7 +993,8 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
     }
 
     current_line=nullptr;
-
+    
+    qDebug() << "Leave jpsGraphicsView::addLineItem";
     return newLine;
 
 }
@@ -1122,9 +1129,8 @@ bool jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
             return false;
         }
     }
+
     // if caption does not exit yet:
-
-
     current_caption=Scene->addText(name);
 
     current_caption->setX(x+translation_x);

@@ -1,8 +1,8 @@
 /**
  * \file        datamanager.cpp
- * \date        Jun 26, 2015
- * \version     v0.8.1
- * \copyright   <2009-2015> Forschungszentrum Jülich GmbH. All rights reserved.
+ * \date        Oct-01-2018
+ * \version     v0.8.4
+ * \copyright   <2009-2018> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
  * This file is part of JuPedSim.
@@ -91,6 +91,7 @@ void jpsDatamanager::remove_room(jpsRoom *room)
     int roomID=room->get_id();
     roomlist.removeOne(room);
     delete room;
+    room = nullptr;
     //change IDs of other room with ID greater than roomID
     for (jpsRoom* otherroom:roomlist)
         if (otherroom->get_id()>roomID)
@@ -115,6 +116,7 @@ void jpsDatamanager::remove_all_rooms()
     for (int i=0; i<roomlist.size(); i++)
     {
         delete roomlist[i];
+        roomlist[i] = nullptr;
     }
     roomlist.clear();
     dtrace("Leave jpsDatamanager::remove_all_rooms");
