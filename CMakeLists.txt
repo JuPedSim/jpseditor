@@ -2,13 +2,13 @@
 # automatically, set the CMAKE_PREFIX_PATH environment variable.
 # For example: "export CMAKE_PREFIX_PATH=/usr/local/trolltech/qt4.3.5"
 # Specify the path to qmake with  QT_QMAKE_EXECUTABLE
-# 
+#
 # Available flags (-D):
 #================
 # 1. CMAKE_BUILD_TYPE=Release (default Debug)
 # 2. DESIRED_QT_VERSION=5 (default 4)
 # example: >> cmake  -DDESIRED_QT_VERSION=5  -DCMAKE_PREFIX_PATH=~/Qt/5.5/clang_64 ..
-# Flags for VS: -G "Visual Studio ..." -DCMAKE_PREFIX_PATH=... -DCMAKE_C_FLAGS="-mwindows" 
+# Flags for VS: -G "Visual Studio ..." -DCMAKE_PREFIX_PATH=... -DCMAKE_C_FLAGS="-mwindows"
 
 cmake_minimum_required(VERSION 2.8.9)
 IF (POLICY CMP0048) # in CMake 3.0.0+
@@ -19,7 +19,7 @@ IF (POLICY CMP0043) # in CMake 3.0.0+
 ENDIF (POLICY CMP0043)
 IF (POLICY CMP0020)
   CMAKE_POLICY (SET CMP0020 OLD) # keep old POLICY (2.8.10 and lower) The OLD behavior for this policy is not to link executables to
-ENDIF (POLICY CMP0020)			#qtmain.lib automatically when they link to the QtCore IMPORTEDtarget 
+ENDIF (POLICY CMP0020)			#qtmain.lib automatically when they link to the QtCore IMPORTEDtarget
 
 IF (POLICY CMP0025)
   cmake_policy(SET CMP0025 NEW) #fixes error No known features for CXX compiler (on mac)
@@ -34,7 +34,7 @@ set(README_FILE "${CMAKE_SOURCE_DIR}/README.md")
 set(CMAKE_COLOR_MAKEFILE ON)
 set(JPSEDITOR_MAJOR_VERSION 0)
 set(JPSEDITOR_MINOR_VERSION 8)
-set(JPSEDITOR_PATCH_VERSION 2)
+set(JPSEDITOR_PATCH_VERSION 4)
 set(JPSEDITOR_VERSION
   ${JPSEDITOR_MAJOR_VERSION}.${JPSEDITOR_MINOR_VERSION}.${JPSEDITOR_PATCH_VERSION})
 
@@ -46,10 +46,10 @@ message( STATUS "Generating  ................................... ${PROJECT_NAME}
 
 
 # ------------------------- Begin Generic CMake Variable Logging ------------------
-# the compiler used for C files 
+# the compiler used for C files
 # message( STATUS "CMAKE_C_COMPILER: " ${CMAKE_C_COMPILER} )
 
-# the compiler used for C++ files 
+# the compiler used for C++ files
 # message( STATUS "CMAKE_CXX_COMPILER: " ${CMAKE_CXX_COMPILER} )
 # ------------------------- End of Generic CMake Variable Logging ------------------
 
@@ -76,7 +76,7 @@ include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
 
 
 if(APPLE AND CMAKE_INSTALL_PREFIX MATCHES "/usr/local")
-	set(CMAKE_INSTALL_PREFIX "/Applications")
+        set(CMAKE_INSTALL_PREFIX "/Applications")
 endif()
 message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
 
@@ -99,47 +99,47 @@ endif()
 
 set( SRCS
     src/mainWindow.cpp
-    src/main.cpp 
+    src/main.cpp
     src/GraphicView.cpp
     src/graphicscene.cpp
     src/roomwidget.cpp
     src/rooms.cpp
-    src/datamanager.cpp  
-    src/jpscrossing.cpp  
-    src/jpsLineItem.cpp  
+    src/datamanager.cpp
+    src/jpscrossing.cpp
+    src/jpsLineItem.cpp
     src/jpsexit.cpp
-    src/jpsobstacle.cpp 
+    src/jpsobstacle.cpp
     src/jpslandmark.cpp
     src/widgetlandmark.cpp
     src/widgetsettings.cpp
     src/jpsconnection.cpp
-	src/jpsregion.cpp
+        src/jpsregion.cpp
     dxflib/src/dl_writer_ascii.cpp
     dxflib/src/dl_dxf.cpp
     src/UndoFramework/action.cpp
     src/UndoFramework/actionstack.cpp
     src/UndoFramework/lineaction.cpp
-	src/AutomaticRoomIdentification/roomdefinition.cpp 
+        src/AutomaticRoomIdentification/roomdefinition.cpp
     src/AutomaticRoomIdentification/roomidentification.cpp
-  )  
+  )
 # all header files that should be treated with moc
 set( HDR
     src/dtrace.h
-    src/mainWindow.h 
+    src/mainWindow.h
     src/GraphicView.h
     src/graphicscene.h
     src/roomwidget.h
     src/rooms.h
-    src/datamanager.h  
-    src/jpscrossing.h  
-    src/jpsLineItem.h  
-    src/jpsexit.h     
+    src/datamanager.h
+    src/jpscrossing.h
+    src/jpsLineItem.h
+    src/jpsexit.h
     src/jpsobstacle.h
     src/jpslandmark.h
     src/widgetlandmark.h
     src/widgetsettings.h
     src/jpsconnection.h
-	src/jpsregion.h
+        src/jpsregion.h
     dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h
     dxflib/src/dl_global.h
@@ -154,11 +154,11 @@ set( HDR
     src/UndoFramework/action.h
     src/UndoFramework/actionstack.h
     src/UndoFramework/lineaction.h
-	src/AutomaticRoomIdentification/roomID.h
-    src/AutomaticRoomIdentification/roomdefinition.h 
-    src/AutomaticRoomIdentification/roomidentification.h 
+        src/AutomaticRoomIdentification/roomID.h
+    src/AutomaticRoomIdentification/roomdefinition.h
+    src/AutomaticRoomIdentification/roomidentification.h
     src/dtrace.h
- 
+
   )
 
 # *.ui files
@@ -171,7 +171,7 @@ set( UIS
 
 # and finally a resource file
 set( RCS
-    forms/Ressource.qrc
+        Resources/resources.qrc
   )
 
 
@@ -224,7 +224,7 @@ if("${DESIRED_QT_VERSION}" STREQUAL "5")
   set(QT5_INSTALLED TRUE)
   # MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
 elseif("${DESIRED_QT_VERSION}" STREQUAL "4")
- 
+
   #   QT4_INSTALLED is set to TRUE if qt4 is found and
   #   QT3_INSTALLED is set to TRUE if qt3 is found.
   FIND_PACKAGE(Qt COMPONENTS QtXml QT_USE_QTNETWORK QtXmlPatterns REQUIRED)
@@ -262,15 +262,15 @@ if(${QT4_INSTALLED})
   ADD_EXECUTABLE( jpseditor MACOSX_BUNDLE WIN32
   ${SRCS}
   ${MOC_HDRS}
-  ${UI_HDRS} 
+  ${UI_HDRS}
   ${RCS}
   )
   TARGET_LINK_LIBRARIES( jpseditor ${QT_LIBRARIES})
 elseif( ${QT5_INSTALLED})
   message(STATUS "Working with Qt5")
   # http://www.kdab.com/using-cmake-with-qt-5/
-  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}" ) 
-  
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}" )
+
   qt5_wrap_ui( UI_HDRS ${UIS} )
   qt5_add_resources( RCS ${RCS} )
   #qt5_use_package(JPSeditor Widgets)
@@ -278,14 +278,14 @@ elseif( ${QT5_INSTALLED})
   ADD_EXECUTABLE( jpseditor MACOSX_BUNDLE WIN32
   ${SRCS}
   ${MOC_HDRS}
-  ${UI_HDRS} 
+  ${UI_HDRS}
   ${RCS}
   )
  qt5_use_modules(jpseditor Widgets)
  target_link_libraries(jpseditor ${Qt5Widgets_LIBRARIES})
 else()
   message(FATAL_ERROR "QT NOT BE FOUND - ABORT")
-endif() 
+endif()
 
 IF(APPLE)
   SET(MACOSX_BUNDLE_ICON_FILE jupedsim.icns)
@@ -316,19 +316,19 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     message( STATUS "Using compiler ................................ g++ (${CMAKE_CXX_COMPILER_VERSION}")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
-if(CMAKE_BUILD_TYPE MATCHES Debug) 
-  
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+
   set(CMAKE_CXX_LDFLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
   set(CMAKE_CXX_FLAGS_DEBUG          "${CMAKE_CXX_FLAGS_DEBUG} -DTRACE_LOGGING")
   message(STATUS "Debug flags: "  ${CMAKE_CXX_FLAGS} " " ${CMAKE_CXX_FLAGS_DEBUG} )
-  message(STATUS "Debug flags ..................................."  ${CMAKE_CXX_FLAGS} " " ${CMAKE_CXX_FLAGS_DEBUG} )               
+  message(STATUS "Debug flags ..................................."  ${CMAKE_CXX_FLAGS} " " ${CMAKE_CXX_FLAGS_DEBUG} )
 else(CMAKE_BUILD_TYPE MATCHES Debug)
   message(STATUS "Release flags ................................." ${CMAKE_CXX_FLAGS} " ,  " ${CMAKE_CXX_FLAGS_RELEASE} )
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 # PGI ++ Flags
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "PGI")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --c++11 -Minform=inform")	
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --c++11 -Minform=inform")
 endif()
 #--------------------------------------------------------------------------------
 # Now the installation stuff below
@@ -339,7 +339,7 @@ SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/jpseditor")
 IF(APPLE)
   SET(plugin_dest_dir jpseditor.app/Contents/MacOS)
   SET(qtconf_dest_dir jpseditor.app/Contents/Resources)
-  SET(APPS "\${CMAKE_INSTALL_PREFIX}/jpseditor.app")  
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/jpseditor.app")
 ENDIF(APPLE)
 
 IF(WIN32)
@@ -393,7 +393,7 @@ endif()
 # over.
 #
 if(APPLE)
-INSTALL(CODE "              
+INSTALL(CODE "
      file(GLOB_RECURSE QTPLUGINS
        \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
        image
@@ -455,7 +455,7 @@ elseif(APPLE) # todo test this for apple
      #set(CPACK_DMG_DS_STORE "${ICONS_DIR}/DMGDSStore")
      #set(CPACK_DMG_BACKGROUND_IMAGE "${ICONS_DIR}/DMGBackground.png")
    elseif(UNIX)
-     # tested with success in 
+     # tested with success in
      # Linux dhcppc5 3.2.0-4-686-pae #1 SMP Debian 3.2.68-1+deb7u2 i686 GNU/Linux
      set(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
        SET(CPACK_GENERATOR "DEB")
@@ -505,4 +505,3 @@ endif()
 #     install_qt5_executable("${EXECUTABLE}" "qsqlite")
 #   endif()
 # endif()
-

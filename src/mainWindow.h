@@ -1,8 +1,8 @@
 /**
  * \file        mainWindow.h
- * \date        Jun 26, 2015
- * \version     v0.8.1
- * \copyright   <2009-2015> Forschungszentrum Jülich GmbH. All rights reserved.
+ * \date        Oct-01-2018
+ * \version     v0.8.4
+ * \copyright   <2009-2018> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
  * This file is part of JuPedSim.
@@ -79,11 +79,11 @@ private:
 protected slots:
     
     //parseFiles
-    void openFile();
+    void openFileDXF();
     void openFileXML();
     void openFileCogMap();
     void OpenLineFile();
-    void saveFile();
+    void saveAsXML();
     void saveAsDXF();
 
     //cogmap
@@ -134,8 +134,6 @@ protected slots:
     //gather data
     void GatherData();
 
-
-
     //CMap
     //void RunCMap();
     //void UpdateCMap();
@@ -146,6 +144,8 @@ protected slots:
 
 private slots:
     void on_actionCopy_triggered();
+    void on_actionOnline_Help_triggered();
+    void on_actionClear_all_Rooms_and_Doors_triggered();
 };
 
 
