@@ -26,9 +26,9 @@ Before using JPSeditor, you should be familiar with geometry and project file in
 
 Whatever OS you are using, we prepared corresponding installation packages.
 
-* For macOS user, download the DMG file here. Double click it to open it and drag the JPSeditor icon in your Application folder in Finder. 
-* For windows user, download the rar file here. Extract the package with [7-zip](https://www.7-zip.org/)(A open source compress program), and you will get a folder, run JPSeditor.exe in the folder.
-* For Linux user, not matter what Linux distribution you like, you can download open the file, after extracting you will get a [AppImage](https://appimage.org/) file, run the apprun file you can use JPSeditor.
+* For macOS users, download the DMG file [here](https://github.com/JuPedSim/jpseditor/releases/download/untagged-9c677cfb89d3f09c3003/JPSeditor.V0.8.4.dmg). Double click it to open it and drag the JPSeditor icon in your Application folder in Finder. 
+* For windows users, download the rar file [here](https://github.com/JuPedSim/jpseditor/releases/download/untagged-9c677cfb89d3f09c3003/JPSeditor.V0.8.4.zip). Extract the package with [7-zip](https://www.7-zip.org/)(A open source compress program), and you will get a folder, run JPSeditor.exe in the folder.
+<!--* For Linux user, not matter what Linux distribution you like, you can download open the file, after extracting you will get a [AppImage](https://appimage.org/) file, run the apprun file you can use JPSeditor.-->
 
 ## Step 2. Start drawing in the JPSeditor
 
