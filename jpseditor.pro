@@ -95,14 +95,14 @@ SOURCES += \
     src/AutomaticRoomIdentification/roomidentification.cpp
 
 
-INCLUDEPATH += D:/boost_1_59_0/boost_1_59_0
+#INCLUDEPATH += D:/boost_1_59_0/boost_1_59_0
 
 RESOURCES += \ 
     Resources/resources.qrc
 
-RC_FILE = icons/jpseditor.rc
+RC_FILE = Resources/jpseditor.rc
 #osx fix
-macx:ICON = icons/jupedsim.icns
+ICON = Resources/jupedsim.icns
 
 
 
