@@ -3,21 +3,21 @@ All notable changes to this project will be documented in this file.
 
 ## v0.8.4 [05.10.2018]
 ## Added
-- In menu bar, under "Edit" you will find "Clear Rooms and Doors button" to clear all defined rooms and doors.
+- In menu bar, under "Edit" you will find "Clear Rooms and Doors button" to clear all defined rooms and doors. #54
 
-- Define points of a line using keyboard on status bar.
+- Define points of a line using keyboard on status bar. #61 #63
 
 ## Changed
-- A new tidily icons are added.
+- A new tidily icons are added. #88
 
 ## Bugs fixed
-- Fixed a crash when deleting rooms.
+- Fixed a crash when deleting rooms. #42
 
-- Fixed a problem when width of lines change after highlighting.
+- Fixed a problem when width of lines change after highlighting. #50
 
-- Fixed a problem when room is deleted bug caption is still there.
+- Fixed a problem when room is deleted bug caption is still there. #79
 
-- Fixed a problem when captions are overlapped.
+- Fixed a problem when captions are overlapped. #82
 
 ## v0.8.3 [16.05.2018]
 ### Added
