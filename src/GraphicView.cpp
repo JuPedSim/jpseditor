@@ -303,6 +303,11 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
     {
         midbutton_hold=true;
     }
+    else if (mouseEvent->button()==Qt::RightButton)
+    {
+        disable_drawing();
+        emit no_drawing();
+    }
 
     update();
 }
@@ -922,6 +927,8 @@ void jpsGraphicsView::disable_drawing()
     _statLineEdit=false;
     _statHLine=false;
     _statCopy=0;
+
+
     // if drawing was canceled by pushing ESC
     if (current_line!=nullptr)
     {
@@ -935,7 +942,6 @@ void jpsGraphicsView::disable_drawing()
         delete _currentVLine;
         _currentVLine=nullptr;
     }
-
 }
 
 jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const qreal &x2,const qreal &y2,const QString &type)

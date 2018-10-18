@@ -36,6 +36,7 @@
 #include <QShortcut>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QDebug>
 
 MWindow :: MWindow() {
 
@@ -161,6 +162,11 @@ MWindow :: MWindow() {
     connect(mview,SIGNAL(set_focus_textedit()),length_edit,SLOT(setFocus()));
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
     connect(mview,SIGNAL(LineLengthChanged()),this,SLOT(ShowLineLength()));
+
+//    QAction *str_escape = new QAction(this);
+//    str_escape->setShortcut(Qt::Key_Escape);
+//    connect(str_escape, SIGNAL(triggered(bool)), mview, SLOT(disableDrawing()));
+
     // Mark all lines
     QAction *str_a = new QAction(this);
     str_a->setShortcut(Qt::Key_A | Qt::CTRL);
@@ -775,4 +781,17 @@ void MWindow::on_actionClear_all_Rooms_and_Doors_triggered()
     rwidget->show_crossings();
     rwidget->show_exits();
     rwidget->show_obstacles();
+}
+
+void MWindow::keyPressEvent(QKeyEvent *event)
+{
+    switch(event->key())
+    {
+        case Qt::Key_Escape:
+            mview->disable_drawing();
+            en_selectMode();
+            break;
+        default:
+            QWidget::keyPressEvent(event);
+    }
 }

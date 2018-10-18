@@ -141,6 +141,8 @@ protected slots:
     //quit
     void closeEvent(QCloseEvent *event);
 
+    //ESCAPE
+    void keyPressEvent(QKeyEvent *event);
 
 private slots:
     void on_actionCopy_triggered();
