@@ -1555,12 +1555,12 @@ void jpsGraphicsView::ShowOrigin()
     if (_origin.isEmpty())
     {
         //Scene->DrawOrigin();
-        _origin.push_back(Scene->addLine(0,0,0,0+gl_scale_f*100,QPen(Qt::black,gl_scale_f*2)));
-        _origin.push_back(Scene->addLine(0,0+gl_scale_f*100,0-gl_scale_f*10,0+gl_scale_f*100-gl_scale_f*10,QPen(Qt::black,gl_scale_f*2)));
-        _origin.push_back(Scene->addLine(0,0+gl_scale_f*100,0+gl_scale_f*10,0+gl_scale_f*100-gl_scale_f*10,QPen(Qt::black,gl_scale_f*2)));
-        _origin.push_back(Scene->addLine(0,0,0+gl_scale_f*100,0,QPen(Qt::black,gl_scale_f*2)));
-        _origin.push_back(Scene->addLine(0+gl_scale_f*100,0,gl_scale_f*100-gl_scale_f*10,-gl_scale_f*10,QPen(Qt::black,gl_scale_f*2)));
-        _origin.push_back(Scene->addLine(0+gl_scale_f*100,0,gl_scale_f*100-gl_scale_f*10,+gl_scale_f*10,QPen(Qt::black,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0,0,0,0+gl_scale_f*100,QPen(Qt::red,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0,0+gl_scale_f*100,0-gl_scale_f*10,0+gl_scale_f*100-gl_scale_f*10,QPen(Qt::red,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0,0+gl_scale_f*100,0+gl_scale_f*10,0+gl_scale_f*100-gl_scale_f*10,QPen(Qt::red,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0,0,0+gl_scale_f*100,0,QPen(Qt::red,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0+gl_scale_f*100,0,gl_scale_f*100-gl_scale_f*10,-gl_scale_f*10,QPen(Qt::red,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0+gl_scale_f*100,0,gl_scale_f*100-gl_scale_f*10,+gl_scale_f*10,QPen(Qt::red,gl_scale_f*2)));
         //Y
         _origin.push_back(Scene->addLine(0-gl_scale_f*10,gl_scale_f*100-gl_scale_f*50,0-gl_scale_f*5,gl_scale_f*100-gl_scale_f*45,QPen(Qt::black,gl_scale_f*2)));
         _origin.push_back(Scene->addLine(0-gl_scale_f*10,gl_scale_f*100-gl_scale_f*50,0-gl_scale_f*15,gl_scale_f*100-gl_scale_f*45,QPen(Qt::black,gl_scale_f*2)));
@@ -1582,6 +1582,8 @@ void jpsGraphicsView::ShowOrigin()
         }
         _origin.clear();
     }
+
+
 }
 
 void jpsGraphicsView::StatPositionDef()
