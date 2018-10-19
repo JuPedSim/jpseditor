@@ -3,7 +3,7 @@ layout: post
 date: '2018-10-19'
 title: Naming Convention for development of JPSeditor
 permalink: 2018-10-19-naming_style.html
-published: 
+published: true 
 ---
 
 This Naming convention is referred to followed documents:
