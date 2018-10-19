@@ -1,8 +1,8 @@
 ---
 layout: post
-date: '2018-10-17'
+date: '2018-10-19'
 title: Naming Convention for development of JPSeditor
-permalink: 2018-10-10-naming_style.html
+permalink: 2018-10-19-naming_style.html
 published: 
 ---
 
