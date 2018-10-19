@@ -133,6 +133,7 @@ void roomWidget::show_rooms()
 {
     dtrace("Enter roomWidget::show_rooms");
     ui->list_rooms->clear();
+
     QList<jpsRoom*> roomlist=datamanager->get_roomlist();
     for (int i=0; i<roomlist.size(); i++)
     {
@@ -144,7 +145,7 @@ void roomWidget::show_rooms()
 
 void roomWidget::show_crossings()
 {
-    dtrace("Enter roomWidget::show_crossings"); 
+    dtrace("Enter roomWidget::show_crossings");
     ui->crossingList->clear();
 
     for (jpsCrossing* crossing:datamanager->get_crossingList())
@@ -193,8 +194,10 @@ void roomWidget::show_exits()
 
 void roomWidget::show_obstacles()
 {
-     dtrace("Enter roomWidget::show_obstacles"); 
-     ui->list_obstacles->clear();
+     dtrace("Enter roomWidget::show_obstacles");
+
+    ui->list_obstacles->clear();
+
     QList<jpsObstacle*> obslist=datamanager->get_obstaclelist();
     for (int i=0; i<obslist.size(); i++)
     {

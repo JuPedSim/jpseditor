@@ -777,10 +777,13 @@ void MWindow::on_actionOnline_Help_triggered()
 void MWindow::on_actionClear_all_Rooms_and_Doors_triggered()
 {
     dmanager->remove_all();
-    rwidget->show_rooms();
-    rwidget->show_crossings();
-    rwidget->show_exits();
-    rwidget->show_obstacles();
+
+    if(rwidget!= nullptr){
+        rwidget->show_rooms();
+        rwidget->show_crossings();
+        rwidget->show_obstacles();
+    }
+
 }
 
 void MWindow::keyPressEvent(QKeyEvent *event)
