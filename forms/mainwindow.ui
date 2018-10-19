@@ -370,6 +370,9 @@
    <property name="toolTip">
     <string>Select Mode</string>
    </property>
+   <property name="shortcut">
+    <string>Meta+S</string>
+   </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
    </property>
@@ -484,7 +487,7 @@
     <string>Orthomode</string>
    </property>
    <property name="shortcut">
-    <string>Meta+S</string>
+    <string>Meta+A</string>
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
