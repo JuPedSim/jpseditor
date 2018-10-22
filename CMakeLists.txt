@@ -121,6 +121,7 @@ set( SRCS
     src/UndoFramework/lineaction.cpp
         src/AutomaticRoomIdentification/roomdefinition.cpp
     src/AutomaticRoomIdentification/roomidentification.cpp
+    src/settingdialog.cpp
   )
 # all header files that should be treated with moc
 set( HDR
@@ -158,6 +159,7 @@ set( HDR
     src/AutomaticRoomIdentification/roomdefinition.h
     src/AutomaticRoomIdentification/roomidentification.h
     src/dtrace.h
+    src/settingdialog.h
 
   )
 
@@ -167,6 +169,7 @@ set( UIS
     forms/roomwidget.ui
     forms/widgetlandmark.ui
     forms/widgetsettings.ui
+    forms/settingdialog.ui
   )
 
 # and finally a resource file

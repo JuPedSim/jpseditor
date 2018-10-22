@@ -41,7 +41,7 @@
 #include "GraphicView.h"
 #include "datamanager.h"
 #include "rooms.h"
-
+#include "src/settingdialog.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 
@@ -54,7 +54,7 @@ public:
 private:
     roomWidget* rwidget;
     widgetLandmark* lwidget;
-    WidgetSettings* _settings;
+//    WidgetSettings* _settings;
     jpsDatamanager* dmanager;
     jpsGraphicsView* mview;
     //QVBoxLayout* VBox;
@@ -67,14 +67,22 @@ private:
     QLabel* label_y;
     QLabel* infoLabel;
     QString _filename;
-    QTimer *timer;
 
     //CMap
     QTimer *_cMapTimer;
     int _cMapFrame;
 
-    bool _statScale;
+    //default setting
+    SettingDialog *settingDialog;
+    QTimer *timer;
+    QSettings settings;
 
+//    QString backupfolder;
+//    QString defaultjpscore;
+//    QString defaultjpsvis;
+//    QMap<QString, QString> defaultsetting;
+
+    bool _statScale;
 
 protected slots:
     
@@ -144,11 +152,16 @@ protected slots:
     //ESCAPE
     void keyPressEvent(QKeyEvent *event);
 
+
+
 private slots:
     void on_actionCopy_triggered();
     void on_actionOnline_Help_triggered();
     void on_actionClear_all_Rooms_and_Doors_triggered();
-};
 
+    //default setting
+    void saveSettings(QMap<QString, QString> settingsmap);
+    QMap<QString, QString> loadSettings();
+};
 
 #endif // MAINWINDOW_H

@@ -37,13 +37,13 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QDebug>
+#include <QSettings>
 
 MWindow :: MWindow() {
 
     setupUi(this);
     //Signal/Slot
     //VBox= new QVBoxLayout;
-
 
     mview = new jpsGraphicsView(this);
     dmanager = new jpsDatamanager(this,mview);
@@ -53,8 +53,7 @@ MWindow :: MWindow() {
     rwidget=nullptr;
     //Landmarkwidget
     lwidget=nullptr;
-    //WidgetSettings
-    _settings=nullptr;
+
 
     //StaturBar
 
@@ -96,6 +95,7 @@ MWindow :: MWindow() {
     setCentralWidget(mview);
     //this->setMaximumSize(1920,1080);
     this->showMaximized();
+
     statusBar()->addPermanentWidget(infoLabel);
     statusBar()->addPermanentWidget(label_x);
     statusBar()->addPermanentWidget(x_edit);
@@ -105,7 +105,7 @@ MWindow :: MWindow() {
 //    statusBar()->addPermanentWidget(length_edit);
 //    statusBar()->addPermanentWidget(label2);
 
-    //Timer needed for autosave function
+    //Timer needed for autosaving function
     // timer will trigger autosave every 5th minute
     timer = new QTimer(this);
     timer->setInterval(300000);
@@ -193,6 +193,7 @@ MWindow :: MWindow() {
 
     // room type data gathering
     connect(actionGather_data,SIGNAL(triggered(bool)),this, SLOT(GatherData()));
+
 
 }
 
@@ -292,20 +293,25 @@ void MWindow::GatherData()
 
 void MWindow::Settings()
 {
-    if (_settings==nullptr)
-    {
-        _settings = new WidgetSettings(this,mview);
-        _settings->setAttribute(Qt::WA_DeleteOnClose);
-        _settings->setGeometry(QRect(QPoint(5,75), _settings->size()));
-        _settings->show();
-    }
+    settingDialog = new SettingDialog;
 
-    else
-    {
-        _settings->close();
-        _settings=nullptr;
-    }
+//    QString backupfolder = settings.value("backupfolder").toString();
+//    QString interval =  settings.value("interval").toString();
+//
+//    qDebug()<< settings.value("backupfolder");
+//    qDebug()<< settings.value("interval");
+//
+//    QMap<QString, QString> defaultsetting;
+//    defaultsetting["backupfolder"] = backupfolder;
+//    defaultsetting["interval"] = interval;
 
+    QMap<QString, QString> defaultsetting = loadSettings();
+    connect(settingDialog,SIGNAL(sendSetting(QMap<QString, QString>)),
+            this,SLOT(saveSettings(QMap<QString, QString>)));
+    settingDialog->setCurrentSetting(defaultsetting);
+
+    settingDialog->setModal(true);
+    settingDialog->exec();
 }
 
 void MWindow::ShowOrigin()
@@ -797,4 +803,29 @@ void MWindow::keyPressEvent(QKeyEvent *event)
         default:
             QWidget::keyPressEvent(event);
     }
+}
+
+void MWindow::saveSettings(QMap<QString, QString> settingsmap)
+{
+    QSettings settings("FZJ","JPSeditor");
+    settings.beginGroup("backup");
+    settings.setValue("backupfolder", settingsmap["backupfolder"]);
+    settings.setValue("interval", settingsmap["interval"]);
+    settings.endGroup();
+}
+
+QMap<QString, QString> MWindow::loadSettings()
+{
+    QSettings settings("FZJ","JPSeditor");
+
+    settings.beginGroup("backup");
+    QString value = settings.value("backupfolder", "../").toString();
+    QString interval = settings.value("interval", "300000").toString();
+    settings.endGroup();
+
+    QMap<QString, QString> settingsmap;
+    settingsmap["backupfolder"] = value;
+    settingsmap["interval"] = interval;
+
+    return settingsmap;
 }

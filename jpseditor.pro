@@ -31,7 +31,8 @@ FORMS += \
     forms/mainwindow.ui \
     forms/roomwidget.ui \
     forms/widgetlandmark.ui \
-    forms/widgetsettings.ui
+    forms/widgetsettings.ui \
+    forms/settingdialog.ui \
 
 HEADERS += \
     src/mainWindow.h \
@@ -66,7 +67,8 @@ HEADERS += \
     src/AutomaticRoomIdentification/roomID.h\
     src/AutomaticRoomIdentification/roomdefinition.h \
     src/AutomaticRoomIdentification/roomidentification.h \
-    src/dtrace.h
+    src/dtrace.h \
+    src/settingdialog.h
 
 
 SOURCES += \
@@ -92,7 +94,8 @@ SOURCES += \
     src/UndoFramework/lineaction.cpp \
     src/jpsregion.cpp \
     src/AutomaticRoomIdentification/roomdefinition.cpp \
-    src/AutomaticRoomIdentification/roomidentification.cpp
+    src/AutomaticRoomIdentification/roomidentification.cpp \
+    src/settingdialog.cpp
 
 
 #INCLUDEPATH += D:/boost_1_59_0/boost_1_59_0
