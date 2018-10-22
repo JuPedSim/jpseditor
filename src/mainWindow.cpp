@@ -108,7 +108,7 @@ MWindow :: MWindow() {
     //Timer needed for autosaving function
     // timer will trigger autosave every 5th minute
     timer = new QTimer(this);
-    timer->setInterval(300000);
+    timer->setInterval(60000);
     timer->start();
 
     _cMapTimer = new QTimer(this);
@@ -211,32 +211,24 @@ MWindow::~MWindow()
 
 void MWindow::AutoSave()
 {
-    QFile file("Name");
-    if (_filename!="")
-    {
-        QString fN="backup_"+_filename+".xml";
-        file.setFileName(fN);
-    }
-    else
-    {
-        QString fN="backup_untitled.xml";
-        file.setFileName(fN);
-    }
+    QMap<QString, QString> settingsmap = loadSettings();
+    QString backupfolder = settingsmap["backupfolder"];
 
+    QString filename = backupfolder + "/backup_untitled.xml";
+    QFile file(filename);
 
-    if(file.open(QIODevice::WriteOnly|QIODevice::Text))
-    {
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         //QString coord_string=mview->build_coordString();
 
-        dmanager->AutoSaveXML(file);
+        dmanager->writeXML(file);
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
-        statusBar()->showMessage(tr("Backup file generated!"),10000);
+        statusBar()->showMessage(tr("Backup file generated!"), 10000);
 
         //routing (hlines)
         QString fileNameRouting = file.fileName();
-        fileNameRouting=fileNameRouting.split(".").first()+"_routing.xml";
+        fileNameRouting = fileNameRouting.split(".").first() + "_routing.xml";
         QFile routingFile(fileNameRouting);
-        if (routingFile.open(QIODevice::WriteOnly|QIODevice::Text))
+        if (routingFile.open(QIODevice::WriteOnly | QIODevice::Text))
             dmanager->writeRoutingXML(routingFile);
     }
 }
@@ -811,6 +803,9 @@ void MWindow::saveSettings(QMap<QString, QString> settingsmap)
     settings.beginGroup("backup");
     settings.setValue("backupfolder", settingsmap["backupfolder"]);
     settings.setValue("interval", settingsmap["interval"]);
+
+    timer->setInterval(settingsmap["interval"].toInt());
+
     settings.endGroup();
 }
 
@@ -820,7 +815,7 @@ QMap<QString, QString> MWindow::loadSettings()
 
     settings.beginGroup("backup");
     QString value = settings.value("backupfolder", "../").toString();
-    QString interval = settings.value("interval", "300000").toString();
+    QString interval = settings.value("interval", "60000").toString();
     settings.endGroup();
 
     QMap<QString, QString> settingsmap;
