@@ -42,7 +42,7 @@
 #include "datamanager.h"
 #include "rooms.h"
 #include "src/settingdialog.h"
-#include "src/attributetabwidget.h"
+#include "forms/attributetabwidget.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 

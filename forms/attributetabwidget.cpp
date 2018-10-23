@@ -12,3 +12,10 @@ attributeTabWidget::~attributeTabWidget()
 {
     delete ui;
 }
+
+void attributeTabWidget::on_addButton_clicked()
+{
+    AddLayerDialog addLayerDialog(this);
+    addLayerDialog.setModal(true);
+    addLayerDialog.exec();
+}
