@@ -57,5 +57,6 @@
         <file>Icons/rotate.png</file>
         <file>Icons/plus.svg</file>
         <file>Icons/landmark.svg</file>
+        <file>Icons/moved_hand.svg</file>
     </qresource>
 </RCC>

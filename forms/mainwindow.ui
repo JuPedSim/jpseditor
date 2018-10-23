@@ -65,6 +65,7 @@
     <addaction name="actiongridmode"/>
     <addaction name="actionShow_Point_of_Origin"/>
     <addaction name="actionRotate_90_deg_clockwise"/>
+    <addaction name="actionPanning_Mode"/>
     <addaction name="separator"/>
     <addaction name="actionanglesnap"/>
     <addaction name="actionObjectsnap"/>
@@ -123,6 +124,7 @@
    <addaction name="separator"/>
    <addaction name="actiongridmode"/>
    <addaction name="actionObjectsnap"/>
+   <addaction name="actionPanning_Mode"/>
    <addaction name="separator"/>
    <addaction name="actionRoom"/>
   </widget>
@@ -685,6 +687,21 @@
   <action name="actionOnline_Help">
    <property name="text">
     <string>Online Help</string>
+   </property>
+  </action>
+  <action name="actionPanning_Mode">
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/moved_hand.svg</normaloff>:/inAppIcons/Icons/moved_hand.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Panning Mode</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+P</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
    </property>
   </action>
  </widget>

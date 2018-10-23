@@ -145,9 +145,14 @@ MWindow :: MWindow() {
     connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(actionScale,SIGNAL(triggered(bool)),this,SLOT(enableScale()));
+
     // Tab View
     connect(actionRotate_90_deg_clockwise,SIGNAL(triggered(bool)),this,SLOT(rotate()));
     connect(actionShow_Point_of_Origin,SIGNAL(triggered(bool)),this,SLOT(ShowOrigin()));
+
+    // Panning mode
+    connect(actionPanning_Mode,SIGNAL(triggered(bool)),this,SLOT(en_disablePanning()));
+
     // Length edit
 //    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(send_length()));
 //    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(ScaleLines()));
@@ -687,6 +692,7 @@ void MWindow::en_selectMode()
     mview->disable_drawing();
 
     actionSelect_Mode->setChecked(true);
+
     actionWall->setChecked(false);
     actionDoor->setChecked(false);
     actionExit->setChecked(false);
@@ -797,6 +803,7 @@ void MWindow::keyPressEvent(QKeyEvent *event)
     }
 }
 
+// Default settings
 void MWindow::saveSettings(QMap<QString, QString> settingsmap)
 {
     QSettings settings("FZJ","JPSeditor");
@@ -824,3 +831,12 @@ QMap<QString, QString> MWindow::loadSettings()
 
     return settingsmap;
 }
+
+// Panning mode
+void MWindow::en_disablePanning()
+{
+    this->disableDrawing();
+    mview->en_disablePanning();
+}
+
+

@@ -107,6 +107,7 @@ protected slots:
     void en_disableExit();
     void en_disableLandmark();
     void en_disableHLine();
+    void en_disablePanning();
     void disableDrawing();
     void objectsnap();
 
@@ -135,6 +136,7 @@ protected slots:
     void rotate();
     void Settings();
     void ShowOrigin();
+
     
     //autosave
     void AutoSave();
