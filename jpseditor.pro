@@ -105,7 +105,7 @@ RESOURCES += \
 
 RC_FILE = Resources/jpseditor.rc
 #osx fix
-ICON = Resources/jupedsim.icns
+ICON = Resources/jpseditor.icns
 
 
 

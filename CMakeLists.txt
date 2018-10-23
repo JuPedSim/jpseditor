@@ -249,7 +249,7 @@ message(STATUS "DESIRED_QT_VERSION ............................ " ${DESIRED_QT_V
 if(APPLE)
   ADD_DEFINITIONS(-DQT_NO_CAST_TO_ASCII)
   # include the icns file in the target
-  SET(SRCS ${SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/Resources/jupedsim.icns)
+  SET(SRCS ${SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/Resources/jpseditor.icns)
 endif()
 
 # this command will generate rules that will run rcc on all files from RCS
