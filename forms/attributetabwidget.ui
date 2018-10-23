@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>attributeTabWidget</class>
+ <widget class="QTabWidget" name="attributeTabWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>670</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>TabWidget</string>
+  </property>
+  <property name="currentIndex">
+   <number>1</number>
+  </property>
+  <widget class="QWidget" name="layerTab">
+   <attribute name="title">
+    <string>Layers</string>
+   </attribute>
+  </widget>
+  <widget class="QWidget" name="elementTab">
+   <attribute name="title">
+    <string>Elements</string>
+   </attribute>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

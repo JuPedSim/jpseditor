@@ -42,6 +42,7 @@
 #include "datamanager.h"
 #include "rooms.h"
 #include "src/settingdialog.h"
+#include "src/attributetabwidget.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 
@@ -53,6 +54,7 @@ public:
 
 private:
     roomWidget* rwidget;
+    attributeTabWidget* awidget;
     widgetLandmark* lwidget;
 //    WidgetSettings* _settings;
     jpsDatamanager* dmanager;
@@ -164,6 +166,7 @@ private slots:
     //default setting
     void saveSettings(QMap<QString, QString> settingsmap);
     QMap<QString, QString> loadSettings();
+    void on_actionEdit_Attributes_triggered();
 };
 
 #endif // MAINWINDOW_H

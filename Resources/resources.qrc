@@ -58,5 +58,6 @@
         <file>Icons/plus.svg</file>
         <file>Icons/landmark.svg</file>
         <file>Icons/moved_hand.svg</file>
+        <file>Icons/attribute.svg</file>
     </qresource>
 </RCC>

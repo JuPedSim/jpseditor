@@ -840,3 +840,20 @@ void MWindow::en_disablePanning()
 }
 
 
+
+void MWindow::on_actionEdit_Attributes_triggered()
+{
+    if (awidget==nullptr)
+    {
+        awidget = new attributeTabWidget(this);
+        awidget->setGeometry(QRect(QPoint(5,75), awidget->size()));
+        awidget->setAttribute(Qt::WA_DeleteOnClose);
+        awidget->show();
+
+    }
+    else
+    {
+        awidget->close();
+        awidget=nullptr;
+    }
+}
