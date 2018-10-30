@@ -632,6 +632,11 @@ void MWindow::send_xy()
 
 void MWindow::define_room()
 {
+    if (awidget!= nullptr){
+        awidget->close();
+        awidget= nullptr;
+    }
+
     if (rwidget==nullptr)
     {
         rwidget = new roomWidget(this,this->dmanager,this->mview);
@@ -843,6 +848,11 @@ void MWindow::en_disablePanning()
 
 void MWindow::on_actionEdit_Attributes_triggered()
 {
+    if(rwidget!= nullptr){
+        rwidget->close();
+        rwidget=nullptr;
+    }
+
     if (awidget==nullptr)
     {
         awidget = new attributeTabWidget(this);

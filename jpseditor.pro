@@ -34,7 +34,6 @@ FORMS += \
     forms/widgetsettings.ui \
     forms/settingdialog.ui \
     forms/attributetabwidget.ui \
-    forms/addlayerdialog.ui
 
 HEADERS += \
     src/mainWindow.h \
@@ -71,9 +70,7 @@ HEADERS += \
     src/AutomaticRoomIdentification/roomidentification.h \
     src/dtrace.h \
     src/settingdialog.h \
-    forms/attributetabwidget.h \
-    forms/addlayerdialog.h
-
+    src/attributetabwidget.h \
 
 SOURCES += \
     src/mainWindow.cpp \
@@ -100,8 +97,7 @@ SOURCES += \
     src/AutomaticRoomIdentification/roomdefinition.cpp \
     src/AutomaticRoomIdentification/roomidentification.cpp \
     src/settingdialog.cpp \
-    forms/attributetabwidget.cpp \
-    forms/addlayerdialog.cpp
+    src/attributetabwidget.cpp \
 
 
 #INCLUDEPATH += D:/boost_1_59_0/boost_1_59_0

@@ -122,9 +122,8 @@ set( SRCS
     src/AutomaticRoomIdentification/roomdefinition.cpp
     src/AutomaticRoomIdentification/roomidentification.cpp
     src/settingdialog.cpp
-    forms/attributetabwidget.cpp
-    forms/addlayerdialog.cpp
-  )
+    src/attributetabwidget.cpp
+        )
 # all header files that should be treated with moc
 set( HDR
     src/dtrace.h
@@ -162,9 +161,8 @@ set( HDR
     src/AutomaticRoomIdentification/roomidentification.h
     src/dtrace.h
     src/settingdialog.h
-    forms/attributetabwidget.h
-    forms/addlayerdialog.h
-  )
+    src/attributetabwidget.h
+        )
 
 # *.ui files
 set( UIS
@@ -174,8 +172,7 @@ set( UIS
     forms/widgetsettings.ui
     forms/settingdialog.ui
     forms/attributetabwidget.ui
-    forms/addlayerdialog.ui
-  )
+        )
 
 # and finally a resource file
 set( RCS
