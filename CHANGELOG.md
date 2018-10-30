@@ -1,6 +1,23 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## v0.8.5 [02.11.2018]
+## Added
+- Add Auto Saving function #67
+
+- Better Panning Mode #100
+
+## Changed
+- Update Shortcuts #92
+
+- Design new origin and axis #99
+
+## Bugs fixed
+- Esc doesn't work while drawing #98
+
+- SegFault: Delete all Rooms #91
+
+
 ## v0.8.4 [05.10.2018]
 ## Added
 - In menu bar, under "Edit" you will find "Clear Rooms and Doors button" to clear all defined rooms and doors. #54
