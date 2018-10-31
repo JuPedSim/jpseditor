@@ -9,26 +9,28 @@
 # 2. DESIRED_QT_VERSION=5 (default 4)
 # example: >> cmake  -DDESIRED_QT_VERSION=5  -DCMAKE_PREFIX_PATH=~/Qt/5.5/clang_64 ..
 # Flags for VS: -G "Visual Studio ..." -DCMAKE_PREFIX_PATH=... -DCMAKE_C_FLAGS="-mwindows"
+# Qt5_DIR:PATH
+cmake_minimum_required(VERSION 3.2)
+# IF (POLICY CMP0048) # in CMake 3.0.0+
+#   CMAKE_POLICY (SET CMP0048 OLD) # keep PROJECT() from clearing VERSION variables
+# ENDIF (POLICY CMP0048)
+# IF (POLICY CMP0043) # in CMake 3.0.0+
+#   CMAKE_POLICY (SET CMP0043 OLD) # keep PROJECT() from clearing VERSION variables
+# ENDIF (POLICY CMP0043)
+# IF (POLICY CMP0020)
+#   CMAKE_POLICY (SET CMP0020 OLD) # keep old POLICY (2.8.10 and lower) The OLD behavior for this policy is not to link executables to
+# ENDIF (POLICY CMP0020)			#qtmain.lib automatically when they link to the QtCore IMPORTEDtarget
 
-cmake_minimum_required(VERSION 2.8.9)
-IF (POLICY CMP0048) # in CMake 3.0.0+
-  CMAKE_POLICY (SET CMP0048 OLD) # keep PROJECT() from clearing VERSION variables
-ENDIF (POLICY CMP0048)
-IF (POLICY CMP0043) # in CMake 3.0.0+
-  CMAKE_POLICY (SET CMP0043 OLD) # keep PROJECT() from clearing VERSION variables
-ENDIF (POLICY CMP0043)
-IF (POLICY CMP0020)
-  CMAKE_POLICY (SET CMP0020 OLD) # keep old POLICY (2.8.10 and lower) The OLD behavior for this policy is not to link executables to
-ENDIF (POLICY CMP0020)			#qtmain.lib automatically when they link to the QtCore IMPORTEDtarget
+# IF (POLICY CMP0025)
+#   cmake_policy(SET CMP0025 NEW) #fixes error No known features for CXX compiler (on mac)
+# ENDIF (POLICY CMP0025)
 
-IF (POLICY CMP0025)
-  cmake_policy(SET CMP0025 NEW) #fixes error No known features for CXX compiler (on mac)
-ENDIF (POLICY CMP0025)
-
-project(JPSeditor)
+project(JPSeditor LANGUAGES CXX)
+set (CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 MESSAGE( STATUS "System ........................................ ${CMAKE_SYSTEM_NAME} (${CMAKE_SYSTEM_VERSION}, ${CMAKE_SYSTEM_PROCESSOR})" )
-
 
 set(README_FILE "${CMAKE_SOURCE_DIR}/README.md")
 set(CMAKE_COLOR_MAKEFILE ON)
@@ -185,53 +187,39 @@ IF (WIN32)
 ENDIF (WIN32)
 
 #--------------- here comes QT. Version problem (4 or 5?)
-# cmake does not provide findqt5-modules
-
-if("${QT_QMAKE_EXECUTABLE}" STREQUAL "")
-  FIND_PROGRAM(QT_QMAKE_EXECUTABLE NAMES qmake)
-  if ("${QT_QMAKE_EXECUTABLE}" STREQUAL "")
-    message(FATTAL_ERROR "QT not found - abort.")
-  endif()
-endif()
-message(STATUS "QT_Qmake_executable ........................... " ${QT_QMAKE_EXECUTABLE})
-execute_process(COMMAND ${QT_QMAKE_EXECUTABLE} -query QT_VERSION OUTPUT_VARIABLE QT_VERSION)
-message(STATUS "QT_VERSION .................................... " ${QT_VERSION})
-# qt version > 5 or qt version < 3 are not supported
-if( ${QT_VERSION} VERSION_GREATER 6 OR ${QT_VERSION} VERSION_LESS 3)
-  message(FATAL_ERROR "QT version " ${DESIRED_QT_VERSION} " not supported. Try 4 or 5")
-endif()
-
-
 if("${DESIRED_QT_VERSION}" STREQUAL "")
-  if( ${QT_VERSION} VERSION_GREATER 4.99 AND ${QT_VERSION} VERSION_LESS 6)
     set(DESIRED_QT_VERSION 5)
-  endif()
-
-  if( ${QT_VERSION} VERSION_GREATER 3.99 AND ${QT_VERSION} VERSION_LESS 5)
+else()
     set(DESIRED_QT_VERSION 4)
-  endif()
 endif()
 
+message(STATUS "Searching for Qt version ...................... " ${DESIRED_QT_VERSION})
 # find packages according to qt version
 if("${DESIRED_QT_VERSION}" STREQUAL "5")
   find_package(Qt5Widgets REQUIRED)
-# - these find_packages are not necessary? -----------
+  # - these find_packages are not necessary? -----------
   FIND_PACKAGE(Qt5Core REQUIRED)
   FIND_PACKAGE(Qt5Gui REQUIRED)
   FIND_PACKAGE(Qt5Network REQUIRED)
   FIND_PACKAGE(Qt5Xml REQUIRED)
-#-----------------------------------------------------
+  #-----------------------------------------------------
   set(QT5_INSTALLED TRUE)
-  # MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
-elseif("${DESIRED_QT_VERSION}" STREQUAL "4")
+  set(QTVERSION 5)
+  MESSAGE(STATUS "Found Qt version .............................. ${Qt5Core_VERSION_STRING}")
 
-  #   QT4_INSTALLED is set to TRUE if qt4 is found and
-  #   QT3_INSTALLED is set to TRUE if qt3 is found.
-  FIND_PACKAGE(Qt COMPONENTS QtXml QT_USE_QTNETWORK QtXmlPatterns REQUIRED)
+elseif("${DESIRED_QT_VERSION}" STREQUAL "4")
+  find_package(Qt COMPONENTS QtXml QT_USE_QTNETWORK QtXmlPatterns REQUIRED)
   set(QT4_INSTALLED TRUE)
+  set(QTVERSION 4)
 endif()
 
-message(STATUS "DESIRED_QT_VERSION ............................ " ${DESIRED_QT_VERSION})
+execute_process(COMMAND ${QT_QMAKE_EXECUTABLE} -query QT_VERSION OUTPUT_VARIABLE QT_VERSION)
+# qt version > 5 or qt version < 3 are not supported
+if( ${QTVERSION} VERSION_GREATER 6 OR ${QTVERSION} VERSION_LESS 3)
+  message(FATAL_ERROR "QT version " ${QTVERSION} " not supported. Try 4 or 5")
+endif()
+
+
 # if(QT5_INSTALLED)
 #   message(STATUS "QT5_INSTALLED: " ${QT5_INSTALLED})
 # elseif(QT4_INSTALLED )
