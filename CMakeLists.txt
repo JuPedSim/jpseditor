@@ -43,6 +43,10 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "")
 endif()
 
 message( STATUS "Generating  ................................... ${PROJECT_NAME} (${JPSEDITOR_VERSION}) -- ${CMAKE_BUILD_TYPE}")
+if(APPLE )
+  set(CMAKE_INSTALL_PREFIX "/Applications")
+endif()
+message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
 
 
 # ------------------------- Begin Generic CMake Variable Logging ------------------
@@ -73,13 +77,6 @@ message( STATUS "EXECUTABLE_OUTPUT_PATH ........................ " ${EXECUTABLE_
 # (CMAKE_BINARY_DIR holds a path to the build directory, while INCLUDE_DIRECTORIES() works just like INCLUDEPATH from qmake)
 include_directories( ${CMAKE_BINARY_DIR} )
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
-
-
-if(APPLE AND CMAKE_INSTALL_PREFIX MATCHES "/usr/local")
-        set(CMAKE_INSTALL_PREFIX "/Applications")
-endif()
-message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
-
 
 #--------------------
 if (NOT MSVC)
@@ -262,13 +259,13 @@ if(${QT4_INSTALLED})
   QT4_WRAP_UI( UI_HDRS ${UIS} )
   QT4_ADD_RESOURCES( RCS ${RCS} )
   include( ${QT_USE_FILE} )
-  ADD_EXECUTABLE( jpseditor MACOSX_BUNDLE WIN32
+  ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE WIN32
   ${SRCS}
   ${MOC_HDRS}
   ${UI_HDRS}
   ${RCS}
   )
-  TARGET_LINK_LIBRARIES( jpseditor ${QT_LIBRARIES})
+  TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${QT_LIBRARIES})
 elseif( ${QT5_INSTALLED})
   message(STATUS "Working with Qt5")
   # http://www.kdab.com/using-cmake-with-qt-5/
@@ -278,16 +275,16 @@ elseif( ${QT5_INSTALLED})
   qt5_add_resources( RCS ${RCS} )
   #qt5_use_package(JPSeditor Widgets)
 
-  ADD_EXECUTABLE( jpseditor MACOSX_BUNDLE WIN32
+  ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE WIN32
   ${SRCS}
   ${MOC_HDRS}
   ${UI_HDRS}
   ${RCS}
   )
- qt5_use_modules(jpseditor Widgets)
- target_link_libraries(jpseditor ${Qt5Widgets_LIBRARIES})
+ qt5_use_modules(${PROJECT_NAME} Widgets)
+ target_link_libraries(${PROJECT_NAME} ${Qt5Widgets_LIBRARIES})
 else()
-  message(FATAL_ERROR "QT NOT BE FOUND - ABORT")
+  message(FATAL_ERROR "QT NOT FOUND - ABORT")
 endif()
 
 IF(APPLE)
@@ -296,7 +293,7 @@ IF(APPLE)
 ENDIF(APPLE)
 
 
-SET_TARGET_PROPERTIES( jpseditor PROPERTIES MACOSX_BUNDLE TRUE)
+SET_TARGET_PROPERTIES( ${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE TRUE)
 #----------------------------------------------------------------------
 # enable as many warnings as possible
 set(warning_flags "-Wall -Wextra")
@@ -336,52 +333,35 @@ endif()
 #--------------------------------------------------------------------------------
 # Now the installation stuff below
 #--------------------------------------------------------------------------------
-SET(plugin_dest_dir bin)
-SET(qtconf_dest_dir bin)
-SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/jpseditor")
-IF(APPLE)
-  SET(plugin_dest_dir jpseditor.app/Contents/MacOS)
-  SET(qtconf_dest_dir jpseditor.app/Contents/Resources)
-  SET(APPS "\${CMAKE_INSTALL_PREFIX}/jpseditor.app")
-ENDIF(APPLE)
-
-IF(WIN32)
-  SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/jpseditor.exe")
-ENDIF(WIN32)
-
-INSTALL(TARGETS jpseditor
-  BUNDLE DESTINATION . COMPONENT Runtime
+INSTALL(TARGETS ${PROJECT_NAME}
+  BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX} COMPONENT Runtime
   RUNTIME DESTINATION bin COMPONENT Runtime
   # PERMISSIONS OWNER_EXECUTE 600
   )
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "${BIN_INSTALL_DIR}")
+include(InstallRequiredSystemLibraries)
 
-#--------------------------------------------------------------------------------
-# Install needed Qt plugins by copying directories from the qt installation
-# One can cull what gets copied by using 'REGEX "..." EXCLUDE'
-# todo should we check qt version here?
 if(APPLE)
-INSTALL(DIRECTORY "${QT_PLUGINS_DIR}/imageformats" DESTINATION ${plugin_dest_dir}/plugins
-  # DIRECTORY_PERMISSIONS
-  # OWNER_WRITE OWNER_READ  OWNER_EXECUTE
-  # GROUP_WRITE GROUP_READ  GROUP_EXECUTE
-  # WORLD_WRITE WORLD_READ WORLD_EXECUTE
-  COMPONENT Runtime)
-endif()
-#--------------------------------------------------------------------------------
-# install a qt.conf file
-# this inserts some cmake code into the install script to write the file
-if(APPLE)
-INSTALL(CODE "
-    file(WRITE \"\${CMAKE_INSTALL_PREFIX}/${qtconf_dest_dir}/qt.conf\" \"\")
-    " COMPONENT Runtime)
+  set(EXECUTABLE "${PROJECT_NAME}.app")
+elseif(WIN32)
+  set(EXECUTABLE "${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX}")
+else()
+  set(EXECUTABLE "${BIN_INSTALL_DIR}/${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX}")
 endif()
 
-#--------------------------------------------------------------------------------
-# Use BundleUtilities to get all other dependencies for the application to work.
-# It takes a bundle or executable along with possible plugins and inspects it
-# for dependencies.  If they are not system dependencies, they are copied.
 
-# directories to look for dependencies
+SET(plugin_dest_dir bin)
+SET(qtconf_dest_dir bin)
+SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}")
+IF(APPLE)
+  SET(plugin_dest_dir ${PROJECT_NAME}.app/Contents/MacOS)
+  SET(qtconf_dest_dir ${PROJECT_NAME}/Contents/Resources)
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}")
+ENDIF(APPLE)
+
+IF(WIN32)
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}.exe")
+ENDIF(WIN32)
 
 if( ${QT5_INSTALLED})
   SET(DIRS ${QT_LIBRARIES})
@@ -389,37 +369,20 @@ elseif( ${QT5_INSTALLED})
   SET(DIRS ${QT_LIBRARY_DIRS})
 endif()
 
-# Now the work of copying dependencies into the bundle/package
-# The quotes are escaped and variables to use at install time have their $ escaped
-# An alternative is the do a configure_file() on a script and use install(SCRIPT  ...).
-# Note that the image plugins depend on QtSvg and QtXml, and it got those copied
-# over.
-#
-if(APPLE)
-INSTALL(CODE "
-     file(GLOB_RECURSE QTPLUGINS
-       \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
-       image
-     fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
-     " COMPONENT Runtime)
-endif()
-
-
 
 #================================================ APPLE Stuff ======================
 
 IF(APPLE)
   # set how it shows up in the Info.plist file
   SET(MACOSX_EDIT_ICON jupedsim.icns)
-  set_target_properties(jpseditor PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Resources/Info.plist.in)
-  SET(MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2015 Forschungszentrum Juelich. All rights reserved.")
-  SET(MACOSX_BUNDLE_BUNDLE_NAME "jpseditor")
+  SET(MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2015-2018 Forschungszentrum Juelich. All rights reserved.")
+  SET(MACOSX_BUNDLE_BUNDLE_NAME "${PROJECT_NAME}")
   SET(MACOSX_BUNDLE_BUNDLE_VERSION "${JPSEDITOR_VERSION}")
   SET(MACOSX_BUNDLE_LONG_VERSION_STRING "version ${JPSEDITOR_VERSION}")
   SET(MACOSX_BUNDLE_SHORT_VERSION_STRING "${JPSEDITOR_VERSION}")
-  SET(MACOSX_EDIT_COPYRIGHT "Copyright (c) 2015 Forschungszentrum Juelich. All rights reserved.")
-  SET(MACOSX_BUNDLE_EDIT_IDENTIFIER "www.jupedsim.org")
+  SET(MACOSX_BUNDLE_EDIT_IDENTIFIER "https://www.jupedsim.org")
   # set where in the bundle to put the icns file
+  # set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Resources/Info.plist.in)
 
 ENDIF(APPLE)
 
@@ -429,82 +392,54 @@ ENDIF(APPLE)
 # https://github.com/mikemcquaid/Fabula
 set(CPACK_BINARY_DRAGNDROP ON)
 set(CPACK_GENERATOR "TBZ2")
-set(CPACK_PACKAGE_VERSION_MAJOR "${JPSEDITOR_VERSION_MAJOR}")
-set(CPACK_PACKAGE_VERSION_MINOR "${JPSEDITOR_VERSION_MINOR}")
-set(CPACK_PACKAGE_VERSION_PATCH "${JPSEDITOR_version_patch}")
+set(CPACK_PACKAGE_VERSION_MAJOR "${JPSEDITOR_MAJOR_VERSION}")
+set(CPACK_PACKAGE_VERSION_MINOR "${JPSEDITOR_MINOR_VERSION}")
+set(CPACK_PACKAGE_VERSION_PATCH "${JPSEDITOR_PATCH_VERSION}")
 set(CPACK_PACKAGE_VERSION "${JPSEDITOR_VERSION}")
 set(CPACK_PACKAGE_VENDOR "${JPSEDITOR_VENDOR}")
 set(CPACK_RESOURCE_FILE_README "${README_FILE}")
 if(WIN32) # todo test this for windows
-    set(CPACK_GENERATOR "NSIS")
-    set(CPACK_PACKAGE_EXECUTABLES "${PROJECT_NAME}" "${PROJECT_NAME}")
-    set(CPACK_PACKAGE_INSTALL_DIRECTORY "${PROJECT_NAME}")
-    set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME} ${JPSEDITOR_VERSION}")
-    set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/${LICENSE_FILE}")
-    set(CPACK_NSIS_EXECUTABLES_DIRECTORY "${BIN_INSTALL_DIR}")
-    #set(CPACK_NSIS_MUI_ICON "${PROJECT_ICONS_DIRECTORY}/NSIS.ico")
-    #set(CPACK_PACKAGE_ICON "${PROJECT_ICONS_DIRECTORY}\\\\NSISHeader.bmp")
-    set(CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX}")
-#    set(CPACK_NSIS_MENU_LINKS "${LICENSE_FILE}" "License" "${README_FILE}" "Readme")
- #   set(CPACK_NSIS_MUI_FINISHPAGE_RUN "${CPACK_NSIS_INSTALLED_ICON_NAME}")
+  set(CPACK_GENERATOR "NSIS")
+  set(CPACK_PACKAGE_EXECUTABLES "${PROJECT_NAME}" "${PROJECT_NAME}")
+  set(CPACK_PACKAGE_INSTALL_DIRECTORY "${PROJECT_NAME}")
+  set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME} ${JPSEDITOR_VERSION}")
+  set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/${LICENSE_FILE}")
+  set(CPACK_NSIS_EXECUTABLES_DIRECTORY "${BIN_INSTALL_DIR}")
+  #set(CPACK_NSIS_MUI_ICON "${PROJECT_ICONS_DIRECTORY}/NSIS.ico")
+  #set(CPACK_PACKAGE_ICON "${PROJECT_ICONS_DIRECTORY}\\\\NSISHeader.bmp")
+  set(CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX}")
+  #    set(CPACK_NSIS_MENU_LINKS "${LICENSE_FILE}" "License" "${README_FILE}" "Readme")
+  #   set(CPACK_NSIS_MUI_FINISHPAGE_RUN "${CPACK_NSIS_INSTALLED_ICON_NAME}")
 elseif(APPLE) # todo test this for apple
-     set(CMAKE_INSTALL_PREFIX "/Applications/")
-     set(CPACK_GENERATOR "DragNDrop")
-     set(CPACK_DMG_FORMAT "UDBZ")
-     set(CPACK_DMG_VOLUME_NAME "${PROJECT_NAME}")
-     set(CPACK_SYSTEM_NAME "OSX")
-     set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${JPSEDITOR_VERSION}")
-     #set(CPACK_PACKAGE_ICON "${ICONS_DIR}/DMG.icns")
-     #set(CPACK_DMG_DS_STORE "${ICONS_DIR}/DMGDSStore")
-     #set(CPACK_DMG_BACKGROUND_IMAGE "${ICONS_DIR}/DMGBackground.png")
-   elseif(UNIX)
-     # tested with success in
-     # Linux dhcppc5 3.2.0-4-686-pae #1 SMP Debian 3.2.68-1+deb7u2 i686 GNU/Linux
-     set(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
-       SET(CPACK_GENERATOR "DEB")
+  set(CPACK_GENERATOR "DragNDrop")
+  set(CPACK_DMG_FORMAT "UDBZ")
+  set(CPACK_DMG_VOLUME_NAME "${PROJECT_NAME}")
+  set(CPACK_SYSTEM_NAME "OSX")
+  set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${JPSEDITOR_VERSION}")
+  #set(CPACK_PACKAGE_ICON "${ICONS_DIR}/DMG.icns")
+  #set(CPACK_DMG_DS_STORE "${ICONS_DIR}/DMGDSStore")
+  #set(CPACK_DMG_BACKGROUND_IMAGE "${ICONS_DIR}/DMGBackground.png")
+elseif(UNIX)
+  # tested with success in
+  # Linux dhcppc5 3.2.0-4-686-pae #1 SMP Debian 3.2.68-1+deb7u2 i686 GNU/Linux
+  set(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
+  SET(CPACK_GENERATOR "DEB")
 
-       SET(CPACK_PACKAGE_DESCRIPTION "simulation core of JuPedSim")
-       SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Geometry editor of JuPedSim, a framework for simulation and analysis of pedestrian dynamics")
-       #SET(CPACK_PACKAGE_VENDOR "nowardev")
-       SET(CPACK_PACKAGE_CONTACT "m.chraibi@fz-juelich.de")
-       SET(CPACK_PACKAGE_VERSION_MAJOR "${JPSEDITOR_MAJOR_VERSION}")
-       SET(CPACK_PACKAGE_VERSION_MINOR "${JPSEDITOR_MINOR_VERSION}")
-       SET(CPACK_PACKAGE_VERSION_PATCH "${JPSEDITOR_PATCH_VERSION}")
-       SET(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${JPSEDITOR_VERSION}")
-       SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${JPSEDITOR_VERSION}")
-       #SET(CPACK_DEBIAN_PACKAGE_DEPENDS " Boost (>= 1.59) ")
-       SET(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-       SET( CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://jupedsim.org")
-       SET(CPACK_DEBIAN_PACKAGE_SUGGESTS, "jpsvis, jpsreport, jpscor")
-       SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
-       SET(CPACK_DEBIAN_PACKAGE_SECTION "science")
-       SET(CPACK_DEBIAN_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
-
-
-
-     endif()
-     include(CPack)
-
-
-#     message (STATUS "bin ins" ${BIN_INSTALL_DIR})
-set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "${BIN_INSTALL_DIR}")
-include(InstallRequiredSystemLibraries)
-
-if(APPLE)
-    set(EXECUTABLE "${PROJECT_NAME}.app")
-elseif(WIN32)
-    set(EXECUTABLE "${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX}")
-else()
-    set(EXECUTABLE "${BIN_INSTALL_DIR}/${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX}")
+  SET(CPACK_PACKAGE_DESCRIPTION "simulation core of JuPedSim")
+  SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Geometry editor of JuPedSim, a framework for simulation and analysis of pedestrian dynamics")
+  #SET(CPACK_PACKAGE_VENDOR "nowardev")
+  SET(CPACK_PACKAGE_CONTACT "m.chraibi@fz-juelich.de")
+  SET(CPACK_PACKAGE_VERSION_MAJOR "${JPSEDITOR_MAJOR_VERSION}")
+  SET(CPACK_PACKAGE_VERSION_MINOR "${JPSEDITOR_MINOR_VERSION}")
+  SET(CPACK_PACKAGE_VERSION_PATCH "${JPSEDITOR_PATCH_VERSION}")
+  SET(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${JPSEDITOR_VERSION}")
+  SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${JPSEDITOR_VERSION}")
+  #SET(CPACK_DEBIAN_PACKAGE_DEPENDS " Boost (>= 1.59) ")
+  SET(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+  SET( CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://jupedsim.org")
+  SET(CPACK_DEBIAN_PACKAGE_SUGGESTS, "jpsvis, jpsreport, jpscore")
+  SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+  SET(CPACK_DEBIAN_PACKAGE_SECTION "science")
+  SET(CPACK_DEBIAN_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 endif()
-
-# if(APPLE OR WIN32)
-#   if(${QT4_INSTALLED})
-#     include(DeployQt4)
-#     install_qt4_executable("${EXECUTABLE}" "qsqlite")
-
-#   elseif(${QT5_INSTALLED})
-#     include(DeployQt5)
-#     install_qt5_executable("${EXECUTABLE}" "qsqlite")
-#   endif()
-# endif()
+include(CPack)
