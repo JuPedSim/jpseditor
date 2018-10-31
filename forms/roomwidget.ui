@@ -16,9 +16,53 @@
   <property name="toolTip">
    <string/>
   </property>
-  <property name="currentIndex">
-   <number>1</number>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(240, 240, 240);</string>
   </property>
+  <property name="currentIndex">
+   <number>0</number>
+  </property>
+  <widget class="QWidget" name="layerTab">
+   <attribute name="title">
+    <string>Layers</string>
+   </attribute>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>180</y>
+      <width>301</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QPushButton" name="hideButton">
+       <property name="text">
+        <string>Hide Layer</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="showButton">
+       <property name="text">
+        <string>Show Layer</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QListWidget" name="layerListWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>310</width>
+      <height>170</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
   <widget class="QWidget" name="widget">
    <property name="toolTip">
     <string/>
@@ -249,7 +293,7 @@
       <x>150</x>
       <y>200</y>
       <width>151</width>
-      <height>91</height>
+      <height>93</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">

@@ -55,6 +55,8 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     show_crossings();
     show_exits();
     show_obstacles();
+    showLayers();
+
 
     //temporary uncommented
     ui->auto_assign_doors->setVisible(false);
@@ -141,6 +143,19 @@ void roomWidget::show_rooms()
     }
     //ui->list_rooms->setCurrentRow(roomlist.size()-1); //why this line?
     dtrace("Leave roomWidget::show_rooms"); 
+}
+
+void roomWidget::showLayers()
+{
+    QList<QString> elevationlist=datamanager->getElevationList();
+    QListIterator<QString> i(elevationlist);
+
+    while (i.hasNext())
+    {
+        QString elevation = i.next();
+        QString layerinfo = "Layer - High: " + elevation + "m";
+        ui->layerListWidget->addItem(layerinfo);
+    }
 }
 
 void roomWidget::show_crossings()

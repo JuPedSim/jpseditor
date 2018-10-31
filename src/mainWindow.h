@@ -166,7 +166,6 @@ private slots:
     //default setting
     void saveSettings(QMap<QString, QString> settingsmap);
     QMap<QString, QString> loadSettings();
-    void on_actionEdit_Attributes_triggered();
 };
 
 #endif // MAINWINDOW_H

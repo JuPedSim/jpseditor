@@ -127,6 +127,27 @@ QList<jpsRoom *> jpsDatamanager::get_roomlist()
     dtrace("Enter/return jpsDatamanager::get_roomlist");
     return this->roomlist;
 }
+
+QList<QString> jpsDatamanager::getElevationList()
+{
+    QList<QString> elevationlist;
+    QList<jpsRoom *> roomlist = get_roomlist();
+
+    QListIterator<jpsRoom *> i(roomlist);
+    while (i.hasNext())
+    {
+        float elevation = i.next()->get_elevation();
+        if (!elevationlist.contains(QString::number(elevation)) &&
+                i.peekPrevious()->get_type() != "Stair")
+        {
+            elevationlist.append(QString::number(elevation));
+        }
+
+    }
+
+    return elevationlist;
+}
+
 void jpsDatamanager::new_obstacle()
 {
      dtrace("Enter: jpsDatamanager::new_obstacle. obs_id_counter = %d", obs_id_counter);

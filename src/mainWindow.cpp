@@ -632,10 +632,6 @@ void MWindow::send_xy()
 
 void MWindow::define_room()
 {
-    if (awidget!= nullptr){
-        awidget->close();
-        awidget= nullptr;
-    }
 
     if (rwidget==nullptr)
     {
@@ -789,6 +785,7 @@ void MWindow::on_actionClear_all_Rooms_and_Doors_triggered()
 
     if(rwidget!= nullptr){
         rwidget->show_rooms();
+        rwidget->showLayers();
         rwidget->show_crossings();
         rwidget->show_obstacles();
     }
@@ -845,25 +842,3 @@ void MWindow::en_disablePanning()
 }
 
 
-
-void MWindow::on_actionEdit_Attributes_triggered()
-{
-    if(rwidget!= nullptr){
-        rwidget->close();
-        rwidget=nullptr;
-    }
-
-    if (awidget==nullptr)
-    {
-        awidget = new attributeTabWidget(this);
-        awidget->setGeometry(QRect(QPoint(5,75), awidget->size()));
-        awidget->setAttribute(Qt::WA_DeleteOnClose);
-        awidget->show();
-
-    }
-    else
-    {
-        awidget->close();
-        awidget=nullptr;
-    }
-}

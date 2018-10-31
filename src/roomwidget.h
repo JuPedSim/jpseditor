@@ -47,9 +47,10 @@ class roomWidget : public QTabWidget
     Q_OBJECT
     
 public:
-    roomWidget(QWidget *parent = 0L, jpsDatamanager *dmanager=0L, jpsGraphicsView *gview=0L);
+    roomWidget(QWidget *parent = nullptr, jpsDatamanager *dmanager=0L, jpsGraphicsView *gview=0L);
     ~roomWidget();
     void show_rooms();
+    void showLayers();
     void show_crossings();
     void show_exits();
     void show_obstacles();

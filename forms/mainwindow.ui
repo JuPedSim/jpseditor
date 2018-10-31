@@ -57,7 +57,6 @@
     <addaction name="actionAuto_Definition"/>
     <addaction name="actionGather_data"/>
     <addaction name="actionLandmarkWidget"/>
-    <addaction name="actionEdit_Attributes"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -128,7 +127,6 @@
    <addaction name="actionPanning_Mode"/>
    <addaction name="separator"/>
    <addaction name="actionRoom"/>
-   <addaction name="actionEdit_Attributes"/>
   </widget>
   <action name="action_ffnen">
    <property name="icon">
@@ -336,7 +334,7 @@
    </property>
    <property name="icon">
     <iconset resource="../Resources/resources.qrc">
-     <normaloff>:/inAppIcons/Icons/rooms.png</normaloff>:/inAppIcons/Icons/rooms.png</iconset>
+     <normaloff>:/inAppIcons/Icons/attribute.svg</normaloff>:/inAppIcons/Icons/attribute.svg</iconset>
    </property>
    <property name="text">
     <string>Define Rooms</string>
@@ -701,15 +699,6 @@
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
-   </property>
-  </action>
-  <action name="actionEdit_Attributes">
-   <property name="icon">
-    <iconset resource="../Resources/resources.qrc">
-     <normaloff>:/inAppIcons/Icons/attribute.svg</normaloff>:/inAppIcons/Icons/attribute.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Edit Attributes </string>
    </property>
   </action>
  </widget>
