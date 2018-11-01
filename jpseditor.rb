@@ -1,7 +1,7 @@
 class Jpseditor < Formula
   desc "A graphical user interface to create the geometry of a scenario simulated by JuPedSim"
   homepage "https://www.jupedsim.org/"
-  head "https://github.com/JuPedSim/jpseditor.git" :branch => "develop"
+  head "https://github.com/JuPedSim/jpseditor.git"
 
   depends_on "cmake" => :build
   depends_on "qt"
