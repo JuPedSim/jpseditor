@@ -23,7 +23,7 @@ configure-linux:
   script:
     - mkdir -p build
     - cd build
-    - cmake -DCMAKE_BUILD_TYPE=Debug ..
+    - cmake -DCMAKE_BUILD_TYPE=Debug  DESIRED_QT_VERSION=4 ..
     - echo "configure | ${CI_PROJECT_DIR}"
   stage: configure
   tags:
