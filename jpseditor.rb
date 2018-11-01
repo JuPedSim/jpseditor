@@ -1,5 +1,5 @@
 class Jpseditor < Formula
-  desc "A raphical user interface to create the geometry of a scenario simulated by JuPedSim"
+  desc "A graphical user interface to create the geometry of a scenario simulated by JuPedSim"
   homepage "https://www.jupedsim.org/"
   head "https://github.com/JuPedSim/jpseditor.git" :branch => "develop"
 
@@ -12,7 +12,10 @@ class Jpseditor < Formula
     Dir.chdir "build"
     system "cmake", "..", *std_cmake_args
     system "make", "install"
+    puts ""
+    puts "------------------------------------"
+    puts "JPSeditor installed in /tmp"
+    puts "open /tmp/JPSeditor.app"
+    puts "------------------------------------"
   end
-
-
 end
