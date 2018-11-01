@@ -153,7 +153,7 @@ void roomWidget::showLayers()
     while (i.hasNext())
     {
         QString elevation = i.next();
-        QString layerinfo = "Layer - High: " + elevation + "m";
+        QString layerinfo = elevation + "m";
         ui->layerListWidget->addItem(layerinfo);
     }
 }
@@ -234,6 +234,7 @@ void roomWidget::new_room()
     enable_roomSelectionExits();
     enable_roomSelectionObs();
     this->show_rooms();
+    this->showLayers();
     dtrace("Leave roomWidget::new_room");
 }
 
@@ -254,6 +255,7 @@ void roomWidget::delete_room()
         ui->list_rooms->setCurrentRow(-1);
 
         this->show_rooms();
+        this->showLayers();
     }
     dtrace("Leave roomWidget::delete_room");
 }
@@ -635,6 +637,7 @@ void roomWidget::select_exit()
 void roomWidget::show_all()
 {
     show_rooms();
+    showLayers();
     show_crossings();
     show_exits();
     show_obstacles();
@@ -1140,4 +1143,39 @@ void roomWidget::highlight_obs(jpsRoom * room)
           if(room_name != r->get_name())
                if(r->is_highlighted())
                     r->highlight();
+}
+
+void roomWidget::on_hideButton_clicked()
+{
+    QList<jpsRoom*> roomlist=datamanager->get_roomlist();
+    QListIterator<jpsRoom*> i(roomlist);
+
+    while (i.hasNext())
+    {
+        i.next();
+
+        qDebug() << i.peekPrevious()->get_name();
+        if(QString(QString::number(i.peekPrevious()->get_elevation()) + "m")==ui->layerListWidget->currentItem()->text())
+        {
+            i.peekPrevious()->setVisible(false);
+        }
+
+    }
+}
+
+void roomWidget::on_showButton_clicked()
+{
+    QList<jpsRoom*> roomlist=datamanager->get_roomlist();
+    QListIterator<jpsRoom*> i(roomlist);
+
+    while (i.hasNext())
+    {
+        i.next();
+
+        qDebug() << i.peekPrevious()->get_name();
+        if(QString(QString::number(i.peekPrevious()->get_elevation()) + "m")==ui->layerListWidget->currentItem()->text())
+        {
+            i.peekPrevious()->setVisible(true);
+        }
+    }
 }

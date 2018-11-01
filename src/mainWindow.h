@@ -42,7 +42,6 @@
 #include "datamanager.h"
 #include "rooms.h"
 #include "src/settingdialog.h"
-#include "src/attributetabwidget.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 
@@ -54,7 +53,6 @@ public:
 
 private:
     roomWidget* rwidget;
-    attributeTabWidget* awidget;
     widgetLandmark* lwidget;
 //    WidgetSettings* _settings;
     jpsDatamanager* dmanager;
@@ -78,11 +76,6 @@ private:
     SettingDialog *settingDialog;
     QTimer *timer;
     QSettings settings;
-
-//    QString backupfolder;
-//    QString defaultjpscore;
-//    QString defaultjpsvis;
-//    QMap<QString, QString> defaultsetting;
 
     bool _statScale;
 

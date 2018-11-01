@@ -48,6 +48,7 @@ jpsRoom::jpsRoom(int id_room)
     B_y=0.0;
     C_z=0.0;
     _elevation=0;
+    visible=true;
 }
 
 
@@ -672,4 +673,15 @@ void jpsRoom::correctPlaneCoefficients()
 
 bool jpsRoom::is_highlighted()
 {
-     return highlighted;}
+     return highlighted;
+}
+
+bool jpsRoom::getVisible()
+{
+    return visible;
+}
+
+void jpsRoom::setVisible(bool visibility)
+{
+    visible = visibility;
+}

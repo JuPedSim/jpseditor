@@ -86,6 +86,9 @@ public:
     void set_elevation(float elevation);
     void correctPlaneCoefficients(); /// calculates the coefficients A_x, B_y and C_z for stairs
     bool is_highlighted();
+    bool getVisible();
+    void setVisible(bool visibility);
+
 private:
     int id;
     bool highlighted;
@@ -102,6 +105,7 @@ private:
     QString _type;
     QList<jpsCrossing* > _doorList;
     qreal _area;
+    bool visible;
 
     float _elevation; /// this makes only sense for horizontal rooms. 
 };

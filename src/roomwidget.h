@@ -107,6 +107,11 @@ protected slots:
 
 
 
+private slots:
+    void on_hideButton_clicked();
+
+    void on_showButton_clicked();
+
 private:
     Ui::roomWidget *ui;
     jpsDatamanager *datamanager;
