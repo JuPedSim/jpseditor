@@ -9,7 +9,8 @@ date: '2018-10-02'
 
 ## Release notes
 
-* [JPSeditor 0.8.4](/jpseditor/2018-10-03-release_v084.html)
+* [JPSeditor v0.8.4](/jpseditor/2018-10-03-release_v084.html)
+* [JPSeditor v0.8.5](/jpseditor/2018-10-29-release_v085.html)
 
 ## Blogs
 
