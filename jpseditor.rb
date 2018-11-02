@@ -3,19 +3,17 @@ class Jpseditor < Formula
   homepage "https://www.jupedsim.org/"
   head "https://github.com/JuPedSim/jpseditor.git"
 
-  depends_on "cmake" => :build
   depends_on "qt"
 
   def install
     Dir.pwd
     Dir.mkdir "build"
     Dir.chdir "build"
-    system "cmake", "..", *std_cmake_args
+    system "qmake", ".."
     system "make", "install"
     puts ""
     puts "------------------------------------"
-    puts "JPSeditor installed in /tmp"
-    puts "open /tmp/JPSeditor.app"
+    puts "JPSeditor installed in /usr/local/bin/jpseditor"
     puts "------------------------------------"
   end
 end
