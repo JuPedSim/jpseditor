@@ -14,7 +14,7 @@
  # along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
  #
  # copyright   <2009-2018> Forschungszentrum Juelich GmbH.
- 
+
  # Compatibility with Qt4 and Qt5
 greaterThan(QT_MAJOR_VERSION, 4):QT += widgets
 
@@ -31,7 +31,8 @@ FORMS += \
     forms/mainwindow.ui \
     forms/roomwidget.ui \
     forms/widgetlandmark.ui \
-    forms/widgetsettings.ui
+    forms/widgetsettings.ui \
+    forms/settingdialog.ui \
 
 HEADERS += \
     src/mainWindow.h \
@@ -66,7 +67,8 @@ HEADERS += \
     src/AutomaticRoomIdentification/roomID.h\
     src/AutomaticRoomIdentification/roomdefinition.h \
     src/AutomaticRoomIdentification/roomidentification.h \
-    src/dtrace.h
+    src/dtrace.h \
+    src/settingdialog.h
 
 
 SOURCES += \
@@ -92,17 +94,36 @@ SOURCES += \
     src/UndoFramework/lineaction.cpp \
     src/jpsregion.cpp \
     src/AutomaticRoomIdentification/roomdefinition.cpp \
-    src/AutomaticRoomIdentification/roomidentification.cpp
+    src/AutomaticRoomIdentification/roomidentification.cpp \
+    src/settingdialog.cpp
 
 
 #INCLUDEPATH += D:/boost_1_59_0/boost_1_59_0
 
-RESOURCES += \ 
+RESOURCES += \
     Resources/resources.qrc
 
 RC_FILE = Resources/jpseditor.rc
 #osx fix
-ICON = Resources/jupedsim.icns
+ICON = Resources/jpseditor.icns
 
 
+CONFIG(debug, debug|release) {
+    DESTDIR = build/debug
+}
+CONFIG(release, debug|release) {
+    DESTDIR = build/release
+}
 
+OBJECTS_DIR = $$DESTDIR/.obj
+MOC_DIR = $$DESTDIR/.moc
+RCC_DIR = $$DESTDIR/.qrc
+UI_DIR = $$DESTDIR/.u
+
+demos.path = /usr/local/bin/jpseditor
+demos.files = examples/*
+
+INSTALLS += demos
+
+target.path = /usr/local/bin/jpseditor
+INSTALLS += target

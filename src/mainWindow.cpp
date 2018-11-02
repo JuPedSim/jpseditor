@@ -36,13 +36,14 @@
 #include <QShortcut>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QDebug>
+#include <QSettings>
 
 MWindow :: MWindow() {
 
     setupUi(this);
     //Signal/Slot
     //VBox= new QVBoxLayout;
-
 
     mview = new jpsGraphicsView(this);
     dmanager = new jpsDatamanager(this,mview);
@@ -52,8 +53,7 @@ MWindow :: MWindow() {
     rwidget=nullptr;
     //Landmarkwidget
     lwidget=nullptr;
-    //WidgetSettings
-    _settings=nullptr;
+
 
     //StaturBar
 
@@ -95,6 +95,7 @@ MWindow :: MWindow() {
     setCentralWidget(mview);
     //this->setMaximumSize(1920,1080);
     this->showMaximized();
+
     statusBar()->addPermanentWidget(infoLabel);
     statusBar()->addPermanentWidget(label_x);
     statusBar()->addPermanentWidget(x_edit);
@@ -104,10 +105,10 @@ MWindow :: MWindow() {
 //    statusBar()->addPermanentWidget(length_edit);
 //    statusBar()->addPermanentWidget(label2);
 
-    //Timer needed for autosave function
+    //Timer needed for autosaving function
     // timer will trigger autosave every 5th minute
     timer = new QTimer(this);
-    timer->setInterval(300000);
+    timer->setInterval(60000);
     timer->start();
 
     _cMapTimer = new QTimer(this);
@@ -144,9 +145,14 @@ MWindow :: MWindow() {
     connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(actionScale,SIGNAL(triggered(bool)),this,SLOT(enableScale()));
+
     // Tab View
     connect(actionRotate_90_deg_clockwise,SIGNAL(triggered(bool)),this,SLOT(rotate()));
     connect(actionShow_Point_of_Origin,SIGNAL(triggered(bool)),this,SLOT(ShowOrigin()));
+
+    // Panning mode
+    connect(actionPanning_Mode,SIGNAL(triggered(bool)),this,SLOT(en_disablePanning()));
+
     // Length edit
 //    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(send_length()));
 //    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(ScaleLines()));
@@ -161,6 +167,11 @@ MWindow :: MWindow() {
     connect(mview,SIGNAL(set_focus_textedit()),length_edit,SLOT(setFocus()));
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
     connect(mview,SIGNAL(LineLengthChanged()),this,SLOT(ShowLineLength()));
+
+//    QAction *str_escape = new QAction(this);
+//    str_escape->setShortcut(Qt::Key_Escape);
+//    connect(str_escape, SIGNAL(triggered(bool)), mview, SLOT(disableDrawing()));
+
     // Mark all lines
     QAction *str_a = new QAction(this);
     str_a->setShortcut(Qt::Key_A | Qt::CTRL);
@@ -188,6 +199,7 @@ MWindow :: MWindow() {
     // room type data gathering
     connect(actionGather_data,SIGNAL(triggered(bool)),this, SLOT(GatherData()));
 
+
 }
 
 MWindow::~MWindow()
@@ -204,32 +216,24 @@ MWindow::~MWindow()
 
 void MWindow::AutoSave()
 {
-    QFile file("Name");
-    if (_filename!="")
-    {
-        QString fN="backup_"+_filename+".xml";
-        file.setFileName(fN);
-    }
-    else
-    {
-        QString fN="backup_untitled.xml";
-        file.setFileName(fN);
-    }
+    QMap<QString, QString> settingsmap = loadSettings();
+    QString backupfolder = settingsmap["backupfolder"];
 
+    QString filename = backupfolder + "/backup_untitled.xml";
+    QFile file(filename);
 
-    if(file.open(QIODevice::WriteOnly|QIODevice::Text))
-    {
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         //QString coord_string=mview->build_coordString();
 
-        dmanager->AutoSaveXML(file);
+        dmanager->writeXML(file);
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
-        statusBar()->showMessage(tr("Backup file generated!"),10000);
+        statusBar()->showMessage(tr("Backup file generated!"), 10000);
 
         //routing (hlines)
         QString fileNameRouting = file.fileName();
-        fileNameRouting=fileNameRouting.split(".").first()+"_routing.xml";
+        fileNameRouting = fileNameRouting.split(".").first() + "_routing.xml";
         QFile routingFile(fileNameRouting);
-        if (routingFile.open(QIODevice::WriteOnly|QIODevice::Text))
+        if (routingFile.open(QIODevice::WriteOnly | QIODevice::Text))
             dmanager->writeRoutingXML(routingFile);
     }
 }
@@ -286,20 +290,25 @@ void MWindow::GatherData()
 
 void MWindow::Settings()
 {
-    if (_settings==nullptr)
-    {
-        _settings = new WidgetSettings(this,mview);
-        _settings->setAttribute(Qt::WA_DeleteOnClose);
-        _settings->setGeometry(QRect(QPoint(5,75), _settings->size()));
-        _settings->show();
-    }
+    settingDialog = new SettingDialog;
 
-    else
-    {
-        _settings->close();
-        _settings=nullptr;
-    }
+//    QString backupfolder = settings.value("backupfolder").toString();
+//    QString interval =  settings.value("interval").toString();
+//
+//    qDebug()<< settings.value("backupfolder");
+//    qDebug()<< settings.value("interval");
+//
+//    QMap<QString, QString> defaultsetting;
+//    defaultsetting["backupfolder"] = backupfolder;
+//    defaultsetting["interval"] = interval;
 
+    QMap<QString, QString> defaultsetting = loadSettings();
+    connect(settingDialog,SIGNAL(sendSetting(QMap<QString, QString>)),
+            this,SLOT(saveSettings(QMap<QString, QString>)));
+    settingDialog->setCurrentSetting(defaultsetting);
+
+    settingDialog->setModal(true);
+    settingDialog->exec();
 }
 
 void MWindow::ShowOrigin()
@@ -683,6 +692,7 @@ void MWindow::en_selectMode()
     mview->disable_drawing();
 
     actionSelect_Mode->setChecked(true);
+
     actionWall->setChecked(false);
     actionDoor->setChecked(false);
     actionExit->setChecked(false);
@@ -771,8 +781,62 @@ void MWindow::on_actionOnline_Help_triggered()
 void MWindow::on_actionClear_all_Rooms_and_Doors_triggered()
 {
     dmanager->remove_all();
-    rwidget->show_rooms();
-    rwidget->show_crossings();
-    rwidget->show_exits();
-    rwidget->show_obstacles();
+
+    if(rwidget!= nullptr){
+        rwidget->show_rooms();
+        rwidget->show_crossings();
+        rwidget->show_obstacles();
+    }
+
 }
+
+void MWindow::keyPressEvent(QKeyEvent *event)
+{
+    switch(event->key())
+    {
+        case Qt::Key_Escape:
+            mview->disable_drawing();
+            en_selectMode();
+            break;
+        default:
+            QWidget::keyPressEvent(event);
+    }
+}
+
+// Default settings
+void MWindow::saveSettings(QMap<QString, QString> settingsmap)
+{
+    QSettings settings("FZJ","JPSeditor");
+    settings.beginGroup("backup");
+    settings.setValue("backupfolder", settingsmap["backupfolder"]);
+    settings.setValue("interval", settingsmap["interval"]);
+
+    timer->setInterval(settingsmap["interval"].toInt());
+
+    settings.endGroup();
+}
+
+QMap<QString, QString> MWindow::loadSettings()
+{
+    QSettings settings("FZJ","JPSeditor");
+
+    settings.beginGroup("backup");
+    QString value = settings.value("backupfolder", "../").toString();
+    QString interval = settings.value("interval", "60000").toString();
+    settings.endGroup();
+
+    QMap<QString, QString> settingsmap;
+    settingsmap["backupfolder"] = value;
+    settingsmap["interval"] = interval;
+
+    return settingsmap;
+}
+
+// Panning mode
+void MWindow::en_disablePanning()
+{
+    this->disableDrawing();
+    mview->en_disablePanning();
+}
+
+

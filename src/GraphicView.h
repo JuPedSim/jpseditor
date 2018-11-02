@@ -82,6 +82,9 @@ public:
     bool statusLandmark();
     void en_disableLandmark();
 
+    bool statusPanning();
+    void en_disablePanning();
+
     // global functions
     qreal get_scale_f();
     void take_l_from_lineEdit(const qreal &length);
@@ -202,6 +205,7 @@ private:
     bool statDoor;
     bool statExit;
     bool statLandmark;
+    bool statPanning;
     bool _statHLine;
     int _statCopy;
     QPointF _copyOrigin;

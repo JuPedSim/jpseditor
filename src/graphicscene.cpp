@@ -100,11 +100,11 @@ void GraphicScene::DrawLineGrid(QPainter *painter, const QRectF &rect)
     painter->drawLines(lines.data(), lines.size());
 
     //draw orgin and x y axis
-    painter->setPen(QPen(Qt::red,0));
-    painter->drawRect(origin);
-    painter->fillRect(origin, Qt::red);
-    painter->drawLine(xaxis);
-    painter->drawLine(yaxis);
+//    painter->setPen(QPen(Qt::red,0));
+//    painter->drawRect(origin);
+//    painter->fillRect(origin, Qt::red);
+//    painter->drawLine(xaxis);
+//    painter->drawLine(yaxis);
 }
 
 void GraphicScene::DrawPointGrid(QPainter *painter, const QRectF &rect)

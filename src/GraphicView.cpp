@@ -67,6 +67,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     statDoor=false;
     statExit=false;
     _statHLine=false;
+    statPanning=false;
     _statCopy=0;
     statLandmark=false;
     markedLandmark=nullptr;
@@ -178,7 +179,7 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
     }
 
 
-    if (midbutton_hold)
+    if (midbutton_hold && statPanning)
     {
         translations(old_pos);
     }
@@ -302,6 +303,11 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
     else if (mouseEvent->button()==Qt::MidButton)
     {
         midbutton_hold=true;
+    }
+    else if (mouseEvent->button()==Qt::RightButton)
+    {
+        disable_drawing();
+        emit no_drawing();
     }
 
     update();
@@ -922,6 +928,8 @@ void jpsGraphicsView::disable_drawing()
     _statLineEdit=false;
     _statHLine=false;
     _statCopy=0;
+
+
     // if drawing was canceled by pushing ESC
     if (current_line!=nullptr)
     {
@@ -935,7 +943,6 @@ void jpsGraphicsView::disable_drawing()
         delete _currentVLine;
         _currentVLine=nullptr;
     }
-
 }
 
 jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const qreal &x2,const qreal &y2,const QString &type)
@@ -1549,12 +1556,12 @@ void jpsGraphicsView::ShowOrigin()
     if (_origin.isEmpty())
     {
         //Scene->DrawOrigin();
-        _origin.push_back(Scene->addLine(0,0,0,0+gl_scale_f*100,QPen(Qt::black,gl_scale_f*2)));
-        _origin.push_back(Scene->addLine(0,0+gl_scale_f*100,0-gl_scale_f*10,0+gl_scale_f*100-gl_scale_f*10,QPen(Qt::black,gl_scale_f*2)));
-        _origin.push_back(Scene->addLine(0,0+gl_scale_f*100,0+gl_scale_f*10,0+gl_scale_f*100-gl_scale_f*10,QPen(Qt::black,gl_scale_f*2)));
-        _origin.push_back(Scene->addLine(0,0,0+gl_scale_f*100,0,QPen(Qt::black,gl_scale_f*2)));
-        _origin.push_back(Scene->addLine(0+gl_scale_f*100,0,gl_scale_f*100-gl_scale_f*10,-gl_scale_f*10,QPen(Qt::black,gl_scale_f*2)));
-        _origin.push_back(Scene->addLine(0+gl_scale_f*100,0,gl_scale_f*100-gl_scale_f*10,+gl_scale_f*10,QPen(Qt::black,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0,0,0,0+gl_scale_f*100,QPen(Qt::red,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0,0+gl_scale_f*100,0-gl_scale_f*10,0+gl_scale_f*100-gl_scale_f*10,QPen(Qt::red,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0,0+gl_scale_f*100,0+gl_scale_f*10,0+gl_scale_f*100-gl_scale_f*10,QPen(Qt::red,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0,0,0+gl_scale_f*100,0,QPen(Qt::red,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0+gl_scale_f*100,0,gl_scale_f*100-gl_scale_f*10,-gl_scale_f*10,QPen(Qt::red,gl_scale_f*2)));
+        _origin.push_back(Scene->addLine(0+gl_scale_f*100,0,gl_scale_f*100-gl_scale_f*10,+gl_scale_f*10,QPen(Qt::red,gl_scale_f*2)));
         //Y
         _origin.push_back(Scene->addLine(0-gl_scale_f*10,gl_scale_f*100-gl_scale_f*50,0-gl_scale_f*5,gl_scale_f*100-gl_scale_f*45,QPen(Qt::black,gl_scale_f*2)));
         _origin.push_back(Scene->addLine(0-gl_scale_f*10,gl_scale_f*100-gl_scale_f*50,0-gl_scale_f*15,gl_scale_f*100-gl_scale_f*45,QPen(Qt::black,gl_scale_f*2)));
@@ -1576,6 +1583,8 @@ void jpsGraphicsView::ShowOrigin()
         }
         _origin.clear();
     }
+
+
 }
 
 void jpsGraphicsView::StatPositionDef()
@@ -1860,6 +1869,41 @@ void jpsGraphicsView::en_disableWall()
     }
 
 }
+
+bool jpsGraphicsView::statusPanning()
+{
+    return statPanning;
+}
+
+void jpsGraphicsView::en_disablePanning()
+{
+    statPanning=!statPanning;
+
+    statWall=false;
+    statDoor=false;
+    statExit=false;
+    _statHLine=false;
+    statLandmark=false;
+
+    if (statPanning==false)
+    {
+        QString info = "Panning Mode is off!";
+
+        QMessageBox messageBox;
+        messageBox.information(0,tr("Panning Mode"),info);
+    }
+    else
+    {
+        QString info = "\
+        Panning Mode is on!\n\
+        Press middle button to move view";
+
+        QMessageBox messageBox;
+        messageBox.information(0,tr("Panning Mode"),info);
+    }
+
+}
+
 
 bool jpsGraphicsView::statusWall()
 {
