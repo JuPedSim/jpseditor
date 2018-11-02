@@ -108,6 +108,7 @@ RC_FILE = Resources/jpseditor.rc
 ICON = Resources/jpseditor.icns
 
 
+
 CONFIG(debug, debug|release) {
     DESTDIR = build/debug
 }
@@ -123,7 +124,6 @@ UI_DIR = $$DESTDIR/.u
 
 demos.path = /usr/local/bin/jpseditor
 demos.files = examples/*
-
 
 CONFIG(debug, debug|release) {
     DESTDIR = build/debug
