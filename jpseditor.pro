@@ -122,8 +122,8 @@ RCC_DIR = $$DESTDIR/.qrc
 UI_DIR = $$DESTDIR/.u
 
 
-;; demos.path = /usr/local/bin/jpseditor
-;; demos.files = examples/*
+# demos.path = /usr/local/bin/jpseditor
+# demos.files = examples/*
 
 CONFIG(debug, debug|release) {
     DESTDIR = build/debug
@@ -137,7 +137,7 @@ MOC_DIR = $$DESTDIR/.moc
 RCC_DIR = $$DESTDIR/.qrc
 UI_DIR = $$DESTDIR/.u
 
-;; INSTALLS += demos
+# INSTALLS += demos
 
 target.path = /tmp/jpseditor
 INSTALLS += target
