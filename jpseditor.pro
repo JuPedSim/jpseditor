@@ -14,7 +14,7 @@
  # along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
  #
  # copyright   <2009-2018> Forschungszentrum Juelich GmbH.
- 
+
  # Compatibility with Qt4 and Qt5
 greaterThan(QT_MAJOR_VERSION, 4):QT += widgets
 
@@ -100,13 +100,15 @@ SOURCES += \
 
 #INCLUDEPATH += D:/boost_1_59_0/boost_1_59_0
 
-RESOURCES += \ 
+RESOURCES += \
     Resources/resources.qrc
 
 RC_FILE = Resources/jpseditor.rc
 #osx fix
 ICON = Resources/jpseditor.icns
 
+demos.path = /usr/local/bin/jpseditor
+demos.files = examples/*
 
 CONFIG(debug, debug|release) {
     DESTDIR = build/debug
@@ -119,3 +121,8 @@ OBJECTS_DIR = $$DESTDIR/.obj
 MOC_DIR = $$DESTDIR/.moc
 RCC_DIR = $$DESTDIR/.qrc
 UI_DIR = $$DESTDIR/.u
+
+INSTALLS += demos
+
+target.path = /usr/local/bin/jpseditor
+INSTALLS += target
