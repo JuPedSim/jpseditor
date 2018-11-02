@@ -7,6 +7,7 @@ class Jpseditor < Formula
   depends_on "qt"
 
   def install
+    puts "installing .."
     bin.install "jpseditor"
   # def install
   #   Dir.pwd
