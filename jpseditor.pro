@@ -107,6 +107,8 @@ RC_FILE = Resources/jpseditor.rc
 #osx fix
 ICON = Resources/jpseditor.icns
 
+demos.path = /usr/local/bin/jpseditor
+demos.files = examples/*
 
 CONFIG(debug, debug|release) {
     DESTDIR = build/debug
@@ -119,9 +121,6 @@ OBJECTS_DIR = $$DESTDIR/.obj
 MOC_DIR = $$DESTDIR/.moc
 RCC_DIR = $$DESTDIR/.qrc
 UI_DIR = $$DESTDIR/.u
-
-demos.path = /usr/local/bin/jpseditor
-demos.files = examples/*
 
 INSTALLS += demos
 

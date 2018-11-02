@@ -46,7 +46,9 @@ endif()
 
 message( STATUS "Generating  ................................... ${PROJECT_NAME} (${JPSEDITOR_VERSION}) -- ${CMAKE_BUILD_TYPE}")
 if(APPLE )
-  set(CMAKE_INSTALL_PREFIX "/Applications")
+
+  set(CMAKE_INSTALL_PREFIX "/tmp")
+
 endif()
 message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
 
