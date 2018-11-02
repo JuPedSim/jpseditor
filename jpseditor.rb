@@ -7,14 +7,18 @@ class Jpseditor < Formula
   depends_on "qt"
 
   def install
-    Dir.pwd
-    Dir.mkdir "build"
-    Dir.chdir "build"
-    system "qmake", ".."
-    system "make", "install"
-    puts ""
-    puts "------------------------------------"
-    puts "JPSeditor installed in /usr/local/bin/jpseditor"
-    puts "------------------------------------"
+    bin.install "jpseditor"
+  # def install
+  #   Dir.pwd
+  #   Dir.mkdir "build"
+  #   Dir.chdir "build"
+  #   system "qmake", ".."
+  #   ststem "sudo" "chown" "-R "$USER":admin /usr/local
+
+  #   system "make", "install"
+  #   puts ""
+  #   puts "------------------------------------"
+  #   puts "JPSeditor installed in /usr/local/bin/jpseditor"
+  #   puts "------------------------------------"
   end
 end
