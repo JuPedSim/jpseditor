@@ -66,6 +66,7 @@ public:
     int get_id();
     QPointF get_center();
     void highlight(const QString &color="random");
+    void switchVisibility();
     QString get_type() const;
     void set_type(const QString &string);
     QList<QPointF> GetDoorVertices() const;

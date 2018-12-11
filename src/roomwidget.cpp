@@ -55,7 +55,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     show_crossings();
     show_exits();
     show_obstacles();
-    showLayers();
+    showLayersInfo();
 
 
     //temporary uncommented
@@ -122,8 +122,6 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
 //    connect(ui->auto_assign_obstacle,SIGNAL(clicked(bool)),this,SLOT(autoAssigneObstacles()));
     //lines in graphview deleted
     connect(graphview,SIGNAL(lines_deleted()),this,SLOT(show_all()));
-
-
 }
 
 roomWidget::~roomWidget()
@@ -145,7 +143,7 @@ void roomWidget::show_rooms()
     dtrace("Leave roomWidget::show_rooms"); 
 }
 
-void roomWidget::showLayers()
+void roomWidget::showLayersInfo()
 {
     QList<QString> elevationlist=datamanager->getElevationList();
     QListIterator<QString> i(elevationlist);
@@ -234,7 +232,7 @@ void roomWidget::new_room()
     enable_roomSelectionExits();
     enable_roomSelectionObs();
     this->show_rooms();
-    this->showLayers();
+    this->showLayersInfo();
     dtrace("Leave roomWidget::new_room");
 }
 
@@ -255,7 +253,7 @@ void roomWidget::delete_room()
         ui->list_rooms->setCurrentRow(-1);
 
         this->show_rooms();
-        this->showLayers();
+        this->showLayersInfo();
     }
     dtrace("Leave roomWidget::delete_room");
 }
@@ -637,7 +635,7 @@ void roomWidget::select_exit()
 void roomWidget::show_all()
 {
     show_rooms();
-    showLayers();
+    showLayersInfo();
     show_crossings();
     show_exits();
     show_obstacles();
@@ -1154,13 +1152,16 @@ void roomWidget::on_hideButton_clicked()
     {
         i.next();
 
-        qDebug() << i.peekPrevious()->get_name();
-        if(QString(QString::number(i.peekPrevious()->get_elevation()) + "m")==ui->layerListWidget->currentItem()->text())
+        if(QString(QString::number(i.peekPrevious()->get_elevation()) + "m")
+                ==ui->layerListWidget->currentItem()->text())
         {
             i.peekPrevious()->setVisible(false);
         }
 
     }
+
+    show_hideLayer();
+
 }
 
 void roomWidget::on_showButton_clicked()
@@ -1172,10 +1173,22 @@ void roomWidget::on_showButton_clicked()
     {
         i.next();
 
-        qDebug() << i.peekPrevious()->get_name();
-        if(QString(QString::number(i.peekPrevious()->get_elevation()) + "m")==ui->layerListWidget->currentItem()->text())
+        if(QString(QString::number(i.peekPrevious()->get_elevation()) + "m")==
+                ui->layerListWidget->currentItem()->text())
         {
             i.peekPrevious()->setVisible(true);
         }
     }
+
+    show_hideLayer();
 }
+
+void roomWidget::show_hideLayer()
+{
+    for (jpsRoom* room:datamanager->get_roomlist())
+    {
+        room->switchVisibility();
+    }
+}
+
+

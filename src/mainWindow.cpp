@@ -785,7 +785,7 @@ void MWindow::on_actionClear_all_Rooms_and_Doors_triggered()
 
     if(rwidget!= nullptr){
         rwidget->show_rooms();
-        rwidget->showLayers();
+        rwidget->showLayersInfo();
         rwidget->show_crossings();
         rwidget->show_obstacles();
     }

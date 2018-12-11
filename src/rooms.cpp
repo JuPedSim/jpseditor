@@ -209,11 +209,13 @@ void jpsRoom::highlight(const QString& color)
         else
             pen = QPen(rndColors(qrand()%100),4);
         pen.setCosmetic(true);
+
         for (int i=0; i<wall_list.size(); ++i)
         {
             wall_list[i]->get_line()->setPen(pen);
             wall_list[i]->set_defaultColor(color);
         }
+
         highlighted=true;
     }
     else
@@ -225,10 +227,38 @@ void jpsRoom::highlight(const QString& color)
             wall_list[i]->get_line()->setPen(pen);
             wall_list[i]->set_defaultColor("black");
         }
+
         highlighted=false;
     }
     dtrace("Enter jpsRoom::highlight. highlight=<%d>", highlighted);
 }
+
+void jpsRoom::switchVisibility()
+{
+    dtrace("Enter jpsRoom::switchVisibility. visible=<%d>", visible);
+    if(!visible)
+    {
+        QColor color(0,0,0,0);
+        QPen pen(color);
+
+        for (int i=0; i<wall_list.size(); ++i)
+        {
+            wall_list[i]->get_line()->setPen(pen);
+        }
+    }
+    else
+    {
+        QPen pen = QPen(Qt::black,2);
+        pen.setCosmetic(true);
+        for (int i=0; i<wall_list.size(); i++)
+        {
+            wall_list[i]->get_line()->setPen(pen);
+            wall_list[i]->set_defaultColor("black");
+        }
+    }
+    dtrace("Exit jpsRoom::switchVisibility. visible=<%d>", visible);
+}
+
 
 QString jpsRoom::get_type() const
 {

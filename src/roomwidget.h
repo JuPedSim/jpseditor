@@ -50,7 +50,7 @@ public:
     roomWidget(QWidget *parent = nullptr, jpsDatamanager *dmanager=0L, jpsGraphicsView *gview=0L);
     ~roomWidget();
     void show_rooms();
-    void showLayers();
+    void showLayersInfo();
     void show_crossings();
     void show_exits();
     void show_obstacles();
@@ -103,6 +103,8 @@ protected slots:
 //    void autoAssignDoors();
 //    void autoAssignExits();
     void ChangeRoomType();
+
+    void show_hideLayer();
 
 
 
