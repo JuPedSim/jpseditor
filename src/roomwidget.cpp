@@ -81,6 +81,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->delete_room,SIGNAL(clicked(bool)),this,SLOT(delete_room()));
     connect(ui->chname_edit, SIGNAL( returnPressed() ), this, SLOT(change_roomname()));
     connect(ui->elevation_edit, SIGNAL(returnPressed()), this, SLOT(change_elevation()));
+    connect(ui->elevation_edit,SIGNAL(returnPressed()),this,SLOT(updateLayerWidget()));
     connect(ui->add_button,SIGNAL(clicked(bool)),this,SLOT(addWall()));
     connect(ui->list_rooms,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(showWallsAndType()));
     connect(ui->list_rooms,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showWallsAndType()));
@@ -122,6 +123,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
 //    connect(ui->auto_assign_obstacle,SIGNAL(clicked(bool)),this,SLOT(autoAssigneObstacles()));
     //lines in graphview deleted
     connect(graphview,SIGNAL(lines_deleted()),this,SLOT(show_all()));
+
 }
 
 roomWidget::~roomWidget()
@@ -1152,16 +1154,16 @@ void roomWidget::on_hideButton_clicked()
     {
         i.next();
 
-        if(QString(QString::number(i.peekPrevious()->get_elevation()) + "m")
-                ==ui->layerListWidget->currentItem()->text())
-        {
-            i.peekPrevious()->setVisible(false);
+        if(ui->layerListWidget->currentItem()!=nullptr){
+            if(QString(QString::number(i.peekPrevious()->get_elevation()) + "m")
+                    ==ui->layerListWidget->currentItem()->text())
+            {
+                i.peekPrevious()->setVisible(false);
+            }
         }
-
     }
 
     show_hideLayer();
-
 }
 
 void roomWidget::on_showButton_clicked()
@@ -1173,14 +1175,17 @@ void roomWidget::on_showButton_clicked()
     {
         i.next();
 
-        if(QString(QString::number(i.peekPrevious()->get_elevation()) + "m")==
-                ui->layerListWidget->currentItem()->text())
-        {
-            i.peekPrevious()->setVisible(true);
+        if(ui->layerListWidget->currentItem()!=nullptr){
+            if(QString(QString::number(i.peekPrevious()->get_elevation()) + "m")==
+                    ui->layerListWidget->currentItem()->text())
+            {
+                i.peekPrevious()->setVisible(true);
+            }
         }
     }
 
     show_hideLayer();
+
 }
 
 void roomWidget::show_hideLayer()
@@ -1191,4 +1196,19 @@ void roomWidget::show_hideLayer()
     }
 }
 
+void roomWidget::updateLayerWidget()
+{
+    ui->layerListWidget->clear();
 
+    QList<QString> elevationlist=datamanager->getElevationList();
+    QListIterator<QString> i(elevationlist);
+
+    while (i.hasNext())
+    {
+        QString elevation = i.next();
+        QString layerinfo = elevation + "m";
+        ui->layerListWidget->addItem(layerinfo);
+    }
+
+    dtrace("Layer ListWidget is updated!");
+}

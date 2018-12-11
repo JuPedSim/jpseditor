@@ -103,8 +103,7 @@ protected slots:
 //    void autoAssignDoors();
 //    void autoAssignExits();
     void ChangeRoomType();
-
-    void show_hideLayer();
+    void updateLayerWidget();
 
 
 
@@ -113,6 +112,8 @@ private slots:
     void on_hideButton_clicked();
 
     void on_showButton_clicked();
+
+protected:
 
 private:
     Ui::roomWidget *ui;
@@ -123,6 +124,9 @@ private:
 
     //
     void ShowRoomType(int &cRow) const;
+
+
+    void show_hideLayer();
 
 };
 
