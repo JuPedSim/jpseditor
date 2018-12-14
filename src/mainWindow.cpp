@@ -198,8 +198,6 @@ MWindow :: MWindow() {
 
     // room type data gathering
     connect(actionGather_data,SIGNAL(triggered(bool)),this, SLOT(GatherData()));
-
-
 }
 
 MWindow::~MWindow()

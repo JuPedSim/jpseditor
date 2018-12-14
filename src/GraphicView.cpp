@@ -1634,14 +1634,11 @@ void jpsGraphicsView::delete_marked_lines()
 
             RemoveIntersections(marked_lines[i]);
 
-
             delete marked_lines[i]->get_line();
+            qDebug()<< "jpsGraphicsView::delete_marked_lines(): Delete undefined line!";
             //marked_lines[i]->set_line(nullptr);
             delete marked_lines[i];
             line_vector.removeOne(marked_lines[i]);
-
-
-
         }
 
         marked_lines.clear();
