@@ -1639,9 +1639,6 @@ void jpsGraphicsView::delete_marked_lines()
             //marked_lines[i]->set_line(nullptr);
             delete marked_lines[i];
             line_vector.removeOne(marked_lines[i]);
-
-
-
         }
 
         marked_lines.clear();

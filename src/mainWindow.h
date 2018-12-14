@@ -41,7 +41,7 @@
 #include "GraphicView.h"
 #include "datamanager.h"
 #include "rooms.h"
-#include "src/settingdialog.h"
+#include "settingdialog.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 

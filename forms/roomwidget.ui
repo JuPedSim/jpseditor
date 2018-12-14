@@ -20,7 +20,7 @@
    <string notr="true">background-color: rgb(240, 240, 240);</string>
   </property>
   <property name="currentIndex">
-   <number>0</number>
+   <number>3</number>
   </property>
   <widget class="QWidget" name="layerTab">
    <attribute name="title">

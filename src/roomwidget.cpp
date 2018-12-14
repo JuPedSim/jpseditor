@@ -114,6 +114,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->chname_edit_obs, SIGNAL( returnPressed() ), this, SLOT(change_obsName()));
     connect(ui->add_button_obs,SIGNAL(clicked(bool)),this,SLOT(addWallObs()));
     connect(ui->list_obstacles,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(showWallsObs()));
+    connect(ui->list_obstacles,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showWallsObs()));
     connect(ui->listWallsObs,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(selectWallObs()));
     connect(ui->remove_button_obs,SIGNAL(clicked(bool)),this,SLOT(removeWallObs()));
     connect(ui->list_obstacles,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(enable_roomSelectionObs()));
@@ -357,7 +358,7 @@ void roomWidget::showWallsAndType()
                 ui->listWalls->addItem(string);
             }
             ShowRoomType(crow);
-            QString elevation = QString::number(room->get_elevation());
+            QString elevation = QString::number(room->get_elevation());           
             ui->elevation_edit->setText(elevation);
             ui->chname_edit->setText(room->get_name());
             highlight_room(room);
@@ -654,7 +655,7 @@ void roomWidget::new_obstacle()
 
 void roomWidget::delete_obstacle()
 {
-    if (ui->list_obstacles->currentItem()!=0L)
+    if (ui->list_obstacles->currentItem()!=nullptr)
     {
         int cRow=ui->list_obstacles->currentRow();
 
@@ -666,12 +667,11 @@ void roomWidget::delete_obstacle()
 
 void roomWidget::change_obsName()
 {
-    if (ui->list_obstacles->currentItem()!=0L)
+    if (ui->list_obstacles->currentItem()!=nullptr)
     {
         int crow=ui->list_obstacles->currentRow();
-
-            datamanager->get_obstaclelist()[crow]->change_name(ui->chname_edit_obs->text());
-
+        datamanager->get_obstaclelist()[crow]->change_name(ui->chname_edit_obs->text());
+        qDebug()<< "Name of Obs is changed";
         this->show_obstacles();
     }
 }
@@ -681,12 +681,13 @@ void roomWidget::addWallObs()
     if (graphview->get_markedLines().size()>0)
     {
 
-        if (ui->list_obstacles->currentItem()!=0L)
+        if (ui->list_obstacles->currentItem()!=nullptr)
         {
             int crow=ui->list_obstacles->currentRow();
             jpsObstacle * obstacle = datamanager->get_obstaclelist()[crow];
             obstacle->addWall(graphview->get_markedLines());
             autoAssignObstacle(obstacle);
+            qDebug()<< "roomWidget::addWallObs(): Wall is added in Obs";
             this->showWallsObs();
         }
     }
@@ -701,15 +702,17 @@ void roomWidget::removeWallObs()
             int crow=ui->list_obstacles->currentRow();
 
             datamanager->get_obstaclelist()[crow]->removeWall(graphview->get_markedLines());
+            qDebug()<< "Wall is removed from Obs";
             this->showWallsObs();
         }
     }
+
 }
 
 void roomWidget::showWallsObs()
 {
     ui->listWallsObs->clear();
-    if (ui->list_obstacles->currentItem()!=0L)
+    if (ui->list_obstacles->currentItem()!=nullptr)
     {
         int crow=ui->list_obstacles->currentRow();
         if (!datamanager->get_obstaclelist().isEmpty())
@@ -734,6 +737,7 @@ void roomWidget::showWallsObs()
                                 walllist[i]->get_line()->line().y1(),
                                 walllist[i]->get_line()->line().y2());
                  ui->listWallsObs->addItem(string);
+                 qDebug()<< "roomWidget::showWallsObs(): Show Wall in Obs!";
             }
             QString obs_name = datamanager->get_obstaclelist()[crow]->get_name();
             ui->chname_edit_obs->setText(obs_name);

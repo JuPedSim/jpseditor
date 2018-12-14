@@ -26,6 +26,7 @@
  *
  **/
 
+
 //mainWindow.cpp
 
 #include "mainWindow.h"
@@ -39,8 +40,8 @@
 #include <QDebug>
 #include <QSettings>
 
-MWindow :: MWindow() {
-
+MWindow :: MWindow()
+{
     setupUi(this);
     //Signal/Slot
     //VBox= new QVBoxLayout;

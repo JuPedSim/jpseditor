@@ -1601,7 +1601,6 @@ void jpsDatamanager::remove_all()
 
 void jpsDatamanager::remove_marked_lines()
 {
-     dtrace("Enter jpsDatamanager::remove_marked_lines");
     QList<jpsLineItem* > marked_lines = _mView->get_markedLines();
     for (int i=0; i<marked_lines.size(); i++)
     {
@@ -1609,7 +1608,9 @@ void jpsDatamanager::remove_marked_lines()
         {
             QList<jpsRoom* > cList= this->get_roomlist();
             for (int j=0; j<cList.size(); j++)
-            {   QList<jpsLineItem* > delete_candidates;
+            {
+                QList<jpsLineItem* > delete_candidates;
+
                 for (int k=0; k<cList[j]->get_listWalls().size(); k++)
                 {
                     if (marked_lines[i]==cList[j]->get_listWalls()[k])
@@ -1619,6 +1620,7 @@ void jpsDatamanager::remove_marked_lines()
                 }
                 cList[j]->removeWall(delete_candidates);
             }
+            qDebug()<< "jpsDatamanager::remove_marked_lines: marked line is removed" ;
         }
 
         else if (marked_lines[i]->is_Door() || marked_lines[i]->is_Exit())
@@ -1632,9 +1634,10 @@ void jpsDatamanager::remove_marked_lines()
                     break;
                 }
             }
+            qDebug()<< "jpsDatamanager::remove_marked_lines: marked door is removed" ;
         }
+        
     }
-     dtrace("Leave jpsDatamanager::remove_marked_lines");
 }
 
 void jpsDatamanager::set_view(jpsGraphicsView *view)
