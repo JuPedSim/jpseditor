@@ -1,10 +1,13 @@
 build/
 backup*
-*.idea
-*.DS_Store
+cmake-build-debug/
+.DS_Store
+.idea
 examples/
+bin/
 tests/
-*.vscode
+.vscode
+
 
 # C++ objects and libs
 *.slo
