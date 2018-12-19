@@ -518,7 +518,7 @@ void MWindow::info(){
     2018. All rights reserved.";
 
     QMessageBox messageBox;
-    messageBox.information(0,tr("About..."),info);
+    messageBox.information(nullptr,tr("About..."),info);
 }
 
 void MWindow::anglesnap()
@@ -605,8 +605,8 @@ void MWindow::delete_marked_lines()
 void MWindow::send_length()
 {
 
-    qreal length = length_edit->text().toFloat();
-    if(length != 0 )
+    qreal length = length_edit->text().toDouble();
+    if(length != 0)
     {
          mview->take_l_from_lineEdit(length);
     }
@@ -615,8 +615,8 @@ void MWindow::send_length()
 
 void MWindow::send_xy()
 {
-    qreal x = x_edit->text().toFloat();
-    qreal y = x_edit->text().toFloat();
+    qreal x = x_edit->text().toDouble();
+    qreal y = x_edit->text().toDouble();
 
     QPointF endpoint;
     endpoint.setX(x);
@@ -729,7 +729,7 @@ void MWindow::ScaleLines()
 {
     if (_statScale)
     {
-        qreal factor = length_edit->text().toFloat();
+        qreal factor = length_edit->text().toDouble();
         mview->ScaleLines(factor);
         length_edit->clear();
         _statScale=false;
@@ -837,4 +837,9 @@ void MWindow::en_disablePanning()
     mview->en_disablePanning();
 }
 
-
+void MWindow::on_actionNew_Inifile_triggered()
+{
+    inifileWidget = new InifileWidget(this);
+    inifileWidget->show();
+    qDebug()<< "MWindow::on_actionNew_Inifile_triggered(): inifile widget is showed!";
+}

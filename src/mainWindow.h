@@ -42,6 +42,8 @@
 #include "datamanager.h"
 #include "rooms.h"
 #include "src/settingdialog.h"
+#include "inifilewidget.h"
+
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 
@@ -54,6 +56,7 @@ public:
 private:
     roomWidget* rwidget;
     widgetLandmark* lwidget;
+    InifileWidget * inifileWidget;
 //    WidgetSettings* _settings;
     jpsDatamanager* dmanager;
     jpsGraphicsView* mview;
@@ -164,6 +167,7 @@ private slots:
     //default setting
     void saveSettings(QMap<QString, QString> settingsmap);
     QMap<QString, QString> loadSettings();
+    void on_actionNew_Inifile_triggered();
 };
 
 #endif // MAINWINDOW_H

@@ -57,6 +57,7 @@
     <addaction name="actionAuto_Definition"/>
     <addaction name="actionGather_data"/>
     <addaction name="actionLandmarkWidget"/>
+    <addaction name="actionNew_Inifile"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -702,6 +703,14 @@
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionNew_Inifile">
+   <property name="text">
+    <string>New Inifile</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+I</string>
    </property>
   </action>
  </widget>
