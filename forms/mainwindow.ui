@@ -72,6 +72,7 @@
     <addaction name="separator"/>
     <addaction name="actionBack_to_Origin"/>
     <addaction name="actionZoom_Windows"/>
+    <addaction name="actionZoom_Extents"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -728,6 +729,14 @@
    </property>
    <property name="shortcut">
     <string>Meta+W</string>
+   </property>
+  </action>
+  <action name="actionZoom_Extents">
+   <property name="text">
+    <string>Zoom Extents</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+E</string>
    </property>
   </action>
  </widget>

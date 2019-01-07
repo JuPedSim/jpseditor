@@ -169,6 +169,7 @@ private slots:
     void on_actionNew_Inifile_triggered();
     void on_actionBack_to_Origin_triggered();
     void on_actionZoom_Windows_triggered();
+    void on_actionZoom_Extents_triggered();
 };
 
 #endif // MAINWINDOW_H

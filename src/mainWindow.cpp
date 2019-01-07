@@ -844,3 +844,8 @@ void MWindow::on_actionZoom_Windows_triggered()
     en_selectMode();
     mview->selectedWindows();
 }
+
+void MWindow::on_actionZoom_Extents_triggered()
+{
+    mview->AutoZoom();
+}
