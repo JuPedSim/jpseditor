@@ -110,7 +110,6 @@ protected slots:
     void en_disableExit();
     void en_disableLandmark();
     void en_disableHLine();
-    void en_disablePanning();
     void disableDrawing();
     void objectsnap();
 
@@ -168,6 +167,7 @@ private slots:
     void saveSettings(QMap<QString, QString> settingsmap);
     QMap<QString, QString> loadSettings();
     void on_actionNew_Inifile_triggered();
+    void on_actionBack_to_Origin_triggered();
 };
 
 #endif // MAINWINDOW_H

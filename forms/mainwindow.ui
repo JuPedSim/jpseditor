@@ -66,10 +66,11 @@
     <addaction name="actiongridmode"/>
     <addaction name="actionShow_Point_of_Origin"/>
     <addaction name="actionRotate_90_deg_clockwise"/>
-    <addaction name="actionPanning_Mode"/>
     <addaction name="separator"/>
     <addaction name="actionanglesnap"/>
     <addaction name="actionObjectsnap"/>
+    <addaction name="separator"/>
+    <addaction name="actionBack_to_Origin"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -125,7 +126,6 @@
    <addaction name="separator"/>
    <addaction name="actiongridmode"/>
    <addaction name="actionObjectsnap"/>
-   <addaction name="actionPanning_Mode"/>
    <addaction name="separator"/>
    <addaction name="actionRoom"/>
   </widget>
@@ -711,6 +711,14 @@
    </property>
    <property name="shortcut">
     <string>Meta+I</string>
+   </property>
+  </action>
+  <action name="actionBack_to_Origin">
+   <property name="text">
+    <string>Back to Origin</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+O</string>
    </property>
   </action>
  </widget>

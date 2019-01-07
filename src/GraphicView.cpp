@@ -67,7 +67,6 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     statDoor=false;
     statExit=false;
     _statHLine=false;
-    statPanning=false;
     _statCopy=0;
     statLandmark=false;
     markedLandmark=nullptr;
@@ -179,7 +178,7 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
     }
 
 
-    if (midbutton_hold && statPanning)
+    if (midbutton_hold)
     {
         translations(old_pos);
     }
@@ -1863,40 +1862,6 @@ void jpsGraphicsView::en_disableWall()
     else
     {
         currentPen.setColor(Qt::black);
-    }
-
-}
-
-bool jpsGraphicsView::statusPanning()
-{
-    return statPanning;
-}
-
-void jpsGraphicsView::en_disablePanning()
-{
-    statPanning=!statPanning;
-
-    statWall=false;
-    statDoor=false;
-    statExit=false;
-    _statHLine=false;
-    statLandmark=false;
-
-    if (statPanning==false)
-    {
-        QString info = "Panning Mode is off!";
-
-        QMessageBox messageBox;
-        messageBox.information(0,tr("Panning Mode"),info);
-    }
-    else
-    {
-        QString info = "\
-        Panning Mode is on!\n\
-        Press middle button to move view";
-
-        QMessageBox messageBox;
-        messageBox.information(0,tr("Panning Mode"),info);
     }
 
 }

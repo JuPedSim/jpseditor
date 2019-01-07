@@ -150,8 +150,6 @@ MWindow :: MWindow() {
     connect(actionRotate_90_deg_clockwise,SIGNAL(triggered(bool)),this,SLOT(rotate()));
     connect(actionShow_Point_of_Origin,SIGNAL(triggered(bool)),this,SLOT(ShowOrigin()));
 
-    // Panning mode
-    connect(actionPanning_Mode,SIGNAL(triggered(bool)),this,SLOT(en_disablePanning()));
 
     // Length edit
 //    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(send_length()));
@@ -830,16 +828,14 @@ QMap<QString, QString> MWindow::loadSettings()
     return settingsmap;
 }
 
-// Panning mode
-void MWindow::en_disablePanning()
-{
-    this->disableDrawing();
-    mview->en_disablePanning();
-}
-
 void MWindow::on_actionNew_Inifile_triggered()
 {
     inifileWidget = new InifileWidget(this);
     inifileWidget->show();
     qDebug()<< "MWindow::on_actionNew_Inifile_triggered(): inifile widget is showed!";
+}
+
+void MWindow::on_actionBack_to_Origin_triggered()
+{
+    mview->centerOn(0,0);
 }
