@@ -145,7 +145,6 @@ MWindow :: MWindow() {
     connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(actionScale,SIGNAL(triggered(bool)),this,SLOT(enableScale()));
-
     // Tab View
     connect(actionRotate_90_deg_clockwise,SIGNAL(triggered(bool)),this,SLOT(rotate()));
     connect(actionShow_Point_of_Origin,SIGNAL(triggered(bool)),this,SLOT(ShowOrigin()));
@@ -837,5 +836,11 @@ void MWindow::on_actionNew_Inifile_triggered()
 
 void MWindow::on_actionBack_to_Origin_triggered()
 {
-    mview->centerOn(0,0);
+    mview->centerOn(QPoint(0,0)); //TODO: Ensure in any situation
+}
+
+void MWindow::on_actionZoom_Windows_triggered()
+{
+    en_selectMode();
+    mview->selectedWindows();
 }

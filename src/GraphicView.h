@@ -96,6 +96,7 @@ public:
     void AutoZoom();
     qreal CalcGridSize();
     void ShowOrigin();
+    void selectedWindows();
 
 
     //Catch lines, points and intersections
@@ -243,6 +244,8 @@ private:
     ActionStack _undoStack;
     ActionStack _redoStack;
 
+    //View
+    bool statzoomwindows;
 
 signals:
     void mouse_moved();

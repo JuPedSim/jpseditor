@@ -67,6 +67,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     statDoor=false;
     statExit=false;
     _statHLine=false;
+    statzoomwindows=false;
     _statCopy=0;
     statLandmark=false;
     markedLandmark=nullptr;
@@ -519,6 +520,19 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
                 {
                     emit RegionDefCompleted();
                     _regionDef=false;
+                }
+                else if(statzoomwindows)
+                {
+                    this->fitInView(currentSelectRect->rect(),Qt::KeepAspectRatio);
+                    gl_scale_f=1/this->transform().m11();
+
+                    //translations
+                    QPointF old_pos;
+                    old_pos.setX(pos.x()+translation_x);
+                    old_pos.setY(pos.y()+translation_y);
+                    translations(old_pos);
+
+                    statzoomwindows=false;
                 }
                 else
                 {
@@ -1993,4 +2007,9 @@ void jpsGraphicsView::ScaleLines(const double &factor)
         lineItem->get_line()->setLine(QLineF(lineItem->get_line()->line().p1()*factor,lineItem->get_line()->line().p2()*factor));
     }
 
+}
+
+void jpsGraphicsView::selectedWindows()
+{
+    statzoomwindows=true;
 }
