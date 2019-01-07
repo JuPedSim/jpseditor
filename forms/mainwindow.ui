@@ -70,7 +70,6 @@
     <addaction name="actionanglesnap"/>
     <addaction name="actionObjectsnap"/>
     <addaction name="separator"/>
-    <addaction name="actionBack_to_Origin"/>
     <addaction name="actionZoom_Windows"/>
     <addaction name="actionZoom_Extents"/>
    </widget>
@@ -716,11 +715,17 @@
    </property>
   </action>
   <action name="actionBack_to_Origin">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Back to Origin</string>
    </property>
    <property name="shortcut">
     <string>Meta+O</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionZoom_Windows">

@@ -836,7 +836,7 @@ void MWindow::on_actionNew_Inifile_triggered()
 
 void MWindow::on_actionBack_to_Origin_triggered()
 {
-    mview->centerOn(QPoint(0,0)); //TODO: Ensure in any situation
+    mview->centerOn(QPointF(0.0,0.0)); //TODO: Ensure in any situation
 }
 
 void MWindow::on_actionZoom_Windows_triggered()
