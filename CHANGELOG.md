@@ -1,6 +1,19 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## v0.8.6 [08.01.2019]
+## Added
+- Add zoom extents option #64
+- Add zoom Windows option #64
+- Add wirte ini-files feature #27
+
+## Changed
+- Improve statbility #105
+- Use panning mode by middle button 
+
+## Bugs fixed
+- Fix shortcut for "Del"
+
 ## v0.8.5 [02.11.2018]
 ## Added
 - Add Auto Saving function #67
