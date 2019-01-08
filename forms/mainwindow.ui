@@ -57,6 +57,7 @@
     <addaction name="actionAuto_Definition"/>
     <addaction name="actionGather_data"/>
     <addaction name="actionLandmarkWidget"/>
+    <addaction name="actionNew_Inifile"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -65,10 +66,12 @@
     <addaction name="actiongridmode"/>
     <addaction name="actionShow_Point_of_Origin"/>
     <addaction name="actionRotate_90_deg_clockwise"/>
-    <addaction name="actionPanning_Mode"/>
     <addaction name="separator"/>
     <addaction name="actionanglesnap"/>
     <addaction name="actionObjectsnap"/>
+    <addaction name="separator"/>
+    <addaction name="actionZoom_Windows"/>
+    <addaction name="actionZoom_Extents"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -124,7 +127,6 @@
    <addaction name="separator"/>
    <addaction name="actiongridmode"/>
    <addaction name="actionObjectsnap"/>
-   <addaction name="actionPanning_Mode"/>
    <addaction name="separator"/>
    <addaction name="actionRoom"/>
   </widget>
@@ -702,6 +704,44 @@
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionNew_Inifile">
+   <property name="text">
+    <string>New Inifile</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+I</string>
+   </property>
+  </action>
+  <action name="actionBack_to_Origin">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Back to Origin</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+O</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionZoom_Windows">
+   <property name="text">
+    <string>Zoom Windows</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+W</string>
+   </property>
+  </action>
+  <action name="actionZoom_Extents">
+   <property name="text">
+    <string>Zoom Extents</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+E</string>
    </property>
   </action>
  </widget>

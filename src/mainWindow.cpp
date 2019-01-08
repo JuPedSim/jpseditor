@@ -145,13 +145,10 @@ MWindow :: MWindow() {
     connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     connect(actionScale,SIGNAL(triggered(bool)),this,SLOT(enableScale()));
-
     // Tab View
     connect(actionRotate_90_deg_clockwise,SIGNAL(triggered(bool)),this,SLOT(rotate()));
     connect(actionShow_Point_of_Origin,SIGNAL(triggered(bool)),this,SLOT(ShowOrigin()));
 
-    // Panning mode
-    connect(actionPanning_Mode,SIGNAL(triggered(bool)),this,SLOT(en_disablePanning()));
 
     // Length edit
 //    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(send_length()));
@@ -198,8 +195,6 @@ MWindow :: MWindow() {
 
     // room type data gathering
     connect(actionGather_data,SIGNAL(triggered(bool)),this, SLOT(GatherData()));
-
-
 }
 
 MWindow::~MWindow()
@@ -520,7 +515,7 @@ void MWindow::info(){
     2018. All rights reserved.";
 
     QMessageBox messageBox;
-    messageBox.information(0,tr("About..."),info);
+    messageBox.information(nullptr,tr("About..."),info);
 }
 
 void MWindow::anglesnap()
@@ -607,8 +602,8 @@ void MWindow::delete_marked_lines()
 void MWindow::send_length()
 {
 
-    qreal length = length_edit->text().toFloat();
-    if(length != 0 )
+    qreal length = length_edit->text().toDouble();
+    if(length != 0)
     {
          mview->take_l_from_lineEdit(length);
     }
@@ -617,8 +612,8 @@ void MWindow::send_length()
 
 void MWindow::send_xy()
 {
-    qreal x = x_edit->text().toFloat();
-    qreal y = x_edit->text().toFloat();
+    qreal x = x_edit->text().toDouble();
+    qreal y = x_edit->text().toDouble();
 
     QPointF endpoint;
     endpoint.setX(x);
@@ -731,7 +726,7 @@ void MWindow::ScaleLines()
 {
     if (_statScale)
     {
-        qreal factor = length_edit->text().toFloat();
+        qreal factor = length_edit->text().toDouble();
         mview->ScaleLines(factor);
         length_edit->clear();
         _statScale=false;
@@ -832,11 +827,25 @@ QMap<QString, QString> MWindow::loadSettings()
     return settingsmap;
 }
 
-// Panning mode
-void MWindow::en_disablePanning()
+void MWindow::on_actionNew_Inifile_triggered()
 {
-    this->disableDrawing();
-    mview->en_disablePanning();
+    inifileWidget = new InifileWidget(this);
+    inifileWidget->show();
+    qDebug()<< "MWindow::on_actionNew_Inifile_triggered(): inifile widget is showed!";
 }
 
+void MWindow::on_actionBack_to_Origin_triggered()
+{
+    mview->centerOn(QPointF(0.0,0.0)); //TODO: Ensure in any situation
+}
 
+void MWindow::on_actionZoom_Windows_triggered()
+{
+    en_selectMode();
+    mview->selectedWindows();
+}
+
+void MWindow::on_actionZoom_Extents_triggered()
+{
+    mview->AutoZoom();
+}
