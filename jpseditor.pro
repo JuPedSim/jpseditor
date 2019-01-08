@@ -39,6 +39,7 @@ FORMS += \
     forms/widgetlandmark.ui \
     forms/widgetsettings.ui \
     forms/inifilewidget.ui \
+    forms/settingdialog.ui
 
 HEADERS += \
     src/mainWindow.h \
@@ -120,19 +121,19 @@ RESOURCES += \
 RC_FILE = Resources/jpseditor.rc
 #osx fix
 ICON = Resources/jpseditor.icns
+#INCLUDEPATH += $$(ROOTSYS)/include
 
+CONFIG(debug, debug|release) {
+    DESTDIR = build/debug
+}
+CONFIG(release, debug|release) {
+    DESTDIR = build/release
+}
 
-#CONFIG(debug, debug|release) {
-#    DESTDIR = build/debug
-#}
-#CONFIG(release, debug|release) {
-#    DESTDIR = build/release
-#}
-
-#OBJECTS_DIR = $$DESTDIR/.obj
-#MOC_DIR = $$DESTDIR/.moc
-#RCC_DIR = $$DESTDIR/.qrc
-#UI_DIR = $$DESTDIR/.u
+OBJECTS_DIR = $$DESTDIR/.obj
+MOC_DIR = $$DESTDIR/.moc
+RCC_DIR = $$DESTDIR/.qrc
+UI_DIR = $$DESTDIR/.u
 
 demos.path = /usr/local/bin/jpseditor
 demos.files = examples/*
