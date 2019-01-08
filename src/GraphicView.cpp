@@ -67,7 +67,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     statDoor=false;
     statExit=false;
     _statHLine=false;
-    statPanning=false;
+    statzoomwindows=false;
     _statCopy=0;
     statLandmark=false;
     markedLandmark=nullptr;
@@ -179,7 +179,7 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
     }
 
 
-    if (midbutton_hold && statPanning)
+    if (midbutton_hold)
     {
         translations(old_pos);
     }
@@ -520,6 +520,19 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
                 {
                     emit RegionDefCompleted();
                     _regionDef=false;
+                }
+                else if(statzoomwindows)
+                {
+                    this->fitInView(currentSelectRect->rect(),Qt::KeepAspectRatio);
+                    gl_scale_f=1/this->transform().m11();
+
+                    //translations
+                    QPointF old_pos;
+                    old_pos.setX(pos.x()+translation_x);
+                    old_pos.setY(pos.y()+translation_y);
+                    translations(old_pos);
+
+                    statzoomwindows=false;
                 }
                 else
                 {
@@ -1634,14 +1647,11 @@ void jpsGraphicsView::delete_marked_lines()
 
             RemoveIntersections(marked_lines[i]);
 
-
             delete marked_lines[i]->get_line();
+            qDebug()<< "jpsGraphicsView::delete_marked_lines(): Delete undefined line!";
             //marked_lines[i]->set_line(nullptr);
             delete marked_lines[i];
             line_vector.removeOne(marked_lines[i]);
-
-
-
         }
 
         marked_lines.clear();
@@ -1870,40 +1880,6 @@ void jpsGraphicsView::en_disableWall()
 
 }
 
-bool jpsGraphicsView::statusPanning()
-{
-    return statPanning;
-}
-
-void jpsGraphicsView::en_disablePanning()
-{
-    statPanning=!statPanning;
-
-    statWall=false;
-    statDoor=false;
-    statExit=false;
-    _statHLine=false;
-    statLandmark=false;
-
-    if (statPanning==false)
-    {
-        QString info = "Panning Mode is off!";
-
-        QMessageBox messageBox;
-        messageBox.information(0,tr("Panning Mode"),info);
-    }
-    else
-    {
-        QString info = "\
-        Panning Mode is on!\n\
-        Press middle button to move view";
-
-        QMessageBox messageBox;
-        messageBox.information(0,tr("Panning Mode"),info);
-    }
-
-}
-
 
 bool jpsGraphicsView::statusWall()
 {
@@ -2031,4 +2007,9 @@ void jpsGraphicsView::ScaleLines(const double &factor)
         lineItem->get_line()->setLine(QLineF(lineItem->get_line()->line().p1()*factor,lineItem->get_line()->line().p2()*factor));
     }
 
+}
+
+void jpsGraphicsView::selectedWindows()
+{
+    statzoomwindows=true;
 }

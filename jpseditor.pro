@@ -20,19 +20,26 @@ greaterThan(QT_MAJOR_VERSION, 4):QT += widgets
 
 TEMPLATE = app
 TARGET = JPSeditor
+
 CONFIG += qt xml gui;
 CONFIG += c++11
+
 QMAKE_CXXFLAGS += -std=c++11
 QMAKE_CXXFLAGS += -static
 #QMAKE_CXXFLAGS += -static-libgcc
 #QMAKE_CXXFLAGS += -static-libstdc++
+
+#QMAKE_CXXFLAGS_WARN_ON = -Wall -Wno-unused-parameter
+
+
 
 FORMS += \
     forms/mainwindow.ui \
     forms/roomwidget.ui \
     forms/widgetlandmark.ui \
     forms/widgetsettings.ui \
-    forms/settingdialog.ui \
+    forms/inifilewidget.ui \
+    forms/settingdialog.ui
 
 HEADERS += \
     src/mainWindow.h \
@@ -68,7 +75,10 @@ HEADERS += \
     src/AutomaticRoomIdentification/roomdefinition.h \
     src/AutomaticRoomIdentification/roomidentification.h \
     src/dtrace.h \
-    src/settingdialog.h
+    src/settingdialog.h \
+    src/tinyxml/tinystr.h \
+    src/tinyxml/tinyxml.h \
+    src/inifilewidget.h \
 
 
 SOURCES += \
@@ -95,7 +105,12 @@ SOURCES += \
     src/jpsregion.cpp \
     src/AutomaticRoomIdentification/roomdefinition.cpp \
     src/AutomaticRoomIdentification/roomidentification.cpp \
-    src/settingdialog.cpp
+    src/settingdialog.cpp \
+    src/tinyxml/tinystr.cpp \
+    src/tinyxml/tinyxml.cpp \
+    src/tinyxml/tinyxmlerror.cpp \
+    src/tinyxml/tinyxmlparser.cpp \
+    src/inifilewidget.cpp \
 
 
 #INCLUDEPATH += D:/boost_1_59_0/boost_1_59_0
@@ -106,7 +121,7 @@ RESOURCES += \
 RC_FILE = Resources/jpseditor.rc
 #osx fix
 ICON = Resources/jpseditor.icns
-
+#INCLUDEPATH += $$(ROOTSYS)/include
 
 
 CONFIG(debug, debug|release) {
@@ -137,7 +152,12 @@ MOC_DIR = $$DESTDIR/.moc
 RCC_DIR = $$DESTDIR/.qrc
 UI_DIR = $$DESTDIR/.u
 
-# INSTALLS += demos
 
-target.path = /tmp/jpseditor
+demos.path = /usr/local/bin/jpseditor
+demos.files = examples/*
+
+INSTALLS += demos
+
+target.path = /usr/local/bin/jpseditor
+
 INSTALLS += target

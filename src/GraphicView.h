@@ -82,9 +82,6 @@ public:
     bool statusLandmark();
     void en_disableLandmark();
 
-    bool statusPanning();
-    void en_disablePanning();
-
     // global functions
     qreal get_scale_f();
     void take_l_from_lineEdit(const qreal &length);
@@ -99,6 +96,7 @@ public:
     void AutoZoom();
     qreal CalcGridSize();
     void ShowOrigin();
+    void selectedWindows();
 
 
     //Catch lines, points and intersections
@@ -205,7 +203,6 @@ private:
     bool statDoor;
     bool statExit;
     bool statLandmark;
-    bool statPanning;
     bool _statHLine;
     int _statCopy;
     QPointF _copyOrigin;
@@ -247,6 +244,8 @@ private:
     ActionStack _undoStack;
     ActionStack _redoStack;
 
+    //View
+    bool statzoomwindows;
 
 signals:
     void mouse_moved();

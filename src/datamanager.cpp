@@ -1580,15 +1580,38 @@ void jpsDatamanager::remove_all()
 
 void jpsDatamanager::remove_marked_lines()
 {
-     dtrace("Enter jpsDatamanager::remove_marked_lines");
     QList<jpsLineItem* > marked_lines = _mView->get_markedLines();
+    QList<jpsObstacle*> obstacle_list = this->get_obstaclelist();
+    QList<jpsRoom* > cList= this->get_roomlist();
+
     for (int i=0; i<marked_lines.size(); i++)
     {
-        if (marked_lines[i]->is_Wall()==true)
+        if (marked_lines[i]->is_Wall()==true && obstacle_list.size()>0)
         {
-            QList<jpsRoom* > cList= this->get_roomlist();
+            for (int m=0; m<obstacle_list.size(); m++)
+            {
+                QList<jpsLineItem* > deleted_obstacle_lines;
+                for (int n=0; n<obstacle_list[m]->get_listWalls().size(); n++)
+                {
+                    if(marked_lines[i]==obstacle_list[m]->get_listWalls()[n])
+                    {
+                        deleted_obstacle_lines.push_back(obstacle_list[m]->get_listWalls()[n]);
+                    }
+                }
+                obstacle_list[m]->removeWall(deleted_obstacle_lines);
+                qDebug()<< "jpsDatamanager::remove_marked_lines(): Obstacle line is deleted!";
+            }
+        }
+        else
+        {
+            qDebug()<< "jpsDatamanager::remove_marked_lines(): Marked line isn't in obstacle!";
+        }
+
+        if (marked_lines[i]->is_Wall()==true && cList.size()>0)
+        {
             for (int j=0; j<cList.size(); j++)
-            {   QList<jpsLineItem* > delete_candidates;
+            {
+                QList<jpsLineItem* > delete_candidates;
                 for (int k=0; k<cList[j]->get_listWalls().size(); k++)
                 {
                     if (marked_lines[i]==cList[j]->get_listWalls()[k])
@@ -1597,6 +1620,7 @@ void jpsDatamanager::remove_marked_lines()
                     }
                 }
                 cList[j]->removeWall(delete_candidates);
+                qDebug()<< "jpsDatamanager::remove_marked_lines(): Wall line is deleted!";
             }
         }
 
@@ -1611,9 +1635,13 @@ void jpsDatamanager::remove_marked_lines()
                     break;
                 }
             }
+            qDebug()<< "jpsDatamanager::remove_marked_lines(): Door line is deleted!";
+        }
+        else
+        {
+            qDebug()<< "jpsDatamanager::remove_marked_lines(): Marked line isn't defined!";
         }
     }
-     dtrace("Leave jpsDatamanager::remove_marked_lines");
 }
 
 void jpsDatamanager::set_view(jpsGraphicsView *view)
