@@ -33,9 +33,7 @@
 #include <QDebug>
 #include "./AutomaticRoomIdentification/roomdefinition.h"
 #include "./AutomaticRoomIdentification/roomidentification.h"
-
 #include "dtrace.h"
-
 
 
 roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsView *gview) :

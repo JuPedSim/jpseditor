@@ -591,12 +591,14 @@ void MWindow::show_coords()
 void MWindow::delete_lines()
 {
     mview->delete_all();
+    statusBar()->showMessage(tr("All lines are deleted!"),10000);
 }
 
 void MWindow::delete_marked_lines()
 {
     mview->delete_marked_lines();
     mview->delete_landmark();
+    statusBar()->showMessage(tr("Marked lines are deleted!"),10000);
 }
 
 void MWindow::send_length()
@@ -783,6 +785,7 @@ void MWindow::on_actionClear_all_Rooms_and_Doors_triggered()
         rwidget->show_obstacles();
     }
 
+    statusBar()->showMessage(tr("All rooms and doors are cleared!"),10000);
 }
 
 void MWindow::keyPressEvent(QKeyEvent *event)
