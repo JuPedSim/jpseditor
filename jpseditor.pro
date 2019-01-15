@@ -39,7 +39,9 @@ FORMS += \
     forms/widgetlandmark.ui \
     forms/widgetsettings.ui \
     forms/inifilewidget.ui \
-    forms/settingdialog.ui
+    forms/settingdialog.ui \
+    forms/layerwidget.ui \
+    forms/layerwidget.ui
 
 HEADERS += \
     src/mainWindow.h \
@@ -79,6 +81,8 @@ HEADERS += \
     src/tinyxml/tinystr.h \
     src/tinyxml/tinyxml.h \
     src/inifilewidget.h \
+    forms/layerwidget.h \
+    forms/layerwidget.h
 
 
 SOURCES += \
@@ -111,6 +115,8 @@ SOURCES += \
     src/tinyxml/tinyxmlerror.cpp \
     src/tinyxml/tinyxmlparser.cpp \
     src/inifilewidget.cpp \
+    forms/layerwidget.cpp \
+    forms/layerwidget.cpp
 
 
 #INCLUDEPATH += D:/boost_1_59_0/boost_1_59_0

@@ -58,6 +58,7 @@
     <addaction name="actionGather_data"/>
     <addaction name="actionLandmarkWidget"/>
     <addaction name="actionNew_Inifile"/>
+    <addaction name="actionLayers"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -742,6 +743,11 @@
    </property>
    <property name="shortcut">
     <string>Meta+E</string>
+   </property>
+  </action>
+  <action name="actionLayers">
+   <property name="text">
+    <string>Layers</string>
    </property>
   </action>
  </widget>
