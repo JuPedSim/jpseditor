@@ -329,10 +329,10 @@ void roomWidget::removeWall()
 
 void roomWidget::showWallsAndType()
 {
-     dtrace("Enter roomWidget::showWallsAndType()");
+    dtrace("Enter roomWidget::showWallsAndType()");
     ui->listWalls->clear();
 
-    if (ui->list_rooms->currentItem()!=0L)
+    if (ui->list_rooms->currentItem()!=nullptr)
     {
         int crow=ui->list_rooms->currentRow();
         auto room = datamanager->get_roomlist()[crow];
@@ -891,7 +891,7 @@ bool roomWidget::shhi_roomCaption_obs()
 void roomWidget::highlight_room() //@todo: rename -> highlight_current_room()
 {
      dtrace("Enter roomWidget::highlight_room");
-    if (ui->list_rooms->currentItem()!=0L)
+    if (ui->list_rooms->currentItem()!=nullptr)
     {
         int cRow=ui->list_rooms->currentRow();
         datamanager->get_roomlist()[cRow]->highlight();
@@ -1098,6 +1098,7 @@ void roomWidget::highlight_room(jpsRoom * room)
 {
      dtrace("Enter roomWidget::highlight_room()");
      dtrace("\t with room=<%s>", room->get_name().toStdString().c_str());
+
      // unhighlight other obstacles
      for(auto o: datamanager->get_obstaclelist())
           if(o->is_highlighted())
@@ -1109,7 +1110,7 @@ void roomWidget::highlight_room(jpsRoom * room)
                     r->highlight();
 
      // highlight room
-     if(!room->is_highlighted())
+     if(!room->is_highlighted() && room->isVisible())
           highlight_room();
 
      dtrace("Leave roomWidget::highlight_room()");

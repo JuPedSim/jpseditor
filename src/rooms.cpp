@@ -706,7 +706,7 @@ bool jpsRoom::is_highlighted()
      return highlighted;
 }
 
-bool jpsRoom::getVisible()
+bool jpsRoom::isVisible()
 {
     return visible;
 }
