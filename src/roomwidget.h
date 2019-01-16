@@ -103,7 +103,6 @@ protected slots:
 //    void autoAssignDoors();
 //    void autoAssignExits();
     void ChangeRoomType();
-    void updateLayerWidget();
 
 
 

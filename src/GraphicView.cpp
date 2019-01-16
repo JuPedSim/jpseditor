@@ -814,7 +814,8 @@ void jpsGraphicsView::catch_lines()
         for (auto &item:line_vector)
         {
             if (currentSelectRect->contains(item->get_line()->line().p1())
-                    && currentSelectRect->contains(item->get_line()->line().p2()))
+                    && currentSelectRect->contains(item->get_line()->line().p2())
+                    && item->get_defaultColor()!="white")
             {
                 select_line(item);
 
@@ -829,7 +830,7 @@ void jpsGraphicsView::catch_lines()
     {
         for (auto &item:line_vector)
         {
-            if (currentSelectRect->collidesWithItem(item->get_line()))
+            if (currentSelectRect->collidesWithItem(item->get_line()) && item->get_defaultColor()!="white")
             {
                 select_line(item);
                 line_tracked=1;

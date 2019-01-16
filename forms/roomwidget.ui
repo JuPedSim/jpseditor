@@ -20,7 +20,7 @@
    <string notr="true">background-color: rgb(240, 240, 240);</string>
   </property>
   <property name="currentIndex">
-   <number>3</number>
+   <number>0</number>
   </property>
   <widget class="QWidget" name="layerTab">
    <attribute name="title">
@@ -76,7 +76,7 @@
     </property>
    </widget>
   </widget>
-  <widget class="QWidget" name="widget">
+  <widget class="QWidget" name="roomTab">
    <property name="toolTip">
     <string/>
    </property>
@@ -326,7 +326,7 @@
     </property>
    </widget>
   </widget>
-  <widget class="QWidget" name="tab">
+  <widget class="QWidget" name="doorTab">
    <property name="toolTip">
     <string/>
    </property>
@@ -519,7 +519,7 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QWidget" name="tab_3">
+  <widget class="QWidget" name="obstacleTab">
    <property name="toolTip">
     <string/>
    </property>

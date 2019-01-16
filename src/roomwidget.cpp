@@ -81,7 +81,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->delete_room,SIGNAL(clicked(bool)),this,SLOT(delete_room()));
     connect(ui->chname_edit, SIGNAL( returnPressed() ), this, SLOT(change_roomname()));
     connect(ui->elevation_edit, SIGNAL(returnPressed()), this, SLOT(change_elevation()));
-    connect(ui->elevation_edit,SIGNAL(returnPressed()),this,SLOT(updateLayerWidget()));
+    connect(ui->elevation_edit,SIGNAL(returnPressed()),this,SLOT(showLayersInfo()));
     connect(ui->add_button,SIGNAL(clicked(bool)),this,SLOT(addWall()));
     connect(ui->list_rooms,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(showWallsAndType()));
     connect(ui->list_rooms,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showWallsAndType()));
@@ -146,18 +146,6 @@ void roomWidget::show_rooms()
     dtrace("Leave roomWidget::show_rooms"); 
 }
 
-void roomWidget::showLayersInfo()
-{
-    QList<QString> elevationlist=datamanager->getElevationList();
-    QListIterator<QString> i(elevationlist);
-
-    while (i.hasNext())
-    {
-        QString elevation = i.next();
-        QString layerinfo = elevation + "m";
-        ui->layerListWidget->addItem(layerinfo);
-    }
-}
 
 void roomWidget::show_crossings()
 {
@@ -301,7 +289,7 @@ void roomWidget::addWall()
     if (graphview->get_markedLines().size()>0)
     {
 
-        if (ui->list_rooms->currentItem()!=0L)
+        if (ui->list_rooms->currentItem()!=nullptr)
         {
             int crow=ui->list_rooms->currentRow();
 
@@ -1201,7 +1189,7 @@ void roomWidget::show_hideLayer()
     }
 }
 
-void roomWidget::updateLayerWidget()
+void roomWidget::showLayersInfo()
 {
     ui->layerListWidget->clear();
 
@@ -1214,6 +1202,5 @@ void roomWidget::updateLayerWidget()
         QString layerinfo = elevation + "m";
         ui->layerListWidget->addItem(layerinfo);
     }
-
     dtrace("Layer ListWidget is updated!");
 }

@@ -241,9 +241,10 @@ void jpsRoom::switchVisibility()
         QColor color(0,0,0,0);
         QPen pen(color);
 
-        for (int i=0; i<wall_list.size(); ++i)
+        for (int i=0; i<wall_list.size(); i++)
         {
             wall_list[i]->get_line()->setPen(pen);
+            wall_list[i]->set_defaultColor("white");
         }
     }
     else
