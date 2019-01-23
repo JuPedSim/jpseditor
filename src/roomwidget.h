@@ -47,7 +47,7 @@ class roomWidget : public QTabWidget
     Q_OBJECT
     
 public:
-    roomWidget(QWidget *parent = nullptr, jpsDatamanager *dmanager=0L, jpsGraphicsView *gview=0L);
+    roomWidget(QWidget *parent = nullptr, jpsDatamanager *dmanager=nullptr, jpsGraphicsView *gview=nullptr);
     ~roomWidget();
     void show_rooms();
     void showLayersInfo();

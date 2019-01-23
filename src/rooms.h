@@ -58,6 +58,7 @@ public:
     void set_cz(float cz);
     void set_up(QPointF up);
     void set_down(QPointF down);
+    void switchHighlight();
     float get_ax();
     float get_by();
     float get_cz();
