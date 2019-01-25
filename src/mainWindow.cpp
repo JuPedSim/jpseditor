@@ -447,15 +447,15 @@ void MWindow::saveAsXML(){
     {
         //QString coord_string=mview->build_coordString();
 
-        QString message = dmanager->check_printAbility();
+//        QString message = dmanager->check_printAbility();
 
-        if (message!="")
-        {
-            statusBar()->showMessage(message,10000);
-            QMessageBox::warning(this,"Warning!", message,
-                                 QMessageBox::Ok);
-            return;
-        }
+//        if (message!="")
+//        {
+//            statusBar()->showMessage(message,10000);
+//            QMessageBox::warning(this,"Warning!", message,
+//                                 QMessageBox::Ok);
+//            return;
+//        }
 
         dmanager->writeXML(file);
 
