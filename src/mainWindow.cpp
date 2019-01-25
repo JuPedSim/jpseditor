@@ -334,6 +334,13 @@ void MWindow::openFileDXF(){
 
 void MWindow::openFileXML()
 {
+    if(rwidget!=nullptr)
+    {
+        rwidget->close();
+        rwidget=nullptr;
+        actionRoom->setChecked(false);
+    }
+
     QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
