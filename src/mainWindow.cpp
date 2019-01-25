@@ -456,6 +456,7 @@ void MWindow::saveAsXML(){
                                  QMessageBox::Ok);
             return;
         }
+
         dmanager->writeXML(file);
 
         //routing (hlines)

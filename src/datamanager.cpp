@@ -419,15 +419,10 @@ void jpsDatamanager::writeXML(QFile &file)
     writeHeader(stream);
 
     //write room
-    if(get_roomlist().size == 0) //no room is definedd jet.
-    {
-        
-    }else
-    {
-        stream->writeStartElement("rooms");
-        writeRooms(stream,lines);
-        stream->writeEndElement();
-    }
+
+    stream->writeStartElement("rooms");
+    writeRooms(stream,lines);
+    stream->writeEndElement();
     
 
     stream->writeStartElement("transitions");
@@ -435,13 +430,24 @@ void jpsDatamanager::writeXML(QFile &file)
     exitList.clear();
     stream->writeEndElement();//transitions
 
+    stream->writeStartElement("Undefine");
+    writeNotAssignedDoors(stream,lines);
+//    writeNotAssignedExits(stream,lines);
+    writeNotAssignedWalls(stream,lines);
+    stream->writeEndElement(); //undefine
+
     stream->writeEndElement();//geometry
 
     stream->writeEndDocument();
 
+
+
+
     delete stream;
     dtrace("Leave jpsDatamanager::writeXML");
 }
+
+
 
 void jpsDatamanager::writeRoutingXML(QFile &file) // Construction side
 {
@@ -1048,6 +1054,7 @@ void jpsDatamanager::writeNotAssignedWalls(QXmlStreamWriter *stream, QList<jpsLi
      dtrace("Enter jpsDatamanager::writeNotAssignedWalls");
     /// save lines which are not assigned to a room yet
     QList<jpsLineItem *> walls;
+
     for (jpsLineItem* line:lines)
     {
         if (line->is_Wall())
