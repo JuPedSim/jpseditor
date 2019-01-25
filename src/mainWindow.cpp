@@ -334,6 +334,13 @@ void MWindow::openFileDXF(){
 
 void MWindow::openFileXML()
 {
+    if(rwidget!=nullptr)
+    {
+        rwidget->close();
+        rwidget=nullptr;
+        actionRoom->setChecked(false);
+    }
+
     QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -447,15 +454,16 @@ void MWindow::saveAsXML(){
     {
         //QString coord_string=mview->build_coordString();
 
-        QString message = dmanager->check_printAbility();
+//        QString message = dmanager->check_printAbility();
 
-        if (message!="")
-        {
-            statusBar()->showMessage(message,10000);
-            QMessageBox::warning(this,"Warning!", message,
-                                 QMessageBox::Ok);
-            return;
-        }
+//        if (message!="")
+//        {
+//            statusBar()->showMessage(message,10000);
+//            QMessageBox::warning(this,"Warning!", message,
+//                                 QMessageBox::Ok);
+//            return;
+//        }
+
         dmanager->writeXML(file);
 
         //routing (hlines)
