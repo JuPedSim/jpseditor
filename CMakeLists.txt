@@ -112,15 +112,21 @@ set( SRCS
     src/widgetlandmark.cpp
     src/widgetsettings.cpp
     src/jpsconnection.cpp
-        src/jpsregion.cpp
+    src/jpsregion.cpp
+    src/settingdialog.cpp
+    src/inifilewidget.cpp
+    
     dxflib/src/dl_writer_ascii.cpp
     dxflib/src/dl_dxf.cpp
     src/UndoFramework/action.cpp
     src/UndoFramework/actionstack.cpp
     src/UndoFramework/lineaction.cpp
-        src/AutomaticRoomIdentification/roomdefinition.cpp
+    src/AutomaticRoomIdentification/roomdefinition.cpp
     src/AutomaticRoomIdentification/roomidentification.cpp
-    src/settingdialog.cpp
+    src/tinyxml/tinystr.cpp
+    src/tinyxml/tinyxml.cpp
+    src/tinyxml/tinyxmlerror.cpp
+    src/tinyxml/tinyxmlparser.cpp
   )
 # all header files that should be treated with moc
 set( HDR
@@ -139,7 +145,11 @@ set( HDR
     src/widgetlandmark.h
     src/widgetsettings.h
     src/jpsconnection.h
-        src/jpsregion.h
+    src/jpsregion.h
+    src/dtrace.h
+    src/settingdialog.h
+    src/inifilewidget.h
+
     dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h
     dxflib/src/dl_global.h
@@ -151,15 +161,15 @@ set( HDR
     dxflib/src/dl_creationadapter.h
     dxflib/src/dl_codes.h
     dxflib/src/dl_attributes.h
+
     src/UndoFramework/action.h
     src/UndoFramework/actionstack.h
     src/UndoFramework/lineaction.h
-        src/AutomaticRoomIdentification/roomID.h
+    src/AutomaticRoomIdentification/roomID.h
     src/AutomaticRoomIdentification/roomdefinition.h
     src/AutomaticRoomIdentification/roomidentification.h
-    src/dtrace.h
-    src/settingdialog.h
-
+    src/tinyxml/tinystr.h
+    src/tinyxml/tinyxml.h
   )
 
 # *.ui files
@@ -169,6 +179,7 @@ set( UIS
     forms/widgetlandmark.ui
     forms/widgetsettings.ui
     forms/settingdialog.ui
+    forms/inifilewidget.ui
   )
 
 # and finally a resource file
