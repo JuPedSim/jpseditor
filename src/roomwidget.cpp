@@ -211,7 +211,7 @@ void roomWidget::new_room()
     dtrace("Enter roomWidget::new_room");
     datamanager->new_room();
     // Next three calls are necessary
-    //if the user first generates a
+    // if the user first generates a
     // crossing/exit/obs and secondly generates rooms
     enable_roomSelectionCrossings();
     enable_roomSelectionExits();

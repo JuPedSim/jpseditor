@@ -417,9 +417,18 @@ void jpsDatamanager::writeXML(QFile &file)
     QList<jpsLineItem* > lines = _mView->get_line_vector();
 
     writeHeader(stream);
-    stream->writeStartElement("rooms");
-    writeRooms(stream,lines);
-    stream->writeEndElement();//rooms
+
+    //write room
+    if(get_roomlist().size == 0) //no room is definedd jet.
+    {
+        
+    }else
+    {
+        stream->writeStartElement("rooms");
+        writeRooms(stream,lines);
+        stream->writeEndElement();
+    }
+    
 
     stream->writeStartElement("transitions");
     writeTransitions(stream,lines);
