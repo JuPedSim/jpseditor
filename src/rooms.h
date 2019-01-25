@@ -58,6 +58,7 @@ public:
     void set_cz(float cz);
     void set_up(QPointF up);
     void set_down(QPointF down);
+    void switchHighlight();
     float get_ax();
     float get_by();
     float get_cz();
@@ -66,6 +67,7 @@ public:
     int get_id();
     QPointF get_center();
     void highlight(const QString &color="random");
+    void switchVisibility();
     QString get_type() const;
     void set_type(const QString &string);
     QList<QPointF> GetDoorVertices() const;
@@ -86,6 +88,9 @@ public:
     void set_elevation(float elevation);
     void correctPlaneCoefficients(); /// calculates the coefficients A_x, B_y and C_z for stairs
     bool is_highlighted();
+    bool isVisible();
+    void setVisible(bool visibility);
+
 private:
     int id;
     bool highlighted;
@@ -102,6 +107,7 @@ private:
     QString _type;
     QList<jpsCrossing* > _doorList;
     qreal _area;
+    bool visible;
 
     float _elevation; /// this makes only sense for horizontal rooms. 
 };

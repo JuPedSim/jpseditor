@@ -101,6 +101,8 @@ public:
     void RemoveRegion(jpsRegion* region);
     void RemoveAllRegions();
     const int& GetRegionCounter() const;
+    //Layers
+    QList<QString> getElevationList();
     //
     void remove_all();
     void remove_marked_lines();

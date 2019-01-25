@@ -80,11 +80,6 @@ private:
     QTimer *timer;
     QSettings settings;
 
-//    QString backupfolder;
-//    QString defaultjpscore;
-//    QString defaultjpsvis;
-//    QMap<QString, QString> defaultsetting;
-
     bool _statScale;
 
 protected slots:

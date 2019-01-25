@@ -47,9 +47,10 @@ class roomWidget : public QTabWidget
     Q_OBJECT
     
 public:
-    roomWidget(QWidget *parent = 0L, jpsDatamanager *dmanager=0L, jpsGraphicsView *gview=0L);
+    roomWidget(QWidget *parent = nullptr, jpsDatamanager *dmanager=nullptr, jpsGraphicsView *gview=nullptr);
     ~roomWidget();
     void show_rooms();
+    void showLayersInfo();
     void show_crossings();
     void show_exits();
     void show_obstacles();
@@ -106,6 +107,13 @@ protected slots:
 
 
 
+private slots:
+    void on_hideButton_clicked();
+
+    void on_showButton_clicked();
+
+protected:
+
 private:
     Ui::roomWidget *ui;
     jpsDatamanager *datamanager;
@@ -115,6 +123,9 @@ private:
 
     //
     void ShowRoomType(int &cRow) const;
+
+
+    void show_hideLayer();
 
 };
 

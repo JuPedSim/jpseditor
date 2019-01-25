@@ -26,6 +26,7 @@
  *
  **/
 
+
 //mainWindow.cpp
 
 #include "mainWindow.h"
@@ -39,8 +40,8 @@
 #include <QDebug>
 #include <QSettings>
 
-MWindow :: MWindow() {
-
+MWindow :: MWindow()
+{
     setupUi(this);
     //Signal/Slot
     //VBox= new QVBoxLayout;
@@ -637,6 +638,7 @@ void MWindow::send_xy()
 
 void MWindow::define_room()
 {
+
     if (rwidget==nullptr)
     {
         rwidget = new roomWidget(this,this->dmanager,this->mview);
@@ -789,6 +791,7 @@ void MWindow::on_actionClear_all_Rooms_and_Doors_triggered()
 
     if(rwidget!= nullptr){
         rwidget->show_rooms();
+        rwidget->showLayersInfo();
         rwidget->show_crossings();
         rwidget->show_obstacles();
     }

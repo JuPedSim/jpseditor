@@ -338,15 +338,12 @@
    </property>
   </action>
   <action name="actionRoom">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="enabled">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../Resources/resources.qrc">
-     <normaloff>:/inAppIcons/Icons/rooms.png</normaloff>:/inAppIcons/Icons/rooms.png</iconset>
+     <normaloff>:/inAppIcons/Icons/attribute.svg</normaloff>:/inAppIcons/Icons/attribute.svg</iconset>
    </property>
    <property name="text">
     <string>Define Rooms</string>
