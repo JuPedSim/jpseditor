@@ -41,9 +41,9 @@
 #include "GraphicView.h"
 #include "datamanager.h"
 #include "rooms.h"
-#include "src/settingdialog.h"
+#include "settingdialog.h"
 #include "inifilewidget.h"
-
+#include "snappingoptions.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 
@@ -52,11 +52,11 @@ public:
     MWindow();
     ~MWindow();
 
-
 private:
     roomWidget* rwidget;
     widgetLandmark* lwidget;
     InifileWidget * inifileWidget;
+    SnappingOptions* snappingOptions;
 //    WidgetSettings* _settings;
     jpsDatamanager* dmanager;
     jpsGraphicsView* mview;

@@ -109,7 +109,6 @@ protected slots:
 
 private slots:
     void on_hideButton_clicked();
-
     void on_showButton_clicked();
 
 protected:

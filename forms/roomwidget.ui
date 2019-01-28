@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>TabWidget</string>
+   <string>Define Room</string>
   </property>
   <property name="toolTip">
    <string/>
@@ -312,12 +312,12 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>140</x>
       <y>40</y>
-      <width>141</width>
+      <width>157</width>
       <height>28</height>
      </rect>
     </property>
