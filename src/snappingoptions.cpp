@@ -23,27 +23,5 @@ void SnappingOptions::sendState()
     emit snapStart_endpoint(ui->startendpointBox->isChecked());
     emit snapIntersections_point(ui->intersectionspointBox->isChecked());
     emit snapCenter_point(ui->centerpointBox->isChecked());
-//    if(ui->startendpointBox->isChecked())
-//    {
-//        emit snapStart_endpoint(true);
-//    }else
-//    {
-//        emit snapStart_endpoint(false);
-//    }
-
-//    if(ui->intersectionspointBox->isChecked())
-//    {
-//        emit snapIntersections_point(true);
-//    }else
-//    {
-//        emit snapIntersections_point(false);
-//    }
-
-//    if(ui->intersectionspointBox->isChecked())
-//    {
-//        emit snapIntersections_point(true);
-//    }else
-//    {
-//        emit snapIntersections_point(false);
-//    }
+    emit snapSelectedLine_point(ui->linepointBox->isChecked());
 }

@@ -64,6 +64,8 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     objectsnap=false;
     start_endpoint_snap=false;
     intersectionspoint_snap=false;
+    centerpoint_snap=false;
+    linepoint_snap=false;
     _gridmode=false;
     statWall=false;
     statDoor=false;
@@ -215,7 +217,12 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
             catch_center_point();
         }
 
-        //catch_points();
+        if(linepoint_snap)
+        {
+            catch_line_point();
+        }
+
+
 
         //VLine
         if (point_tracked && (statWall==true || statDoor==true || statExit==true))
@@ -856,18 +863,23 @@ void jpsGraphicsView::catch_start_endpoints()
             //cursor.setPos(mapToGlobal(QPoint(translate_back_x(line_vector[i].x1()),translate_back_y(line_vector[i].y1()))));
             //bool is used to tell paint device to draw a red rect if a point was tracked
             point_tracked=true;
-            _currentTrackedPoint= &translated_pos;
+//            _currentTrackedPoint= &translated_pos;
             //QPen pen;
             //pen.setColor('red');
             if (current_rect==nullptr)
-                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
+                                            translated_pos.y()+translation_y-10*gl_scale_f,
+                                            20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
             // if a point was tracked there is no need to look for further points ( only one point can be tracked)
 
             return;
         }
 
         //Searching for endpoints of all lines near the current cursor position
-        else if (line_vector[i]->get_line()->line().x2()>=(translated_pos.x()-catch_radius) && line_vector[i]->get_line()->line().x2()<=(translated_pos.x()+catch_radius) && line_vector[i]->get_line()->line().y2()>=(translated_pos.y()-catch_radius) && line_vector[i]->get_line()->line().y2()<=(translated_pos.y()+catch_radius)){
+        else if (line_vector[i]->get_line()->line().x2()>=(translated_pos.x()-catch_radius)
+                 && line_vector[i]->get_line()->line().x2()<=(translated_pos.x()+catch_radius)
+                 && line_vector[i]->get_line()->line().y2()>=(translated_pos.y()-catch_radius)
+                 && line_vector[i]->get_line()->line().y2()<=(translated_pos.y()+catch_radius)){
             // see above
 
             //to avoid the tracking of the coords of an edited line
@@ -945,6 +957,33 @@ void jpsGraphicsView::catch_center_point()
     return;
 }
 
+void jpsGraphicsView::catch_line_point()
+{
+    for(int i=0; i<marked_lines.size(); i++)
+    {
+        QPointF point = getNearstPointOnLine(marked_lines[i]);
+
+        if(point.x()>=(translated_pos.x()-catch_radius)
+                && point.x()<=(translated_pos.x()+catch_radius)
+                && point.y()>=(translated_pos.y()-catch_radius)
+                && point.y()<=(translated_pos.y()+catch_radius))
+        {
+            translated_pos.setX(point.x());
+            translated_pos.setY(point.y());
+            if (current_rect==nullptr)
+            {
+                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
+                                            translated_pos.y()+translation_y-10*gl_scale_f,
+                                            20*gl_scale_f,20*gl_scale_f,QPen(Qt::blue,0));
+
+            }
+        }
+
+    }
+
+    point_tracked=false;
+    return;
+}
 
 void jpsGraphicsView::catch_lines()
 {
@@ -2158,4 +2197,37 @@ void jpsGraphicsView::changeIntersections_point(bool state)
 void jpsGraphicsView::changeCenter_point(bool state)
 {
     centerpoint_snap=state;
+}
+
+void jpsGraphicsView::changeLine_point(bool state)
+{
+    linepoint_snap=state;
+}
+
+QPointF jpsGraphicsView::getNearstPointOnLine(jpsLineItem* selected_line)
+{
+    QPointF mouse_p1 = selected_line->get_line()->line().p1();
+    QPointF mouse_p2 = selected_line->get_line()->line().p2();
+
+    double APx=translated_pos.x() - mouse_p1.x();
+    double APy=translated_pos.y() - mouse_p1.y();
+    double ABx = mouse_p2.x() - mouse_p1.x();
+    double ABy = mouse_p2.y() - mouse_p1.y();
+
+    double magAB2 = ABx*ABx + ABy*ABy;
+    double ABdotAP = ABx*APx + ABy*APy;
+    double t = ABdotAP / magAB2;
+
+    QPointF newPoint;
+
+    if ( t < 0) {
+        newPoint = mouse_p1;
+    }else if (t > 1){
+        newPoint = mouse_p2;
+    }else{
+        newPoint.setX(mouse_p1.x() + ABx*t);
+        newPoint.setY(mouse_p1.y() + ABy*t);
+    }
+
+    return newPoint;
 }

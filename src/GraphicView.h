@@ -99,11 +99,12 @@ public:
     void selectedWindows();
 
 
-    //Catch lines, points and intersections
+    //Catch lines, points
     void catch_points();
     void catch_start_endpoints();
     void catch_intersections_point();
     void catch_center_point();
+    void catch_line_point();
 
     void locate_intersection(jpsLineItem* item1, jpsLineItem* item2);
     void line_collision();
@@ -132,6 +133,7 @@ public:
     void start_Copy_function();
     void Copy_lines(const QPointF& delta);
     void ScaleLines(const double& factor);
+    QPointF getNearstPointOnLine(jpsLineItem* selected_line);
 
     // Landmark
     void delete_landmark();
@@ -189,6 +191,7 @@ protected slots:
     void changeStart_endpoint(bool state);
     void changeIntersections_point(bool state);
     void changeCenter_point(bool state);
+    void changeLine_point(bool state);
 
 private:
     jpsDatamanager* _datamanager;
@@ -227,6 +230,7 @@ private:
     bool start_endpoint_snap;
     bool intersectionspoint_snap;
     bool centerpoint_snap;
+    bool linepoint_snap;
     QPointF* intersection_point;
     int line_tracked;
     QPen currentPen;
@@ -235,6 +239,7 @@ private:
     QGraphicsTextItem* current_caption;
     QList<QGraphicsTextItem* > caption_list;
     int id_counter;
+
 
     //Landmark and waypoints
     jpsLandmark* markedLandmark;
