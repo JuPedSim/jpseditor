@@ -591,7 +591,7 @@ void MWindow::objectsnap()
         snappingOptions->show();
 
         connect(snappingOptions,SIGNAL(snapStart_endpoint(bool)),mview,SLOT(changeStart_endpoint(bool)));
-
+        connect(snappingOptions,SIGNAL(snapIntersections_point(bool)),mview,SLOT(changeIntersections_point(bool)));
     }
     else
     {

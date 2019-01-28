@@ -20,6 +20,7 @@ protected slots:
 
 signals:
     void snapStart_endpoint(bool);
+    void snapIntersections_point(bool);
 
 private:
     Ui::SnappingOptions *ui;

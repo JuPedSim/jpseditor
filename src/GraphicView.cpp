@@ -63,6 +63,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     gridmap=nullptr;
     objectsnap=false;
     start_endpoint_snap=false;
+    intersectionspoint_snap=false;
     _gridmode=false;
     statWall=false;
     statDoor=false;
@@ -202,6 +203,11 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
         if(start_endpoint_snap)
         {
             catch_start_endpoints();
+        }
+
+        if(intersectionspoint_snap)
+        {
+            catch_intersections_point();
         }
 
         //catch_points();
@@ -877,6 +883,28 @@ void jpsGraphicsView::catch_start_endpoints()
     point_tracked=false;
     return;
 }
+
+void jpsGraphicsView::catch_intersections_point()
+{
+    // see above
+    for (int j=0; j<intersect_point_vector.size(); j++)
+    {
+        if (intersect_point_vector[j]->x()>=(translated_pos.x()-catch_radius) && intersect_point_vector[j]->x()<=(translated_pos.x()+catch_radius) && intersect_point_vector[j]->y()>=(translated_pos.y()-catch_radius) && intersect_point_vector[j]->y()<=(translated_pos.y()+catch_radius))
+        {
+            translated_pos.setX(intersect_point_vector[j]->x());
+            translated_pos.setY(intersect_point_vector[j]->y());
+            if (current_rect==nullptr)
+            current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+                point_tracked=true;
+            return;
+        }
+    }
+
+
+    point_tracked=false;
+    return;
+}
+
 
 void jpsGraphicsView::catch_lines()
 {
@@ -2080,4 +2108,9 @@ void jpsGraphicsView::selectedWindows()
 void jpsGraphicsView::changeStart_endpoint(bool state)
 {
     start_endpoint_snap=state;
+}
+
+void jpsGraphicsView::changeIntersections_point(bool state)
+{
+    intersectionspoint_snap=state;
 }
