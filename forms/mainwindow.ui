@@ -24,7 +24,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuDatei">
@@ -58,7 +58,6 @@
     <addaction name="actionGather_data"/>
     <addaction name="actionLandmarkWidget"/>
     <addaction name="actionNew_Inifile"/>
-    <addaction name="actionLayers"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -693,21 +692,6 @@
   <action name="actionOnline_Help">
    <property name="text">
     <string>Online Help</string>
-   </property>
-  </action>
-  <action name="actionPanning_Mode">
-   <property name="icon">
-    <iconset resource="../Resources/resources.qrc">
-     <normaloff>:/inAppIcons/Icons/moved_hand.svg</normaloff>:/inAppIcons/Icons/moved_hand.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Panning Mode</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+P</string>
-   </property>
-   <property name="iconVisibleInMenu">
-    <bool>true</bool>
    </property>
   </action>
   <action name="actionNew_Inifile">

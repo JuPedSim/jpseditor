@@ -198,6 +198,7 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
     if (objectsnap)
     {
+
         catch_points();
 
         //VLine
