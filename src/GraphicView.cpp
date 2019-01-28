@@ -210,6 +210,11 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
             catch_intersections_point();
         }
 
+        if(centerpoint_snap)
+        {
+            catch_center_point();
+        }
+
         //catch_points();
 
         //VLine
@@ -834,7 +839,10 @@ void jpsGraphicsView::catch_start_endpoints()
     for (int i=0; i<line_vector.size(); ++i){
 
         // range chosen: 10 (-5:5) (has to be changed soon)
-        if (line_vector[i]->get_line()->line().x1()>=(translated_pos.x()-catch_radius) && line_vector[i]->get_line()->line().x1()<=(translated_pos.x()+catch_radius) && line_vector[i]->get_line()->line().y1()>=(translated_pos.y()-catch_radius) && line_vector[i]->get_line()->line().y1()<=(translated_pos.y()+catch_radius)){
+        if (line_vector[i]->get_line()->line().x1()>=(translated_pos.x()-catch_radius)
+                && line_vector[i]->get_line()->line().x1()<=(translated_pos.x()+catch_radius)
+                && line_vector[i]->get_line()->line().y1()>=(translated_pos.y()-catch_radius)
+                && line_vector[i]->get_line()->line().y1()<=(translated_pos.y()+catch_radius)){
             // in this case the cursor is working with global coordinates. So the method 'mapToGlobal' must be used
 
             //to avoid the tracking of the coords of an edited line
@@ -889,17 +897,49 @@ void jpsGraphicsView::catch_intersections_point()
     // see above
     for (int j=0; j<intersect_point_vector.size(); j++)
     {
-        if (intersect_point_vector[j]->x()>=(translated_pos.x()-catch_radius) && intersect_point_vector[j]->x()<=(translated_pos.x()+catch_radius) && intersect_point_vector[j]->y()>=(translated_pos.y()-catch_radius) && intersect_point_vector[j]->y()<=(translated_pos.y()+catch_radius))
+        if (intersect_point_vector[j]->x()>=(translated_pos.x()-catch_radius)
+                && intersect_point_vector[j]->x()<=(translated_pos.x()+catch_radius)
+                && intersect_point_vector[j]->y()>=(translated_pos.y()-catch_radius)
+                && intersect_point_vector[j]->y()<=(translated_pos.y()+catch_radius))
         {
             translated_pos.setX(intersect_point_vector[j]->x());
             translated_pos.setY(intersect_point_vector[j]->y());
             if (current_rect==nullptr)
-            current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+            current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
+                                        translated_pos.y()+translation_y-10*gl_scale_f,
+                                        20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
                 point_tracked=true;
             return;
         }
     }
 
+
+    point_tracked=false;
+    return;
+}
+
+void jpsGraphicsView::catch_center_point()
+{
+    for(int i=0; i<line_vector.size(); i++)
+    {
+        QPointF center = line_vector[i]->get_line()->line().center();
+        if(center.x()>=(translated_pos.x()-catch_radius)
+                && center.x()<=(translated_pos.x()+catch_radius)
+                && center.y()>=(translated_pos.y()-catch_radius)
+                && center.y()<=(translated_pos.y()+catch_radius))
+        {
+            translated_pos.setX(center.x());
+            translated_pos.setY(center.y());
+            if (current_rect==nullptr)
+            {
+                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
+                                            translated_pos.y()+translation_y-10*gl_scale_f,
+                                            20*gl_scale_f,20*gl_scale_f,QPen(Qt::green,0));
+
+            }
+        }
+
+    }
 
     point_tracked=false;
     return;
@@ -2113,4 +2153,9 @@ void jpsGraphicsView::changeStart_endpoint(bool state)
 void jpsGraphicsView::changeIntersections_point(bool state)
 {
     intersectionspoint_snap=state;
+}
+
+void jpsGraphicsView::changeCenter_point(bool state)
+{
+    centerpoint_snap=state;
 }

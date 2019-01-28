@@ -22,7 +22,7 @@ void SnappingOptions::sendState()
 {
     emit snapStart_endpoint(ui->startendpointBox->isChecked());
     emit snapIntersections_point(ui->intersectionspointBox->isChecked());
-
+    emit snapCenter_point(ui->centerpointBox->isChecked());
 //    if(ui->startendpointBox->isChecked())
 //    {
 //        emit snapStart_endpoint(true);
