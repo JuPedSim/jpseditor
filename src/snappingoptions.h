@@ -15,6 +15,12 @@ public:
     explicit SnappingOptions(QWidget *parent = nullptr);
     ~SnappingOptions();
 
+protected slots:
+    void sendState();
+
+signals:
+    void snapStart_endpoint(bool);
+
 private:
     Ui::SnappingOptions *ui;
 };

@@ -52,6 +52,7 @@ public:
     MWindow();
     ~MWindow();
 
+
 private:
     roomWidget* rwidget;
     widgetLandmark* lwidget;

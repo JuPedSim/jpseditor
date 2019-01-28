@@ -101,6 +101,7 @@ public:
 
     //Catch lines, points and intersections
     void catch_points();
+    void catch_start_endpoints();
     void locate_intersection(jpsLineItem* item1, jpsLineItem* item2);
     void line_collision();
     void catch_lines();
@@ -171,6 +172,7 @@ public slots:
     void Undo();
     void Redo();
 
+
 protected:
     //Mouse events
     virtual void mouseMoveEvent(QMouseEvent * mouseEvent);
@@ -179,6 +181,9 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
     virtual void wheelEvent(QWheelEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
+
+protected slots:
+    void changeStart_endpoint(bool state);
 
 private:
     jpsDatamanager* _datamanager;
@@ -214,6 +219,7 @@ private:
     QGraphicsItem* current_rect;
     QGraphicsRectItem* currentSelectRect;
     bool objectsnap;
+    bool start_endpoint_snap;
     QPointF* intersection_point;
     int line_tracked;
     QPen currentPen;

@@ -582,12 +582,16 @@ void MWindow::disableDrawing()
 
 void MWindow::objectsnap()
 {
+
     if(snappingOptions==nullptr)
     {
         snappingOptions = new SnappingOptions(this);
         snappingOptions->setGeometry(QRect(QPoint(5,75), snappingOptions->size()));
         snappingOptions->setAttribute(Qt::WA_DeleteOnClose);
         snappingOptions->show();
+
+        connect(snappingOptions,SIGNAL(snapStart_endpoint(bool)),mview,SLOT(changeStart_endpoint(bool)));
+
     }
     else
     {

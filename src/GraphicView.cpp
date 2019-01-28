@@ -62,6 +62,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     currentSelectRect=nullptr;
     gridmap=nullptr;
     objectsnap=false;
+    start_endpoint_snap=false;
     _gridmode=false;
     statWall=false;
     statDoor=false;
@@ -198,8 +199,12 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
     if (objectsnap)
     {
+        if(start_endpoint_snap)
+        {
+            catch_start_endpoints();
+        }
 
-        catch_points();
+        //catch_points();
 
         //VLine
         if (point_tracked && (statWall==true || statDoor==true || statExit==true))
@@ -813,6 +818,62 @@ void jpsGraphicsView::catch_points()
 //    }
 
     // if no point was tracked bool is set back to false
+    point_tracked=false;
+    return;
+}
+
+void jpsGraphicsView::catch_start_endpoints()
+{
+    //Searching for startpoints of all lines near the current cursor position
+    for (int i=0; i<line_vector.size(); ++i){
+
+        // range chosen: 10 (-5:5) (has to be changed soon)
+        if (line_vector[i]->get_line()->line().x1()>=(translated_pos.x()-catch_radius) && line_vector[i]->get_line()->line().x1()<=(translated_pos.x()+catch_radius) && line_vector[i]->get_line()->line().y1()>=(translated_pos.y()-catch_radius) && line_vector[i]->get_line()->line().y1()<=(translated_pos.y()+catch_radius)){
+            // in this case the cursor is working with global coordinates. So the method 'mapToGlobal' must be used
+
+            //to avoid the tracking of the coords of an edited line
+            if (line_vector[i]->get_line()==current_line)
+            {
+                continue;
+            }
+
+            translated_pos.setX(line_vector[i]->get_line()->line().x1());
+            translated_pos.setY(line_vector[i]->get_line()->line().y1());
+            //cursor.setPos(mapToGlobal(QPoint(translate_back_x(line_vector[i].x1()),translate_back_y(line_vector[i].y1()))));
+            //bool is used to tell paint device to draw a red rect if a point was tracked
+            point_tracked=true;
+            _currentTrackedPoint= &translated_pos;
+            //QPen pen;
+            //pen.setColor('red');
+            if (current_rect==nullptr)
+                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+            // if a point was tracked there is no need to look for further points ( only one point can be tracked)
+
+            return;
+        }
+
+        //Searching for endpoints of all lines near the current cursor position
+        else if (line_vector[i]->get_line()->line().x2()>=(translated_pos.x()-catch_radius) && line_vector[i]->get_line()->line().x2()<=(translated_pos.x()+catch_radius) && line_vector[i]->get_line()->line().y2()>=(translated_pos.y()-catch_radius) && line_vector[i]->get_line()->line().y2()<=(translated_pos.y()+catch_radius)){
+            // see above
+
+            //to avoid the tracking of the coords of an edited line
+            if (line_vector[i]->get_line()==current_line)
+            {
+                continue;
+            }
+
+
+            translated_pos.setX(line_vector[i]->get_line()->line().x2());
+            translated_pos.setY(line_vector[i]->get_line()->line().y2());
+            //cursor.setPos(mapToGlobal(QPoint(translate_back_x(line_vector[i].x2()),translate_back_y(line_vector[i].y2()))));
+            point_tracked=true;
+            if (current_rect==nullptr)
+                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+            _currentTrackedPoint= &translated_pos;
+            return;
+        }
+    }
+
     point_tracked=false;
     return;
 }
@@ -2014,4 +2075,9 @@ void jpsGraphicsView::ScaleLines(const double &factor)
 void jpsGraphicsView::selectedWindows()
 {
     statzoomwindows=true;
+}
+
+void jpsGraphicsView::changeStart_endpoint(bool state)
+{
+    start_endpoint_snap=state;
 }
