@@ -227,7 +227,7 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
         //VLine
         if (point_tracked && (statWall==true || statDoor==true || statExit==true))
         {
-            SetVLine();
+//            SetVLine();
         }
     }
 
@@ -862,7 +862,7 @@ void jpsGraphicsView::catch_start_endpoints()
             translated_pos.setY(line_vector[i]->get_line()->line().y1());
             //cursor.setPos(mapToGlobal(QPoint(translate_back_x(line_vector[i].x1()),translate_back_y(line_vector[i].y1()))));
             //bool is used to tell paint device to draw a red rect if a point was tracked
-            point_tracked=true;
+//            point_tracked=true;
 //            _currentTrackedPoint= &translated_pos;
             //QPen pen;
             //pen.setColor('red');
@@ -892,10 +892,10 @@ void jpsGraphicsView::catch_start_endpoints()
             translated_pos.setX(line_vector[i]->get_line()->line().x2());
             translated_pos.setY(line_vector[i]->get_line()->line().y2());
             //cursor.setPos(mapToGlobal(QPoint(translate_back_x(line_vector[i].x2()),translate_back_y(line_vector[i].y2()))));
-            point_tracked=true;
+//            point_tracked=true;
             if (current_rect==nullptr)
                 current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
-            _currentTrackedPoint= &translated_pos;
+//            _currentTrackedPoint= &translated_pos;
             return;
         }
     }
@@ -920,7 +920,7 @@ void jpsGraphicsView::catch_intersections_point()
             current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
                                         translated_pos.y()+translation_y-10*gl_scale_f,
                                         20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
-                point_tracked=true;
+//                point_tracked=true;
             return;
         }
     }
