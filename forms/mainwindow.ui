@@ -58,7 +58,6 @@
     <addaction name="actionGather_data"/>
     <addaction name="actionLandmarkWidget"/>
     <addaction name="actionNew_Inifile"/>
-    <addaction name="actionBreak_Line"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -129,7 +128,6 @@
    <addaction name="actiongridmode"/>
    <addaction name="actionObjectsnap"/>
    <addaction name="separator"/>
-   <addaction name="actionBreak_Line"/>
    <addaction name="actionRoom"/>
   </widget>
   <action name="action_ffnen">

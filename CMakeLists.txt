@@ -118,6 +118,7 @@ set( SRCS
     src/jpsregion.cpp
     src/settingdialog.cpp
     src/inifilewidget.cpp
+    src/snappingoptions.cpp
     
     dxflib/src/dl_writer_ascii.cpp
     dxflib/src/dl_dxf.cpp
@@ -152,6 +153,7 @@ set( HDR
     src/dtrace.h
     src/settingdialog.h
     src/inifilewidget.h
+    src/snappingoptions.h
 
     dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h
@@ -183,6 +185,7 @@ set( UIS
     forms/widgetsettings.ui
     forms/settingdialog.ui
     forms/inifilewidget.ui
+    forms/snappingoptions.ui
   )
 
 # and finally a resource file
