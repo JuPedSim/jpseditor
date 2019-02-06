@@ -30,6 +30,7 @@ set (CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+
 MESSAGE( STATUS "System ........................................ ${CMAKE_SYSTEM_NAME} (${CMAKE_SYSTEM_VERSION}, ${CMAKE_SYSTEM_PROCESSOR})" )
 
 set(README_FILE "${CMAKE_SOURCE_DIR}/README.md")
@@ -47,6 +48,8 @@ endif()
 message( STATUS "Generating  ................................... ${PROJECT_NAME} (${JPSEDITOR_VERSION}) -- ${CMAKE_BUILD_TYPE}")
 if(APPLE )
   set(CMAKE_INSTALL_PREFIX "/Applications")
+  set (CMAKE_PREFIX_PATH "/Applications/Qt/5.12.0/clang_64")
+
 endif()
 message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
 

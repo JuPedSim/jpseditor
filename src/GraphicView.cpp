@@ -157,7 +157,6 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
     {
        delete current_rect;
        current_rect=nullptr;
-
     }
     QPointF old_pos=pos;
 
@@ -181,7 +180,6 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
         }
 
     }
-
 
     if (midbutton_hold)
     {
