@@ -59,5 +59,6 @@
         <file>Icons/landmark.svg</file>
         <file>Icons/moved_hand.svg</file>
         <file>Icons/attribute.svg</file>
+        <file>Icons/breaking.png</file>
     </qresource>
 </RCC>

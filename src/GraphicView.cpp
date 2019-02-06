@@ -71,6 +71,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     statDoor=false;
     statExit=false;
     _statHLine=false;
+    stat_break_ = false;
     statzoomwindows=false;
     _statCopy=0;
     statLandmark=false;
@@ -284,7 +285,7 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                 drawLine();
             }
         }
-        else if (statLandmark==true)
+        else if (statLandmark)
         {
             addLandmark();
         }

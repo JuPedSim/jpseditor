@@ -24,7 +24,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuDatei">
@@ -58,6 +58,7 @@
     <addaction name="actionGather_data"/>
     <addaction name="actionLandmarkWidget"/>
     <addaction name="actionNew_Inifile"/>
+    <addaction name="actionBreak_Line"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -128,6 +129,7 @@
    <addaction name="actiongridmode"/>
    <addaction name="actionObjectsnap"/>
    <addaction name="separator"/>
+   <addaction name="actionBreak_Line"/>
    <addaction name="actionRoom"/>
   </widget>
   <action name="action_ffnen">
@@ -735,6 +737,18 @@
   <action name="actionLayers">
    <property name="text">
     <string>Layers</string>
+   </property>
+  </action>
+  <action name="actionBreak_Line">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/breaking.png</normaloff>:/inAppIcons/Icons/breaking.png</iconset>
+   </property>
+   <property name="text">
+    <string>Break Line</string>
    </property>
   </action>
  </widget>

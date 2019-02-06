@@ -36,7 +36,6 @@
 using myClock = std::chrono::high_resolution_clock;
 
 
-
 jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 {
     parent_widget=parent;

@@ -217,6 +217,7 @@ private:
     bool statExit;
     bool statLandmark;
     bool _statHLine;
+    bool stat_break_;
     int _statCopy;
     QPointF _copyOrigin;
     qreal catch_radius;
