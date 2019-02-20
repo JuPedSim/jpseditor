@@ -451,11 +451,13 @@ void jpsDatamanager::writeXML(QFile &file)
     exitList.clear();
     stream->writeEndElement();//transitions
 
-    stream->writeStartElement("Undefine");
-    writeNotAssignedDoors(stream,lines);
-//    writeNotAssignedExits(stream,lines);
-    writeNotAssignedWalls(stream,lines);
-    stream->writeEndElement(); //undefine
+    if(lines.size()!=0) //if there are undefined lines to save
+    {
+        stream->writeStartElement("Undefine");
+        writeNotAssignedDoors(stream,lines);
+        writeNotAssignedWalls(stream,lines);
+        stream->writeEndElement(); //undefine
+    }
 
     stream->writeEndElement();//geometry
 
@@ -1850,7 +1852,6 @@ bool jpsDatamanager::readXML(QFile &file)
             {
                 this->parseTransitions(xmlReader);
             }
-
         }
 
     }
