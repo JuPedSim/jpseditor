@@ -288,7 +288,7 @@
     <string>Delete selected lines</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Backspace</string>
+    <string>Backspace</string>
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
@@ -724,7 +724,7 @@
     <string>Zoom Windows</string>
    </property>
    <property name="shortcut">
-    <string>Meta+W</string>
+    <string>Meta+Shift+W</string>
    </property>
   </action>
   <action name="actionZoom_Extents">
@@ -732,7 +732,7 @@
     <string>Zoom Extents</string>
    </property>
    <property name="shortcut">
-    <string>Meta+Shift+W</string>
+    <string>Meta+E</string>
    </property>
   </action>
   <action name="actionLayers">
