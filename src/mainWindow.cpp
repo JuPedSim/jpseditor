@@ -644,7 +644,7 @@ void MWindow::send_length()
 void MWindow::send_xy()
 {
     qreal x = x_edit->text().toDouble();
-    qreal y = x_edit->text().toDouble();
+    qreal y = y_edit->text().toDouble();
 
     QPointF endpoint;
     endpoint.setX(x);
