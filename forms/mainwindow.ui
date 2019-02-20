@@ -159,6 +159,9 @@
    <property name="toolTip">
     <string>Save as XML</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
    </property>
@@ -729,7 +732,7 @@
     <string>Zoom Extents</string>
    </property>
    <property name="shortcut">
-    <string>Meta+E</string>
+    <string>Meta+Shift+W</string>
    </property>
   </action>
   <action name="actionLayers">
