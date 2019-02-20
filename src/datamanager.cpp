@@ -695,34 +695,44 @@ void jpsDatamanager::writeHLines(QXmlStreamWriter *stream, QList<jpsLineItem *> 
 {
     // to be sure that id is unique (considering crossings, transitions)
     int id=1000;
+    QString rid;
+
     for (jpsLineItem *lineItem:hLines)
     {
         stream->writeStartElement("Hline");
         stream->writeAttribute("id",QString::number(id));
         stream->writeAttribute("room_id","0");
-        QString rid = RoomIDHLine(lineItem);
-        if (rid.contains("Warning"))
-        {
-            QMessageBox::critical(_mView,
-                                  "WriteHLines",
-                                  rid,
-                                  QMessageBox::Ok);
-        }
+        rid = RoomIDHLine(lineItem);
+//        if (rid.contains("Warning"))
+//        {
+//            QMessageBox::critical(_mView,
+//                                  "WriteHLines",
+//                                  rid,
+//                                  QMessageBox::Ok);
+//        }
         stream->writeAttribute("subroom_id",rid);
 
-            //Vertices
-            stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(lineItem->get_line()->line().p1().x()));
-            stream->writeAttribute("py",QString::number(lineItem->get_line()->line().p1().y()));
-            stream->writeEndElement(); //vertex
+        //Vertices
+        stream->writeStartElement("vertex");
+        stream->writeAttribute("px",QString::number(lineItem->get_line()->line().p1().x()));
+        stream->writeAttribute("py",QString::number(lineItem->get_line()->line().p1().y()));
+        stream->writeEndElement(); //vertex
 
-            stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(lineItem->get_line()->line().p2().x()));
-            stream->writeAttribute("py",QString::number(lineItem->get_line()->line().p2().y()));
-            stream->writeEndElement(); //vertex
+        stream->writeStartElement("vertex");
+        stream->writeAttribute("px",QString::number(lineItem->get_line()->line().p2().x()));
+        stream->writeAttribute("py",QString::number(lineItem->get_line()->line().p2().y()));
+        stream->writeEndElement(); //vertex
 
         stream->writeEndElement(); //Hline
         id++;
+    }
+
+    if (rid.contains("Warning"))
+    {
+        QMessageBox::critical(_mView,
+                              "WriteHLines",
+                              rid,
+                              QMessageBox::Ok);
     }
 }
 
