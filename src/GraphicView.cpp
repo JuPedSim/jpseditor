@@ -107,8 +107,6 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setCursor(Qt::CrossCursor);
 
-
-
     //Set-up the scene
     Scene = new GraphicScene(this);
 
@@ -1638,6 +1636,9 @@ void jpsGraphicsView::translations(QPointF old_pos)
 
 void jpsGraphicsView::AutoZoom()
 {
+    if(line_vector.size()==0)
+        return;
+
     QPointF min(line_vector[0]->get_line()->line().p1().x(),
             line_vector[0]->get_line()->line().p1().y());
     QPointF max(line_vector[0]->get_line()->line().p1().x(),

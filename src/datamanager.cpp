@@ -433,7 +433,7 @@ const int &jpsDatamanager::GetRegionCounter() const
 
 void jpsDatamanager::writeXML(QFile &file)
 {
-     qDebug("Enter jpsDatamanager::writeXML");
+    qDebug(">> Enter jpsDatamanager::writeXML");
     QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
     QList<jpsLineItem* > lines = _mView->get_line_vector();
 
@@ -453,19 +453,17 @@ void jpsDatamanager::writeXML(QFile &file)
 
     stream->writeStartElement("Undefine");
     writeNotAssignedDoors(stream,lines);
-//    writeNotAssignedExits(stream,lines);
+    writeNotAssignedExits(stream,lines);
     writeNotAssignedWalls(stream,lines);
-    stream->writeEndElement(); //undefine
+    stream->writeEndElement();
 
     stream->writeEndElement();//geometry
 
     stream->writeEndDocument();
 
-
-
-
     delete stream;
-    qDebug("Leave jpsDatamanager::writeXML");
+    stream = nullptr;
+    qDebug("<< Leave jpsDatamanager::writeXML");
 }
 
 
@@ -1828,7 +1826,6 @@ bool jpsDatamanager::readXML(QFile &file)
             if(xmlReader.name() == "room")
             {
                 continue;
-
             }
             if(xmlReader.name() == "crossings")
             {
@@ -1850,7 +1847,6 @@ bool jpsDatamanager::readXML(QFile &file)
             {
                 this->parseTransitions(xmlReader);
             }
-
         }
 
     }
@@ -1965,9 +1961,10 @@ void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
     /* We'll add it to the room. */
     roomlist.last()->set_id(attributes.value("id").toString().toInt());
     if(attributes.hasAttribute("A_x"))
-         roomlist.last()->set_ax(attributes.value("A_x").toString().toFloat());
+        roomlist.last()->set_ax(attributes.value("A_x").toString().toFloat());
     else
-      roomlist.last()->set_ax(0.0);
+        roomlist.last()->set_ax(0.0);
+
     roomlist.last()->set_by(attributes.value("B_y").toString().toFloat());
     auto elevation = attributes.value("C_z").toString().toFloat();
     
