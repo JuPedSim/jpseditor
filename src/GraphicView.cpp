@@ -1639,6 +1639,7 @@ void jpsGraphicsView::AutoZoom()
     if(line_vector.size()==0)
         return;
 
+
     QPointF min(line_vector[0]->get_line()->line().p1().x(),
             line_vector[0]->get_line()->line().p1().y());
     QPointF max(line_vector[0]->get_line()->line().p1().x(),
