@@ -36,7 +36,7 @@ set(README_FILE "${CMAKE_SOURCE_DIR}/README.md")
 set(CMAKE_COLOR_MAKEFILE ON)
 set(JPSEDITOR_MAJOR_VERSION 0)
 set(JPSEDITOR_MINOR_VERSION 8)
-set(JPSEDITOR_PATCH_VERSION 4)
+set(JPSEDITOR_PATCH_VERSION 7)
 set(JPSEDITOR_VERSION
         ${JPSEDITOR_MAJOR_VERSION}.${JPSEDITOR_MINOR_VERSION}.${JPSEDITOR_PATCH_VERSION})
 
@@ -47,6 +47,7 @@ endif()
 message( STATUS "Generating  ................................... ${PROJECT_NAME} (${JPSEDITOR_VERSION}) -- ${CMAKE_BUILD_TYPE}")
 if(APPLE )
     set(CMAKE_INSTALL_PREFIX "/Applications")
+  set (CMAKE_PREFIX_PATH "/Applications/Qt/5.12.0/clang_64")
 endif()
 message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
 
@@ -82,107 +83,113 @@ include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
 
 #--------------------
 if (NOT MSVC)
-    include(CheckCXXCompilerFlag)
-    CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-    CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-    if(COMPILER_SUPPORTS_CXX11)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-    elseif(COMPILER_SUPPORTS_CXX0X)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-    else()
-        message(AUTHOR_WARNING "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Use a different C++ compiler.")
-    endif()
-    message(STATUS "Checking for C++11 compiler ................... yes")
+  include(CheckCXXCompilerFlag)
+  CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+  CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+  if(COMPILER_SUPPORTS_CXX11)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  elseif(COMPILER_SUPPORTS_CXX0X)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+  else()
+    message(AUTHOR_WARNING "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Use a different C++ compiler.")
+  endif()
+  message(STATUS "Checking for C++11 compiler ................... yes")
 endif()
 #---------------------
 
 set( SRCS
-        src/mainWindow.cpp
-        src/main.cpp
-        src/GraphicView.cpp
-        src/graphicscene.cpp
-        src/roomwidget.cpp
-        src/rooms.cpp
-        src/datamanager.cpp
-        src/jpscrossing.cpp
-        src/jpsLineItem.cpp
-        src/jpsexit.cpp
-        src/jpsobstacle.cpp
-        src/jpslandmark.cpp
-        src/widgetlandmark.cpp
-        src/widgetsettings.cpp
-        src/jpsconnection.cpp
-        src/jpsregion.cpp
-        dxflib/src/dl_writer_ascii.cpp
-        dxflib/src/dl_dxf.cpp
-        src/UndoFramework/action.cpp
-        src/UndoFramework/actionstack.cpp
-        src/UndoFramework/lineaction.cpp
-        src/AutomaticRoomIdentification/roomdefinition.cpp
-        src/AutomaticRoomIdentification/roomidentification.cpp
-        src/settingdialog.cpp
-        src/inifilewidget.cpp
-        src/tinyxml/tinystr.cpp
-        src/tinyxml/tinyxml.cpp
-        src/tinyxml/tinyxmlerror.cpp
-        src/tinyxml/tinyxmlparser.cpp
-        )
+    src/mainWindow.cpp
+    src/main.cpp
+    src/GraphicView.cpp
+    src/graphicscene.cpp
+    src/roomwidget.cpp
+    src/rooms.cpp
+    src/datamanager.cpp
+    src/jpscrossing.cpp
+    src/jpsLineItem.cpp
+    src/jpsexit.cpp
+    src/jpsobstacle.cpp
+    src/jpslandmark.cpp
+    src/widgetlandmark.cpp
+    src/widgetsettings.cpp
+    src/jpsconnection.cpp
+    src/jpsregion.cpp
+    src/settingdialog.cpp
+    src/inifilewidget.cpp
+    src/snappingoptions.cpp
+
+    dxflib/src/dl_writer_ascii.cpp
+    dxflib/src/dl_dxf.cpp
+    src/UndoFramework/action.cpp
+    src/UndoFramework/actionstack.cpp
+    src/UndoFramework/lineaction.cpp
+    src/AutomaticRoomIdentification/roomdefinition.cpp
+    src/AutomaticRoomIdentification/roomidentification.cpp
+    src/tinyxml/tinystr.cpp
+    src/tinyxml/tinyxml.cpp
+    src/tinyxml/tinyxmlerror.cpp
+    src/tinyxml/tinyxmlparser.cpp
+  )
 # all header files that should be treated with moc
 set( HDR
-        src/dtrace.h
-        src/mainWindow.h
-        src/GraphicView.h
-        src/graphicscene.h
-        src/roomwidget.h
-        src/rooms.h
-        src/datamanager.h
-        src/jpscrossing.h
-        src/jpsLineItem.h
-        src/jpsexit.h
-        src/jpsobstacle.h
-        src/jpslandmark.h
-        src/widgetlandmark.h
-        src/widgetsettings.h
-        src/jpsconnection.h
-        src/jpsregion.h
-        dxflib/src/dl_writer_ascii.h
-        dxflib/src/dl_writer.h
-        dxflib/src/dl_global.h
-        dxflib/src/dl_extrusion.h
-        dxflib/src/dl_exception.h
-        dxflib/src/dl_entities.h
-        dxflib/src/dl_dxf.h
-        dxflib/src/dl_creationinterface.h
-        dxflib/src/dl_creationadapter.h
-        dxflib/src/dl_codes.h
-        dxflib/src/dl_attributes.h
-        src/UndoFramework/action.h
-        src/UndoFramework/actionstack.h
-        src/UndoFramework/lineaction.h
-        src/AutomaticRoomIdentification/roomID.h
-        src/AutomaticRoomIdentification/roomdefinition.h
-        src/AutomaticRoomIdentification/roomidentification.h
-        src/dtrace.h
-        src/settingdialog.h
-        src/inifilewidget.h
-        src/tinyxml/tinystr.h
-        src/tinyxml/tinyxml.h
-        )
+    src/dtrace.h
+    src/mainWindow.h
+    src/GraphicView.h
+    src/graphicscene.h
+    src/roomwidget.h
+    src/rooms.h
+    src/datamanager.h
+    src/jpscrossing.h
+    src/jpsLineItem.h
+    src/jpsexit.h
+    src/jpsobstacle.h
+    src/jpslandmark.h
+    src/widgetlandmark.h
+    src/widgetsettings.h
+    src/jpsconnection.h
+    src/jpsregion.h
+    src/dtrace.h
+    src/settingdialog.h
+    src/inifilewidget.h
+    src/snappingoptions.h
+
+    dxflib/src/dl_writer_ascii.h
+    dxflib/src/dl_writer.h
+    dxflib/src/dl_global.h
+    dxflib/src/dl_extrusion.h
+    dxflib/src/dl_exception.h
+    dxflib/src/dl_entities.h
+    dxflib/src/dl_dxf.h
+    dxflib/src/dl_creationinterface.h
+    dxflib/src/dl_creationadapter.h
+    dxflib/src/dl_codes.h
+    dxflib/src/dl_attributes.h
+
+    src/UndoFramework/action.h
+    src/UndoFramework/actionstack.h
+    src/UndoFramework/lineaction.h
+    src/AutomaticRoomIdentification/roomID.h
+    src/AutomaticRoomIdentification/roomdefinition.h
+    src/AutomaticRoomIdentification/roomidentification.h
+    src/tinyxml/tinystr.h
+    src/tinyxml/tinyxml.h
+  )
 
 # *.ui files
 set( UIS
-        forms/mainwindow.ui
-        forms/roomwidget.ui
-        forms/widgetlandmark.ui
-        forms/widgetsettings.ui
-        forms/settingdialog.ui
-        forms/inifilewidget.ui
-        )
+    forms/mainwindow.ui
+    forms/roomwidget.ui
+    forms/widgetlandmark.ui
+    forms/widgetsettings.ui
+    forms/settingdialog.ui
+    forms/inifilewidget.ui
+    forms/snappingoptions.ui
+  )
 
 # and finally a resource file
 set( RCS
         Resources/resources.qrc
-        )
+  )
 
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -204,27 +211,27 @@ endif()
 message(STATUS "Searching for Qt version ...................... " ${DESIRED_QT_VERSION})
 # find packages according to qt version
 if("${DESIRED_QT_VERSION}" STREQUAL "5")
-    find_package(Qt5Widgets REQUIRED)
-    # - these find_packages are not necessary? -----------
-    FIND_PACKAGE(Qt5Core REQUIRED)
-    FIND_PACKAGE(Qt5Gui REQUIRED)
-    FIND_PACKAGE(Qt5Network REQUIRED)
-    FIND_PACKAGE(Qt5Xml REQUIRED)
-    #-----------------------------------------------------
-    set(QT5_INSTALLED TRUE)
-    set(QTVERSION 5)
-    MESSAGE(STATUS "Found Qt version .............................. ${Qt5Core_VERSION_STRING}")
+  find_package(Qt5Widgets REQUIRED)
+  # - these find_packages are not necessary? -----------
+  FIND_PACKAGE(Qt5Core REQUIRED)
+  FIND_PACKAGE(Qt5Gui REQUIRED)
+  FIND_PACKAGE(Qt5Network REQUIRED)
+  FIND_PACKAGE(Qt5Xml REQUIRED)
+  #-----------------------------------------------------
+  set(QT5_INSTALLED TRUE)
+  set(QTVERSION 5)
+  MESSAGE(STATUS "Found Qt version .............................. ${Qt5Core_VERSION_STRING}")
 
 elseif("${DESIRED_QT_VERSION}" STREQUAL "4")
-    find_package(Qt COMPONENTS QtXml QT_USE_QTNETWORK QtXmlPatterns REQUIRED)
-    set(QT4_INSTALLED TRUE)
-    set(QTVERSION 4)
+  find_package(Qt COMPONENTS QtXml QT_USE_QTNETWORK QtXmlPatterns REQUIRED)
+  set(QT4_INSTALLED TRUE)
+  set(QTVERSION 4)
 endif()
 
 execute_process(COMMAND ${QT_QMAKE_EXECUTABLE} -query QT_VERSION OUTPUT_VARIABLE QT_VERSION)
 # qt version > 5 or qt version < 3 are not supported
 if( ${QTVERSION} VERSION_GREATER 6 OR ${QTVERSION} VERSION_LESS 3)
-    message(FATAL_ERROR "QT version " ${QTVERSION} " not supported. Try 4 or 5")
+  message(FATAL_ERROR "QT version " ${QTVERSION} " not supported. Try 4 or 5")
 endif()
 
 
@@ -240,52 +247,52 @@ endif()
 # Disable automatic conversion from QString to ASCII 8-bit strings (char *)
 # (Keeps code compatible with Qt/Mac/64bit)
 if(APPLE)
-    ADD_DEFINITIONS(-DQT_NO_CAST_TO_ASCII)
-    # include the icns file in the target
-    SET(SRCS ${SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/Resources/jpseditor.icns)
+  ADD_DEFINITIONS(-DQT_NO_CAST_TO_ASCII)
+  # include the icns file in the target
+  SET(SRCS ${SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/Resources/jpseditor.icns)
 endif()
 
 # this command will generate rules that will run rcc on all files from RCS
 # in result RC_SRCS variable will contain paths to files produced by rcc
 if(${QT4_INSTALLED})
-    message(STATUS "Working with Qt4")
-    # and finally this will run moc:
-    QT4_WRAP_CPP( MOC_HDRS ${MOC_HDRS} )
-    # this will run uic on .ui files:
-    QT4_WRAP_UI( UI_HDRS ${UIS} )
-    QT4_ADD_RESOURCES( RCS ${RCS} )
-    include( ${QT_USE_FILE} )
-    ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE WIN32
-            ${SRCS}
-            ${MOC_HDRS}
-            ${UI_HDRS}
-            ${RCS}
-            )
-    TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${QT_LIBRARIES})
+  message(STATUS "Working with Qt4")
+  # and finally this will run moc:
+  QT4_WRAP_CPP( MOC_HDRS ${MOC_HDRS} )
+  # this will run uic on .ui files:
+  QT4_WRAP_UI( UI_HDRS ${UIS} )
+  QT4_ADD_RESOURCES( RCS ${RCS} )
+  include( ${QT_USE_FILE} )
+  ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE WIN32
+  ${SRCS}
+  ${MOC_HDRS}
+  ${UI_HDRS}
+  ${RCS}
+  )
+  TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${QT_LIBRARIES})
 elseif( ${QT5_INSTALLED})
-    message(STATUS "Working with Qt5")
-    # http://www.kdab.com/using-cmake-with-qt-5/
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}" )
+  message(STATUS "Working with Qt5")
+  # http://www.kdab.com/using-cmake-with-qt-5/
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}" )
 
-    qt5_wrap_ui( UI_HDRS ${UIS} )
-    qt5_add_resources( RCS ${RCS} )
-    #qt5_use_package(JPSeditor Widgets)
+  qt5_wrap_ui( UI_HDRS ${UIS} )
+  qt5_add_resources( RCS ${RCS} )
+  #qt5_use_package(JPSeditor Widgets)
 
-    ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE WIN32
-            ${SRCS}
-            ${MOC_HDRS}
-            ${UI_HDRS}
-            ${RCS}
-            )
-    qt5_use_modules(${PROJECT_NAME} Widgets)
-    target_link_libraries(${PROJECT_NAME} ${Qt5Widgets_LIBRARIES})
+  ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE WIN32
+  ${SRCS}
+  ${MOC_HDRS}
+  ${UI_HDRS}
+  ${RCS}
+  )
+ qt5_use_modules(${PROJECT_NAME} Widgets)
+ target_link_libraries(${PROJECT_NAME} ${Qt5Widgets_LIBRARIES})
 else()
-    message(FATAL_ERROR "QT NOT FOUND - ABORT")
+  message(FATAL_ERROR "QT NOT FOUND - ABORT")
 endif()
 
 IF(APPLE)
-    SET(MACOSX_BUNDLE_ICON_FILE jupedsim.icns)
-    SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/icons/jupedsim.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+  SET(MACOSX_BUNDLE_ICON_FILE jupedsim.icns)
+  SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/icons/jupedsim.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 ENDIF(APPLE)
 
 
@@ -298,9 +305,9 @@ set(warning_flags "${warning_flags} -pedantic")
 #---------------------------- compiler -------------------------------
 # Initialize CXXFLAGS.
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    set(CMAKE_CXX_FLAGS                "${CMAKE_CXX_FLAGS} ${warning_flags}")
-    set(CMAKE_CXX_FLAGS_DEBUG          "${CMAKE_CXX_FLAGS_DEBUG} ${warning_flags} -O0 -g -Wunused-variable -Wunused-parameter -Wunused-function -Wshadow -Wunused")
-    #    set(CMAKE_CXX_FLAGS_RELEASE        "${CMAKE_CXX_FLAGS_RELEASE} -O3 -DNDEBUG")
+  set(CMAKE_CXX_FLAGS                "${CMAKE_CXX_FLAGS} ${warning_flags}")
+  set(CMAKE_CXX_FLAGS_DEBUG          "${CMAKE_CXX_FLAGS_DEBUG} ${warning_flags} -O0 -g -Wunused-variable -Wunused-parameter -Wunused-function -Wshadow -Wunused")
+  #    set(CMAKE_CXX_FLAGS_RELEASE        "${CMAKE_CXX_FLAGS_RELEASE} -O3 -DNDEBUG")
 endif()
 
 
@@ -314,35 +321,35 @@ endif(CMAKE_COMPILER_IS_GNUCXX)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
 
-    set(CMAKE_CXX_LDFLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
-    set(CMAKE_CXX_FLAGS_DEBUG          "${CMAKE_CXX_FLAGS_DEBUG} -DTRACE_LOGGING")
-    message(STATUS "Debug flags: "  ${CMAKE_CXX_FLAGS} " " ${CMAKE_CXX_FLAGS_DEBUG} )
-    message(STATUS "Debug flags ..................................."  ${CMAKE_CXX_FLAGS} " " ${CMAKE_CXX_FLAGS_DEBUG} )
+  set(CMAKE_CXX_LDFLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
+  set(CMAKE_CXX_FLAGS_DEBUG          "${CMAKE_CXX_FLAGS_DEBUG} -DTRACE_LOGGING")
+  message(STATUS "Debug flags: "  ${CMAKE_CXX_FLAGS} " " ${CMAKE_CXX_FLAGS_DEBUG} )
+  message(STATUS "Debug flags ..................................."  ${CMAKE_CXX_FLAGS} " " ${CMAKE_CXX_FLAGS_DEBUG} )
 else(CMAKE_BUILD_TYPE MATCHES Debug)
-    message(STATUS "Release flags ................................." ${CMAKE_CXX_FLAGS} " ,  " ${CMAKE_CXX_FLAGS_RELEASE} )
+  message(STATUS "Release flags ................................." ${CMAKE_CXX_FLAGS} " ,  " ${CMAKE_CXX_FLAGS_RELEASE} )
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 # PGI ++ Flags
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "PGI")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --c++11 -Minform=inform")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --c++11 -Minform=inform")
 endif()
 #--------------------------------------------------------------------------------
 # Now the installation stuff below
 #--------------------------------------------------------------------------------
 INSTALL(TARGETS ${PROJECT_NAME}
-        BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX} COMPONENT Runtime
-        RUNTIME DESTINATION bin COMPONENT Runtime
-        # PERMISSIONS OWNER_EXECUTE 600
-        )
+  BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX} COMPONENT Runtime
+  RUNTIME DESTINATION bin COMPONENT Runtime
+  # PERMISSIONS OWNER_EXECUTE 600
+  )
 set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "${BIN_INSTALL_DIR}")
 include(InstallRequiredSystemLibraries)
 
 if(APPLE)
-    set(EXECUTABLE "${PROJECT_NAME}.app")
+  set(EXECUTABLE "${PROJECT_NAME}.app")
 elseif(WIN32)
-    set(EXECUTABLE "${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX}")
+  set(EXECUTABLE "${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX}")
 else()
-    set(EXECUTABLE "${BIN_INSTALL_DIR}/${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX}")
+  set(EXECUTABLE "${BIN_INSTALL_DIR}/${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX}")
 endif()
 
 
@@ -350,35 +357,35 @@ SET(plugin_dest_dir bin)
 SET(qtconf_dest_dir bin)
 SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}")
 IF(APPLE)
-    SET(plugin_dest_dir ${PROJECT_NAME}.app/Contents/MacOS)
-    SET(qtconf_dest_dir ${PROJECT_NAME}/Contents/Resources)
-    SET(APPS "\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}")
+  SET(plugin_dest_dir ${PROJECT_NAME}.app/Contents/MacOS)
+  SET(qtconf_dest_dir ${PROJECT_NAME}/Contents/Resources)
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}")
 ENDIF(APPLE)
 
 IF(WIN32)
-    SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}.exe")
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}.exe")
 ENDIF(WIN32)
 
 if( ${QT5_INSTALLED})
-    SET(DIRS ${QT_LIBRARIES})
+  SET(DIRS ${QT_LIBRARIES})
 elseif( ${QT5_INSTALLED})
-    SET(DIRS ${QT_LIBRARY_DIRS})
+  SET(DIRS ${QT_LIBRARY_DIRS})
 endif()
 
 
 #================================================ APPLE Stuff ======================
 
 IF(APPLE)
-    # set how it shows up in the Info.plist file
-    SET(MACOSX_EDIT_ICON jupedsim.icns)
-    SET(MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2015-2018 Forschungszentrum Juelich. All rights reserved.")
-    SET(MACOSX_BUNDLE_BUNDLE_NAME "${PROJECT_NAME}")
-    SET(MACOSX_BUNDLE_BUNDLE_VERSION "${JPSEDITOR_VERSION}")
-    SET(MACOSX_BUNDLE_LONG_VERSION_STRING "version ${JPSEDITOR_VERSION}")
-    SET(MACOSX_BUNDLE_SHORT_VERSION_STRING "${JPSEDITOR_VERSION}")
-    SET(MACOSX_BUNDLE_EDIT_IDENTIFIER "https://www.jupedsim.org")
-    # set where in the bundle to put the icns file
-    # set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Resources/Info.plist.in)
+  # set how it shows up in the Info.plist file
+  SET(MACOSX_EDIT_ICON jupedsim.icns)
+  SET(MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2015-2018 Forschungszentrum Juelich. All rights reserved.")
+  SET(MACOSX_BUNDLE_BUNDLE_NAME "${PROJECT_NAME}")
+  SET(MACOSX_BUNDLE_BUNDLE_VERSION "${JPSEDITOR_VERSION}")
+  SET(MACOSX_BUNDLE_LONG_VERSION_STRING "version ${JPSEDITOR_VERSION}")
+  SET(MACOSX_BUNDLE_SHORT_VERSION_STRING "${JPSEDITOR_VERSION}")
+  SET(MACOSX_BUNDLE_EDIT_IDENTIFIER "https://www.jupedsim.org")
+  # set where in the bundle to put the icns file
+  # set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Resources/Info.plist.in)
 
 ENDIF(APPLE)
 
@@ -395,47 +402,47 @@ set(CPACK_PACKAGE_VERSION "${JPSEDITOR_VERSION}")
 set(CPACK_PACKAGE_VENDOR "${JPSEDITOR_VENDOR}")
 set(CPACK_RESOURCE_FILE_README "${README_FILE}")
 if(WIN32) # todo test this for windows
-    set(CPACK_GENERATOR "NSIS")
-    set(CPACK_PACKAGE_EXECUTABLES "${PROJECT_NAME}" "${PROJECT_NAME}")
-    set(CPACK_PACKAGE_INSTALL_DIRECTORY "${PROJECT_NAME}")
-    set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME} ${JPSEDITOR_VERSION}")
-    set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/${LICENSE_FILE}")
-    set(CPACK_NSIS_EXECUTABLES_DIRECTORY "${BIN_INSTALL_DIR}")
-    #set(CPACK_NSIS_MUI_ICON "${PROJECT_ICONS_DIRECTORY}/NSIS.ico")
-    #set(CPACK_PACKAGE_ICON "${PROJECT_ICONS_DIRECTORY}\\\\NSISHeader.bmp")
-    set(CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX}")
-    #    set(CPACK_NSIS_MENU_LINKS "${LICENSE_FILE}" "License" "${README_FILE}" "Readme")
-    #   set(CPACK_NSIS_MUI_FINISHPAGE_RUN "${CPACK_NSIS_INSTALLED_ICON_NAME}")
+  set(CPACK_GENERATOR "NSIS")
+  set(CPACK_PACKAGE_EXECUTABLES "${PROJECT_NAME}" "${PROJECT_NAME}")
+  set(CPACK_PACKAGE_INSTALL_DIRECTORY "${PROJECT_NAME}")
+  set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME} ${JPSEDITOR_VERSION}")
+  set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/${LICENSE_FILE}")
+  set(CPACK_NSIS_EXECUTABLES_DIRECTORY "${BIN_INSTALL_DIR}")
+  #set(CPACK_NSIS_MUI_ICON "${PROJECT_ICONS_DIRECTORY}/NSIS.ico")
+  #set(CPACK_PACKAGE_ICON "${PROJECT_ICONS_DIRECTORY}\\\\NSISHeader.bmp")
+  set(CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX}")
+  #    set(CPACK_NSIS_MENU_LINKS "${LICENSE_FILE}" "License" "${README_FILE}" "Readme")
+  #   set(CPACK_NSIS_MUI_FINISHPAGE_RUN "${CPACK_NSIS_INSTALLED_ICON_NAME}")
 elseif(APPLE) # todo test this for apple
-    set(CPACK_GENERATOR "DragNDrop")
-    set(CPACK_DMG_FORMAT "UDBZ")
-    set(CPACK_DMG_VOLUME_NAME "${PROJECT_NAME}")
-    set(CPACK_SYSTEM_NAME "OSX")
-    set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${JPSEDITOR_VERSION}")
-    #set(CPACK_PACKAGE_ICON "${ICONS_DIR}/DMG.icns")
-    #set(CPACK_DMG_DS_STORE "${ICONS_DIR}/DMGDSStore")
-    #set(CPACK_DMG_BACKGROUND_IMAGE "${ICONS_DIR}/DMGBackground.png")
+  set(CPACK_GENERATOR "DragNDrop")
+  set(CPACK_DMG_FORMAT "UDBZ")
+  set(CPACK_DMG_VOLUME_NAME "${PROJECT_NAME}")
+  set(CPACK_SYSTEM_NAME "OSX")
+  set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${JPSEDITOR_VERSION}")
+  #set(CPACK_PACKAGE_ICON "${ICONS_DIR}/DMG.icns")
+  #set(CPACK_DMG_DS_STORE "${ICONS_DIR}/DMGDSStore")
+  #set(CPACK_DMG_BACKGROUND_IMAGE "${ICONS_DIR}/DMGBackground.png")
 elseif(UNIX)
-    # tested with success in
-    # Linux dhcppc5 3.2.0-4-686-pae #1 SMP Debian 3.2.68-1+deb7u2 i686 GNU/Linux
-    set(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
-    SET(CPACK_GENERATOR "DEB")
+  # tested with success in
+  # Linux dhcppc5 3.2.0-4-686-pae #1 SMP Debian 3.2.68-1+deb7u2 i686 GNU/Linux
+  set(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
+  SET(CPACK_GENERATOR "DEB")
 
-    SET(CPACK_PACKAGE_DESCRIPTION "simulation core of JuPedSim")
-    SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Geometry editor of JuPedSim, a framework for simulation and analysis of pedestrian dynamics")
-    #SET(CPACK_PACKAGE_VENDOR "nowardev")
-    SET(CPACK_PACKAGE_CONTACT "m.chraibi@fz-juelich.de")
-    SET(CPACK_PACKAGE_VERSION_MAJOR "${JPSEDITOR_MAJOR_VERSION}")
-    SET(CPACK_PACKAGE_VERSION_MINOR "${JPSEDITOR_MINOR_VERSION}")
-    SET(CPACK_PACKAGE_VERSION_PATCH "${JPSEDITOR_PATCH_VERSION}")
-    SET(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${JPSEDITOR_VERSION}")
-    SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${JPSEDITOR_VERSION}")
-    #SET(CPACK_DEBIAN_PACKAGE_DEPENDS " Boost (>= 1.59) ")
-    SET(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-    SET( CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://jupedsim.org")
-    SET(CPACK_DEBIAN_PACKAGE_SUGGESTS, "jpsvis, jpsreport, jpscore")
-    SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
-    SET(CPACK_DEBIAN_PACKAGE_SECTION "science")
-    SET(CPACK_DEBIAN_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+  SET(CPACK_PACKAGE_DESCRIPTION "simulation core of JuPedSim")
+  SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Geometry editor of JuPedSim, a framework for simulation and analysis of pedestrian dynamics")
+  #SET(CPACK_PACKAGE_VENDOR "nowardev")
+  SET(CPACK_PACKAGE_CONTACT "m.chraibi@fz-juelich.de")
+  SET(CPACK_PACKAGE_VERSION_MAJOR "${JPSEDITOR_MAJOR_VERSION}")
+  SET(CPACK_PACKAGE_VERSION_MINOR "${JPSEDITOR_MINOR_VERSION}")
+  SET(CPACK_PACKAGE_VERSION_PATCH "${JPSEDITOR_PATCH_VERSION}")
+  SET(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${JPSEDITOR_VERSION}")
+  SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${JPSEDITOR_VERSION}")
+  #SET(CPACK_DEBIAN_PACKAGE_DEPENDS " Boost (>= 1.59) ")
+  SET(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+  SET( CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://jupedsim.org")
+  SET(CPACK_DEBIAN_PACKAGE_SUGGESTS, "jpsvis, jpsreport, jpscore")
+  SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+  SET(CPACK_DEBIAN_PACKAGE_SECTION "science")
+  SET(CPACK_DEBIAN_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 endif()
 include(CPack)

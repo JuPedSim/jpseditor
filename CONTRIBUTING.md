@@ -195,9 +195,6 @@ Here are some hints to configure your editor in order to use the *stroustrup* st
     Read also
     [How to change indentation width in eclipse?](https://superuser.com/questions/462221/how-do-i-reliably-change-the-indentation-width-in-eclipse)
 
-- **Clion**
-<!-- TODO -->
-
 
 ## Writing Documentation
 

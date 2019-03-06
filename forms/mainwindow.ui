@@ -159,6 +159,9 @@
    <property name="toolTip">
     <string>Save as XML</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
    </property>
@@ -190,6 +193,9 @@
    </property>
   </action>
   <action name="actiongridmode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="enabled">
     <bool>true</bool>
    </property>
@@ -232,6 +238,9 @@
    </property>
   </action>
   <action name="actionObjectsnap">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="enabled">
     <bool>true</bool>
    </property>
@@ -279,7 +288,7 @@
     <string>Delete selected lines</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Backspace</string>
+    <string>Backspace</string>
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
@@ -331,15 +340,12 @@
    </property>
   </action>
   <action name="actionRoom">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="enabled">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../Resources/resources.qrc">
-     <normaloff>:/inAppIcons/Icons/rooms.png</normaloff>:/inAppIcons/Icons/rooms.png</iconset>
+     <normaloff>:/inAppIcons/Icons/attribute.svg</normaloff>:/inAppIcons/Icons/attribute.svg</iconset>
    </property>
    <property name="text">
     <string>Define Rooms</string>
@@ -691,21 +697,6 @@
     <string>Online Help</string>
    </property>
   </action>
-  <action name="actionPanning_Mode">
-   <property name="icon">
-    <iconset resource="../Resources/resources.qrc">
-     <normaloff>:/inAppIcons/Icons/moved_hand.svg</normaloff>:/inAppIcons/Icons/moved_hand.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Panning Mode</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+P</string>
-   </property>
-   <property name="iconVisibleInMenu">
-    <bool>true</bool>
-   </property>
-  </action>
   <action name="actionNew_Inifile">
    <property name="text">
     <string>New Inifile</string>
@@ -733,7 +724,7 @@
     <string>Zoom Windows</string>
    </property>
    <property name="shortcut">
-    <string>Meta+W</string>
+    <string>Meta+Shift+W</string>
    </property>
   </action>
   <action name="actionZoom_Extents">
@@ -742,6 +733,23 @@
    </property>
    <property name="shortcut">
     <string>Meta+E</string>
+   </property>
+  </action>
+  <action name="actionLayers">
+   <property name="text">
+    <string>Layers</string>
+   </property>
+  </action>
+  <action name="actionBreak_Line">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/breaking.png</normaloff>:/inAppIcons/Icons/breaking.png</iconset>
+   </property>
+   <property name="text">
+    <string>Break Line</string>
    </property>
   </action>
  </widget>

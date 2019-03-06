@@ -41,9 +41,9 @@
 #include "GraphicView.h"
 #include "datamanager.h"
 #include "rooms.h"
-#include "src/settingdialog.h"
+#include "settingdialog.h"
 #include "inifilewidget.h"
-
+#include "snappingoptions.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 
@@ -57,6 +57,7 @@ private:
     roomWidget* rwidget;
     widgetLandmark* lwidget;
     InifileWidget * inifileWidget;
+    SnappingOptions* snappingOptions;
 //    WidgetSettings* _settings;
     jpsDatamanager* dmanager;
     jpsGraphicsView* mview;
@@ -79,11 +80,6 @@ private:
     SettingDialog *settingDialog;
     QTimer *timer;
     QSettings settings;
-
-//    QString backupfolder;
-//    QString defaultjpscore;
-//    QString defaultjpsvis;
-//    QMap<QString, QString> defaultsetting;
 
     bool _statScale;
 

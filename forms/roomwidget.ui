@@ -6,20 +6,77 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>316</width>
-    <height>579</height>
+    <width>320</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>TabWidget</string>
+   <string>Define Room</string>
   </property>
   <property name="toolTip">
    <string/>
   </property>
-  <property name="currentIndex">
-   <number>1</number>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(240, 240, 240);</string>
   </property>
-  <widget class="QWidget" name="widget">
+  <property name="currentIndex">
+   <number>0</number>
+  </property>
+  <widget class="QWidget" name="layerTab">
+   <attribute name="title">
+    <string>Layers</string>
+   </attribute>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>180</y>
+      <width>291</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QPushButton" name="hideButton">
+       <property name="text">
+        <string>Hide Layer</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="showButton">
+       <property name="text">
+        <string>Show Layer</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QListWidget" name="layerListWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>19</y>
+      <width>310</width>
+      <height>151</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>121</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>High of room :</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="roomTab">
    <property name="toolTip">
     <string/>
    </property>
@@ -44,26 +101,13 @@
      <string>Rooms:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>320</y>
-      <width>291</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Select Walls and press Add!</string>
-    </property>
-   </widget>
    <widget class="QListWidget" name="listWalls">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>400</y>
+      <y>370</y>
       <width>291</width>
-      <height>141</height>
+      <height>171</height>
      </rect>
     </property>
    </widget>
@@ -93,9 +137,9 @@
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>0</y>
-      <width>301</width>
+      <width>291</width>
       <height>41</height>
      </rect>
     </property>
@@ -150,9 +194,9 @@
    <widget class="QWidget" name="horizontalLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>-10</x>
-      <y>360</y>
-      <width>334</width>
+      <x>10</x>
+      <y>330</y>
+      <width>291</width>
       <height>32</height>
      </rect>
     </property>
@@ -176,7 +220,7 @@
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete wall from selected room&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
-        <string>Delete </string>
+        <string>Remove</string>
        </property>
        <property name="shortcut">
         <string>Ctrl+Alt+R</string>
@@ -249,7 +293,7 @@
       <x>150</x>
       <y>200</y>
       <width>151</width>
-      <height>91</height>
+      <height>93</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -268,21 +312,39 @@
      </item>
     </layout>
    </widget>
-   <widget class="QPushButton" name="highlight_all">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>140</x>
       <y>40</y>
-      <width>131</width>
+      <width>157</width>
       <height>28</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Highlight all rooms</string>
-    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Rooms:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="highlight_all">
+       <property name="text">
+        <string>Highlight all rooms</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
-  <widget class="QWidget" name="tab">
+  <widget class="QWidget" name="doorTab">
    <property name="toolTip">
     <string/>
    </property>
@@ -293,9 +355,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>80</y>
+      <y>90</y>
       <width>291</width>
-      <height>111</height>
+      <height>91</height>
      </rect>
     </property>
    </widget>
@@ -304,7 +366,7 @@
      <rect>
       <x>10</x>
       <y>50</y>
-      <width>171</width>
+      <width>291</width>
       <height>31</height>
      </rect>
     </property>
@@ -370,9 +432,9 @@
    <widget class="QWidget" name="horizontalLayoutWidget_4">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>8</x>
       <y>0</y>
-      <width>309</width>
+      <width>291</width>
       <height>41</height>
      </rect>
     </property>
@@ -392,7 +454,7 @@
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add new Door&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
-        <string>Add</string>
+        <string>New</string>
        </property>
       </widget>
      </item>
@@ -421,9 +483,9 @@
    <widget class="QWidget" name="horizontalLayoutWidget_5">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>8</x>
       <y>240</y>
-      <width>309</width>
+      <width>291</width>
       <height>41</height>
      </rect>
     </property>
@@ -475,7 +537,7 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QWidget" name="tab_3">
+  <widget class="QWidget" name="obstacleTab">
    <property name="toolTip">
     <string/>
    </property>
@@ -513,26 +575,13 @@
      <string>Close</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_10">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>330</y>
-      <width>291</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Select Walls and press Add!</string>
-    </property>
-   </widget>
    <widget class="QListWidget" name="listWallsObs">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>360</y>
+      <y>340</y>
       <width>291</width>
-      <height>141</height>
+      <height>161</height>
      </rect>
     </property>
    </widget>
@@ -575,9 +624,9 @@
    <widget class="QWidget" name="horizontalLayoutWidget_6">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>14</x>
       <y>0</y>
-      <width>295</width>
+      <width>281</width>
       <height>41</height>
      </rect>
     </property>
@@ -628,7 +677,7 @@
      <rect>
       <x>10</x>
       <y>160</y>
-      <width>301</width>
+      <width>291</width>
       <height>41</height>
      </rect>
     </property>
@@ -668,7 +717,7 @@
      <rect>
       <x>10</x>
       <y>230</y>
-      <width>301</width>
+      <width>291</width>
       <height>41</height>
      </rect>
     </property>
@@ -706,9 +755,9 @@
    <widget class="QWidget" name="horizontalLayoutWidget_9">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>290</y>
-      <width>301</width>
+      <width>291</width>
       <height>41</height>
      </rect>
     </property>
@@ -746,7 +795,6 @@
   <tabstop>chname_edit</tabstop>
   <tabstop>elevation_edit</tabstop>
   <tabstop>classBox</tabstop>
-  <tabstop>add_button</tabstop>
   <tabstop>remove_button</tabstop>
   <tabstop>caption</tabstop>
   <tabstop>listWalls</tabstop>
