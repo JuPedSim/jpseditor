@@ -1,46 +1,62 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## v0.8.7 [08.03.2019]
+### Added
+- Add line snapping options #102
+- Add backuping with lines #101
+- Add layers controlling #90
+
+### Changed
+- Change warning for Hline #117
+- Show operations message on statusBar #113
+- Redesign Inifile widget Layout #112
+
+### Bugs fixed
+- Fix keyshorts conflict #120
+- Fix segmentation fault #121
+- Fix error by inputing coordinates #116
+
 ## v0.8.6 [08.01.2019]
-## Added
+### Added
 - Add zoom extents option #64
 - Add zoom Windows option #64
 - Add wirte ini-files feature #27
 
-## Changed
+### Changed
 - Improve statbility #105
 - Use panning mode by middle button 
 
-## Bugs fixed
+### Bugs fixed
 - Fix shortcut for "Del"
 
 ## v0.8.5 [02.11.2018]
-## Added
+### Added
 - Add Auto Saving function #67
 
 - Better Panning Mode #100
 
-## Changed
+### Changed
 - Update Shortcuts #92
 
 - Design new origin and axis #99
 
-## Bugs fixed
+### Bugs fixed
 - Esc doesn't work while drawing #98
 
 - SegFault: Delete all Rooms #91
 
 
 ## v0.8.4 [05.10.2018]
-## Added
+### Added
 - In menu bar, under "Edit" you will find "Clear Rooms and Doors button" to clear all defined rooms and doors. #54
 
 - Define points of a line using keyboard on status bar. #61 #63
 
-## Changed
+### Changed
 - A new tidily icons are added. #88
 
-## Bugs fixed
+### Bugs fixed
 - Fixed a crash when deleting rooms. #42
 
 - Fixed a problem when width of lines change after highlighting. #50

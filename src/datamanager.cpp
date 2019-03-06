@@ -58,7 +58,7 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 
 jpsDatamanager::~jpsDatamanager()
 {
-     qDebug("Enter jpsDatamanager::~jpsDatamanager");
+    qDebug("Enter jpsDatamanager::~jpsDatamanager");
     //remove_all(); vmiew->delete_all() does this work
     remove_all();
     qDebug("Leave jpsDatamanager::~jpsDatamanager");
@@ -66,7 +66,7 @@ jpsDatamanager::~jpsDatamanager()
 
 void jpsDatamanager::new_room()
 {
-     qDebug("Enter jpsDatamanager::new_room. room_id_counter = %d", room_id_counter);
+    qDebug("Enter jpsDatamanager::new_room. room_id_counter = %d", room_id_counter);
     jpsRoom* new_room = new jpsRoom(this->room_id_counter);
     roomlist.push_back(new_room);
     room_id_counter+=1;

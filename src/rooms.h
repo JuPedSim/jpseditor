@@ -40,6 +40,7 @@ class jpsRoom
 public:
     jpsRoom(int id_room);
     ~jpsRoom(){}
+
     void addWall(QList<jpsLineItem *> newWalls);
     void addWall(jpsLineItem* newWall);
     void addinnerWall(QList<jpsLineItem *> newWalls, int id_polygon=0);

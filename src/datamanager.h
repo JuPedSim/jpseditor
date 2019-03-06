@@ -205,6 +205,7 @@ private:
     QList<jpsLandmark* > _landmarksAfterLoose;
     QList<jpsConnection* > _ConnectionsAfterLandmarkLoose;
     QList<jpsRegion* > _regions;
+
     int room_id_counter;
     int obs_id_counter;
     QWidget* parent_widget;
