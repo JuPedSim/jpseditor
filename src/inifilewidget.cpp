@@ -41,10 +41,10 @@ InifileWidget::InifileWidget(QWidget *parent) :
     ui->tabWidget->removeTab(4);
 
     // Set contraints invisivle
-    ui->tabWidget->removeTab(4);
+    // ui->tabWidget->removeTab(4);
 
     // Set goals invisivle
-    ui->tabWidget->removeTab(4);
+    // ui->tabWidget->removeTab(4);
 }
 
 InifileWidget::~InifileWidget()

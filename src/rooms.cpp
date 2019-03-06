@@ -33,7 +33,7 @@
 #include <QGraphicsLineItem>
 #include "jpscrossing.h"
 #include <QDebug>
-#include "dtrace.h"
+
 
 
 jpsRoom::jpsRoom(int id_room)
@@ -48,17 +48,18 @@ jpsRoom::jpsRoom(int id_room)
     B_y=0.0;
     C_z=0.0;
     _elevation=0;
+    visible=true;
 }
 
 
 void jpsRoom::addWall(QList <jpsLineItem *> newWalls)
 {
-    dtrace("Enter jpsRoom::removeWall(newWall)");
+    qDebug("Enter jpsRoom::removeWall(newWall)");
     for (int i=0; i<newWalls.size(); i++)
     {
         addWall(newWalls[i]);
     }
-    dtrace("Leave jpsRoom::removeWall(newWall)");
+    qDebug("Leave jpsRoom::removeWall(newWall)");
 }
 
 void jpsRoom::addWall(jpsLineItem *newWall)
@@ -91,7 +92,7 @@ void jpsRoom::addinnerWall(jpsLineItem *newWall, int id_polygon)
 
 void jpsRoom::removeWall(QList <jpsLineItem *> wall)
 {
-     dtrace("Enter jpsRoom::removeWall(wall)");
+     qDebug("Enter jpsRoom::removeWall(wall)");
     for (int i=0; i<wall.size(); i++)
     {
         wall_list.removeOne(wall[i]);
@@ -109,7 +110,7 @@ void jpsRoom::removeDoor(jpsCrossing *crossing)
     {
         _doorList.removeOne(crossing);
     }
-     dtrace("Leave jpsRoom::removeWall");
+     qDebug("Leave jpsRoom::removeWall");
 }
 
 QString jpsRoom::get_name()
@@ -196,7 +197,7 @@ QPointF jpsRoom::get_center()
 
 void jpsRoom::highlight(const QString& color)
 {
-     dtrace("Enter jpsRoom::highlight. highlighted=<%d>", highlighted);
+     qDebug("Enter jpsRoom::highlight. highlighted=<%d>", highlighted);
 
     if (!highlighted)
     {
@@ -208,11 +209,13 @@ void jpsRoom::highlight(const QString& color)
         else
             pen = QPen(rndColors(qrand()%100),4);
         pen.setCosmetic(true);
+
         for (int i=0; i<wall_list.size(); ++i)
         {
             wall_list[i]->get_line()->setPen(pen);
             wall_list[i]->set_defaultColor(color);
         }
+
         highlighted=true;
     }
     else
@@ -224,10 +227,39 @@ void jpsRoom::highlight(const QString& color)
             wall_list[i]->get_line()->setPen(pen);
             wall_list[i]->set_defaultColor("black");
         }
+
         highlighted=false;
     }
-    dtrace("Enter jpsRoom::highlight. highlight=<%d>", highlighted);
+    qDebug("Enter jpsRoom::highlight. highlight=<%d>", highlighted);
 }
+
+void jpsRoom::switchVisibility()
+{
+    qDebug("Enter jpsRoom::switchVisibility. visible=<%d>", visible);
+    if(!visible)
+    {
+        QColor color(0,0,0,0);
+        QPen pen(color);
+
+        for (int i=0; i<wall_list.size(); i++)
+        {
+            wall_list[i]->get_line()->setPen(pen);
+            wall_list[i]->set_defaultColor("white");
+        }
+    }
+    else
+    {
+        QPen pen = QPen(Qt::black,2);
+        pen.setCosmetic(true);
+        for (int i=0; i<wall_list.size(); i++)
+        {
+            wall_list[i]->get_line()->setPen(pen);
+            wall_list[i]->set_defaultColor("black");
+        }
+    }
+    qDebug("Exit jpsRoom::switchVisibility. visible=<%d>", visible);
+}
+
 
 QString jpsRoom::get_type() const
 {
@@ -306,14 +338,14 @@ void jpsRoom::AddInnerDoor(jpsCrossing *door, int id_polygon)
 
 QVector<QPointF> jpsRoom::RoomAsSortedPolygon(const QVector<QLineF>& lines) const
 {
-     dtrace("Enter jpsRoom::RoomAsSortedPolygon");
+     qDebug("Enter jpsRoom::RoomAsSortedPolygon");
     QVector<QLineF> clines=lines;
     QVector<QPointF> points = {};
 
     if(lines.size() == 0)
     {
-         dtrace("\t empty lines!!");
-         dtrace("Leave jpsRoom::RoomAsSortedPolygon with ERROR");         
+         qDebug("\t empty lines!!");
+         qDebug("Leave jpsRoom::RoomAsSortedPolygon with ERROR");         
          return points;
          
     }
@@ -349,7 +381,7 @@ QVector<QPointF> jpsRoom::RoomAsSortedPolygon(const QVector<QLineF>& lines) cons
 //    }
 //    std::cout << "----------------------------" << std::endl;
 
-    dtrace("Leave jpsRoom::RoomAsSortedPolygon");         
+    qDebug("Leave jpsRoom::RoomAsSortedPolygon");         
     return points;
 }
 
@@ -590,6 +622,10 @@ void jpsRoom::set_down(QPointF down)
      _down = down;
 }
 
+void jpsRoom::switchHighlight()
+{
+    highlighted = !highlighted;
+}
 
 float jpsRoom::get_elevation()
 {
@@ -607,8 +643,8 @@ void jpsRoom::set_elevation(float elevation)
 
 void jpsRoom::correctPlaneCoefficients()
 {
-     dtrace("Enter correctPlaneCoefficients");
-     dtrace("\t room=<%s> of type=<%s> has %d doors",
+     qDebug("Enter correctPlaneCoefficients");
+     qDebug("\t room=<%s> of type=<%s> has %d doors",
             this->get_name().toStdString().c_str(),
             this->get_type().toStdString().c_str(),
             (int)_doorList.size());
@@ -648,7 +684,7 @@ void jpsRoom::correctPlaneCoefficients()
      float P3_x = P3.x();
      float P3_y = P3.y();
      float P3_z = elevation_2;
-     dtrace("\t P1=(%.2f, %.2f, %.2f), P2=(%.2f, %.2f, %.2f), P3=(%.2f, %.2f, %.2f)",
+     qDebug("\t P1=(%.2f, %.2f, %.2f), P2=(%.2f, %.2f, %.2f), P3=(%.2f, %.2f, %.2f)",
             P1_x, P1_y, P1_z,
             P2_x, P2_y, P2_z,
             P3_x, P3_y, P3_z
@@ -662,14 +698,25 @@ void jpsRoom::correctPlaneCoefficients()
 
      float b = ((1-P3_x/P1_x*1)*d-(P3_z-P3_x/P1_x*P1_z)*c)/(P3_y-P3_x/P1_x*P1_y);
      float a = (d-P1_z*c-P1_y*b)/P1_x;
-     dtrace("\t a = %.2f, b = %.2f, c= %.2f", a, b, c);
+     qDebug("\t a = %.2f, b = %.2f, c= %.2f", a, b, c);
      set_ax(-a/c);
      set_by(-b/c);
      set_cz(d/c);
-     dtrace("\t ax = %.2f, by = %.2f, cz= %.2f", -a/c, -b/c, d/c);
-     dtrace("Leave correctPlaneCoefficients");
+     qDebug("\t ax = %.2f, by = %.2f, cz= %.2f", -a/c, -b/c, d/c);
+     qDebug("Leave correctPlaneCoefficients");
 }
 
 bool jpsRoom::is_highlighted()
 {
-     return highlighted;}
+     return highlighted;
+}
+
+bool jpsRoom::isVisible()
+{
+    return visible;
+}
+
+void jpsRoom::setVisible(bool visibility)
+{
+    visible = visibility;
+}

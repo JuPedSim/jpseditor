@@ -1,24 +1,21 @@
 class Jpseditor < Formula
   desc "A graphical user interface to create the geometry of a scenario simulated by JuPedSim"
-  homepage "https://www.jupedsim.org/"
+  homepage "https://www.jupedsim.org/jpseditor/"
+  head "https://github.com/JuPedSim/jpseditor.git" :branch => "master"
 
-  head "https://github.com/JuPedSim/jpseditor.git"
-
+  depends_on "cmake" => :build
   depends_on "qt"
 
   def install
-    bin.install "jpseditor"
-  # def install
-  #   Dir.pwd
-  #   Dir.mkdir "build"
-  #   Dir.chdir "build"
-  #   system "qmake", ".."
-  #   ststem "sudo" "chown" "-R "$USER":admin /usr/local
-
-  #   system "make", "install"
-  #   puts ""
-  #   puts "------------------------------------"
-  #   puts "JPSeditor installed in /usr/local/bin/jpseditor"
-  #   puts "------------------------------------"
+    Dir.pwd
+    Dir.mkdir "build"
+    Dir.chdir "build"
+    system "cmake", "..", *std_cmake_args
+    system "make", "install"
+    puts ""
+    puts "------------------------------------"
+    puts "JPSeditor installed in /tmp"
+    puts "open /tmp/JPSeditor.app"
+    puts "------------------------------------"
   end
 end

@@ -101,6 +101,8 @@ public:
     void RemoveRegion(jpsRegion* region);
     void RemoveAllRegions();
     const int& GetRegionCounter() const;
+    //Layers
+    QList<QString> getElevationList();
     //
     void remove_all();
     void remove_marked_lines();
@@ -203,6 +205,7 @@ private:
     QList<jpsLandmark* > _landmarksAfterLoose;
     QList<jpsConnection* > _ConnectionsAfterLandmarkLoose;
     QList<jpsRegion* > _regions;
+
     int room_id_counter;
     int obs_id_counter;
     QWidget* parent_widget;

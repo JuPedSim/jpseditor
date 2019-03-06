@@ -26,6 +26,7 @@
  *
  **/
 
+
 //mainWindow.cpp
 
 #include "mainWindow.h"
@@ -39,8 +40,8 @@
 #include <QDebug>
 #include <QSettings>
 
-MWindow :: MWindow() {
-
+MWindow :: MWindow()
+{
     setupUi(this);
     //Signal/Slot
     //VBox= new QVBoxLayout;
@@ -53,7 +54,8 @@ MWindow :: MWindow() {
     rwidget=nullptr;
     //Landmarkwidget
     lwidget=nullptr;
-
+    //Snapping Options
+    snappingOptions=nullptr;
 
     //StaturBar
 
@@ -334,6 +336,13 @@ void MWindow::openFileDXF(){
 
 void MWindow::openFileXML()
 {
+    if(rwidget!=nullptr)
+    {
+        rwidget->close();
+        rwidget=nullptr;
+        actionRoom->setChecked(false);
+    }
+
     QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -447,15 +456,16 @@ void MWindow::saveAsXML(){
     {
         //QString coord_string=mview->build_coordString();
 
-        QString message = dmanager->check_printAbility();
+//        QString message = dmanager->check_printAbility();
 
-        if (message!="")
-        {
-            statusBar()->showMessage(message,10000);
-            QMessageBox::warning(this,"Warning!", message,
-                                 QMessageBox::Ok);
-            return;
-        }
+//        if (message!="")
+//        {
+//            statusBar()->showMessage(message,10000);
+//            QMessageBox::warning(this,"Warning!", message,
+//                                 QMessageBox::Ok);
+//            return;
+//        }
+
         dmanager->writeXML(file);
 
         //routing (hlines)
@@ -572,6 +582,25 @@ void MWindow::disableDrawing()
 
 void MWindow::objectsnap()
 {
+
+    if(snappingOptions==nullptr)
+    {
+        snappingOptions = new SnappingOptions(this);
+        snappingOptions->setGeometry(QRect(QPoint(5,75), snappingOptions->size()));
+        snappingOptions->setAttribute(Qt::WA_DeleteOnClose);
+        snappingOptions->show();
+
+        connect(snappingOptions,SIGNAL(snapStart_endpoint(bool)),mview,SLOT(changeStart_endpoint(bool)));
+        connect(snappingOptions,SIGNAL(snapIntersections_point(bool)),mview,SLOT(changeIntersections_point(bool)));
+        connect(snappingOptions,SIGNAL(snapCenter_point(bool)),mview,SLOT(changeCenter_point(bool)));
+        connect(snappingOptions,SIGNAL(snapSelectedLine_point(bool)),mview,SLOT(changeLine_point(bool)));
+    }
+    else
+    {
+        snappingOptions->close();
+        snappingOptions=nullptr;
+        actionObjectsnap->setChecked(false);
+    }
     mview->change_objectsnap();
 }
 
@@ -591,12 +620,14 @@ void MWindow::show_coords()
 void MWindow::delete_lines()
 {
     mview->delete_all();
+    statusBar()->showMessage(tr("All lines are deleted!"),10000);
 }
 
 void MWindow::delete_marked_lines()
 {
     mview->delete_marked_lines();
     mview->delete_landmark();
+    statusBar()->showMessage(tr("Marked lines are deleted!"),10000);
 }
 
 void MWindow::send_length()
@@ -613,7 +644,7 @@ void MWindow::send_length()
 void MWindow::send_xy()
 {
     qreal x = x_edit->text().toDouble();
-    qreal y = x_edit->text().toDouble();
+    qreal y = y_edit->text().toDouble();
 
     QPointF endpoint;
     endpoint.setX(x);
@@ -627,6 +658,7 @@ void MWindow::send_xy()
 
 void MWindow::define_room()
 {
+
     if (rwidget==nullptr)
     {
         rwidget = new roomWidget(this,this->dmanager,this->mview);
@@ -779,10 +811,12 @@ void MWindow::on_actionClear_all_Rooms_and_Doors_triggered()
 
     if(rwidget!= nullptr){
         rwidget->show_rooms();
+        rwidget->showLayersInfo();
         rwidget->show_crossings();
         rwidget->show_obstacles();
     }
 
+    statusBar()->showMessage(tr("All rooms and doors are cleared!"),10000);
 }
 
 void MWindow::keyPressEvent(QKeyEvent *event)
