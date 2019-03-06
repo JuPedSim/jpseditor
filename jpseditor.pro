@@ -39,7 +39,9 @@ FORMS += \
     forms/widgetlandmark.ui \
     forms/widgetsettings.ui \
     forms/inifilewidget.ui \
-    forms/settingdialog.ui
+    forms/settingdialog.ui \
+    forms/snappingoptions.ui
+
 
 HEADERS += \
     src/mainWindow.h \
@@ -79,6 +81,8 @@ HEADERS += \
     src/tinyxml/tinystr.h \
     src/tinyxml/tinyxml.h \
     src/inifilewidget.h \
+    src/snappingoptions.h
+
 
 
 SOURCES += \
@@ -111,6 +115,8 @@ SOURCES += \
     src/tinyxml/tinyxmlerror.cpp \
     src/tinyxml/tinyxmlparser.cpp \
     src/inifilewidget.cpp \
+    src/snappingoptions.cpp
+
 
 
 #INCLUDEPATH += D:/boost_1_59_0/boost_1_59_0
@@ -137,8 +143,8 @@ RCC_DIR = $$DESTDIR/.qrc
 UI_DIR = $$DESTDIR/.u
 
 
-# demos.path = /usr/local/bin/jpseditor
-# demos.files = examples/*
+demos.path = /usr/local/bin/jpseditor
+demos.files = examples/*
 
 CONFIG(debug, debug|release) {
     DESTDIR = build/debug
@@ -152,12 +158,10 @@ MOC_DIR = $$DESTDIR/.moc
 RCC_DIR = $$DESTDIR/.qrc
 UI_DIR = $$DESTDIR/.u
 
-
 demos.path = /usr/local/bin/jpseditor
 demos.files = examples/*
 
 INSTALLS += demos
 
 target.path = /usr/local/bin/jpseditor
-
 INSTALLS += target

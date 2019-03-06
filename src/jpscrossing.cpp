@@ -28,9 +28,7 @@
 #include <iostream>
 #include "jpscrossing.h"
 #include <iostream>
-
-
-#include "dtrace.h"
+#include <QDebug>
 
 
 jpsCrossing::jpsCrossing(jpsLineItem *line)
@@ -72,8 +70,8 @@ void jpsCrossing::change_name(QString name)
 
 void jpsCrossing::add_rooms(jpsRoom *room1, jpsRoom *room2)
 {
-     dtrace("Enter jpsCrossing::add_rooms");
-     dtrace("\t room1 = <%s> of type <%s>", 
+     qDebug("Enter jpsCrossing::add_rooms");
+     qDebug("\t room1 = <%s> of type <%s>", 
             room1->get_name().toStdString().c_str(),
             room1->get_type().toStdString().c_str()
           );
@@ -86,7 +84,7 @@ void jpsCrossing::add_rooms(jpsRoom *room1, jpsRoom *room2)
 
     if (room2!=nullptr)
     {
-         dtrace("\t room2 = <%s> of type <%s>", 
+         qDebug("\t room2 = <%s> of type <%s>", 
                 room2->get_name().toStdString().c_str(),
                 room2->get_type().toStdString().c_str()
               );
@@ -95,7 +93,7 @@ void jpsCrossing::add_rooms(jpsRoom *room1, jpsRoom *room2)
         roomList.push_back(room2);
        room2->AddDoor(this);
     }
-    dtrace("Leave jpsCrossing::add_rooms");
+    qDebug("Leave jpsCrossing::add_rooms");
 }
 
 void jpsCrossing::SetRoom(jpsRoom *room)

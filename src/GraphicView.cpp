@@ -62,11 +62,16 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     currentSelectRect=nullptr;
     gridmap=nullptr;
     objectsnap=false;
+    start_endpoint_snap=false;
+    intersectionspoint_snap=false;
+    centerpoint_snap=false;
+    linepoint_snap=false;
     _gridmode=false;
     statWall=false;
     statDoor=false;
     statExit=false;
     _statHLine=false;
+    stat_break_ = false;
     statzoomwindows=false;
     _statCopy=0;
     statLandmark=false;
@@ -101,8 +106,6 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setCursor(Qt::CrossCursor);
-
-
 
     //Set-up the scene
     Scene = new GraphicScene(this);
@@ -153,7 +156,6 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
     {
        delete current_rect;
        current_rect=nullptr;
-
     }
     QPointF old_pos=pos;
 
@@ -178,7 +180,6 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
     }
 
-
     if (midbutton_hold)
     {
         translations(old_pos);
@@ -198,12 +199,32 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
     if (objectsnap)
     {
-        catch_points();
+        if(start_endpoint_snap)
+        {
+            catch_start_endpoints();
+        }
+
+        if(intersectionspoint_snap)
+        {
+            catch_intersections_point();
+        }
+
+        if(centerpoint_snap)
+        {
+            catch_center_point();
+        }
+
+        if(linepoint_snap)
+        {
+            catch_line_point();
+        }
+
+
 
         //VLine
         if (point_tracked && (statWall==true || statDoor==true || statExit==true))
         {
-            SetVLine();
+//            SetVLine();
         }
     }
 
@@ -262,7 +283,7 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                 drawLine();
             }
         }
-        else if (statLandmark==true)
+        else if (statLandmark)
         {
             addLandmark();
         }
@@ -816,6 +837,151 @@ void jpsGraphicsView::catch_points()
     return;
 }
 
+void jpsGraphicsView::catch_start_endpoints()
+{
+    //Searching for startpoints of all lines near the current cursor position
+    for (int i=0; i<line_vector.size(); ++i){
+
+        // range chosen: 10 (-5:5) (has to be changed soon)
+        if (line_vector[i]->get_line()->line().x1()>=(translated_pos.x()-catch_radius)
+                && line_vector[i]->get_line()->line().x1()<=(translated_pos.x()+catch_radius)
+                && line_vector[i]->get_line()->line().y1()>=(translated_pos.y()-catch_radius)
+                && line_vector[i]->get_line()->line().y1()<=(translated_pos.y()+catch_radius)){
+            // in this case the cursor is working with global coordinates. So the method 'mapToGlobal' must be used
+
+            //to avoid the tracking of the coords of an edited line
+            if (line_vector[i]->get_line()==current_line)
+            {
+                continue;
+            }
+
+            translated_pos.setX(line_vector[i]->get_line()->line().x1());
+            translated_pos.setY(line_vector[i]->get_line()->line().y1());
+            //cursor.setPos(mapToGlobal(QPoint(translate_back_x(line_vector[i].x1()),translate_back_y(line_vector[i].y1()))));
+            //bool is used to tell paint device to draw a red rect if a point was tracked
+//            point_tracked=true;
+//            _currentTrackedPoint= &translated_pos;
+            //QPen pen;
+            //pen.setColor('red');
+            if (current_rect==nullptr)
+                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
+                                            translated_pos.y()+translation_y-10*gl_scale_f,
+                                            20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+            // if a point was tracked there is no need to look for further points ( only one point can be tracked)
+
+            return;
+        }
+
+        //Searching for endpoints of all lines near the current cursor position
+        else if (line_vector[i]->get_line()->line().x2()>=(translated_pos.x()-catch_radius)
+                 && line_vector[i]->get_line()->line().x2()<=(translated_pos.x()+catch_radius)
+                 && line_vector[i]->get_line()->line().y2()>=(translated_pos.y()-catch_radius)
+                 && line_vector[i]->get_line()->line().y2()<=(translated_pos.y()+catch_radius)){
+            // see above
+
+            //to avoid the tracking of the coords of an edited line
+            if (line_vector[i]->get_line()==current_line)
+            {
+                continue;
+            }
+
+
+            translated_pos.setX(line_vector[i]->get_line()->line().x2());
+            translated_pos.setY(line_vector[i]->get_line()->line().y2());
+            //cursor.setPos(mapToGlobal(QPoint(translate_back_x(line_vector[i].x2()),translate_back_y(line_vector[i].y2()))));
+//            point_tracked=true;
+            if (current_rect==nullptr)
+                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+//            _currentTrackedPoint= &translated_pos;
+            return;
+        }
+    }
+
+    point_tracked=false;
+    return;
+}
+
+void jpsGraphicsView::catch_intersections_point()
+{
+    // see above
+    for (int j=0; j<intersect_point_vector.size(); j++)
+    {
+        if (intersect_point_vector[j]->x()>=(translated_pos.x()-catch_radius)
+                && intersect_point_vector[j]->x()<=(translated_pos.x()+catch_radius)
+                && intersect_point_vector[j]->y()>=(translated_pos.y()-catch_radius)
+                && intersect_point_vector[j]->y()<=(translated_pos.y()+catch_radius))
+        {
+            translated_pos.setX(intersect_point_vector[j]->x());
+            translated_pos.setY(intersect_point_vector[j]->y());
+            if (current_rect==nullptr)
+            current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
+                                        translated_pos.y()+translation_y-10*gl_scale_f,
+                                        20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+//                point_tracked=true;
+            return;
+        }
+    }
+
+
+    point_tracked=false;
+    return;
+}
+
+void jpsGraphicsView::catch_center_point()
+{
+    for(int i=0; i<line_vector.size(); i++)
+    {
+        QPointF center = line_vector[i]->get_line()->line().center();
+        if(center.x()>=(translated_pos.x()-catch_radius)
+                && center.x()<=(translated_pos.x()+catch_radius)
+                && center.y()>=(translated_pos.y()-catch_radius)
+                && center.y()<=(translated_pos.y()+catch_radius))
+        {
+            translated_pos.setX(center.x());
+            translated_pos.setY(center.y());
+            if (current_rect==nullptr)
+            {
+                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
+                                            translated_pos.y()+translation_y-10*gl_scale_f,
+                                            20*gl_scale_f,20*gl_scale_f,QPen(Qt::green,0));
+
+            }
+        }
+
+    }
+
+    point_tracked=false;
+    return;
+}
+
+void jpsGraphicsView::catch_line_point()
+{
+    for(int i=0; i<marked_lines.size(); i++)
+    {
+        QPointF point = getNearstPointOnLine(marked_lines[i]);
+
+        if(point.x()>=(translated_pos.x()-catch_radius)
+                && point.x()<=(translated_pos.x()+catch_radius)
+                && point.y()>=(translated_pos.y()-catch_radius)
+                && point.y()<=(translated_pos.y()+catch_radius))
+        {
+            translated_pos.setX(point.x());
+            translated_pos.setY(point.y());
+            if (current_rect==nullptr)
+            {
+                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
+                                            translated_pos.y()+translation_y-10*gl_scale_f,
+                                            20*gl_scale_f,20*gl_scale_f,QPen(Qt::blue,0));
+
+            }
+        }
+
+    }
+
+    point_tracked=false;
+    return;
+}
+
 void jpsGraphicsView::catch_lines()
 {
     //catch lines (only possible if wall is disabled)
@@ -827,7 +993,8 @@ void jpsGraphicsView::catch_lines()
         for (auto &item:line_vector)
         {
             if (currentSelectRect->contains(item->get_line()->line().p1())
-                    && currentSelectRect->contains(item->get_line()->line().p2()))
+                    && currentSelectRect->contains(item->get_line()->line().p2())
+                    && item->get_defaultColor()!="white")
             {
                 select_line(item);
 
@@ -842,7 +1009,7 @@ void jpsGraphicsView::catch_lines()
     {
         for (auto &item:line_vector)
         {
-            if (currentSelectRect->collidesWithItem(item->get_line()))
+            if (currentSelectRect->collidesWithItem(item->get_line()) && item->get_defaultColor()!="white")
             {
                 select_line(item);
                 line_tracked=1;
@@ -1469,6 +1636,10 @@ void jpsGraphicsView::translations(QPointF old_pos)
 
 void jpsGraphicsView::AutoZoom()
 {
+    if(line_vector.size()==0)
+        return;
+
+
     QPointF min(line_vector[0]->get_line()->line().p1().x(),
             line_vector[0]->get_line()->line().p1().y());
     QPointF max(line_vector[0]->get_line()->line().p1().x(),
@@ -2012,4 +2183,52 @@ void jpsGraphicsView::ScaleLines(const double &factor)
 void jpsGraphicsView::selectedWindows()
 {
     statzoomwindows=true;
+}
+
+void jpsGraphicsView::changeStart_endpoint(bool state)
+{
+    start_endpoint_snap=state;
+}
+
+void jpsGraphicsView::changeIntersections_point(bool state)
+{
+    intersectionspoint_snap=state;
+}
+
+void jpsGraphicsView::changeCenter_point(bool state)
+{
+    centerpoint_snap=state;
+}
+
+void jpsGraphicsView::changeLine_point(bool state)
+{
+    linepoint_snap=state;
+}
+
+QPointF jpsGraphicsView::getNearstPointOnLine(jpsLineItem* selected_line)
+{
+    QPointF mouse_p1 = selected_line->get_line()->line().p1();
+    QPointF mouse_p2 = selected_line->get_line()->line().p2();
+
+    double APx=translated_pos.x() - mouse_p1.x();
+    double APy=translated_pos.y() - mouse_p1.y();
+    double ABx = mouse_p2.x() - mouse_p1.x();
+    double ABy = mouse_p2.y() - mouse_p1.y();
+
+    double magAB2 = ABx*ABx + ABy*ABy;
+    double ABdotAP = ABx*APx + ABy*APy;
+    double t = ABdotAP / magAB2;
+
+    QPointF newPoint;
+
+    if ( t < 0) {
+        newPoint = mouse_p1;
+    }else if (t > 1){
+        newPoint = mouse_p2;
+    }else{
+        newPoint.setX(mouse_p1.x() + ABx*t);
+        newPoint.setY(mouse_p1.y() + ABy*t);
+    }
+
+    return newPoint;
 }
