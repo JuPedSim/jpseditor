@@ -348,10 +348,10 @@
      <normaloff>:/inAppIcons/Icons/attribute.svg</normaloff>:/inAppIcons/Icons/attribute.svg</iconset>
    </property>
    <property name="text">
-    <string>Define Rooms</string>
+    <string>Define Geometry</string>
    </property>
    <property name="toolTip">
-    <string>Define Room</string>
+    <string>Define Geometry</string>
    </property>
    <property name="shortcut">
     <string>Meta+R</string>
