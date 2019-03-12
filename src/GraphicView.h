@@ -84,6 +84,7 @@ public:
     void en_disableHLine();
     bool statusLandmark();
     void en_disableLandmark();
+    void drawSource();
 
     // global functions
     qreal get_scale_f();

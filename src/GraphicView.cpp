@@ -1121,7 +1121,7 @@ void jpsGraphicsView::drawLine()
             case HLine:
                 lineItem->setHLine();
                 break;
-            case Source:
+            default:
                 break;
         }
 
@@ -2021,6 +2021,8 @@ void jpsGraphicsView::take_l_from_lineEdit(const qreal &length)
             case Exit:
                 jpsline->setExit();
                 break;
+            default:
+                break;
         }
 
         line_vector.push_back(jpsline);
@@ -2066,6 +2068,8 @@ void jpsGraphicsView::take_endpoint_from_xyEdit(const QPointF &endpoint)
                 break;
             case Exit:
                 jpsline->setExit();
+                break;
+            default:
                 break;
         }
         line_vector.push_back(jpsline);
@@ -2398,4 +2402,16 @@ QPointF jpsGraphicsView::getNearstPointOnLine(jpsLineItem* selected_line)
 
 void jpsGraphicsView::setDrawingMode(DrawingMode mode) {
     drawingMode = mode;
+}
+
+void jpsGraphicsView::drawSource() {
+    drawingMode = Source;
+
+    if(drawingMode != Source)
+    {
+        emit no_drawing();
+    } else
+    {
+        currentPen.setColor(Qt::darkRed);
+    }
 }

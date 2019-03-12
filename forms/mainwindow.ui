@@ -95,6 +95,7 @@
     <addaction name="actionDoor"/>
     <addaction name="actionHLine"/>
     <addaction name="actionLandmark"/>
+    <addaction name="actionSource"/>
    </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuEdit"/>
@@ -123,6 +124,7 @@
    <addaction name="actionWall"/>
    <addaction name="actionDoor"/>
    <addaction name="actionHLine"/>
+   <addaction name="actionSource"/>
    <addaction name="actionLandmark"/>
    <addaction name="separator"/>
    <addaction name="actiongridmode"/>
@@ -745,6 +747,18 @@
    </property>
    <property name="text">
     <string>Break Line</string>
+   </property>
+  </action>
+  <action name="actionSource">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/source.png</normaloff>:/inAppIcons/Icons/source.png</iconset>
+   </property>
+   <property name="text">
+    <string>Source</string>
    </property>
   </action>
  </widget>

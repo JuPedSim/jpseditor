@@ -133,19 +133,13 @@ MWindow :: MWindow()
     // Tab Tools
     connect(actionanglesnap,SIGNAL(triggered(bool)),this,SLOT(anglesnap()));
     connect(actiongridmode,SIGNAL(triggered(bool)),this,SLOT(gridmode()));
-    connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
-    connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(en_disableDoor()));
-    connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(en_disableExit()));
-    connect(actionHLine,SIGNAL(triggered(bool)),this,SLOT(en_disableHLine()));
+
     connect(actionObjectsnap,SIGNAL(triggered(bool)),this,SLOT(objectsnap()));
     connect(actionDelete_lines,SIGNAL(triggered(bool)),this,SLOT(delete_lines()));
     connect(actionDelete_single_line,SIGNAL(triggered(bool)),this,SLOT(delete_marked_lines()));
     connect(actionRoom,SIGNAL(triggered(bool)),this,SLOT(define_room()));
     connect(actionAuto_Definition,SIGNAL(triggered(bool)),this,SLOT(autoDefine_room()));
-    connect(actionSelect_Mode,SIGNAL(triggered(bool)),this,SLOT(en_selectMode()));
-    connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
-    connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
-    connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
+
     connect(actionScale,SIGNAL(triggered(bool)),this,SLOT(enableScale()));
     // Tab View
     connect(actionRotate_90_deg_clockwise,SIGNAL(triggered(bool)),this,SLOT(rotate()));
@@ -182,9 +176,6 @@ MWindow :: MWindow()
     //connect(mview,SIGNAL(DoubleClick()),this,SLOT(en_selectMode()));
     // Autosave
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
-    //Landmarks
-    connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
-    connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     // Landmark specifications
     connect(actionLandmarkWidget,SIGNAL(triggered(bool)),this,SLOT(define_landmark()));
     //CMap
@@ -206,7 +197,22 @@ MWindow :: MWindow()
     drawingActionGroup->addAction(actionExit);
     drawingActionGroup->addAction(actionHLine);
     drawingActionGroup->addAction(actionLandmark);
+    drawingActionGroup->addAction(actionSource);
     actionSelect_Mode->setChecked(true);
+
+    connect(actionSelect_Mode,SIGNAL(triggered(bool)),this,SLOT(en_selectMode()));
+    connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
+    connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(en_disableDoor()));
+    connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(en_disableExit()));
+    connect(actionHLine,SIGNAL(triggered(bool)),this,SLOT(en_disableHLine()));
+    connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
+    connect(actionSource, SIGNAL(triggered(bool)),this,SLOT(sourceButtonClicked()));
+
+//    connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
+//    connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
+//    connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
+//    connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
+
 }
 
 MWindow::~MWindow()
@@ -546,7 +552,7 @@ void MWindow::anglesnap()
 void MWindow::en_disableWall()
 {
 //    this->disableDrawing();
-    actionWall->setChecked(true);
+//    actionWall->setChecked(true);
     mview->en_disableWall();
 
 }
@@ -554,28 +560,28 @@ void MWindow::en_disableWall()
 void MWindow::en_disableDoor()
 {
 //    this->disableDrawing();
-    actionDoor->setChecked(true);
+//    actionDoor->setChecked(true);
     mview->en_disableDoor();
 }
 
 void MWindow::en_disableExit()
 {
 //    this->disableDrawing();
-    actionExit->setChecked(true);
+//    actionExit->setChecked(true);
     mview->en_disableExit();
 }
 
 void MWindow::en_disableLandmark()
 {
 //    this->disableDrawing();
-    actionLandmark->setChecked(true);
+//    actionLandmark->setChecked(true);
     mview->en_disableLandmark();
 }
 
 void MWindow::en_disableHLine()
 {
 //    this->disableDrawing();
-    actionHLine->setChecked(true);
+//    actionHLine->setChecked(true);
     mview->en_disableHLine();
 }
 
@@ -742,11 +748,14 @@ void MWindow::en_selectMode()
 
 void MWindow::dis_selectMode()
 {
-    if (actionWall->isChecked()==true || actionDoor->isChecked()==true || actionExit->isChecked()==true
+/*    if (actionWall->isChecked()==true || actionDoor->isChecked()==true || actionExit->isChecked()==true
             || actionLandmark->isChecked()==true)
     {
         actionSelect_Mode->setChecked(false);
-    }
+    }*/
+
+    if(drawingActionGroup->checkedAction() != actionSelect_Mode)
+        actionSelect_Mode->setChecked(false);
 }
 
 void MWindow::lines_deleted()
@@ -893,4 +902,9 @@ void MWindow::on_actionZoom_Windows_triggered()
 void MWindow::on_actionZoom_Extents_triggered()
 {
     mview->AutoZoom();
+}
+
+void MWindow::sourceButtonClicked()
+{
+    mview->drawSource();
 }

@@ -110,6 +110,7 @@ protected slots:
     void en_disableHLine();
     void disableDrawing();
     void objectsnap();
+    void sourceButtonClicked();
 
     //Line operations
     void show_coords();
