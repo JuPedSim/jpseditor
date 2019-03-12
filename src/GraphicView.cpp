@@ -1053,9 +1053,6 @@ void jpsGraphicsView::catch_lines()
                     && item->get_defaultColor()!="white")
             {
                 select_line(item);
-
-
-
             }
         }
     }

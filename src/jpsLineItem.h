@@ -36,6 +36,7 @@ class jpsLineItem
 public:
     jpsLineItem(QGraphicsLineItem* line);
     ~jpsLineItem();
+
     QGraphicsLineItem* get_line();
     void set_line(QGraphicsLineItem* line);
     int get_id();
@@ -58,6 +59,7 @@ public:
     bool is_Door();
     bool is_Exit();
     bool IsHLine();
+
     void add_intersectionPoint(QPointF *point);
     void remove_intersectionPoint(QPointF *point);
     QList<QPointF *> get_intersectionVector();
@@ -71,12 +73,15 @@ private:
     QString mName;
     QString defaultColor;
     LineType lineType;
+
 //    bool wall;
 //    bool door;
 //    bool exit;
 //    bool _hLine;
+
     QList<QPointF *> intersectionVector;
     QList<jpsLineItem* > intersectLineVector;
+
     /*
     jpsCrossing* assigned_crossing=0L;
     jpsRoom* assigned_room=0L;

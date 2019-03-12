@@ -83,6 +83,8 @@ private:
 
     bool _statScale;
 
+    QActionGroup *drawingActionGroup;
+
 protected slots:
     
     //parseFiles

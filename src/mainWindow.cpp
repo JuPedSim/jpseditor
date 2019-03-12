@@ -197,6 +197,17 @@ MWindow :: MWindow()
 
     // room type data gathering
     connect(actionGather_data,SIGNAL(triggered(bool)),this, SLOT(GatherData()));
+
+    // drawing actions group
+    drawingActionGroup = new QActionGroup(this);
+    drawingActionGroup->addAction(actionSelect_Mode);
+    drawingActionGroup->addAction(actionDoor);
+    drawingActionGroup->addAction(actionWall);
+    drawingActionGroup->addAction(actionExit);
+    drawingActionGroup->addAction(actionHLine);
+    drawingActionGroup->addAction(actionLandmark);
+    actionSelect_Mode->setChecked(true);
+
 }
 
 MWindow::~MWindow()
@@ -535,7 +546,7 @@ void MWindow::anglesnap()
 
 void MWindow::en_disableWall()
 {
-    this->disableDrawing();
+//    this->disableDrawing();
     actionWall->setChecked(true);
     mview->en_disableWall();
 
@@ -543,29 +554,28 @@ void MWindow::en_disableWall()
 
 void MWindow::en_disableDoor()
 {
-    this->disableDrawing();
+//    this->disableDrawing();
     actionDoor->setChecked(true);
     mview->en_disableDoor();
-
 }
 
 void MWindow::en_disableExit()
 {
-    this->disableDrawing();
+//    this->disableDrawing();
     actionExit->setChecked(true);
     mview->en_disableExit();
 }
 
 void MWindow::en_disableLandmark()
 {
-    this->disableDrawing();
+//    this->disableDrawing();
     actionLandmark->setChecked(true);
     mview->en_disableLandmark();
 }
 
 void MWindow::en_disableHLine()
 {
-    this->disableDrawing();
+//    this->disableDrawing();
     actionHLine->setChecked(true);
     mview->en_disableHLine();
 }
@@ -577,8 +587,9 @@ void MWindow::disableDrawing()
     this->actionExit->setChecked(false);
     this->actionLandmark->setChecked(false);
     this->actionHLine->setChecked(false);
-    this->actionCopy->setChecked(false);
+    this->actionCopy->setChecked(false);//TODO: actionCopy should be managed!
 }
+
 
 void MWindow::objectsnap()
 {
@@ -720,11 +731,12 @@ void MWindow::en_selectMode()
 
     actionSelect_Mode->setChecked(true);
 
-    actionWall->setChecked(false);
-    actionDoor->setChecked(false);
-    actionExit->setChecked(false);
-    actionHLine->setChecked(false);
-    actionLandmark->setChecked(false);
+//    actionWall->setChecked(false);
+//    actionDoor->setChecked(false);
+//    actionExit->setChecked(false);
+//    actionHLine->setChecked(false);
+//    actionLandmark->setChecked(false);
+
     actionCopy->setChecked(false);
     length_edit->clearFocus();
 }
