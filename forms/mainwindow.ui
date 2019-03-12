@@ -326,8 +326,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>:/Exit.png</normaloff>:/Exit.png</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/Exit.png</normaloff>:/inAppIcons/Icons/Exit.png</iconset>
    </property>
    <property name="text">
     <string>Exit</string>
@@ -733,11 +733,6 @@
    </property>
    <property name="shortcut">
     <string>Meta+E</string>
-   </property>
-  </action>
-  <action name="actionLayers">
-   <property name="text">
-    <string>Layers</string>
    </property>
   </action>
   <action name="actionBreak_Line">

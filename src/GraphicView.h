@@ -62,10 +62,13 @@ public:
     //Pos
     const QPointF& return_Pos() const;
 
-
+    //datamanger
     void SetDatamanager(jpsDatamanager* datamanager);
 
     //Change modes
+    enum DrawingMode {NoDrawing, Wall, Door, Exit, HLine, Landmark, Source};
+    void setDrawingMode(DrawingMode mode);
+
     void change_stat_anglesnap();
     bool get_stat_anglesnap();
     void change_objectsnap();
@@ -212,11 +215,15 @@ private:
     qreal translation_y;
     QPointF translated_pos;
     bool anglesnap;
-    bool statWall;
-    bool statDoor;
-    bool statExit;
-    bool statLandmark;
-    bool _statHLine;
+
+    // Drawing Mode
+    DrawingMode drawingMode;
+//    bool statWall;
+//    bool statDoor;
+//    bool statExit;
+//    bool statLandmark;
+//    bool _statHLine;
+
     bool stat_break_;
     int _statCopy;
     QPointF _copyOrigin;

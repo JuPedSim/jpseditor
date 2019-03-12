@@ -39,6 +39,9 @@
 jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):QGraphicsView(parent)
 {
     _datamanager=datamanager;
+
+    drawingMode = NoDrawing;
+
     current_line=nullptr;
     _currentVLine=nullptr;
     current_caption=nullptr;
@@ -67,14 +70,14 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     centerpoint_snap=false;
     linepoint_snap=false;
     _gridmode=false;
-    statWall=false;
-    statDoor=false;
-    statExit=false;
-    _statHLine=false;
+//    statWall=false;
+//    statDoor=false;
+//    statExit=false;
+//    _statHLine=false;
     stat_break_ = false;
     statzoomwindows=false;
     _statCopy=0;
-    statLandmark=false;
+//    statLandmark=false;
     markedLandmark=nullptr;
     currentLandmarkRect=nullptr;
     currentPen.setColor(Qt::black);
@@ -109,10 +112,8 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
 
     //Set-up the scene
     Scene = new GraphicScene(this);
-
     setScene(Scene);
     setSceneRect(0, 0, 1920, 1080);
-
 }
 
 jpsGraphicsView::~jpsGraphicsView()
@@ -222,7 +223,7 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
 
         //VLine
-        if (point_tracked && (statWall==true || statDoor==true || statExit==true))
+        if (point_tracked && (drawingMode==Wall || drawingMode==Door || drawingMode==Exit))
         {
 //            SetVLine();
         }
@@ -263,8 +264,64 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
 
     if (mouseEvent->button() == Qt::LeftButton)
     {
-
-        if (statWall || statDoor || statExit || _statHLine)
+        switch (drawingMode){
+            case Landmark:
+                addLandmark();
+                break;
+            case NoDrawing:
+                if (_statDefConnections==1)
+                {
+                    emit DefConnection1Completed();
+                    break;
+                }
+                    //LineEdit
+                else if (_currentTrackedPoint!=nullptr && line_tracked==1 && _statCopy==0)
+                {
+                    EditLine(_currentTrackedPoint);
+                    _currentTrackedPoint=nullptr;
+                    line_tracked=-1;
+                    break;
+                }
+                else if (_statCopy!=0)
+                {
+                    if (_statCopy==1)
+                    {
+                        _copyOrigin=return_Pos();
+                        _statCopy += 1;
+                    }
+                    else
+                        Copy_lines(return_Pos()-_copyOrigin);
+                    break;
+                }
+                else
+                {
+                    //Select_mode
+                    currentSelectRect=Scene->addRect(translated_pos.x(),translated_pos.y(),0,0,QPen(Qt::blue,0));
+                    currentSelectRect->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+                    leftbutton_hold=true;
+                    break;
+                }
+            default:
+                // If door, wall, exit, hline is edited currently
+                if (_statLineEdit)
+                {
+                    for (jpsLineItem* line:line_vector)
+                    {
+                        locate_intersection(marked_lines.first(),line);
+                    }
+                    current_line=nullptr;
+                    _statLineEdit=false;
+                    line_tracked=1;
+                    emit no_drawing();
+                    break;
+                }
+                else
+                {
+                    drawLine();
+                    break;
+                }
+        }
+/*        if (statWall || statDoor || statExit || _statHLine)
         {
             // If line is edited currently
             if (_statLineEdit)
@@ -318,8 +375,7 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                 leftbutton_hold=true;
             }
 
-        }
-
+        }*/
     }
     else if (mouseEvent->button()==Qt::MidButton)
     {
@@ -520,7 +576,7 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton)
     {
         // Select lines that are located within the rectangle
-        if (!(statWall==true || statDoor==true || statExit==true || statLandmark==true))
+        if (drawingMode == NoDrawing)
         {
             leftbutton_hold=false;
 
@@ -566,7 +622,7 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
                     catch_landmark();
                 }
                 delete currentSelectRect;
-                currentSelectRect=nullptr;
+                currentSelectRect = nullptr;
 
             }
 
@@ -1037,7 +1093,6 @@ void jpsGraphicsView::drawLine()
     // if the mouse was pressed secondly of two times
     else
     {
-
         jpsLineItem* lineItem= new jpsLineItem(current_line);
         lineItem->set_id(id_counter);
         id_counter++;
@@ -1054,19 +1109,34 @@ void jpsGraphicsView::drawLine()
             }
         }
 
-        lineItem->set_type(statWall,statDoor,statExit,_statHLine);
+//        jpsline->set_type(statWall,statDoor,statExit,_statHLine);
+        switch (drawingMode){
+            case Wall:
+                lineItem->setWall();
+                break;
+            case Door:
+                lineItem->setDoor();
+                break;
+            case Exit:
+                lineItem->setExit();
+                break;
+            case HLine:
+                lineItem->setHLine();
+                break;
+            case Source:
+                break;
+        }
+
+
         line_vector.push_back(lineItem);
 
         //reset pointer
-        current_line=nullptr;
+        current_line = nullptr;
 
         //Undo
         RecordUndoLineAction("LineAdded",lineItem->GetType(),lineItem->get_id(),lineItem->get_line()->line());
 
         //drawLine();
-
-
-
     }
 
     //Vline
@@ -1101,14 +1171,16 @@ void jpsGraphicsView::select_line(jpsLineItem *mline)
 
 void jpsGraphicsView::disable_drawing()
 {
-    statWall=false;
+/*    statWall=false;
     statDoor=false;
     statExit=false;
     statLandmark=false;
     _statLineEdit=false;
-    _statHLine=false;
+    _statHLine=false;*/
+
     _statCopy=0;
 
+    drawingMode = NoDrawing;
 
     // if drawing was canceled by pushing ESC
     if (current_line!=nullptr)
@@ -1144,19 +1216,19 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
 
     if (type=="Door")
     {
-        newLine->set_Door();
+        newLine->setDoor();
     }
     else if (type=="Exit")
     {
-        newLine->set_Exit();
+        newLine->setExit();
     }
     else if (type=="HLine")
     {
-        newLine->SetHLine();
+        newLine->setHLine();
     }
     else
     {
-        newLine->set_Wall();
+        newLine->setWall();
     }
 
     pen.setColor(newLine->get_defaultColor());
@@ -1940,7 +2012,19 @@ void jpsGraphicsView::take_l_from_lineEdit(const qreal &length)
         jpsLineItem* jpsline = new jpsLineItem(current_line);
         jpsline->set_id(id_counter);
         id_counter++;
-        jpsline->set_type(statWall,statDoor,statExit);
+//        jpsline->set_type(statWall,statDoor,statExit);
+        switch (drawingMode){
+            case Wall:
+                jpsline->setWall();
+                break;
+            case Door:
+                jpsline->setDoor();
+                break;
+            case Exit:
+                jpsline->setExit();
+                break;
+        }
+
         line_vector.push_back(jpsline);
         current_line=nullptr;
     }
@@ -1974,7 +2058,18 @@ void jpsGraphicsView::take_endpoint_from_xyEdit(const QPointF &endpoint)
         jpsLineItem* jpsline = new jpsLineItem(current_line);
         jpsline->set_id(id_counter);
         id_counter++;
-        jpsline->set_type(statWall,statDoor,statExit);
+//        jpsline->set_type(statWall,statDoor,statExit);
+        switch (drawingMode){
+            case Wall:
+                jpsline->setWall();
+                break;
+            case Door:
+                jpsline->setDoor();
+                break;
+            case Exit:
+                jpsline->setExit();
+                break;
+        }
         line_vector.push_back(jpsline);
         current_line=nullptr;
     }
@@ -2035,7 +2130,7 @@ void jpsGraphicsView::change_gridmode()
 
 void jpsGraphicsView::en_disableWall()
 {
-    statWall=!statWall;
+/*    statWall=!statWall;
     statDoor=false;
     statExit=false;
     _statHLine=false;
@@ -2047,14 +2142,27 @@ void jpsGraphicsView::en_disableWall()
     else
     {
         currentPen.setColor(Qt::black);
-    }
+    }*/
 
+    drawingMode = Wall;
+
+    if(drawingMode != Wall)
+    {
+        emit no_drawing();
+    } else
+    {
+        currentPen.setColor(Qt::darkGray);
+    }
 }
 
 
 bool jpsGraphicsView::statusWall()
 {
-    return statWall;
+    if(drawingMode == Wall)
+    {
+        return true;
+    } else
+        return false;
 }
 
 void jpsGraphicsView::change_stat_anglesnap()
@@ -2069,7 +2177,7 @@ bool jpsGraphicsView::get_stat_anglesnap()
 
 void jpsGraphicsView::en_disableDoor()
 {
-    statDoor=!statDoor;
+/*    statDoor=!statDoor;
     statExit=false;
     statWall=false;
     statLandmark=false;
@@ -2081,18 +2189,31 @@ void jpsGraphicsView::en_disableDoor()
     else
     {
         currentPen.setColor(Qt::blue);
-    }
+    }*/
 
+    drawingMode = Door;
+
+    if(drawingMode != Door)
+    {
+        emit no_drawing();
+    } else
+    {
+        currentPen.setColor(Qt::blue);
+    }
 }
 
 bool jpsGraphicsView::statusDoor()
 {
-    return statDoor;
+    if(drawingMode == Door)
+    {
+        return true;
+    } else
+        return false;
 }
 
 void jpsGraphicsView::en_disableExit()
 {
-    statExit=!statExit;
+/*    statExit=!statExit;
     statDoor=false;
     statWall=false;
     _statHLine=false;
@@ -2104,22 +2225,38 @@ void jpsGraphicsView::en_disableExit()
     else
     {
         currentPen.setColor(Qt::darkMagenta);
+    }*/
+
+    drawingMode = Exit;
+
+    if(drawingMode != Exit)
+    {
+        emit no_drawing();
+    } else
+    {
+        currentPen.setColor(Qt::darkMagenta);
     }
 }
 
 bool jpsGraphicsView::statusHLine()
 {
-    return _statHLine;
+//    return _statHLine;
+    if(drawingMode == HLine)
+    {
+        return true;
+    } else
+        return false;
 }
 
 void jpsGraphicsView::en_disableHLine()
 {
-    _statHLine=!_statHLine;
+/*    _statHLine=!_statHLine;
     statExit=false;
     statDoor=false;
     statWall=false;
     statLandmark=false;
-    _statCopy=0;
+
+
     if (_statHLine==false)
     {
         emit no_drawing();
@@ -2127,22 +2264,45 @@ void jpsGraphicsView::en_disableHLine()
     else
     {
         currentPen.setColor(Qt::darkCyan);
+    }*/
+
+    _statCopy=0;
+    drawingMode = HLine;
+
+    if(drawingMode != HLine)
+    {
+        emit no_drawing();
+    } else
+    {
+        currentPen.setColor(Qt::darkCyan);
     }
 }
 
 bool jpsGraphicsView::statusLandmark()
 {
-    return statLandmark;
+//    return statLandmark;
+    if(drawingMode == Landmark)
+    {
+        return true;
+    } else
+        return false;
 }
 
 void jpsGraphicsView::en_disableLandmark()
 {
-    statLandmark=!statLandmark;
+/*    statLandmark=!statLandmark;
     statDoor=false;
     statWall=false;
     statExit=false;
-    _statCopy=0;
+
     if (statLandmark==false)
+    {
+        emit no_drawing();
+    }*/
+    _statCopy=0;
+    drawingMode = Landmark;
+
+    if(drawingMode != Landmark)
     {
         emit no_drawing();
     }
@@ -2150,7 +2310,12 @@ void jpsGraphicsView::en_disableLandmark()
 
 bool jpsGraphicsView::statusExit()
 {
-    return statExit;
+//    return statExit;
+    if(drawingMode == Exit)
+    {
+        return true;
+    } else
+        return false;
 }
 
 void jpsGraphicsView::start_Copy_function()
@@ -2231,4 +2396,8 @@ QPointF jpsGraphicsView::getNearstPointOnLine(jpsLineItem* selected_line)
     }
 
     return newPoint;
+}
+
+void jpsGraphicsView::setDrawingMode(DrawingMode mode) {
+    drawingMode = mode;
 }

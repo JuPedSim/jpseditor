@@ -47,6 +47,10 @@ MWindow :: MWindow()
     //VBox= new QVBoxLayout;
 
     mview = new jpsGraphicsView(this);
+    setCentralWidget(mview);
+    //this->setMaximumSize(1920,1080);
+    this->showMaximized();
+
     dmanager = new jpsDatamanager(this,mview);
     mview->SetDatamanager(dmanager);
 
@@ -93,10 +97,6 @@ MWindow :: MWindow()
 
     //WindowTitle
     this->setWindowTitle("JPSeditor");
-
-    setCentralWidget(mview);
-    //this->setMaximumSize(1920,1080);
-    this->showMaximized();
 
     statusBar()->addPermanentWidget(infoLabel);
     statusBar()->addPermanentWidget(label_x);

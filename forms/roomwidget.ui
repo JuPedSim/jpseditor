@@ -32,7 +32,7 @@
    <attribute name="title">
     <string>Layers</string>
    </attribute>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -86,7 +86,7 @@
    <attribute name="title">
     <string>Rooms</string>
    </attribute>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -359,7 +359,7 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add new Door&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="text">
-          <string>New</string>
+          <string>Add</string>
          </property>
         </widget>
        </item>
@@ -508,7 +508,7 @@
    <attribute name="title">
     <string>Obstacles</string>
    </attribute>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>0</x>

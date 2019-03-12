@@ -31,7 +31,6 @@
 
 #include <QGraphicsView>
 
-
 class jpsLineItem
 {
 public:
@@ -45,11 +44,15 @@ public:
     QString GetType();
     void set_id(int id);
     void set_name(QString name);
-    void set_type(bool wall, bool door, bool exit, bool hline=false);
-    void set_Wall();
-    void set_Door();
-    void set_Exit();
-    void SetHLine();
+//    void set_type(bool wall, bool door, bool exit, bool hline=false);
+
+    enum LineType{wall, door, exit, hline, undefined};
+    void setType(LineType type);
+
+    void setWall();
+    void setDoor();
+    void setExit();
+    void setHLine();
     void set_defaultColor(QString color);
     bool is_Wall();
     bool is_Door();
@@ -62,18 +65,16 @@ public:
     void add_intersectLine(jpsLineItem * lineItem);
     void remove_interLine(jpsLineItem * lineItem);
 
-
-
-
 private:
     QGraphicsLineItem* mLine;
     int mId;
     QString mName;
     QString defaultColor;
-    bool wall;
-    bool door;
-    bool exit;
-    bool _hLine;
+    LineType lineType;
+//    bool wall;
+//    bool door;
+//    bool exit;
+//    bool _hLine;
     QList<QPointF *> intersectionVector;
     QList<jpsLineItem* > intersectLineVector;
     /*
