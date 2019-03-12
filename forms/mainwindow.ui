@@ -114,12 +114,12 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionSelect_Mode"/>
    <addaction name="actionUndo"/>
    <addaction name="actionRedo"/>
    <addaction name="actionDelete_single_line"/>
    <addaction name="actionClear_all_Rooms_and_Doors"/>
    <addaction name="separator"/>
+   <addaction name="actionSelect_Mode"/>
    <addaction name="actionWall"/>
    <addaction name="actionDoor"/>
    <addaction name="actionHLine"/>

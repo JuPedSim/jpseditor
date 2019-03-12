@@ -38,19 +38,38 @@
 
 jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):QGraphicsView(parent)
 {
+    //Set-up the scene
+    Scene = new GraphicScene(this);
+    setScene(Scene);
+    setSceneRect(0, 0, 1920, 1080);
+
+    //Set-up data container
     _datamanager=datamanager;
 
-    drawingMode = NoDrawing;
-
+    //Set-up parameters
     current_line=nullptr;
     _currentVLine=nullptr;
     current_caption=nullptr;
+    current_rect=nullptr;
+    currentSelectRect=nullptr;
+    id_counter=0;
+    point_tracked=false;
+    line_tracked=-1;
+    _statCopy=0;
+    markedLandmark=nullptr;
+    currentLandmarkRect=nullptr;
+    _currentTrackedPoint=nullptr;
+    _statLineEdit=false;
+    intersection_point=nullptr;
+    _statDefConnections=0;
+    stat_break_ = false;
+
     //current_line_mark=nullptr;
-    midbutton_hold=false;
+
+    //Set-up viewing
     translation_x=0;
     translation_y=0;//this->height();
     anglesnap=false;
-    id_counter=0;
     _scaleFactor=1.0;
     _gridSize=1.0;
     gl_scale_f=.01*_scaleFactor;
@@ -59,10 +78,6 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     catch_line_distance=10*gl_scale_f;
     //Set-up the view
     setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-    point_tracked=false;
-    line_tracked=-1;
-    current_rect=nullptr;
-    currentSelectRect=nullptr;
     gridmap=nullptr;
     objectsnap=false;
     start_endpoint_snap=false;
@@ -70,36 +85,26 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     centerpoint_snap=false;
     linepoint_snap=false;
     _gridmode=false;
+    drawingMode = NoDrawing;
 //    statWall=false;
 //    statDoor=false;
 //    statExit=false;
 //    _statHLine=false;
-    stat_break_ = false;
-    statzoomwindows=false;
-    _statCopy=0;
 //    statLandmark=false;
-    markedLandmark=nullptr;
-    currentLandmarkRect=nullptr;
+    statzoomwindows=false;
     currentPen.setColor(Qt::black);
     currentPen.setCosmetic(true);
     currentPen.setWidth(2);
     this->scale(1/gl_scale_f,-1/gl_scale_f);
-    _currentTrackedPoint=nullptr;
-    _statLineEdit=false;
-    intersection_point=nullptr;
-    _statDefConnections=0;
-
     lines_collided=false;
     _posDef=false;
     _regionDef=false;
-
-
+    midbutton_hold=false;
     //m_graphView->setFixedSize(1600, 900);
     //m_graphView->setScene(m_graphScen);
 
     //setCacheMode(QGraphicsView::CacheBackground);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-
 
     //setRenderHint(QPainter::NonCosmeticDefaultPen);
     // setRenderHint(QPainter::Antialiasing);
@@ -110,10 +115,6 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setCursor(Qt::CrossCursor);
 
-    //Set-up the scene
-    Scene = new GraphicScene(this);
-    setScene(Scene);
-    setSceneRect(0, 0, 1920, 1080);
 }
 
 jpsGraphicsView::~jpsGraphicsView()

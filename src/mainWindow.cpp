@@ -207,7 +207,6 @@ MWindow :: MWindow()
     drawingActionGroup->addAction(actionHLine);
     drawingActionGroup->addAction(actionLandmark);
     actionSelect_Mode->setChecked(true);
-
 }
 
 MWindow::~MWindow()
