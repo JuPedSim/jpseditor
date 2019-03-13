@@ -54,6 +54,7 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 
 
     roomlist= QList<jpsRoom *> ();
+
 }
 
 jpsDatamanager::~jpsDatamanager()
@@ -2808,6 +2809,66 @@ jpsRegion* jpsDatamanager::ParseRegion(QXmlStreamReader &xmlReader)
 
 }
 
+void jpsDatamanager::writeSources(QXmlStreamWriter *stream, QList<JPSSource *> &sourcelist) {
+    for(JPSSource* source:sourcelist)
+    {
+        if(source->isBeSaved())
+        {
+            stream->writeStartElement("source");
+            stream->writeAttribute("id",QString::number(source->getId()));
+            stream->writeAttribute("frequency",source->getFrequency());
+            stream->writeAttribute("N_create",source->getN_create());
+            stream->writeAttribute("percent",source->getPercent());
+            stream->writeAttribute("rate",source->getRate());
+            stream->writeAttribute("time_min",source->getTime_min());
+            stream->writeAttribute("time_max",source->getTime_max());
+            stream->writeAttribute("agents_max",source->getAgents_max());
+            stream->writeAttribute("group_id",source->getGroup_id());
+            stream->writeAttribute("caption",source->getCaption());
+            stream->writeAttribute("greedy",source->getGreedy());
+            stream->writeAttribute("time",source->getTime());
+            stream->writeAttribute("startX",source->getStartX());
+            stream->writeAttribute("startY",source->getStartY());
+            stream->writeAttribute("x_min",QString::number(source->getX_min()));
+            stream->writeAttribute("x_max",QString::number(source->getX_max()));
+            stream->writeAttribute("y_min",QString::number(source->getY_min()));
+            stream->writeAttribute("y_max",QString::number(source->getY_max()));
+            stream->writeEndElement();
+        }
+
+    }
+}
+
+void jpsDatamanager::writeSourceXML(QFile &file) {
+    QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
+
+    writeSourceHeader(stream);
+
+    stream->writeStartElement("agents_sources");
+    sourcelist = _mView->getSourceVector();
+    writeSources(stream, sourcelist);
+    stream->writeEndElement(); //end sources
+
+    stream->writeEndDocument();
+
+    delete stream;
+    stream = nullptr;
+}
+
+void jpsDatamanager::writeSourceHeader(QXmlStreamWriter *stream)
+{
+    qDebug("Enter jpsDatamanager::writeSourceHeader");
+    stream->setAutoFormatting(true);
+    stream->writeStartDocument("1.0",true);
+
+    stream->writeStartElement("sources");
+    stream->writeAttribute("version", "0.8");
+    //stream->writeAttribute("caption","corner");
+    stream->writeAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+    stream->writeAttribute("xsi:noNamespaceSchemaLocation","http://xsd.jupedsim.org/jps_routing.xsd");
+    stream->writeAttribute("unit","m");
+    qDebug("Leave jpsDatamanager::writeSourceHeader");
+}
 
 
 

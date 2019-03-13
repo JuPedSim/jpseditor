@@ -42,11 +42,11 @@
 #include "GraphicView.h"
 #include "jpsconnection.h"
 #include "jpsregion.h"
+#include "jpssource.h"
 #include <random>
 
 #include "../dxflib/src/dl_creationadapter.h"
 #include "../dxflib/src/dl_dxf.h"
-
 
 using ptrConnection = std::shared_ptr<jpsConnection>;
 
@@ -103,7 +103,11 @@ public:
     const int& GetRegionCounter() const;
     //Layers
     QList<QString> getElevationList();
-    //
+    //Sources
+    void writeSources(QXmlStreamWriter *stream, QList<JPSSource *>& sourcelist);
+    void writeSourceXML(QFile &file);
+    void writeSourceHeader(QXmlStreamWriter *stream);
+
     void remove_all();
     void remove_marked_lines();
     void set_view(jpsGraphicsView* view);
@@ -205,6 +209,7 @@ private:
     QList<jpsLandmark* > _landmarksAfterLoose;
     QList<jpsConnection* > _ConnectionsAfterLandmarkLoose;
     QList<jpsRegion* > _regions;
+    QList<JPSSource* > sourcelist;
 
     int room_id_counter;
     int obs_id_counter;
@@ -222,8 +227,6 @@ private:
     QString _currentCogMapFileName;
 
     std::default_random_engine _generator;
-
-
 
 };
 

@@ -488,12 +488,15 @@ void MWindow::saveAsXML(){
 
         //routing (hlines)
         QString fileNameRouting=fileName.split(".").first()+"_routing.xml";
-
         QFile routingFile(fileNameRouting);
         if (routingFile.open(QIODevice::WriteOnly|QIODevice::Text))
             dmanager->writeRoutingXML(routingFile);
 
-
+        //sources
+        QString fileNameSource=fileName.split(".").first()+"_sources.xml";
+        QFile sourcesFile(fileNameSource);
+        if(sourcesFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeSourceXML(sourcesFile);
 
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
