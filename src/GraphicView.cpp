@@ -51,8 +51,10 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     _currentVLine=nullptr;
     current_caption=nullptr;
     current_rect=nullptr;
+    currentSource = nullptr;
     currentSelectRect=nullptr;
     id_counter=0;
+    sourceCounter=0;
     point_tracked=false;
     line_tracked=-1;
     _statCopy=0;
@@ -154,6 +156,38 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
     QGraphicsView::mouseMoveEvent(mouseEvent);
 
+    switch (drawingMode){
+        case NoDrawing:
+            break;
+        case Source:
+            if(currentSource != nullptr)
+            {
+                currentSource->setRect(QRectF(
+                        QPointF(currentSource->rect().x(),currentSource->rect().y()),
+                        QPointF(translated_pos.x(),translated_pos.y())));
+            }
+            break;
+        case Landmark:
+            break;
+        default:
+            // draw wall, door, exit, HLine
+            if (current_line!=nullptr)
+            {
+                //if (statWall==true || statDoor==true || statExit==true)
+                //{
+                //emit set_focus_textedit();
+                current_line->setLine(current_line->line().x1(),current_line->line().y1(),translated_pos.x(),translated_pos.y());
+                if (current_line->line().isNull())
+                    current_line->setVisible(false);
+                else
+                    current_line->setVisible(true);
+
+                //}
+                //As line length has changed
+                emit LineLengthChanged();
+            }
+    }
+
     if (current_rect!=nullptr)
     {
        delete current_rect;
@@ -230,21 +264,8 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
         }
     }
 
-    if (current_line!=nullptr)
-    {
-        //if (statWall==true || statDoor==true || statExit==true)
-        //{
-        //emit set_focus_textedit();
-        current_line->setLine(current_line->line().x1(),current_line->line().y1(),translated_pos.x(),translated_pos.y());
-        if (current_line->line().isNull())
-            current_line->setVisible(false);
-        else
-            current_line->setVisible(true);
 
-        //}
-        //As line length has changed
-        emit LineLengthChanged();
-    }
+
     if (_currentVLine!=nullptr)
     {
         emit set_focus_textedit();
@@ -268,6 +289,9 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
         switch (drawingMode){
             case Landmark:
                 addLandmark();
+                break;
+            case Source:
+                drawSource();
                 break;
             case NoDrawing:
                 if (_statDefConnections==1)
@@ -1125,7 +1149,6 @@ void jpsGraphicsView::drawLine()
                 break;
         }
 
-
         line_vector.push_back(lineItem);
 
         //reset pointer
@@ -1192,6 +1215,11 @@ void jpsGraphicsView::disable_drawing()
         //VLine will be deleted
         delete _currentVLine;
         _currentVLine=nullptr;
+    }
+    if (currentSource != nullptr)
+    {
+        delete currentSource;
+        currentSource = nullptr;
     }
 }
 
@@ -2404,7 +2432,8 @@ void jpsGraphicsView::setDrawingMode(DrawingMode mode) {
     drawingMode = mode;
 }
 
-void jpsGraphicsView::drawSource() {
+// For source
+void jpsGraphicsView::enableSourceMode() {
     drawingMode = Source;
 
     if(drawingMode != Source)
@@ -2414,4 +2443,35 @@ void jpsGraphicsView::drawSource() {
     {
         currentPen.setColor(Qt::darkRed);
     }
+}
+
+void jpsGraphicsView::drawSource()
+{
+    if(currentSource == nullptr) // if the mouse was pressed first of two times
+    {
+        //Determining first point of source
+        currentSource = Scene->addRect(translated_pos.x(),translated_pos.y(),0,0,currentPen);
+        currentSource->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+
+    } else
+    {
+        // if the mouse was pressed secondly of two times
+        addSourceInData(currentSource);
+        currentSource = nullptr;
+
+    }
+}
+
+void jpsGraphicsView::addSourceInData(QGraphicsRectItem *source) {
+    JPSSource *sourceItem = new JPSSource(currentSource);
+    sourceItem->setId(sourceCounter);
+    sourceCounter++;
+
+    sourceVector.push_back(sourceItem);
+
+    //TODO: Fix undo for source;
+}
+
+const QList<JPSSource *> &jpsGraphicsView::getSourceVector() const {
+    return sourceVector;
 }

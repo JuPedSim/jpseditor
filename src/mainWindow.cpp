@@ -906,5 +906,5 @@ void MWindow::on_actionZoom_Extents_triggered()
 
 void MWindow::sourceButtonClicked()
 {
-    mview->drawSource();
+    mview->enableSourceMode();
 }

@@ -117,6 +117,7 @@ set( SRCS
     src/settingdialog.cpp
     src/inifilewidget.cpp
     src/snappingoptions.cpp
+    src/jpssource.cpp
 
     dxflib/src/dl_writer_ascii.cpp
     dxflib/src/dl_dxf.cpp
@@ -152,6 +153,7 @@ set( HDR
     src/settingdialog.h
     src/inifilewidget.h
     src/snappingoptions.h
+    src/jpsource.h
 
     dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h

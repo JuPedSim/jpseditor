@@ -31,7 +31,7 @@
 jpsLineItem::jpsLineItem(QGraphicsLineItem *line)
 {
     mLine=line;
-    lineType = wall;
+    lineType = undefined;
 }
 
 jpsLineItem::~jpsLineItem()
@@ -125,6 +125,8 @@ void jpsLineItem::setType(LineType type) {
             break;
         case hline:
             setHLine();
+            break;
+        default:
             break;
     }
 

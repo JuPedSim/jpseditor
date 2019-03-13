@@ -36,6 +36,7 @@
 #include "jpsLineItem.h"
 #include "jpslandmark.h"
 #include "jpsconnection.h"
+#include "jpssource.h"
 #include "./UndoFramework/actionstack.h"
 
 using ptrConnection = std::shared_ptr<jpsConnection>;
@@ -84,7 +85,9 @@ public:
     void en_disableHLine();
     bool statusLandmark();
     void en_disableLandmark();
+    void enableSourceMode();
     void drawSource();
+    const QList<JPSSource *> &getSourceVector() const;
 
     // global functions
     qreal get_scale_f();
@@ -249,6 +252,12 @@ private:
     QList<QGraphicsTextItem* > caption_list;
     int id_counter;
 
+    //Source
+    QGraphicsRectItem *currentSource;
+    void addSourceInData(QGraphicsRectItem *source);
+    int sourceCounter;
+    QList<JPSSource *> sourceVector;
+
 
     //Landmark and waypoints
     jpsLandmark* markedLandmark;
@@ -286,6 +295,8 @@ signals:
     void DefConnection1Completed();
     void DefConnection2Completed();
     void RegionDefCompleted();
+
+
     //void DoubleClick();
 
 };
