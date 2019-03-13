@@ -118,8 +118,9 @@ set( SRCS
     src/inifilewidget.cpp
     src/snappingoptions.cpp
     src/jpssource.cpp
+    src/sourcewidget.cpp
 
-    dxflib/src/dl_writer_ascii.cpp
+        dxflib/src/dl_writer_ascii.cpp
     dxflib/src/dl_dxf.cpp
     src/UndoFramework/action.cpp
     src/UndoFramework/actionstack.cpp
@@ -154,8 +155,9 @@ set( HDR
     src/inifilewidget.h
     src/snappingoptions.h
     src/jpsource.h
+    src/sourcewidget.h
 
-    dxflib/src/dl_writer_ascii.h
+        dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h
     dxflib/src/dl_global.h
     dxflib/src/dl_extrusion.h
@@ -186,6 +188,7 @@ set( UIS
     forms/settingdialog.ui
     forms/inifilewidget.ui
     forms/snappingoptions.ui
+    forms/sourcewidget.ui
   )
 
 # and finally a resource file

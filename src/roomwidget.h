@@ -36,8 +36,6 @@
 class RoomDefinition;
 class RoomIdentification;
 
-
-
 namespace Ui {
 class roomWidget;
 }

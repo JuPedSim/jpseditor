@@ -34,6 +34,7 @@
 #include <QtGui>
 #include <QLabel>
 #include <QLineEdit>
+#include <QDockWidget>
 #include "ui_mainwindow.h"
 #include "roomwidget.h"
 #include "widgetlandmark.h"
@@ -44,6 +45,7 @@
 #include "settingdialog.h"
 #include "inifilewidget.h"
 #include "snappingoptions.h"
+#include "sourcewidget.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 
@@ -57,6 +59,8 @@ private:
     roomWidget* rwidget;
     widgetLandmark* lwidget;
     InifileWidget * inifileWidget;
+    QDockWidget *sourceDockWidget;
+    SourceWidget *sourceWidget;
     SnappingOptions* snappingOptions;
 //    WidgetSettings* _settings;
     jpsDatamanager* dmanager;

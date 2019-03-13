@@ -40,7 +40,8 @@ FORMS += \
     forms/widgetsettings.ui \
     forms/inifilewidget.ui \
     forms/settingdialog.ui \
-    forms/snappingoptions.ui
+    forms/snappingoptions.ui \
+    forms/sourcewidget.ui
 
 
 HEADERS += \
@@ -81,7 +82,8 @@ HEADERS += \
     src/tinyxml/tinystr.h \
     src/tinyxml/tinyxml.h \
     src/inifilewidget.h \
-    src/snappingoptions.h
+    src/snappingoptions.h \
+    src/sourcewidget.h
 
 
 
@@ -115,7 +117,8 @@ SOURCES += \
     src/tinyxml/tinyxmlerror.cpp \
     src/tinyxml/tinyxmlparser.cpp \
     src/inifilewidget.cpp \
-    src/snappingoptions.cpp
+    src/snappingoptions.cpp \
+    src/sourcewidget.cpp
 
 
 

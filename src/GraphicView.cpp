@@ -2458,7 +2458,6 @@ void jpsGraphicsView::drawSource()
         // if the mouse was pressed secondly of two times
         addSourceInData(currentSource);
         currentSource = nullptr;
-
     }
 }
 
@@ -2469,6 +2468,7 @@ void jpsGraphicsView::addSourceInData(QGraphicsRectItem *source) {
 
     sourceVector.push_back(sourceItem);
 
+    emit newSourceAdd();
     //TODO: Fix undo for source;
 }
 

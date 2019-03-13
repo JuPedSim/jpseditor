@@ -48,7 +48,7 @@ MWindow :: MWindow()
 
     mview = new jpsGraphicsView(this);
     setCentralWidget(mview);
-    //this->setMaximumSize(1920,1080);
+    this->setMaximumSize(1920,1080);
     this->showMaximized();
 
     dmanager = new jpsDatamanager(this,mview);
@@ -213,6 +213,8 @@ MWindow :: MWindow()
 //    connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
 //    connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
 
+    sourceWidget = nullptr;
+    sourceDockWidget = nullptr;
 }
 
 MWindow::~MWindow()
@@ -681,7 +683,6 @@ void MWindow::define_room()
         rwidget->setGeometry(QRect(QPoint(5,75), rwidget->size()));
         rwidget->setAttribute(Qt::WA_DeleteOnClose);
         rwidget->show();
-
     }
     else
     {
@@ -907,4 +908,21 @@ void MWindow::on_actionZoom_Extents_triggered()
 void MWindow::sourceButtonClicked()
 {
     mview->enableSourceMode();
+
+    if(sourceDockWidget == nullptr)
+    {
+        sourceDockWidget = new QDockWidget(tr("Sources"), this);
+        sourceDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        sourceDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+        sourceWidget = new SourceWidget(this,this->mview,this->dmanager);
+        addDockWidget(Qt::RightDockWidgetArea, sourceDockWidget);
+        sourceDockWidget->setWidget(sourceWidget);
+    } else
+    {
+        sourceDockWidget->close();
+        sourceDockWidget = nullptr;
+        sourceWidget = nullptr;
+        actionSelect_Mode->setChecked(true);
+    }
 }
