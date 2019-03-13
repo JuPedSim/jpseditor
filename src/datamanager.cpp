@@ -289,7 +289,7 @@ void jpsDatamanager::new_exit(QList <jpsLineItem *> newExits)
 
 void jpsDatamanager::new_exit(jpsLineItem *newExit)
 {
-     qDebug("Enter jpsDatamanager::new_exit");
+    qDebug("Enter jpsDatamanager::new_exit");
     jpsExit* newEx = new jpsExit(newExit);
     exitList.push_back(newEx);
     qDebug("Leave jpsDatamanager::new_exit");
