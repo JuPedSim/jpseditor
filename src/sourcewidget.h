@@ -6,6 +6,7 @@
 #include "datamanager.h"
 #include "GraphicView.h"
 
+
 namespace Ui {
 class SourceWidget;
 }
@@ -20,6 +21,8 @@ public:
 
 protected slots:
     void showSource();
+    void showSourceInformation();
+    void applySourceInformation();
 
 private:
     Ui::SourceWidget *ui;

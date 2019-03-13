@@ -8,6 +8,8 @@
 #include <QGraphicsView>
 #include <QDebug>
 #include <QtGui>
+#include <QtCore>
+#include <QGraphicsRectItem>
 
 class JPSSource
 {
@@ -94,6 +96,10 @@ public:
 
     void setY_max(qreal y_max);
 
+    bool isBeSaved() const;
+
+    void setBeSaved(bool beSaved);
+
 private:
     int id;
     QGraphicsRectItem *sourceRect;
@@ -115,6 +121,8 @@ private:
     qreal x_max;
     qreal y_min;
     qreal y_max;
+
+    bool beSaved;
 };
 
 

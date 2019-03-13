@@ -2,12 +2,13 @@
 // Created by sainho93 on 2019-03-13.
 //
 
+
 #include "jpssource.h"
 
 JPSSource::JPSSource(QGraphicsRectItem *source)
 {
     sourceRect = source;
-    caption="Source " + QString::number(id);
+    caption="Source";
     agents_max = "0";
     frequency = "0";
     group_id = "0";
@@ -20,7 +21,11 @@ JPSSource::JPSSource(QGraphicsRectItem *source)
     time_max = "0";
     time_min = "0";
     greedy = "false";
-
+    x_min = sourceRect->rect().bottomLeft().x();
+    y_min = sourceRect->rect().bottomLeft().y();
+    x_max = sourceRect->rect().topRight().x();
+    y_max = sourceRect->rect().topRight().y();
+    beSaved = false;
 }
 
 JPSSource::~JPSSource()
@@ -31,6 +36,7 @@ JPSSource::~JPSSource()
 void JPSSource::setId(int id) {
     JPSSource::id = id;
 }
+
 
 QGraphicsRectItem *JPSSource::getSourceRect() const {
     return sourceRect;
@@ -175,5 +181,19 @@ qreal JPSSource::getY_max() const {
 void JPSSource::setY_max(qreal y_max) {
     JPSSource::y_max = y_max;
 }
+
+int JPSSource::getId() const {
+    return id;
+}
+
+bool JPSSource::isBeSaved() const {
+    return beSaved;
+}
+
+void JPSSource::setBeSaved(bool beSaved) {
+    JPSSource::beSaved = beSaved;
+}
+
+
 
 
