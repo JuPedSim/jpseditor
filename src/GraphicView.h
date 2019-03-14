@@ -31,7 +31,6 @@
 
 #include <QGraphicsView>
 //#include <QGraphicsSceneMouseEvent>
-#include "graphicscene.h"
 #include <QGraphicsLineItem>
 #include "jpsLineItem.h"
 #include "jpslandmark.h"

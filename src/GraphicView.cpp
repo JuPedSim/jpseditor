@@ -2532,8 +2532,6 @@ void jpsGraphicsView::DrawLineGrid(QPainter *painter, const QRectF &rect)
 
 void jpsGraphicsView::DrawPointGrid(QPainter *painter, const QRectF &rect)
 {
-
-
     qreal left = int(rect.left()-_translationX) - std::fmod(int(rect.left()-_translationX), _gridSize);
     qreal top = int(rect.top()-_translationY)- std::fmod(int(rect.top()-_translationY) , _gridSize);
 

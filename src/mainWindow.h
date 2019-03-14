@@ -65,7 +65,7 @@ private:
 //    WidgetSettings* _settings;
     jpsDatamanager* dmanager;
     jpsGraphicsView* mview;
-    GraphicScene *mscene;
+    QGraphicsScene *mscene;
     //QVBoxLayout* VBox;
     QLineEdit* length_edit;
     QLineEdit* x_edit;

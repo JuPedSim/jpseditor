@@ -49,7 +49,7 @@ MWindow :: MWindow()
 
     //Set-up view and scene
     mview = new jpsGraphicsView;
-    mscene = new GraphicScene(this);
+    mscene = new QGraphicsScene(this);
     mview->setScene(mscene);
     mview->setSceneRect(0, 0, 1920, 1080);
     setCentralWidget(mview);
