@@ -117,7 +117,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     _gridmode=false;
     _statgrid="Line";
     _gridSize=1.0;
-
+    
 }
 
 jpsGraphicsView::~jpsGraphicsView()
@@ -2443,6 +2443,7 @@ void jpsGraphicsView::enableSourceMode() {
     } else
     {
         currentPen.setColor(Qt::darkRed);
+
     }
 }
 
@@ -2457,9 +2458,8 @@ void jpsGraphicsView::drawSource()
     } else
     {
         // if the mouse was pressed secondly of two times
-        JPSSource *sourceItem = new JPSSource(currentSource); //JPSSource::sourceRectItem take over this
-        // rectangle
-        currentSource = nullptr;
+        JPSSource *sourceItem = new JPSSource(currentSource);
+        currentSource = nullptr; // move pointer from current QGraphicRectItem
     }
 }
 

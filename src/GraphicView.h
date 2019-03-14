@@ -263,7 +263,6 @@ private:
     //Source
     QGraphicsRectItem *currentSource;
 
-
     //Landmark and waypoints
     jpsLandmark* markedLandmark;
     QGraphicsRectItem* currentLandmarkRect;

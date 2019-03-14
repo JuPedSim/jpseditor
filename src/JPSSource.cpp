@@ -45,8 +45,9 @@ JPSSource::JPSSource(QGraphicsRectItem *sourceRectItem)
              QGraphicsItem::ItemIsMovable|
              QGraphicsItem::ItemIsFocusable);
 
-    setRect(sourceRectItem->rect());
-    setSelected(true);
+    rectItem = sourceRectItem;
+    setRect(rectItem->rect());
+//    setSelected(true);
     setFocus();
 
 

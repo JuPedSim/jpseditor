@@ -83,7 +83,11 @@ HEADERS += \
     src/tinyxml/tinyxml.h \
     src/inifilewidget.h \
     src/snappingoptions.h \
-    src/sourcewidget.h
+    src/sourcewidget.h  \
+    src/global.h \
+    src/jpssource.h \
+    src/ele,emttype.h \
+
 
 
 
@@ -118,7 +122,9 @@ SOURCES += \
     src/tinyxml/tinyxmlparser.cpp \
     src/inifilewidget.cpp \
     src/snappingoptions.cpp \
-    src/sourcewidget.cpp
+    src/sourcewidget.cpp \
+    src/jpssource.cpp \
+    src/global.cpp
 
 
 

@@ -9,11 +9,8 @@ SourceWidget::SourceWidget(QWidget *parent, QGraphicsScene *scene, jpsDatamanage
 {
     ui->setupUi(this);
 
-    datamanager=dmanager;
-    currentScene=scene;
-
-    connect(currentScene, SIGNAL(focusItemChanged()), this, SLOT(showSource()));
-    connect(currentScene, SIGNAL(focusItemChanged()), this, SLOT(showSourceInformation()));
+    connect(scene, SIGNAL(focusItemChanged()), this, SLOT(showSource()));
+    connect(scene, SIGNAL(focusItemChanged()), this, SLOT(showSourceInformation()));
     connect(ui->SourceListWidget,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showSourceInformation()));
     connect(ui->SourceListWidget,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(
             showSourceInformation()));
@@ -29,7 +26,7 @@ SourceWidget::~SourceWidget()
 
 void SourceWidget::showSource()
 {
-    /*qDebug(">> Enter SourceWidget::showSource");
+/*    qDebug(">> Enter SourceWidget::showSource");
     // update source list
     ui->SourceListWidget->clear();
     QList<JPSSource *> sourcelist = currentScene->getSourceItems();

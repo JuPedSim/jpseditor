@@ -27,8 +27,6 @@ protected slots:
 
 private:
     Ui::SourceWidget *ui;
-    jpsDatamanager *datamanager;
-    QGraphicsScene *currentScene;
 };
 
 #endif // SOURCEWIDGET_H

@@ -169,7 +169,7 @@ private:
     double m_angle;
     double m_shearHorizontal;
     double m_shearVertical;
-
+    QGraphicsRectItem *rectItem;
 };
 
 

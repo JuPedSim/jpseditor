@@ -931,8 +931,9 @@ void MWindow::sourceButtonClicked()
         sourceDockWidget->setWidget(sourceWidget);
     } else
     {
-        sourceDockWidget->close();
+        sourceDockWidget->close(); //close() has deleted pointer
         sourceDockWidget = nullptr;
+        delete sourceWidget;
         sourceWidget = nullptr;
     }
 }
