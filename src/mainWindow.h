@@ -117,6 +117,7 @@ protected slots:
     void objectsnap();
     void sourceButtonClicked();
 
+
     //Line operations
     void show_coords();
     void delete_lines();

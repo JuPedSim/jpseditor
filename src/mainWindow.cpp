@@ -204,7 +204,7 @@ MWindow :: MWindow()
     drawingActionGroup->addAction(actionHLine);
     drawingActionGroup->addAction(actionLandmark);
     drawingActionGroup->addAction(actionSource);
-    actionSelect_Mode->setChecked(true);
+
 
     connect(actionSelect_Mode,SIGNAL(triggered(bool)),this,SLOT(en_selectMode()));
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
@@ -212,7 +212,7 @@ MWindow :: MWindow()
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(en_disableExit()));
     connect(actionHLine,SIGNAL(triggered(bool)),this,SLOT(en_disableHLine()));
     connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
-    connect(actionSource, SIGNAL(triggered(bool)),this,SLOT(sourceButtonClicked()));
+    connect(actionSource, SIGNAL(toggled(bool)),this,SLOT(sourceButtonClicked()));
 
 //    connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
 //    connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
@@ -744,7 +744,7 @@ void MWindow::en_selectMode()
 {
     mview->disable_drawing();
 
-    actionSelect_Mode->setChecked(true);
+//    actionSelect_Mode->setChecked(true);
 
 //    actionWall->setChecked(false);
 //    actionDoor->setChecked(false);
@@ -920,7 +920,7 @@ void MWindow::sourceButtonClicked()
 
 
     // source dochwidget
-    if(sourceDockWidget == nullptr)
+    if(sourceDockWidget == nullptr && actionSource->isChecked())
     {
         sourceDockWidget = new QDockWidget(tr("Sources"), this);
         sourceDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
@@ -934,6 +934,6 @@ void MWindow::sourceButtonClicked()
         sourceDockWidget->close();
         sourceDockWidget = nullptr;
         sourceWidget = nullptr;
-        actionSelect_Mode->setChecked(true);
     }
 }
+
