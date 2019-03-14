@@ -2457,8 +2457,8 @@ void jpsGraphicsView::drawSource()
     } else
     {
         // if the mouse was pressed secondly of two times
-        JPSSource *sourceItem = new JPSSource(currentSource, this->scene());
-        this->scene()->update();
+        JPSSource *sourceItem = new JPSSource(currentSource); //JPSSource::sourceRectItem take over this
+        // rectangle
         currentSource = nullptr;
     }
 }

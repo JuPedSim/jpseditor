@@ -50,10 +50,10 @@ class jpsGraphicsView: public QGraphicsView {
 
 public:
     //Constructor
-    jpsGraphicsView(QWidget* parent = nullptr, jpsDatamanager* datamanager=nullptr);
+    explicit jpsGraphicsView(QWidget* parent = nullptr, jpsDatamanager* datamanager=nullptr);
 
     //Destructor
-    ~jpsGraphicsView();
+    ~jpsGraphicsView() override;
 
     QGraphicsScene *GetScene();
     const qreal& GetTranslationX() const;
@@ -194,12 +194,12 @@ public slots:
 
 protected:
     //Mouse events
-    virtual void mouseMoveEvent(QMouseEvent * mouseEvent);
+    void mouseMoveEvent(QMouseEvent * mouseEvent) override;
     //void paintEvent(QPaintEvent* event);
-    virtual void mousePressEvent(QMouseEvent *event);
-    virtual void mouseDoubleClickEvent(QMouseEvent *event);
-    virtual void wheelEvent(QWheelEvent *event);
-    virtual void mouseReleaseEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
     //Grid Mode
     void drawBackground(QPainter *painter, const QRectF &rect) override;
     void DrawLineGrid(QPainter *painter, const QRectF &rect);

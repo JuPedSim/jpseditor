@@ -31,7 +31,7 @@ class JPSSource : public QObject, public QGraphicsRectItem
                        WRITE setShearVertical)
 
 public:
-    explicit JPSSource(QGraphicsRectItem *rectItem = nullptr, QGraphicsScene *scene = nullptr);
+    explicit JPSSource(QGraphicsRectItem *sourceRectItem = nullptr);
 
     ~JPSSource();
 
@@ -169,6 +169,7 @@ private:
     double m_angle;
     double m_shearHorizontal;
     double m_shearVertical;
+
 };
 
 

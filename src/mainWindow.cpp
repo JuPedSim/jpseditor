@@ -39,6 +39,7 @@
 #include <QUrl>
 #include <QDebug>
 #include <QSettings>
+#include <QtWidgets>
 
 MWindow :: MWindow()
 {

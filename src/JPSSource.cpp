@@ -34,7 +34,7 @@
 #include <QKeyEvent>
 #include <QCursor>
 
-JPSSource::JPSSource(QGraphicsRectItem *rectItem, QGraphicsScene *scene)
+JPSSource::JPSSource(QGraphicsRectItem *sourceRectItem)
     : QObject(), QGraphicsRectItem(), m_resizing(false),
       m_angle(0.0), m_shearHorizontal(0.0), m_shearVertical(0.0)
 {
@@ -45,15 +45,10 @@ JPSSource::JPSSource(QGraphicsRectItem *rectItem, QGraphicsScene *scene)
              QGraphicsItem::ItemIsMovable|
              QGraphicsItem::ItemIsFocusable);
 
-    currentPen.setColor(Qt::darkRed);
-    currentPen.setCosmetic(true);
-    currentPen.setWidth(2);
-
-    setRect(rectItem->rect());
-    scene->clearSelection();
-    scene->addItem(this);
+    setRect(sourceRectItem->rect());
     setSelected(true);
     setFocus();
+
 
     caption="Source";
     agents_max = "0";
@@ -78,9 +73,7 @@ JPSSource::JPSSource(QGraphicsRectItem *rectItem, QGraphicsScene *scene)
 }
 
 JPSSource::~JPSSource()
-{
-
-}
+= default;
 
 void JPSSource::setId(int id) {
     JPSSource::id = id;
