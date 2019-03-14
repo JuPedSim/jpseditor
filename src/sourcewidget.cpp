@@ -3,17 +3,17 @@
 
 #include <QDebug>
 
-SourceWidget::SourceWidget(QWidget *parent, jpsGraphicsView *gview, jpsDatamanager *dmanager) :
+SourceWidget::SourceWidget(QWidget *parent, QGraphicsScene *scene, jpsDatamanager *dmanager) :
     QWidget(parent),
     ui(new Ui::SourceWidget)
 {
     ui->setupUi(this);
 
     datamanager=dmanager;
-    graphview=gview;
+    currentScene=scene;
 
-    connect(graphview, SIGNAL(newSourceAdd()), this, SLOT(showSource()));
-    connect(graphview, SIGNAL(newSourceAdd()), this, SLOT(showSourceInformation()));
+    connect(currentScene, SIGNAL(focusItemChanged()), this, SLOT(showSource()));
+    connect(currentScene, SIGNAL(focusItemChanged()), this, SLOT(showSourceInformation()));
     connect(ui->SourceListWidget,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showSourceInformation()));
     connect(ui->SourceListWidget,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(
             showSourceInformation()));
@@ -29,26 +29,26 @@ SourceWidget::~SourceWidget()
 
 void SourceWidget::showSource()
 {
-    qDebug(">> Enter SourceWidget::showSource");
+    /*qDebug(">> Enter SourceWidget::showSource");
     // update source list
     ui->SourceListWidget->clear();
+    QList<JPSSource *> sourcelist = currentScene->getSourceItems();
 
-    QList<JPSSource *> sourcelist = graphview->getSourceVector();
     for (int i=0; i<sourcelist.size(); i++)
     {
         ui->SourceListWidget->addItem(sourcelist[i]->getCaption());
     }
 
-    qDebug("<< Leave SourceWidget::showSource");
+    qDebug("<< Leave SourceWidget::showSource");*/
 }
 
 void SourceWidget::showSourceInformation()
 {
-    qDebug(">> Enter showSourceInfomation::showSourceInformation");
+    /*qDebug(">> Enter showSourceInfomation::showSourceInformation");
     if(ui->SourceListWidget->currentItem() != nullptr)
     {
         int crow = ui->SourceListWidget->currentRow();
-        auto source = graphview->getSourceVector()[crow];
+        auto source = currentScene->getSourceItems()[crow];
 
         ui->IDlineEdit->setText(QString::number(source->getId()));
         ui->agents_maxLineEdit->setText(source->getAgents_max());
@@ -77,14 +77,14 @@ void SourceWidget::showSourceInformation()
             ui->isSaveButton->setChecked(false);
         }
     }
-    qDebug("<< Leave showSourceInfomation::showSourceInformation");
+    qDebug("<< Leave showSourceInfomation::showSourceInformation");*/
 }
 
 void SourceWidget::applySourceInformation()
 {
-    qDebug(">> Enter SourceWidget::applySourceInformation");
+    /*qDebug(">> Enter SourceWidget::applySourceInformation");
     int crow = ui->SourceListWidget->currentRow();
-    auto source = graphview->getSourceVector()[crow];
+    auto source = currentScene->getSourceItems()[crow];
     if(ui->SourceListWidget->currentItem() != nullptr)
     {
         source->setId(ui->IDlineEdit->text().toInt());
@@ -114,5 +114,5 @@ void SourceWidget::applySourceInformation()
         }
     }
 
-    qDebug("<< Leave SourceWidget::applySourceInformation");
+    qDebug("<< Leave SourceWidget::applySourceInformation");*/
 }

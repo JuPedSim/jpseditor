@@ -2845,7 +2845,7 @@ void jpsDatamanager::writeSourceXML(QFile &file) {
     writeSourceHeader(stream);
 
     stream->writeStartElement("agents_sources");
-    sourcelist = _mView->getSourceVector();
+//    sourcelist = _mView->getSourceVector();
     writeSources(stream, sourcelist);
     stream->writeEndElement(); //end sources
 

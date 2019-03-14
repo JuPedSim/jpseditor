@@ -46,10 +46,15 @@ MWindow :: MWindow()
     //Signal/Slot
     //VBox= new QVBoxLayout;
 
-    mview = new jpsGraphicsView(this);
+    //Set-up view and scene
+    mview = new jpsGraphicsView;
+    mscene = new GraphicScene(this);
+    mview->setScene(mscene);
+    mview->setSceneRect(0, 0, 1920, 1080);
     setCentralWidget(mview);
-    this->setMaximumSize(1920,1080);
-    this->showMaximized();
+    mview->setMaximumSize(1920,1080);
+    mview->showMaximized();
+
 
     dmanager = new jpsDatamanager(this,mview);
     mview->SetDatamanager(dmanager);
@@ -912,13 +917,15 @@ void MWindow::sourceButtonClicked()
 {
     mview->enableSourceMode();
 
+
+    // source dochwidget
     if(sourceDockWidget == nullptr)
     {
         sourceDockWidget = new QDockWidget(tr("Sources"), this);
         sourceDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
         sourceDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-        sourceWidget = new SourceWidget(this,this->mview,this->dmanager);
+        sourceWidget = new SourceWidget(this, mview->scene(), this->dmanager);
         addDockWidget(Qt::RightDockWidgetArea, sourceDockWidget);
         sourceDockWidget->setWidget(sourceWidget);
     } else

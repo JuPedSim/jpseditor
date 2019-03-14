@@ -2,9 +2,9 @@
 #define SOURCEWIDGET_H
 
 #include <QWidget>
-#include "GraphicView.h"
+#include <QGraphicsScene>
 #include "datamanager.h"
-#include "GraphicView.h"
+#include "graphicscene.h"
 
 
 namespace Ui {
@@ -16,7 +16,8 @@ class SourceWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit SourceWidget(QWidget *parent = nullptr, jpsGraphicsView *gview = nullptr, jpsDatamanager *dmanager = nullptr);
+    explicit SourceWidget(QWidget *parent = nullptr, QGraphicsScene *scene = nullptr,
+                          jpsDatamanager *dmanager = nullptr);
     ~SourceWidget();
 
 protected slots:
@@ -27,7 +28,7 @@ protected slots:
 private:
     Ui::SourceWidget *ui;
     jpsDatamanager *datamanager;
-    jpsGraphicsView *graphview;
+    QGraphicsScene *currentScene;
 };
 
 #endif // SOURCEWIDGET_H

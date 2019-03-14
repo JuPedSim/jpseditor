@@ -25,6 +25,9 @@
 #include "graphicscene.h"
 #include <QVarLengthArray>
 #include <cmath>
+#include <QGraphicsItem>
+#include <QGraphicsRectItem>
+#include <QList>
 
 
 GraphicScene::GraphicScene(QObject *parent) : QGraphicsScene(parent)
@@ -127,6 +130,3 @@ void GraphicScene::DrawPointGrid(QPainter *painter, const QRectF &rect)
     painter->setPen(QPen(Qt::black,0));
     painter->drawPoints(points.data(), points.size());
 }
-
-
-

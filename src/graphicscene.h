@@ -27,6 +27,7 @@
 
 #include <QGraphicsScene>
 #include <QPainter>
+#include "jpssource.h"
 
 class GraphicScene : public QGraphicsScene
 {
@@ -45,10 +46,12 @@ public:
     void SetGrid(QString grid);
     void ChangeGridSize(const qreal& factor);
 
+
 protected:
     void drawBackground(QPainter *painter, const QRectF &rect) override;
     void DrawLineGrid(QPainter *painter, const QRectF &rect);
     void DrawPointGrid(QPainter *painter, const QRectF &rect);
+
 private:
     bool _gridmode;
     qreal _translationX;

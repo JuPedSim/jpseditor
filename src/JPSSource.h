@@ -5,28 +5,41 @@
 #ifndef JPSEDITOR_JPSSOURCE_H
 #define JPSEDITOR_JPSSOURCE_H
 
-#include <QGraphicsView>
-#include <QDebug>
-#include <QtGui>
-#include <QtCore>
+#include <QBrush>
 #include <QGraphicsRectItem>
+#include <QPen>
+#include "graphicscene.h"
+#include "elementtyps.h"
 
-class JPSSource
+
+class QGraphicsSceneMouseEvent;
+class QKeyEvent;
+
+class JPSSource : public QObject, public QGraphicsRectItem
 {
-public:
-    JPSSource(QGraphicsRectItem* source);
+    Q_OBJECT
 
-    JPSSource(int id);
+#ifdef ANIMATE_ALIGNMENT
+    Q_PROPERTY(QPointF pos READ pos WRITE setPos)
+#endif
+    Q_PROPERTY(QBrush brush READ brush WRITE setBrush)
+    Q_PROPERTY(QPen pen READ pen WRITE setPen)
+    Q_PROPERTY(double angle READ angle WRITE setAngle)
+    Q_PROPERTY(double shearHorizontal READ shearHorizontal
+                       WRITE setShearHorizontal)
+    Q_PROPERTY(double shearVertical READ shearVertical
+                       WRITE setShearVertical)
+
+public:
+    explicit JPSSource(QGraphicsRectItem *rectItem = nullptr, QGraphicsScene *scene = nullptr);
 
     ~JPSSource();
+
+    int type() const { return Type; }
 
     int getId() const;
 
     void setId(int id);
-
-    QGraphicsRectItem *getSourceRect() const;
-
-    void setSourceRect(QGraphicsRectItem *sourceRect);
 
     const QString &getFrequency() const;
 
@@ -100,10 +113,36 @@ public:
 
     void setBeSaved(bool beSaved);
 
-private:
-    int id;
-    QGraphicsRectItem *sourceRect;
+    enum {Type = SourceElementType};
 
+    double angle() const { return m_angle; }
+    double shearHorizontal() const { return m_shearHorizontal; }
+    double shearVertical() const { return m_shearVertical; }
+
+signals:
+    void dirty();
+
+public slots:
+    void setPen(const QPen &pen);
+    void setBrush(const QBrush &brush);
+    void setAngle(double angle);
+    void setShearHorizontal(double shearHorizontal)
+    { setShear(shearHorizontal, m_shearVertical); }
+    void setShearVertical(double shearVertical)
+    { setShear(m_shearHorizontal, shearVertical); }
+    void setShear(double shearHorizontal, double shearVertical);
+
+protected:
+    QVariant itemChange(GraphicsItemChange change,const QVariant &value);
+    void keyPressEvent(QKeyEvent *event);
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+
+
+private:
+    //JuPedSim attributes
+    int id;
     QString frequency;
     QString N_create;
     QString percent;
@@ -121,9 +160,17 @@ private:
     qreal x_max;
     qreal y_min;
     qreal y_max;
-
     bool beSaved;
+
+    //QGraphicsItem attributes
+    QPen currentPen;
+    void updateTransform();
+    bool m_resizing;
+    double m_angle;
+    double m_shearHorizontal;
+    double m_shearVertical;
 };
+
 
 
 #endif //JPSEDITOR_JPSSOURCE_H

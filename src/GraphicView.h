@@ -55,7 +55,7 @@ public:
     //Destructor
     ~jpsGraphicsView();
 
-    QGraphicsScene* GetScene();
+    QGraphicsScene *GetScene();
     const qreal& GetTranslationX() const;
     const qreal& GetTranslationY() const;
     const qreal& GetScaleF() const;
@@ -87,7 +87,7 @@ public:
     void en_disableLandmark();
     void enableSourceMode();
     void drawSource();
-    const QList<JPSSource *> &getSourceVector() const;
+
 
     // global functions
     qreal get_scale_f();
@@ -169,6 +169,13 @@ public:
     void UndoLineEdit(const int &lineID, const QLineF &old_line);
     void RedoLineEdit(const int &lineID, const QLineF &old_line);
 
+    //Grid Mode
+    void ChangeGridmode(const bool& stat);
+    bool GetGridmode() const;
+    void ChangeTranslation(qreal x, qreal y);
+    void SetGrid(QString grid);
+    void ChangeGridSize(const qreal& factor);
+
 public slots:
     //Landmarks/Regions
     void StatPositionDef();
@@ -193,6 +200,10 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
     virtual void wheelEvent(QWheelEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
+    //Grid Mode
+    void drawBackground(QPainter *painter, const QRectF &rect) override;
+    void DrawLineGrid(QPainter *painter, const QRectF &rect);
+    void DrawPointGrid(QPainter *painter, const QRectF &rect);
 
 protected slots:
     void changeStart_endpoint(bool state);
@@ -212,7 +223,6 @@ private:
     //QList<QList<jpsLineItem*> *> mainlist;
     QPointF pos;
     //QPointF* intersection_point;
-    GraphicScene* Scene;
     bool midbutton_hold;
     bool leftbutton_hold;
     qreal translation_x;
@@ -234,7 +244,6 @@ private:
     qreal catch_radius;
     qreal _scaleFactor;
     qreal gl_scale_f;
-    qreal _gridSize;
     bool point_tracked;
     QGraphicsItem* current_rect;
     QGraphicsRectItem* currentSelectRect;
@@ -254,9 +263,6 @@ private:
 
     //Source
     QGraphicsRectItem *currentSource;
-    void addSourceInData(QGraphicsRectItem *source);
-    int sourceCounter;
-    QList<JPSSource *> sourceVector;
 
 
     //Landmark and waypoints
@@ -274,7 +280,7 @@ private:
     QGraphicsPixmapItem* gridmap;
     bool _statLineEdit;
     bool lines_collided;
-    bool _gridmode;
+
 
     //Undo/Redo
     ActionStack _undoStack;
@@ -282,6 +288,13 @@ private:
 
     //View
     bool statzoomwindows;
+
+    //Grid Mode
+    qreal _gridSize;
+    bool _gridmode;
+    qreal _translationX;
+    qreal _translationY;
+    QString _statgrid;
 
 signals:
     void mouse_moved();

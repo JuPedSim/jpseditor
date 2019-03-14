@@ -27,11 +27,34 @@
  * It contains a GraphicsRectItem as geometry, and others attributes
  * It will be called in graphicview and contaioned in sourceVector, which is a QList<JPSSource*>
  * */
-#include "jpssource.h"
 
-JPSSource::JPSSource(QGraphicsRectItem *source)
+#include "jpssource.h"
+#include "global.h"
+#include <QGraphicsSceneMouseEvent>
+#include <QKeyEvent>
+#include <QCursor>
+
+JPSSource::JPSSource(QGraphicsRectItem *rectItem, QGraphicsScene *scene)
+    : QObject(), QGraphicsRectItem(), m_resizing(false),
+      m_angle(0.0), m_shearHorizontal(0.0), m_shearVertical(0.0)
 {
-    sourceRect = source;
+    setFlags(QGraphicsItem::ItemIsSelectable|
+             #if QT_VERSION >= 0x040600
+             QGraphicsItem::ItemSendsGeometryChanges|
+             #endif
+             QGraphicsItem::ItemIsMovable|
+             QGraphicsItem::ItemIsFocusable);
+
+    currentPen.setColor(Qt::darkRed);
+    currentPen.setCosmetic(true);
+    currentPen.setWidth(2);
+
+    setRect(rectItem->rect());
+    scene->clearSelection();
+    scene->addItem(this);
+    setSelected(true);
+    setFocus();
+
     caption="Source";
     agents_max = "0";
     frequency = "0";
@@ -45,11 +68,13 @@ JPSSource::JPSSource(QGraphicsRectItem *source)
     time_max = "0";
     time_min = "0";
     greedy = "false";
-    x_min = sourceRect->rect().bottomLeft().x();
-    y_min = sourceRect->rect().bottomLeft().y();
-    x_max = sourceRect->rect().topRight().x();
-    y_max = sourceRect->rect().topRight().y();
     beSaved = true;
+
+    x_min = this->rect().bottomLeft().x();
+    y_min = this->rect().bottomLeft().y();
+    x_max = this->rect().topRight().x();
+    y_max = this->rect().topRight().y();
+
 }
 
 JPSSource::~JPSSource()
@@ -59,15 +84,6 @@ JPSSource::~JPSSource()
 
 void JPSSource::setId(int id) {
     JPSSource::id = id;
-}
-
-
-QGraphicsRectItem *JPSSource::getSourceRect() const {
-    return sourceRect;
-}
-
-void JPSSource::setSourceRect(QGraphicsRectItem *sourceRect) {
-    JPSSource::sourceRect = sourceRect;
 }
 
 const QString &JPSSource::getFrequency() const {
@@ -217,6 +233,154 @@ bool JPSSource::isBeSaved() const {
 void JPSSource::setBeSaved(bool beSaved) {
     JPSSource::beSaved = beSaved;
 }
+
+// For drawing
+void JPSSource::setPen(const QPen &pen_)
+{
+    if (isSelected() && pen_ != pen()) {
+        QGraphicsRectItem::setPen(pen_);
+        emit dirty();
+    }
+}
+
+
+void JPSSource::setBrush(const QBrush &brush_)
+{
+    if (isSelected() && brush_ != brush()) {
+        QGraphicsRectItem::setBrush(brush_);
+        emit dirty();
+    }
+}
+
+
+void JPSSource::setAngle(double angle)
+{
+    if (isSelected() && !qFuzzyCompare(m_angle, angle)) {
+        m_angle = angle;
+        updateTransform();
+    }
+}
+
+
+void JPSSource::setShear(double shearHorizontal, double shearVertical)
+{
+    if (isSelected() &&
+        (!qFuzzyCompare(m_shearHorizontal, shearHorizontal) ||
+         !qFuzzyCompare(m_shearVertical, shearVertical))) {
+        m_shearHorizontal = shearHorizontal;
+        m_shearVertical = shearVertical;
+        updateTransform();
+    }
+}
+
+
+void JPSSource::updateTransform()
+{
+    QTransform transform;
+    transform.shear(m_shearHorizontal, m_shearVertical);
+    transform.rotate(m_angle);
+    setTransform(transform);
+}
+
+
+QVariant JPSSource::itemChange(GraphicsItemChange change,
+                             const QVariant &value)
+{
+    if (isDirtyChange(change))
+            emit dirty();
+    return QGraphicsRectItem::itemChange(change, value);
+}
+
+
+void JPSSource::keyPressEvent(QKeyEvent *event)
+{
+    if (event->modifiers() & Qt::ShiftModifier ||
+        event->modifiers() & Qt::ControlModifier) {
+        bool move = event->modifiers() & Qt::ControlModifier;
+        bool changed = true;
+        double dx1 = 0.0;
+        double dy1 = 0.0;
+        double dx2 = 0.0;
+        double dy2 = 0.0;
+        switch (event->key()) {
+            case Qt::Key_Left:
+                if (move)
+                    dx1 = -1.0;
+                dx2 = -1.0;
+                break;
+            case Qt::Key_Right:
+                if (move)
+                    dx1 = 1.0;
+                dx2 = 1.0;
+                break;
+            case Qt::Key_Up:
+                if (move)
+                    dy1 = -1.0;
+                dy2 = -1.0;
+                break;
+            case Qt::Key_Down:
+                if (move)
+                    dy1 = 1.0;
+                dy2 = 1.0;
+                break;
+            default:
+                changed = false;
+        }
+        if (changed) {
+            setRect(rect().adjusted(dx1, dy1, dx2, dy2));
+            event->accept();
+            emit dirty();
+            return;
+        }
+    }
+    QGraphicsRectItem::keyPressEvent(event);
+}
+
+
+void JPSSource::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (event->modifiers() & Qt::ShiftModifier) {
+        m_resizing = true;
+        setCursor(Qt::SizeAllCursor);
+    }
+    else
+        QGraphicsRectItem::mousePressEvent(event);
+}
+
+
+void JPSSource::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (m_resizing) {
+#ifdef ALTERNATIVE_RESIZING
+        qreal dx = event->pos().x() - event->lastPos().x();
+        qreal dy = event->pos().y() - event->lastPos().y();
+        setRect(rect().adjusted(0, 0, dx, dy).normalized());
+#else
+        QRectF rectangle(rect());
+        if (event->pos().x() < rectangle.x())
+            rectangle.setBottomLeft(event->pos());
+        else
+            rectangle.setBottomRight(event->pos());
+        setRect(rectangle);
+#endif
+        scene()->update();
+    }
+    else
+        QGraphicsRectItem::mouseMoveEvent(event);
+}
+
+
+void JPSSource::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (m_resizing) {
+        m_resizing = false;
+        setCursor(Qt::ArrowCursor);
+        emit dirty();
+    }
+    else
+        QGraphicsRectItem::mouseReleaseEvent(event);
+}
+
 
 
 
