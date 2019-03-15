@@ -33,6 +33,7 @@
 #include <memory>
 #include <QMessageBox>
 #include "datamanager.h"
+#include "elementtypes.h"
 
 
 
@@ -117,7 +118,10 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     _gridmode=false;
     _statgrid="Line";
     _gridSize=1.0;
-    
+
+    //Source
+//    sourceGroup = new QGraphicsItemGroup;
+
 }
 
 jpsGraphicsView::~jpsGraphicsView()
@@ -2459,6 +2463,9 @@ void jpsGraphicsView::drawSource()
     {
         // if the mouse was pressed secondly of two times
         JPSSource *sourceItem = new JPSSource(currentSource);
+        this->scene()->addItem(sourceItem);
+        this->scene()->removeItem(currentSource);
+        delete currentSource;
         currentSource = nullptr; // move pointer from current QGraphicRectItem
     }
 }
@@ -2548,3 +2555,22 @@ void jpsGraphicsView::DrawPointGrid(QPainter *painter, const QRectF &rect)
     painter->setPen(QPen(Qt::black,0));
     painter->drawPoints(points.data(), points.size());
 }
+
+QList<JPSSource *> jpsGraphicsView::getSources() {
+/*    QList<JPSSource *> sources;
+
+    foreach(QGraphicsItem *item, items())
+    {
+        switch (item->type()) {
+            case SourceElementType:
+                sources.app
+
+        }
+    }
+
+    return sources;*/
+}
+
+//QGraphicsItemGroup *jpsGraphicsView::getSourceGroup() const {
+//    return sourceGroup;
+//}

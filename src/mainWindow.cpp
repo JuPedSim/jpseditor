@@ -926,7 +926,7 @@ void MWindow::sourceButtonClicked()
         sourceDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
         sourceDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-        sourceWidget = new SourceWidget(this, mview->scene(), this->dmanager);
+        sourceWidget = new SourceWidget(this, mview, this->dmanager);
         addDockWidget(Qt::RightDockWidgetArea, sourceDockWidget);
         sourceDockWidget->setWidget(sourceWidget);
     } else

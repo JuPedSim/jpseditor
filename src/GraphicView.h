@@ -175,6 +175,8 @@ public:
     void SetGrid(QString grid);
     void ChangeGridSize(const qreal& factor);
 
+    QList<JPSSource *> getSources();
+
 public slots:
     //Landmarks/Regions
     void StatPositionDef();
@@ -262,6 +264,10 @@ private:
 
     //Source
     QGraphicsRectItem *currentSource;
+//    QGraphicsItemGroup *sourceGroup;
+//    QGraphicsItemGroup *getSourceGroup() const;
+
+private:
 
     //Landmark and waypoints
     jpsLandmark* markedLandmark;

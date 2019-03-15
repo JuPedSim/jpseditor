@@ -3,18 +3,20 @@
 
 #include <QDebug>
 
-SourceWidget::SourceWidget(QWidget *parent, QGraphicsScene *scene, jpsDatamanager *dmanager) :
+
+SourceWidget::SourceWidget(QWidget *parent, jpsGraphicsView *view, jpsDatamanager *dmanager) :
     QWidget(parent),
     ui(new Ui::SourceWidget)
 {
     ui->setupUi(this);
 
-    connect(scene, SIGNAL(focusItemChanged()), this, SLOT(showSource()));
-    connect(scene, SIGNAL(focusItemChanged()), this, SLOT(showSourceInformation()));
-    connect(ui->SourceListWidget,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showSourceInformation()));
+    currentView = view;
+
+    connect(ui->SourceListWidget,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showSource()));
     connect(ui->SourceListWidget,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(
             showSourceInformation()));
     connect(ui->applyButton,SIGNAL(clicked(bool)),this,SLOT(applySourceInformation()));
+    connect(ui->applyButton,SIGNAL(clicked(bool)),this,SLOT(showSource()));
 
     showSource();
 }
@@ -26,17 +28,25 @@ SourceWidget::~SourceWidget()
 
 void SourceWidget::showSource()
 {
-/*    qDebug(">> Enter SourceWidget::showSource");
+    qDebug(">> Enter SourceWidget::showSource");
     // update source list
     ui->SourceListWidget->clear();
-    QList<JPSSource *> sourcelist = currentScene->getSourceItems();
+//    QList<QGraphicsItem *> sourcelist = currentView;
 
-    for (int i=0; i<sourcelist.size(); i++)
-    {
-        ui->SourceListWidget->addItem(sourcelist[i]->getCaption());
+    foreach(QGraphicsItem *item, currentView->items()){
+            switch (item->type()) {
+                case  SourceElementType:
+                {
+                    auto *source = qgraphicsitem_cast<JPSSource *>(item);
+                    ui->SourceListWidget->addItem(source->getCaption());
+                    break;
+                }
+                default:
+                    break;
+            }
     }
 
-    qDebug("<< Leave SourceWidget::showSource");*/
+    qDebug("<< Leave SourceWidget::showSource");
 }
 
 void SourceWidget::showSourceInformation()

@@ -9,7 +9,7 @@
 #include <QGraphicsRectItem>
 #include <QPen>
 #include "graphicscene.h"
-#include "elementtyps.h"
+#include "elementtypes.h"
 
 
 class QGraphicsSceneMouseEvent;
@@ -34,6 +34,8 @@ public:
     explicit JPSSource(QGraphicsRectItem *sourceRectItem = nullptr);
 
     ~JPSSource();
+
+    enum {Type = SourceElementType};
 
     int type() const { return Type; }
 
@@ -113,7 +115,7 @@ public:
 
     void setBeSaved(bool beSaved);
 
-    enum {Type = SourceElementType};
+
 
     double angle() const { return m_angle; }
     double shearHorizontal() const { return m_shearHorizontal; }
