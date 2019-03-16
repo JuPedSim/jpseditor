@@ -127,6 +127,8 @@ signals:
 public slots:
     void setPen(const QPen &pen);
     void setBrush(const QBrush &brush);
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+                          QWidget *widget);
     void setAngle(double angle);
     void setShearHorizontal(double shearHorizontal)
     { setShear(shearHorizontal, m_shearVertical); }

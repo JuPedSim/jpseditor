@@ -2463,6 +2463,7 @@ void jpsGraphicsView::drawSource()
     {
         // if the mouse was pressed secondly of two times
         JPSSource *sourceItem = new JPSSource(currentSource);
+
         this->scene()->addItem(sourceItem);
         this->scene()->removeItem(currentSource);
         delete currentSource;

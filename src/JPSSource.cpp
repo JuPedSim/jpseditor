@@ -39,18 +39,14 @@ JPSSource::JPSSource(QGraphicsRectItem *sourceRectItem)
       m_angle(0.0), m_shearHorizontal(0.0), m_shearVertical(0.0)
 {
     setFlags(QGraphicsItem::ItemIsSelectable|
-             #if QT_VERSION >= 0x040600
              QGraphicsItem::ItemSendsGeometryChanges|
-             #endif
              QGraphicsItem::ItemIsMovable|
              QGraphicsItem::ItemIsFocusable);
 
     rectItem = sourceRectItem;
 
     setRect(rectItem->rect());
-    setSelected(true);
     setFocus();
-
 
     caption="Source";
     agents_max = "0";
@@ -376,7 +372,13 @@ void JPSSource::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         QGraphicsRectItem::mouseReleaseEvent(event);
 }
 
-
+void JPSSource::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+                              QWidget * /* widget */)
+	{
+        QPen pen(Qt::darkRed,0);
+        painter->setPen(pen);
+        painter->drawRect(this->rect());
+	}
 
 
 
