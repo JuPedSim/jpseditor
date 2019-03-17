@@ -2463,8 +2463,8 @@ void jpsGraphicsView::drawSource()
     {
         // if the mouse was pressed secondly of two times
         JPSSource *sourceItem = new JPSSource(currentSource);
-
         this->scene()->addItem(sourceItem);
+
         this->scene()->removeItem(currentSource);
         delete currentSource;
         currentSource = nullptr; // move pointer from current QGraphicRectItem
@@ -2569,7 +2569,8 @@ QList<JPSSource *> jpsGraphicsView::getSources() {
         }
     }
 
-    return sources;*/
+    return sources;
+*/
 }
 
 //QGraphicsItemGroup *jpsGraphicsView::getSourceGroup() const {

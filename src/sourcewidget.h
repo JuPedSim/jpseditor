@@ -1,7 +1,8 @@
 #ifndef SOURCEWIDGET_H
 #define SOURCEWIDGET_H
 
-#include <QWidget>
+#include <QtGui>
+#include <QtWidgets>
 #include <QGraphicsScene>
 #include "datamanager.h"
 #include "graphicscene.h"

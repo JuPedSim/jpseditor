@@ -20,13 +20,12 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
- **/
-
-/*
+ *
+ * \section Description
  * This class define a element - source - in JuPedSim.
- * It contains a GraphicsRectItem as geometry, and others attributes
- * It will be called in graphicview and contaioned in sourceVector, which is a QList<JPSSource*>
- * */
+ * It contains a GraphicsRectItem as geometry, and others attributes for jpscore
+ *
+ **/
 
 #include "jpssource.h"
 #include "global.h"
@@ -43,11 +42,14 @@ JPSSource::JPSSource(QGraphicsRectItem *sourceRectItem)
              QGraphicsItem::ItemIsMovable|
              QGraphicsItem::ItemIsFocusable);
 
+    //take over memory that point to currentSource,
+    //because currentSource will be deleted after instantiation of JPSSource.
     rectItem = sourceRectItem;
 
+    //Set-up rectangle
     setRect(rectItem->rect());
-    setFocus();
 
+    //Set-up default values of a JPSsource
     caption="Source";
     agents_max = "0";
     frequency = "0";
@@ -372,10 +374,19 @@ void JPSSource::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         QGraphicsRectItem::mouseReleaseEvent(event);
 }
 
+
+/*
+    \since 0.8.8
+
+    Hide paint() in father class QGraphicsRectItem, change the style of rectangle.
+
+
+*/
 void JPSSource::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                               QWidget * /* widget */)
 	{
         QPen pen(Qt::darkRed,0);
+
         painter->setPen(pen);
         painter->drawRect(this->rect());
 	}

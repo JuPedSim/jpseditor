@@ -3,7 +3,6 @@
 
 #include <QDebug>
 
-
 SourceWidget::SourceWidget(QWidget *parent, jpsGraphicsView *view, jpsDatamanager *dmanager) :
     QWidget(parent),
     ui(new Ui::SourceWidget)
@@ -12,11 +11,10 @@ SourceWidget::SourceWidget(QWidget *parent, jpsGraphicsView *view, jpsDatamanage
 
     currentView = view;
 
-    connect(ui->SourceListWidget,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showSource()));
-    connect(ui->SourceListWidget,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(
+    connect(ui->sourceListWidget,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showSource()));
+    connect(ui->sourceListWidget,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,SLOT(
             showSourceInformation()));
     connect(ui->applyButton,SIGNAL(clicked(bool)),this,SLOT(applySourceInformation()));
-    connect(ui->applyButton,SIGNAL(clicked(bool)),this,SLOT(showSource()));
 
     showSource();
 }
@@ -30,7 +28,7 @@ void SourceWidget::showSource()
 {
     qDebug(">> Enter SourceWidget::showSource");
     // update source list
-    ui->SourceListWidget->clear();
+    ui->sourceListWidget->clear();
 //    QList<QGraphicsItem *> sourcelist = currentView;
 
     foreach(QGraphicsItem *item, currentView->items()){
@@ -38,7 +36,7 @@ void SourceWidget::showSource()
                 case  SourceElementType:
                 {
                     auto *source = qgraphicsitem_cast<JPSSource *>(item);
-                    ui->SourceListWidget->addItem(source->getCaption());
+                    ui->sourceListWidget->addItem(source->getCaption());
                     break;
                 }
                 default:
