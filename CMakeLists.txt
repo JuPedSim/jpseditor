@@ -120,9 +120,10 @@ set( SRCS
     src/jpssource.cpp
     src/sourcewidget.cpp
     src/global.cpp
+    src/jpselementlistmodel.cpp
 
 
-        dxflib/src/dl_writer_ascii.cpp
+    dxflib/src/dl_writer_ascii.cpp
     dxflib/src/dl_dxf.cpp
     src/UndoFramework/action.cpp
     src/UndoFramework/actionstack.cpp
@@ -160,8 +161,9 @@ set( HDR
     src/sourcewidget.h
     src/elementtype.h
     src/global.h
+    src/jpselementlistmodel.h
 
-        dxflib/src/dl_writer_ascii.h
+    dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h
     dxflib/src/dl_global.h
     dxflib/src/dl_extrusion.h
