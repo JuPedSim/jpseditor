@@ -54,7 +54,7 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 
 
     roomlist= QList<jpsRoom *> ();
-
+    sourcelist = view->getSources();
 }
 
 jpsDatamanager::~jpsDatamanager()

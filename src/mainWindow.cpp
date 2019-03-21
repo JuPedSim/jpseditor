@@ -56,7 +56,6 @@ MWindow :: MWindow()
     mview->setMaximumSize(1920,1080);
     mview->showMaximized();
 
-
     dmanager = new jpsDatamanager(this,mview);
     mview->SetDatamanager(dmanager);
 

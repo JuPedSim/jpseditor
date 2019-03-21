@@ -1,5 +1,5 @@
 /**
- * \file       jpssource.h
+ * \file       jpssource.cpp
  * \date        Mar-13-2019
  * \version     v0.8.8
  * \author      Tao Zhong
@@ -376,11 +376,9 @@ void JPSSource::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 
 /*
-    \since 0.8.8
+    since 0.8.8
 
     Hide paint() in father class QGraphicsRectItem, change the style of rectangle.
-
-
 */
 void JPSSource::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                               QWidget * /* widget */)

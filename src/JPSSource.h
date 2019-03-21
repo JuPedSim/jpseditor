@@ -146,8 +146,10 @@ signals:
     void dirty();
 
 public slots:
-    void setPen(const QPen &pen);
+    //hide non-virtual funcs from QAbstractGraphicsShapeItem
+    void setPen(const QPen &pen) ;
     void setBrush(const QBrush &brush);
+
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                           QWidget *widget);
     void setAngle(double angle);

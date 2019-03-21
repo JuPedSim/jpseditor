@@ -2462,12 +2462,13 @@ void jpsGraphicsView::drawSource()
     } else
     {
         // if the mouse was pressed secondly of two times
-        JPSSource *sourceItem = new JPSSource(currentSource);
+        auto *sourceItem = new JPSSource(currentSource);
         this->scene()->addItem(sourceItem);
 
+        // currentSource shouldn't be kept in scene, when source is saved
         this->scene()->removeItem(currentSource);
         delete currentSource;
-        currentSource = nullptr; // move pointer from current QGraphicRectItem
+        currentSource = nullptr;
     }
 }
 
@@ -2557,20 +2558,29 @@ void jpsGraphicsView::DrawPointGrid(QPainter *painter, const QRectF &rect)
     painter->drawPoints(points.data(), points.size());
 }
 
+/*
+    since 0.8.8
+
+    Will be used for showing sources in widget, sources list is saved in datamanager
+ */
 QList<JPSSource *> jpsGraphicsView::getSources() {
-/*    QList<JPSSource *> sources;
+    QList<JPSSource *> sources;
 
     foreach(QGraphicsItem *item, items())
     {
         switch (item->type()) {
-            case SourceElementType:
-                sources.app
-
+            case  SourceElementType:
+            {
+                auto *source = qgraphicsitem_cast<JPSSource *>(item);
+                sources.append(source);
+                break;
+            }
+            default:
+                break;
         }
     }
 
     return sources;
-*/
 }
 
 //QGraphicsItemGroup *jpsGraphicsView::getSourceGroup() const {
