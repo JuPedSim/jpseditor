@@ -312,8 +312,7 @@ signals:
     void DefConnection1Completed();
     void DefConnection2Completed();
     void RegionDefCompleted();
-    void newSourceAdd();
-
+    void sourceAdded();
     //void DoubleClick();
 
 };

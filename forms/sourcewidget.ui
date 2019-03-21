@@ -51,7 +51,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QListWidget" name="sourceListWidget"/>
+       <widget class="QListView" name="sourcesListView"/>
       </item>
       <item>
        <widget class="QRadioButton" name="isSaveButton">

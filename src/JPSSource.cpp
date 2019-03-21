@@ -143,7 +143,7 @@ void JPSSource::setGroup_id(const QString &group_id) {
     JPSSource::group_id = group_id;
 }
 
-const QString &JPSSource::getCaption() const {
+const QString &JPSSource::getCaption() const{
     return caption;
 }
 

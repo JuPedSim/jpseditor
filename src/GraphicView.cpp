@@ -2464,6 +2464,7 @@ void jpsGraphicsView::drawSource()
         // if the mouse was pressed secondly of two times
         auto *sourceItem = new JPSSource(currentSource);
         this->scene()->addItem(sourceItem);
+        emit sourceAdded();
 
         // currentSource shouldn't be kept in scene, when source is saved
         this->scene()->removeItem(currentSource);
@@ -2564,6 +2565,7 @@ void jpsGraphicsView::DrawPointGrid(QPainter *painter, const QRectF &rect)
     Will be used for showing sources in widget, sources list is saved in datamanager
  */
 QList<JPSSource *> jpsGraphicsView::getSources() {
+
     QList<JPSSource *> sources;
 
     foreach(QGraphicsItem *item, items())
