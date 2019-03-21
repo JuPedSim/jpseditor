@@ -36,16 +36,16 @@
 #include <QLineEdit>
 #include <QDockWidget>
 #include "ui_mainwindow.h"
-#include "roomwidget.h"
-#include "widgetlandmark.h"
-#include "widgetsettings.h"
+#include "src/widgets/roomwidget.h"
+#include "src/widgets/widgetlandmark.h"
+#include "src/widgets/widgetsettings.h"
 #include "GraphicView.h"
 #include "datamanager.h"
 #include "rooms.h"
-#include "settingdialog.h"
-#include "inifilewidget.h"
-#include "snappingoptions.h"
-#include "sourcewidget.h"
+#include "src/widgets/settingdialog.h"
+#include "src/widgets/inifilewidget.h"
+#include "src/widgets/snappingoptions.h"
+#include "src/widgets/sourcewidget.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 

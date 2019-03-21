@@ -102,7 +102,7 @@ set( SRCS
     src/main.cpp
     src/GraphicView.cpp
     src/graphicscene.cpp
-    src/roomwidget.cpp
+        src/widgets/roomwidget.cpp
     src/rooms.cpp
     src/datamanager.cpp
     src/jpscrossing.cpp
@@ -110,17 +110,18 @@ set( SRCS
     src/jpsexit.cpp
     src/jpsobstacle.cpp
     src/jpslandmark.cpp
-    src/widgetlandmark.cpp
-    src/widgetsettings.cpp
+        src/widgets/widgetlandmark.cpp
+        src/widgets/widgetsettings.cpp
     src/jpsconnection.cpp
     src/jpsregion.cpp
-    src/settingdialog.cpp
-    src/inifilewidget.cpp
-    src/snappingoptions.cpp
+        src/widgets/settingdialog.cpp
+        src/widgets/inifilewidget.cpp
+        src/widgets/snappingoptions.cpp
     src/jpssource.cpp
-    src/sourcewidget.cpp
+        src/widgets/sourcewidget.cpp
     src/global.cpp
-    src/jpselementlistmodel.cpp
+        src/models/jpselementlistmodel.cpp
+        src/models/jpssourcelistmodel.cpp
 
 
     dxflib/src/dl_writer_ascii.cpp
@@ -141,7 +142,7 @@ set( HDR
     src/mainWindow.h
     src/GraphicView.h
     src/graphicscene.h
-    src/roomwidget.h
+        src/widgets/roomwidget.h
     src/rooms.h
     src/datamanager.h
     src/jpscrossing.h
@@ -149,19 +150,20 @@ set( HDR
     src/jpsexit.h
     src/jpsobstacle.h
     src/jpslandmark.h
-    src/widgetlandmark.h
-    src/widgetsettings.h
+        src/widgets/widgetlandmark.h
+        src/widgets/widgetsettings.h
     src/jpsconnection.h
     src/jpsregion.h
     src/dtrace.h
-    src/settingdialog.h
-    src/inifilewidget.h
-    src/snappingoptions.h
+        src/widgets/settingdialog.h
+        src/widgets/inifilewidget.h
+        src/widgets/snappingoptions.h
     src/jpsource.h
-    src/sourcewidget.h
+        src/widgets/sourcewidget.h
     src/elementtype.h
     src/global.h
-    src/jpselementlistmodel.h
+      src/models/jpselementlistmodel.h
+      src/models/jpssourcelistmodel.h
 
     dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h
