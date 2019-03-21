@@ -2464,7 +2464,7 @@ void jpsGraphicsView::drawSource()
         // if the mouse was pressed secondly of two times
         auto *sourceItem = new JPSSource(currentSource);
         this->scene()->addItem(sourceItem);
-        emit sourceAdded();
+        emit sourcesChanged();
 
         // currentSource shouldn't be kept in scene, when source is saved
         this->scene()->removeItem(currentSource);

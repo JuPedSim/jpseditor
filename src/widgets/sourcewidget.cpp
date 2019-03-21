@@ -45,10 +45,12 @@ SourceWidget::SourceWidget(QWidget *parent, jpsGraphicsView *view, jpsDatamanage
     model = new JPSSourceListModel();
     model->setSourceList(currentView->getSources());
     ui->sourcesListView->setModel(model);
-    ui->sourcesListView->setEditTriggers(QAbstractItemView::AnyKeyPressed | QAbstractItemView::DoubleClicked);
+    ui->sourcesListView->setEditTriggers(QAbstractItemView::CurrentChanged |QAbstractItemView::DoubleClicked );
     showSource();
 
     connect(currentView, SIGNAL(sourcesChanged()), this, SLOT(showSource()));
+    connect(ui->sourcesListView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(showSourceInformation()));
+    connect(ui->applyButton, SIGNAL(clicked(bool)),this, SLOT(applySourceInformation()));
 }
 
 SourceWidget::~SourceWidget()
@@ -58,18 +60,19 @@ SourceWidget::~SourceWidget()
 
 void SourceWidget::showSource()
 {
-    qDebug("%d", currentView->getSources().size());
     model->setSourceList(currentView->getSources());
     ui->sourcesListView->setModel(model);
 }
 
 void SourceWidget::showSourceInformation()
 {
-    /*qDebug(">> Enter showSourceInfomation::showSourceInformation");
-    if(ui->SourceListWidget->currentItem() != nullptr)
+    qDebug(">> Enter showSourceInfomation::showSourceInformation");
+    if(ui->sourcesListView->currentIndex().isValid())
     {
-        int crow = ui->SourceListWidget->currentRow();
-        auto source = currentScene->getSourceItems()[crow];
+//        ui->sourcesListView->setFocus(Qt::MouseFocusReason);
+
+        QModelIndex index = ui->sourcesListView->currentIndex();
+        auto source = currentView->getSources().at(index.row());
 
         ui->IDlineEdit->setText(QString::number(source->getId()));
         ui->agents_maxLineEdit->setText(source->getAgents_max());
@@ -98,15 +101,16 @@ void SourceWidget::showSourceInformation()
             ui->isSaveButton->setChecked(false);
         }
     }
-    qDebug("<< Leave showSourceInfomation::showSourceInformation");*/
+    qDebug("<< Leave showSourceInfomation::showSourceInformation");
 }
 
 void SourceWidget::applySourceInformation()
 {
-    /*qDebug(">> Enter SourceWidget::applySourceInformation");
-    int crow = ui->SourceListWidget->currentRow();
-    auto source = currentScene->getSourceItems()[crow];
-    if(ui->SourceListWidget->currentItem() != nullptr)
+    qDebug(">> Enter SourceWidget::applySourceInformation");
+    QModelIndex index = ui->sourcesListView->currentIndex();
+    auto source = currentView->getSources().at(index.row());
+
+    if(ui->sourcesListView->currentIndex().isValid())
     {
         source->setId(ui->IDlineEdit->text().toInt());
         source->setAgents_max(ui->agents_maxLineEdit->text());
@@ -135,5 +139,5 @@ void SourceWidget::applySourceInformation()
         }
     }
 
-    qDebug("<< Leave SourceWidget::applySourceInformation");*/
+    qDebug("<< Leave SourceWidget::applySourceInformation");
 }
