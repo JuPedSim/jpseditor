@@ -74,3 +74,4 @@ int JPSElementListModel::rowCount(const QModelIndex &parent) const
     return lst.count();
 }
 
+

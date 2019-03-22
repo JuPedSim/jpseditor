@@ -50,6 +50,11 @@ JPSSourceListModel::JPSSourceListModel(QList<JPSSource *> &lst, QObject *parent)
 }
 
 /*!
+ When subclassing QAbstractListModel,
+ you must provide implementations of the rowCount() and data() functions.
+*/
+
+/*!
     Returns data for the specified role, from the item with the given index.
 
     If the view requests an invalid index, an invalid variant is returned.
@@ -65,26 +70,6 @@ QVariant JPSSourceListModel::data(const QModelIndex &index, int role) const {
         return lst.at(index.row())->getCaption();
 
     return QVariant();
-}
-
-/*!
-    Sets the model's internal sources list to sources. The model will
-    notify any attached views that its underlying data has changed.
-*/
-
-void JPSSourceListModel::setSourceList(QList<JPSSource *> sources)
-{
-    beginResetModel();
-    lst = sources;
-    endResetModel();
-}
-
-/*!
-    Returns the sources list used by the model to store data.
-*/
-
-QList<JPSSource *> JPSSourceListModel::sourcesList() {
-    return lst;
 }
 
 /*!
@@ -107,4 +92,70 @@ int JPSSourceListModel::rowCount(const QModelIndex &parent) const
         return 0;
 
     return lst.count();
+}
+
+/*!
+ For editable list models, you must also provide an implementation of setData(),
+ and implement the flags() function so that it returns a value containing Qt::ItemIsEditable.
+*/
+
+
+/*!
+    Sets the data for the specified role in the item with the given
+    index in the model, to the provided \a value.
+
+    The dataChanged() signal is emitted if the item is changed.
+*/
+
+bool JPSSourceListModel::setData(const QModelIndex &index, const QVariant &value, int role) {
+
+    if (index.row() >= 0 && index.row() < lst.size()
+        && (role == Qt::EditRole || role == Qt::DisplayRole))
+    {
+        const QString valueString = value.toString();
+
+        if (lst.at(index.row())->getCaption() == valueString)
+            return true;
+
+        lst.at(index.row())->setCaption(valueString);
+        emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+        return true;
+    }
+
+    return false;
+}
+
+/*!
+    Returns the flags for the item with the given index.
+
+    Valid items are enabled, selectable, editable, drag enabled and drop enabled.
+*/
+
+
+Qt::ItemFlags JPSSourceListModel::flags(const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return JPSElementListModel::flags(index) | Qt::ItemIsDropEnabled;
+
+    return JPSElementListModel::flags(index) | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+}
+
+/*!
+    Sets the model's internal sources list to sources. The model will
+    notify any attached views that its underlying data has changed.
+*/
+
+void JPSSourceListModel::setSourceList(QList<JPSSource *> sources)
+{
+    beginResetModel();
+    lst = sources;
+    endResetModel();
+}
+
+/*!
+    Returns the sources list used by the model to store data.
+*/
+
+QList<JPSSource *> JPSSourceListModel::sourcesList() {
+    return lst;
 }

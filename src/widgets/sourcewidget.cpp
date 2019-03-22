@@ -45,7 +45,7 @@ SourceWidget::SourceWidget(QWidget *parent, jpsGraphicsView *view, jpsDatamanage
     model = new JPSSourceListModel();
     model->setSourceList(currentView->getSources());
     ui->sourcesListView->setModel(model);
-    ui->sourcesListView->setEditTriggers(QAbstractItemView::CurrentChanged |QAbstractItemView::DoubleClicked );
+    ui->sourcesListView->setEditTriggers(QAbstractItemView::DoubleClicked );
     showSource();
 
     connect(currentView, SIGNAL(sourcesChanged()), this, SLOT(showSource()));
