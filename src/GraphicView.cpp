@@ -175,6 +175,8 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
             break;
         case Landmark:
             break;
+        case Editing:
+            break;
         default:
             // draw wall, door, exit, HLine
             if (current_line!=nullptr)
@@ -2455,7 +2457,6 @@ void jpsGraphicsView::enableEditMode()
         emit no_drawing();
     } else
     {
-
     }
 }
 
