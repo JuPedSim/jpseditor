@@ -197,6 +197,18 @@ MWindow :: MWindow()
 
     // room type data gathering
     connect(actionGather_data,SIGNAL(triggered(bool)),this, SLOT(GatherData()));
+
+    //object snapping
+    objectsnapping = {};
+    bool endpoint = false;
+    bool Intersections_point = false;
+    bool Center_point = false;
+    bool SelectedLine_point = false;
+    objectsnapping.append(endpoint);
+    objectsnapping.append(Intersections_point);
+    objectsnapping.append(Center_point);
+    objectsnapping.append(SelectedLine_point);
+
 }
 
 MWindow::~MWindow()
@@ -588,6 +600,7 @@ void MWindow::objectsnap()
         snappingOptions = new SnappingOptions(this);
         snappingOptions->setGeometry(QRect(QPoint(5,75), snappingOptions->size()));
         snappingOptions->setAttribute(Qt::WA_DeleteOnClose);
+        snappingOptions->setState(objectsnapping);
         snappingOptions->show();
 
         connect(snappingOptions,SIGNAL(snapStart_endpoint(bool)),mview,SLOT(changeStart_endpoint(bool)));
@@ -597,11 +610,13 @@ void MWindow::objectsnap()
     }
     else
     {
+        objectsnapping.clear();
+        objectsnapping = snappingOptions->getState();
         snappingOptions->close();
         snappingOptions=nullptr;
         actionObjectsnap->setChecked(false);
     }
-    mview->change_objectsnap();
+//    mview->change_objectsnap();
 }
 
 void MWindow::gridmode()
@@ -839,9 +854,7 @@ void MWindow::saveSettings(QMap<QString, QString> settingsmap)
     settings.beginGroup("backup");
     settings.setValue("backupfolder", settingsmap["backupfolder"]);
     settings.setValue("interval", settingsmap["interval"]);
-
     timer->setInterval(settingsmap["interval"].toInt());
-
     settings.endGroup();
 }
 
@@ -851,7 +864,7 @@ QMap<QString, QString> MWindow::loadSettings()
 
     settings.beginGroup("backup");
     QString value = settings.value("backupfolder", "../").toString();
-    QString interval = settings.value("interval", "60000").toString();
+    QString interval = settings.value("interval", "600000").toString();
     settings.endGroup();
 
     QMap<QString, QString> settingsmap;

@@ -82,6 +82,7 @@ private:
     QSettings settings;
 
     bool _statScale;
+    QList<bool> objectsnapping;
 
 protected slots:
     

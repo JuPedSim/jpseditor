@@ -61,7 +61,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     current_rect=nullptr;
     currentSelectRect=nullptr;
     gridmap=nullptr;
-    objectsnap=false;
+    objectsnap= true;
     start_endpoint_snap=false;
     intersectionspoint_snap=false;
     centerpoint_snap=false;
