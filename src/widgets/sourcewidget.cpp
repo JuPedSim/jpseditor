@@ -32,6 +32,7 @@
 #include "src/models/jpssourcelistmodel.h"
 
 #include <QDebug>
+#include <QModelIndex>
 
 SourceWidget::SourceWidget(QWidget *parent, jpsGraphicsView *view, jpsDatamanager *dmanager) :
     QWidget(parent),
@@ -52,7 +53,8 @@ SourceWidget::SourceWidget(QWidget *parent, jpsGraphicsView *view, jpsDatamanage
     connect(ui->sourcesListView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(showSourceInformation()));
     connect(ui->applyButton, SIGNAL(clicked(bool)),this, SLOT(applySourceInformation()));
     connect(ui->deleteSourceButton, SIGNAL(clicked(bool)), this, SLOT(deleteButtonClicked()));
-    connect(this, SIGNAL(deletedSource(int)), currentView, SLOT(deleteSource(int)));
+
+    connect(this, SIGNAL(sourceDeleted(int)), currentView, SLOT(deleteSource(int)));
     connect(ui->sourcesListView, SIGNAL(clicked(const QModelIndex &)), currentView, SLOT(itemSeleted(const
     QModelIndex &)));
 }
@@ -131,10 +133,10 @@ void SourceWidget::applySourceInformation()
 {
     qDebug(">> Enter SourceWidget::applySourceInformation");
 
+    QModelIndex index = ui->sourcesListView->currentIndex();
 
-    if(ui->sourcesListView->currentIndex().isValid())
+    if(index.isValid())
     {
-        QModelIndex index = ui->sourcesListView->currentIndex();
         auto source = currentView->getSources().at(index.row());
 
         source->setId(ui->IDlineEdit->text().toInt());
@@ -163,6 +165,7 @@ void SourceWidget::applySourceInformation()
             source->setBeSaved(false);
         }
     }
+
 
     qDebug("<< Leave SourceWidget::applySourceInformation");
 }

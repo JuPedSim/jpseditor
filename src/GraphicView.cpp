@@ -2471,6 +2471,7 @@ void jpsGraphicsView::drawSource()
         // if the mouse was pressed secondly of two times
         auto *sourceItem = new JPSSource(currentSource);
         this->scene()->addItem(sourceItem);
+//        sourceGroup->addToGroup(sourceItem);
         emit sourcesChanged();
 
         // currentSource shouldn't be kept in scene, when source is saved
@@ -2486,19 +2487,25 @@ void jpsGraphicsView::deleteSource(int index)
         scene()->removeItem(getSources().at(index));
 }
 
+
+
 void jpsGraphicsView::itemSeleted(const QModelIndex &index)
 {
-    if(getSources().at(index.row()) != nullptr)
+    for(int i=0; i<getSources().size(); i++)
     {
-        if(!getSources().at(index.row())->isSelected())
+        if(i==index.row())
         {
-            getSources().at(index.row())->setSelected(true);
-        } else
-        {
-            getSources().at(index.row())->setSelected(false);
+            getSources().at(i)->setSelected(true);
         }
-
+        else
+        {
+            getSources().at(i)->setSelected(false);
+        }
     }
+
+//    if(getSources().at(index.row()) != nullptr)
+//        getSources().at(index.row())->setSelected(true);
+
 
     this->scene()->update();
 }
