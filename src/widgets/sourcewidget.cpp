@@ -53,6 +53,8 @@ SourceWidget::SourceWidget(QWidget *parent, jpsGraphicsView *view, jpsDatamanage
     connect(ui->applyButton, SIGNAL(clicked(bool)),this, SLOT(applySourceInformation()));
     connect(ui->deleteSourceButton, SIGNAL(clicked(bool)), this, SLOT(deleteButtonClicked()));
     connect(this, SIGNAL(deletedSource(int)), currentView, SLOT(deleteSource(int)));
+    connect(ui->sourcesListView, SIGNAL(clicked(const QModelIndex &)), currentView, SLOT(itemSeleted(const
+    QModelIndex &)));
 }
 
 SourceWidget::~SourceWidget()

@@ -2481,6 +2481,23 @@ void jpsGraphicsView::deleteSource(int index)
         scene()->removeItem(getSources().at(index));
 }
 
+void jpsGraphicsView::itemSeleted(const QModelIndex &index)
+{
+    if(getSources().at(index.row()) != nullptr)
+    {
+        if(!getSources().at(index.row())->isSelected())
+        {
+            getSources().at(index.row())->setSelected(true);
+        } else
+        {
+            getSources().at(index.row())->setSelected(false);
+        }
+
+    }
+
+    this->scene()->update();
+}
+
 //Grid mode
 void jpsGraphicsView::ChangeGridmode(const bool &stat)
 {

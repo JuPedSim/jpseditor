@@ -193,6 +193,7 @@ public slots:
     void Undo();
     void Redo();
     void deleteSource(int index);
+    void itemSeleted(const QModelIndex &index);
 
 protected:
     //Mouse events

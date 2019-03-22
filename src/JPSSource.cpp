@@ -33,6 +33,7 @@
 #include <QKeyEvent>
 #include <QCursor>
 #include <QStyle>
+#include <QStyleOption>
 
 JPSSource::JPSSource(QGraphicsRectItem *sourceRectItem)
     : QObject(), QGraphicsRectItem(), m_resizing(false),
@@ -384,12 +385,20 @@ void JPSSource::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 */
 void JPSSource::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                               QWidget * /* widget */)
-	{
-        QPen pen(Qt::darkRed,0);
+{
+    QPen pen(Qt::darkRed,0);
 
+    if (option->state & QStyle::State_Selected) {
+        pen.setStyle(Qt::DotLine);
         painter->setPen(pen);
         painter->drawRect(this->rect());
-	}
+        return;
+    } else
+    {
+        painter->setPen(pen);
+        painter->drawRect(this->rect());
+    }
+}
 
 
 
