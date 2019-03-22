@@ -1709,6 +1709,11 @@ void jpsGraphicsView::translations(QPointF old_pos)
             landmark->GetEllipseItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
 
+    for (JPSSource *source : getSources())
+    {
+        source->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
+
     for (jpsConnection* connection:_datamanager->GetAllConnections())
     {
         connection->GetLineItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
