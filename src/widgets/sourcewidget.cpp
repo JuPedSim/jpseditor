@@ -51,6 +51,8 @@ SourceWidget::SourceWidget(QWidget *parent, jpsGraphicsView *view, jpsDatamanage
     connect(currentView, SIGNAL(sourcesChanged()), this, SLOT(showSource()));
     connect(ui->sourcesListView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(showSourceInformation()));
     connect(ui->applyButton, SIGNAL(clicked(bool)),this, SLOT(applySourceInformation()));
+    connect(ui->deleteSourceButton, SIGNAL(clicked(bool)), this, SLOT(deleteButtonClicked()));
+    connect(this, SIGNAL(deletedSource(int)), currentView, SLOT(deleteSource(int)));
 }
 
 SourceWidget::~SourceWidget()
@@ -62,6 +64,25 @@ void SourceWidget::showSource()
 {
     model->setSourceList(currentView->getSources());
     ui->sourcesListView->setModel(model);
+
+    ui->IDlineEdit->clear();
+    ui->agents_maxLineEdit->clear();
+    ui->captionLineEdit->clear();
+    ui->frequencyLineEdit->clear();
+    ui->group_IDLineEdit->clear();
+    ui->N_createLineEdit->clear();
+    ui->percentLineEdit->clear();
+    ui->rateLineEdit->clear();
+    ui->startYLineEdit->clear();
+    ui->startXLineEdit->clear();
+    ui->timeLineEdit->clear();
+    ui->time_minLineEdit->clear();
+    ui->time_maxLineEdit->clear();
+    ui->greedyLineEdit->clear();
+    ui->X_MinLineEdit->clear();
+    ui->X_MaxllneEdit->clear();
+    ui->Y_MinLineEdit->clear();
+    ui->Y_MaxLineEdit->clear();
 }
 
 void SourceWidget::showSourceInformation()
@@ -107,11 +128,13 @@ void SourceWidget::showSourceInformation()
 void SourceWidget::applySourceInformation()
 {
     qDebug(">> Enter SourceWidget::applySourceInformation");
-    QModelIndex index = ui->sourcesListView->currentIndex();
-    auto source = currentView->getSources().at(index.row());
+
 
     if(ui->sourcesListView->currentIndex().isValid())
     {
+        QModelIndex index = ui->sourcesListView->currentIndex();
+        auto source = currentView->getSources().at(index.row());
+
         source->setId(ui->IDlineEdit->text().toInt());
         source->setAgents_max(ui->agents_maxLineEdit->text());
         source->setCaption(ui->captionLineEdit->text());
@@ -140,4 +163,15 @@ void SourceWidget::applySourceInformation()
     }
 
     qDebug("<< Leave SourceWidget::applySourceInformation");
+}
+
+void SourceWidget::deleteButtonClicked()
+{
+    if (ui->sourcesListView->currentIndex().isValid())
+    {
+        int index = ui->sourcesListView->currentIndex().row();
+        emit deletedSource(index);
+        showSource();
+    }
+
 }

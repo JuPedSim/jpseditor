@@ -88,6 +88,7 @@ public:
     void drawSource();
 
 
+
     // global functions
     qreal get_scale_f();
     void take_l_from_lineEdit(const qreal &length);
@@ -191,7 +192,7 @@ public slots:
     //Undo Redo
     void Undo();
     void Redo();
-
+    void deleteSource(int index);
 
 protected:
     //Mouse events
@@ -264,6 +265,7 @@ private:
 
     //Source
     QGraphicsRectItem *currentSource;
+
 //    QGraphicsItemGroup *sourceGroup;
 //    QGraphicsItemGroup *getSourceGroup() const;
 

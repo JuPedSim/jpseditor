@@ -23,15 +23,20 @@ public:
                           jpsDatamanager *dmanager);
     ~SourceWidget();
 
+
 protected slots:
     void showSource();
     void showSourceInformation();
     void applySourceInformation();
+    void deleteButtonClicked();
 
 private:
     Ui::SourceWidget *ui;
     jpsGraphicsView *currentView;
     JPSSourceListModel *model;
+
+signals:
+    void deletedSource(int index);
 };
 
 #endif // SOURCEWIDGET_H

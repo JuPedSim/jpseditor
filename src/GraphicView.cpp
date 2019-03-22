@@ -122,6 +122,8 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     //Source
 //    sourceGroup = new QGraphicsItemGroup;
 
+
+
 }
 
 jpsGraphicsView::~jpsGraphicsView()
@@ -2471,6 +2473,12 @@ void jpsGraphicsView::drawSource()
         delete currentSource;
         currentSource = nullptr;
     }
+}
+
+void jpsGraphicsView::deleteSource(int index)
+{
+    if(getSources().at(index) != nullptr)
+        scene()->removeItem(getSources().at(index));
 }
 
 //Grid mode

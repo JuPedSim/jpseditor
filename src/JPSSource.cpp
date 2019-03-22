@@ -32,6 +32,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
 #include <QCursor>
+#include <QStyle>
 
 JPSSource::JPSSource(QGraphicsRectItem *sourceRectItem)
     : QObject(), QGraphicsRectItem(), m_resizing(false),
