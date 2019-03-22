@@ -54,7 +54,7 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 
 
     roomlist= QList<jpsRoom *> ();
-    sourcelist = view->getSources();
+    sourcelist = _mView->getSources();
 }
 
 jpsDatamanager::~jpsDatamanager()
@@ -1931,6 +1931,8 @@ bool jpsDatamanager::readRoutingXML(QFile &file)
     return true;
 }
 
+
+
 void jpsDatamanager::parseHline(QXmlStreamReader &xmlReader)
 {
 
@@ -2845,7 +2847,8 @@ void jpsDatamanager::writeSourceXML(QFile &file) {
     writeSourceHeader(stream);
 
     stream->writeStartElement("agents_sources");
-//    sourcelist = _mView->getSourceVector();
+    sourcelist.clear();
+    sourcelist = _mView->getSources();
     writeSources(stream, sourcelist);
     stream->writeEndElement(); //end sources
 
@@ -2870,6 +2873,122 @@ void jpsDatamanager::writeSourceHeader(QXmlStreamWriter *stream)
     qDebug("Leave jpsDatamanager::writeSourceHeader");
 }
 
+/*
+    since 0.8.8
+*/
+
+bool jpsDatamanager::readSourceXML(QFile &file)
+{
+    QXmlStreamReader xmlReader(&file);
+
+    // skip header
+    xmlReader.readNext();
+    xmlReader.readNext();
+
+    // see if file starts with geometry
+    if (xmlReader.name() != "sources")
+        return false;
+
+    while(!xmlReader.atEnd() && !xmlReader.hasError())
+    {
+        /* Read next element.*/
+        QXmlStreamReader::TokenType token = xmlReader.readNext();
+        /* If token is just StartDocument, we'll go to next.*/
+        if(token == QXmlStreamReader::StartDocument)
+        {
+            continue;
+        }
+
+        /* If token is StartElement, we'll see if we can read it.*/
+        if(token == QXmlStreamReader::StartElement)
+        {
+            /* If it's named Hlines, we'll go to the next.*/
+            if(xmlReader.name() == "agents_sources")
+            {
+                continue;
+            }
+
+            if(xmlReader.name() == "source")
+            {
+                this->parseSource(xmlReader);
+                xmlReader.readNext();
+            }
+        }
+    }
+    /* Error handling. */
+    if(xmlReader.hasError())
+    {
+        QMessageBox::critical(_mView,
+                              "QXSRExample::parseXML",
+                              xmlReader.errorString(),
+                              QMessageBox::Ok);
+        return false;
+    }
+
+    /* Removes any device() or data from the reader
+     * and resets its internal state to the initial state. */
+    xmlReader.clear();
+
+    return true;
+}
+
+
+void jpsDatamanager::parseSource(QXmlStreamReader &xmlReader)
+{
+    QPen currentPen;
+    currentPen.setColor(Qt::darkRed);
+    currentPen.setCosmetic(true);
+    currentPen.setWidth(0);
+
+    if(xmlReader.isStartElement())
+    {
+        if (xmlReader.name() == "source")
+        {
+            int id = xmlReader.attributes().value("id").toString().toInt();
+            QString frequency = xmlReader.attributes().value("frequency").toString();
+            QString N_create = xmlReader.attributes().value("N_create").toString();
+            QString percent = xmlReader.attributes().value("percent").toString();
+            QString rate = xmlReader.attributes().value("rate").toString();
+            QString time_min = xmlReader.attributes().value("time_min").toString();
+            QString time_max = xmlReader.attributes().value("time_max").toString();
+            QString agents_max = xmlReader.attributes().value("agents_max").toString();
+            QString group_id = xmlReader.attributes().value("group_id").toString();
+            QString caption = xmlReader.attributes().value("caption").toString();
+            QString greedy = xmlReader.attributes().value("greedy").toString();
+            QString time = xmlReader.attributes().value("time").toString();
+            QString startX = xmlReader.attributes().value("startX").toString();
+            QString startY = xmlReader.attributes().value("startY").toString();
+            qreal x_min = xmlReader.attributes().value("x_min").toFloat();
+            qreal x_max = xmlReader.attributes().value("x_max").toFloat();
+            qreal y_min = xmlReader.attributes().value("y_min").toFloat();
+            qreal y_max = xmlReader.attributes().value("y_max").toFloat();
+
+            QRectF rect(QPointF(x_min, y_max),QPointF(x_max, y_min));
+            QGraphicsRectItem *rectItem = new QGraphicsRectItem();
+            rectItem->setRect(rect);
+            JPSSource *source = new JPSSource(rectItem);
+
+            source->setId(id);
+            source->setFrequency(frequency);
+            source->setN_create(N_create);
+            source->setPercent(percent);
+            source->setRate(rate);
+            source->setTime_min(time_min);
+            source->setTime_max(time_max);
+            source->setAgents_max(agents_max);
+            source->setGroup_id(group_id);
+            source->setCaption(caption);
+            source->setGreedy(greedy);
+            source->setTime(time);
+            source->setStartX(startX);
+            source->setStartY(startY);
+            source->setBeSaved(true);
+
+            _mView->scene()->addItem(source);
+        }
+
+    }
+}
 
 
 bool LineIsEqual(const QLineF& line1, const QLineF& line2, double eps)

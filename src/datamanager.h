@@ -103,10 +103,13 @@ public:
     const int& GetRegionCounter() const;
     //Layers
     QList<QString> getElevationList();
+
     //Sources
     void writeSources(QXmlStreamWriter *stream, QList<JPSSource *>& sourcelist);
     void writeSourceXML(QFile &file);
     void writeSourceHeader(QXmlStreamWriter *stream);
+    bool readSourceXML(QFile &file);
+    void parseSource(QXmlStreamReader &xmlReader);
 
     void remove_all();
     void remove_marked_lines();

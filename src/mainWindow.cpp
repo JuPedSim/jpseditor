@@ -253,8 +253,17 @@ void MWindow::AutoSave()
         QString fileNameRouting = file.fileName();
         fileNameRouting = fileNameRouting.split(".").first() + "_routing.xml";
         QFile routingFile(fileNameRouting);
+
         if (routingFile.open(QIODevice::WriteOnly | QIODevice::Text))
             dmanager->writeRoutingXML(routingFile);
+
+        //Sources
+        QString fileNameSource = file.fileName();
+        fileNameSource = fileNameSource.split(".").first() + "_sources.xml";
+        QFile sourceFile(fileNameSource);
+
+        if (sourceFile.open(QIODevice::WriteOnly | QIODevice::Text))
+            dmanager->writeSourceXML(routingFile);
     }
 }
 
@@ -383,6 +392,16 @@ void MWindow::openFileXML()
 
     }
 
+    //Sources
+    QString fileNameSource= fileName.split(".").first()+"_sources.xml";
+    QFile fileSource(fileNameSource);
+    bool statusFileSource=true;
+    if (!fileSource.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        statusFileSource=false;
+
+    }
+
     if (!dmanager->readXML(file))
     {
         QMessageBox::critical(this,
@@ -399,6 +418,9 @@ void MWindow::openFileXML()
         //optional: load routing file
         if (statusFileRouting==true)
             dmanager->readRoutingXML(fileRouting);
+
+        if (statusFileSource== true)
+            dmanager->readSourceXML(fileSource);
 
         //AutoZoom to drawing
         mview->AutoZoom();
