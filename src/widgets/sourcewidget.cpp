@@ -175,7 +175,7 @@ void SourceWidget::deleteButtonClicked()
     if (ui->sourcesListView->currentIndex().isValid())
     {
         int index = ui->sourcesListView->currentIndex().row();
-        emit deletedSource(index);
+        emit sourceDeleted(index);
         showSource();
     }
 
