@@ -116,6 +116,7 @@ protected slots:
     void disableDrawing();
     void objectsnap();
     void sourceButtonClicked();
+    void editModeButtonClicked();
 
 
     //Line operations

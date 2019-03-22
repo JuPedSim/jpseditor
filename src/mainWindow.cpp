@@ -203,6 +203,7 @@ MWindow :: MWindow()
     drawingActionGroup->addAction(actionHLine);
     drawingActionGroup->addAction(actionLandmark);
     drawingActionGroup->addAction(actionSource);
+    drawingActionGroup->addAction(actionEditMode);
 
 
     connect(actionSelect_Mode,SIGNAL(triggered(bool)),this,SLOT(en_selectMode()));
@@ -212,6 +213,7 @@ MWindow :: MWindow()
     connect(actionHLine,SIGNAL(triggered(bool)),this,SLOT(en_disableHLine()));
     connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
     connect(actionSource, SIGNAL(toggled(bool)),this,SLOT(sourceButtonClicked()));
+    connect(actionEditMode,SIGNAL(toggled(bool)),this,SLOT(editModeButtonClicked()));
 
 //    connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
 //    connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
@@ -959,3 +961,7 @@ void MWindow::sourceButtonClicked()
     }
 }
 
+void MWindow::editModeButtonClicked()
+{
+    mview->enableEditMode();
+}

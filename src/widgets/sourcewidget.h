@@ -38,6 +38,7 @@ private:
 signals:
     void deletedSource(int index);
     void sourceDeleted(int index);
+    void sourceChanged(int index);
 };
 
 #endif // SOURCEWIDGET_H

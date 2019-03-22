@@ -57,6 +57,7 @@ SourceWidget::SourceWidget(QWidget *parent, jpsGraphicsView *view, jpsDatamanage
     connect(this, SIGNAL(sourceDeleted(int)), currentView, SLOT(deleteSource(int)));
     connect(ui->sourcesListView, SIGNAL(clicked(const QModelIndex &)), currentView, SLOT(itemSeleted(const
     QModelIndex &)));
+    connect(this, SIGNAL(sourceChanged(int)), currentView, SLOT(changeSource(int)));
 }
 
 SourceWidget::~SourceWidget()
@@ -156,6 +157,8 @@ void SourceWidget::applySourceInformation()
         source->setX_max(ui->X_MaxllneEdit->text().toFloat());
         source->setY_min(ui->Y_MinLineEdit->text().toFloat());
         source->setY_max(ui->Y_MaxLineEdit->text().toFloat());
+        source->setRect(QRectF(QPointF(source->getX_min(), source->getY_max()), QPointF(source->getX_max(),
+                source->getY_min())));
 
         if(ui->isSaveButton->isChecked())
         {
@@ -166,6 +169,7 @@ void SourceWidget::applySourceInformation()
         }
     }
 
+    emit sourceChanged(index.row());
 
     qDebug("<< Leave SourceWidget::applySourceInformation");
 }

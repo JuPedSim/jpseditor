@@ -127,6 +127,7 @@
    <addaction name="actionClear_all_Rooms_and_Doors"/>
    <addaction name="separator"/>
    <addaction name="actionSelect_Mode"/>
+   <addaction name="actionEditMode"/>
    <addaction name="actionWall"/>
    <addaction name="actionDoor"/>
    <addaction name="actionHLine"/>
@@ -765,6 +766,21 @@
    </property>
    <property name="text">
     <string>Source</string>
+   </property>
+  </action>
+  <action name="actionEditMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/edit.png</normaloff>:/inAppIcons/Icons/edit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Edit Mode</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit Mode</string>
    </property>
   </action>
  </widget>

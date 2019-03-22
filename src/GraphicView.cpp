@@ -82,7 +82,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     centerpoint_snap=false;
     linepoint_snap=false;
     _gridmode=false;
-    drawingMode = NoDrawing;
+    drawingMode = Selecting;
 //    statWall=false;
 //    statDoor=false;
 //    statExit=false;
@@ -163,7 +163,7 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
     QGraphicsView::mouseMoveEvent(mouseEvent);
 
     switch (drawingMode){
-        case NoDrawing:
+        case Selecting:
             break;
         case Source:
             if(currentSource != nullptr)
@@ -299,7 +299,9 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
             case Source:
                 drawSource();
                 break;
-            case NoDrawing:
+            case Editing:
+                break;
+            case Selecting:
                 if (_statDefConnections==1)
                 {
                     emit DefConnection1Completed();
@@ -608,7 +610,7 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton)
     {
         // Select lines that are located within the rectangle
-        if (drawingMode == NoDrawing)
+        if (drawingMode == Selecting)
         {
             leftbutton_hold=false;
 
@@ -1208,7 +1210,7 @@ void jpsGraphicsView::disable_drawing()
 
     _statCopy=0;
 
-    drawingMode = NoDrawing;
+    drawingMode = Selecting;
 
     // if drawing was canceled by pushing ESC
     if (current_line!=nullptr)
@@ -2444,9 +2446,23 @@ void jpsGraphicsView::setDrawingMode(DrawingMode mode) {
     drawingMode = mode;
 }
 
+void jpsGraphicsView::enableEditMode()
+{
+    setDrawingMode(Editing);
+
+    if(drawingMode!= Editing)
+    {
+        emit no_drawing();
+    } else
+    {
+
+    }
+}
+
 // For source
-void jpsGraphicsView::enableSourceMode() {
-    drawingMode = Source;
+void jpsGraphicsView::enableSourceMode()
+{
+    setDrawingMode(Source);
 
     if(drawingMode != Source)
     {
@@ -2454,7 +2470,6 @@ void jpsGraphicsView::enableSourceMode() {
     } else
     {
         currentPen.setColor(Qt::darkRed);
-
     }
 }
 
@@ -2487,7 +2502,14 @@ void jpsGraphicsView::deleteSource(int index)
         scene()->removeItem(getSources().at(index));
 }
 
+void jpsGraphicsView::changeSource(int index)
+{
+    if(getSources().at(index) != nullptr)
+    {
+        scene()->update();
+    }
 
+}
 
 void jpsGraphicsView::itemSeleted(const QModelIndex &index)
 {

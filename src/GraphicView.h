@@ -66,7 +66,7 @@ public:
     void SetDatamanager(jpsDatamanager* datamanager);
 
     //Change modes
-    enum DrawingMode {NoDrawing, Wall, Door, Exit, HLine, Landmark, Source};
+    enum DrawingMode {Selecting, Editing, Wall, Door, Exit, HLine, Landmark, Source};
     void setDrawingMode(DrawingMode mode);
 
     void change_stat_anglesnap();
@@ -86,6 +86,7 @@ public:
     void en_disableLandmark();
     void enableSourceMode();
     void drawSource();
+    void enableEditMode();
 
 
 
@@ -194,6 +195,7 @@ public slots:
     void Redo();
     void deleteSource(int index);
     void itemSeleted(const QModelIndex &index);
+    void changeSource(int index);
 
 protected:
     //Mouse events
