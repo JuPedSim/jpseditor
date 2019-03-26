@@ -119,9 +119,12 @@ set( SRCS
         src/widgets/snappingoptions.cpp
     src/jpssource.cpp
         src/widgets/sourcewidget.cpp
+    src/jpsgoal.cpp
+    src/widgets/goalwidget.cpp
     src/global.cpp
         src/models/jpselementlistmodel.cpp
         src/models/jpssourcelistmodel.cpp
+
 
 
     dxflib/src/dl_writer_ascii.cpp
@@ -160,10 +163,12 @@ set( HDR
         src/widgets/snappingoptions.h
     src/jpsource.h
         src/widgets/sourcewidget.h
+        src/widgets/goalwidget.h
     src/elementtype.h
     src/global.h
       src/models/jpselementlistmodel.h
       src/models/jpssourcelistmodel.h
+    src/jpsgoal.h
 
     dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h
@@ -197,6 +202,7 @@ set( UIS
     forms/inifilewidget.ui
     forms/snappingoptions.ui
     forms/sourcewidget.ui
+    forms/goalwidget.ui
   )
 
 # and finally a resource file

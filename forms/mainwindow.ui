@@ -102,6 +102,7 @@
     <addaction name="actionHLine"/>
     <addaction name="actionLandmark"/>
     <addaction name="actionSource"/>
+    <addaction name="actionGoal"/>
    </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuEdit"/>
@@ -127,11 +128,11 @@
    <addaction name="actionClear_all_Rooms_and_Doors"/>
    <addaction name="separator"/>
    <addaction name="actionSelect_Mode"/>
-   <addaction name="actionEditMode"/>
    <addaction name="actionWall"/>
    <addaction name="actionDoor"/>
    <addaction name="actionHLine"/>
    <addaction name="actionSource"/>
+   <addaction name="actionGoal"/>
    <addaction name="actionLandmark"/>
    <addaction name="separator"/>
    <addaction name="actiongridmode"/>
@@ -781,6 +782,18 @@
    </property>
    <property name="toolTip">
     <string>Edit Mode</string>
+   </property>
+  </action>
+  <action name="actionGoal">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/goal.png</normaloff>:/inAppIcons/Icons/goal.png</iconset>
+   </property>
+   <property name="text">
+    <string>Goal</string>
    </property>
   </action>
  </widget>

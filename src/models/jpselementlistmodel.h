@@ -17,7 +17,7 @@ public:
     explicit JPSElementListModel(QObject *parent = nullptr);
     explicit JPSElementListModel(QList<QGraphicsItem *> &items, QObject *parent = nullptr);
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override ;
 
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)

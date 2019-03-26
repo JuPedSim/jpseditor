@@ -46,6 +46,7 @@
 #include "src/widgets/inifilewidget.h"
 #include "src/widgets/snappingoptions.h"
 #include "src/widgets/sourcewidget.h"
+#include "src/widgets/goalwidget.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 
@@ -59,8 +60,13 @@ private:
     roomWidget* rwidget;
     widgetLandmark* lwidget;
     InifileWidget * inifileWidget;
+
     QDockWidget *sourceDockWidget;
     SourceWidget *sourceWidget;
+
+    QDockWidget *goalDockWidget;
+    GoalWidget *goalWidget;
+
     SnappingOptions* snappingOptions;
 //    WidgetSettings* _settings;
     jpsDatamanager* dmanager;
@@ -117,6 +123,7 @@ protected slots:
     void objectsnap();
     void sourceButtonClicked();
     void editModeButtonClicked();
+    void goalButtionClicked();
 
 
     //Line operations

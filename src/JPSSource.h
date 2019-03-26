@@ -136,8 +136,6 @@ public:
 
     void setBeSaved(bool beSaved);
 
-
-
     double angle() const { return m_angle; }
     double shearHorizontal() const { return m_shearHorizontal; }
     double shearVertical() const { return m_shearVertical; }

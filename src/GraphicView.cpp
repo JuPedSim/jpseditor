@@ -47,7 +47,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     _currentVLine=nullptr;
     current_caption=nullptr;
     current_rect=nullptr;
-    currentSource = nullptr;
+
     currentSelectRect=nullptr;
     id_counter=0;
     point_tracked=false;
@@ -121,7 +121,10 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
 
     //Source
 //    sourceGroup = new QGraphicsItemGroup;
+    currentSource = nullptr;
 
+    //Goal
+    currentGoal = nullptr;
 
 
 }
@@ -170,6 +173,14 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
             {
                 currentSource->setRect(QRectF(
                         QPointF(currentSource->rect().x(),currentSource->rect().y()),
+                        QPointF(translated_pos.x(),translated_pos.y())));
+            }
+            break;
+        case Goal:
+            if(currentGoal != nullptr)
+            {
+                currentGoal->setRect(QRectF(
+                        QPointF(currentGoal->rect().x(),currentGoal->rect().y()),
                         QPointF(translated_pos.x(),translated_pos.y())));
             }
             break;
@@ -302,6 +313,9 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                 drawSource();
                 break;
             case Editing:
+                break;
+            case Goal:
+                drawGoal();
                 break;
             case Selecting:
                 if (_statDefConnections==1)
@@ -1231,6 +1245,11 @@ void jpsGraphicsView::disable_drawing()
     {
         delete currentSource;
         currentSource = nullptr;
+    }
+    if (currentGoal != nullptr)
+    {
+        delete currentGoal;
+        currentGoal = nullptr;
     }
 }
 
@@ -2442,124 +2461,14 @@ QPointF jpsGraphicsView::getNearstPointOnLine(jpsLineItem* selected_line)
     }
 
     return newPoint;
-}
-
-void jpsGraphicsView::setDrawingMode(DrawingMode mode) {
-    drawingMode = mode;
-}
-
-void jpsGraphicsView::enableEditMode()
-{
-    setDrawingMode(Editing);
-
-    if(drawingMode!= Editing)
-    {
-        emit no_drawing();
-    } else
-    {
-    }
-}
-
-// For source
-void jpsGraphicsView::enableSourceMode()
-{
-    setDrawingMode(Source);
-
-    if(drawingMode != Source)
-    {
-        emit no_drawing();
-    } else
-    {
-        currentPen.setColor(Qt::darkRed);
-    }
-}
-
-void jpsGraphicsView::drawSource()
-{
-    if(currentSource == nullptr) // if the mouse was pressed first of two times
-    {
-        //Determining first point of source
-        currentSource = this->scene()->addRect(translated_pos.x(),translated_pos.y(),0,0,currentPen);
-        currentSource->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
-
-    } else
-    {
-        // if the mouse was pressed secondly of two times
-        auto *sourceItem = new JPSSource(currentSource);
-        this->scene()->addItem(sourceItem);
-//        sourceGroup->addToGroup(sourceItem);
-        emit sourcesChanged();
-
-        // currentSource shouldn't be kept in scene, when source is saved
-        this->scene()->removeItem(currentSource);
-        delete currentSource;
-        currentSource = nullptr;
-    }
-}
-
-void jpsGraphicsView::deleteSource(int index)
-{
-    if(getSources().at(index) != nullptr)
-        scene()->removeItem(getSources().at(index));
-}
-
-void jpsGraphicsView::changeSource(int index)
-{
-    if(getSources().at(index) != nullptr)
-    {
-        scene()->update();
-    }
 
 }
 
-void jpsGraphicsView::itemSeleted(const QModelIndex &index)
-{
-    for(int i=0; i<getSources().size(); i++)
-    {
-        if(i==index.row())
-        {
-            getSources().at(i)->setSelected(true);
-        }
-        else
-        {
-            getSources().at(i)->setSelected(false);
-        }
-    }
+/*
+    since 0.8.8
 
-//    if(getSources().at(index.row()) != nullptr)
-//        getSources().at(index.row())->setSelected(true);
-
-
-    this->scene()->update();
-}
-
-//Grid mode
-void jpsGraphicsView::ChangeGridmode(const bool &stat)
-{
-    _gridmode=stat;
-}
-
-bool jpsGraphicsView::GetGridmode() const
-{
-    return _gridmode;
-}
-
-void jpsGraphicsView::ChangeTranslation(qreal x, qreal y)
-{
-    _translationX=x;
-    _translationY=y;
-}
-
-void jpsGraphicsView::SetGrid(QString grid)
-{
-    _statgrid=grid;
-}
-
-void jpsGraphicsView::ChangeGridSize(const qreal &gridSize)
-{
-    _gridSize=gridSize;
-}
-
+    Draw background
+ */
 void jpsGraphicsView::drawBackground(QPainter *painter, const QRectF &rect)
 {
     if (_gridmode)
@@ -2619,6 +2528,87 @@ void jpsGraphicsView::DrawPointGrid(QPainter *painter, const QRectF &rect)
     painter->drawPoints(points.data(), points.size());
 }
 
+void jpsGraphicsView::setDrawingMode(DrawingMode mode) {
+    drawingMode = mode;
+}
+
+void jpsGraphicsView::enableEditMode()
+{
+    setDrawingMode(Editing);
+
+    if(drawingMode!= Editing)
+    {
+        emit no_drawing();
+    } else
+    {
+    }
+}
+
+//Grid mode
+void jpsGraphicsView::ChangeGridmode(const bool &stat)
+{
+    _gridmode=stat;
+}
+
+bool jpsGraphicsView::GetGridmode() const
+{
+    return _gridmode;
+}
+
+void jpsGraphicsView::ChangeTranslation(qreal x, qreal y)
+{
+    _translationX=x;
+    _translationY=y;
+}
+
+void jpsGraphicsView::SetGrid(QString grid)
+{
+    _statgrid=grid;
+}
+
+void jpsGraphicsView::ChangeGridSize(const qreal &gridSize)
+{
+    _gridSize=gridSize;
+}
+
+
+// For source
+void jpsGraphicsView::enableSourceMode()
+{
+    setDrawingMode(Source);
+
+    if(drawingMode != Source)
+    {
+        emit no_drawing();
+    } else
+    {
+        currentPen.setColor(Qt::darkRed);
+    }
+}
+
+void jpsGraphicsView::drawSource()
+{
+    if(currentSource == nullptr) // if the mouse was pressed first of two times
+    {
+        //Determining first point of source
+        currentSource = this->scene()->addRect(translated_pos.x(),translated_pos.y(),0,0,currentPen);
+        currentSource->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+
+    } else
+    {
+        // if the mouse was pressed secondly of two times
+        auto *sourceItem = new JPSSource(currentSource);
+        this->scene()->addItem(sourceItem);
+//        sourceGroup->addToGroup(sourceItem);
+        emit sourcesChanged();
+
+        // currentSource shouldn't be kept in scene, when source is saved
+        this->scene()->removeItem(currentSource);
+        delete currentSource;
+        currentSource = nullptr;
+    }
+}
+
 /*
     since 0.8.8
 
@@ -2628,23 +2618,107 @@ QList<JPSSource *> jpsGraphicsView::getSources() {
 
     QList<JPSSource *> sources;
 
-    foreach(QGraphicsItem *item, items())
-    {
-        switch (item->type()) {
-            case  SourceElementType:
-            {
-                auto *source = qgraphicsitem_cast<JPSSource *>(item);
-                sources.append(source);
-                break;
+            foreach(QGraphicsItem *item, items())
+        {
+            switch (item->type()) {
+                case  SourceElementType:
+                {
+                    auto *source = qgraphicsitem_cast<JPSSource *>(item);
+                    sources.append(source);
+                    break;
+                }
+                default:
+                    break;
             }
-            default:
-                break;
+        }
+
+    return sources;
+}
+
+void jpsGraphicsView::deleteSource(int index)
+{
+    if(getSources().at(index) != nullptr)
+        scene()->removeItem(getSources().at(index));
+}
+
+void jpsGraphicsView::changeSource(int index)
+{
+    if(getSources().at(index) != nullptr)
+    {
+        scene()->update();
+    }
+
+}
+
+void jpsGraphicsView::itemSeleted(const QModelIndex &index)
+{
+    for(int i=0; i<getSources().size(); i++)
+    {
+        if(i==index.row())
+        {
+            getSources().at(i)->setSelected(true);
+        }
+        else
+        {
+            getSources().at(i)->setSelected(false);
         }
     }
 
-    return sources;
+//    if(getSources().at(index.row()) != nullptr)
+//        getSources().at(index.row())->setSelected(true);
+
+
+    this->scene()->update();
 }
 
 //QGraphicsItemGroup *jpsGraphicsView::getSourceGroup() const {
 //    return sourceGroup;
 //}
+
+// Goal Mode
+/*
+    since 0.8.8
+
+    Change drawing mode to goal
+ */
+
+void jpsGraphicsView::enableGoalMode()
+{
+    setDrawingMode(Goal);
+
+    if(drawingMode != Goal)
+    {
+        emit no_drawing();
+    } else
+    {
+        currentPen.setColor(Qt::darkGreen);
+    }
+}
+
+/*
+    since 0.8.8
+
+    Responds when mouse click
+ */
+
+void jpsGraphicsView::drawGoal()
+{
+    if(currentGoal == nullptr) // if the mouse was pressed first of two times
+    {
+        //Determining first point of source
+        currentGoal = this->scene()->addRect(translated_pos.x(),translated_pos.y(),0,0,currentPen);
+        currentGoal->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+
+    } else
+    {
+        // if the mouse was pressed secondly of two times
+        auto *goalItem = new JPSGoal(currentGoal);
+        this->scene()->addItem(goalItem);
+        emit goalsChanged();
+
+        // currentGoal shouldn't be kept in scene, when source is saved
+        this->scene()->removeItem(currentGoal);
+        delete currentGoal;
+        currentGoal = nullptr;
+    }
+}

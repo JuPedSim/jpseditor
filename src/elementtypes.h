@@ -32,5 +32,6 @@
 #include <QGraphicsItem>
 
 const int SourceElementType = QGraphicsItem::UserType + 1;
+const int GoalElementType = QGraphicsItem::UserType + 2;
 
 #endif //JPSEDITOR_ELEMENTTYPS_H

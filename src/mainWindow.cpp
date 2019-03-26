@@ -204,6 +204,7 @@ MWindow :: MWindow()
     drawingActionGroup->addAction(actionLandmark);
     drawingActionGroup->addAction(actionSource);
     drawingActionGroup->addAction(actionEditMode);
+    drawingActionGroup->addAction(actionGoal);
 
 
     connect(actionSelect_Mode,SIGNAL(triggered(bool)),this,SLOT(en_selectMode()));
@@ -214,6 +215,7 @@ MWindow :: MWindow()
     connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
     connect(actionSource, SIGNAL(toggled(bool)),this,SLOT(sourceButtonClicked()));
     connect(actionEditMode,SIGNAL(toggled(bool)),this,SLOT(editModeButtonClicked()));
+    connect(actionGoal,SIGNAL(toggled(bool)),this,SLOT(goalButtionClicked()));
 
 //    connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
 //    connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
@@ -222,6 +224,9 @@ MWindow :: MWindow()
 
     sourceWidget = nullptr;
     sourceDockWidget = nullptr;
+
+    goalWidget = nullptr;
+    goalDockWidget = nullptr;
 }
 
 MWindow::~MWindow()
@@ -964,4 +969,34 @@ void MWindow::sourceButtonClicked()
 void MWindow::editModeButtonClicked()
 {
     mview->enableEditMode();
+}
+
+// Goal drawing mode
+/*
+    since 0.8.8
+
+    Build widget for goal if there is no, or destory widget.
+ */
+
+void MWindow::goalButtionClicked()
+{
+    mview->enableGoalMode();
+
+    // source dochwidget
+    if(goalDockWidget == nullptr && actionGoal->isChecked())
+    {
+        goalDockWidget = new QDockWidget(tr("Sources"), this);
+        goalDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        goalDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+        goalWidget = new GoalWidget(this, mview, this->dmanager);
+        addDockWidget(Qt::RightDockWidgetArea, goalDockWidget);
+        goalDockWidget->setWidget(goalWidget);
+    } else
+    {
+        goalDockWidget->close(); //close() has deleted pointer
+        goalDockWidget = nullptr;
+        delete goalWidget;
+        goalWidget = nullptr;
+    }
 }

@@ -36,6 +36,7 @@
 #include "jpslandmark.h"
 #include "jpsconnection.h"
 #include "jpssource.h"
+#include "jpsgoal.h"
 #include "./UndoFramework/actionstack.h"
 
 using ptrConnection = std::shared_ptr<jpsConnection>;
@@ -66,7 +67,7 @@ public:
     void SetDatamanager(jpsDatamanager* datamanager);
 
     //Change modes
-    enum DrawingMode {Selecting, Editing, Wall, Door, Exit, HLine, Landmark, Source};
+    enum DrawingMode {Selecting, Editing, Wall, Door, Exit, HLine, Landmark, Source, Goal};
     void setDrawingMode(DrawingMode mode);
 
     void change_stat_anglesnap();
@@ -86,8 +87,9 @@ public:
     void en_disableLandmark();
     void enableSourceMode();
     void drawSource();
+    void drawGoal();
     void enableEditMode();
-
+    void enableGoalMode();
 
 
     // global functions
@@ -269,6 +271,9 @@ private:
     //Source
     QGraphicsRectItem *currentSource;
 
+    //Goal
+    QGraphicsRectItem *currentGoal;
+
 //    QGraphicsItemGroup *sourceGroup;
 //    QGraphicsItemGroup *getSourceGroup() const;
 
@@ -318,6 +323,7 @@ signals:
     void DefConnection2Completed();
     void RegionDefCompleted();
     void sourcesChanged();
+    void goalsChanged();
     //void DoubleClick();
 
 };
