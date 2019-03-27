@@ -27,14 +27,12 @@
  *
 ****************************************************************/
 
-//
-// Created by sainho93 on 2019-03-26.
-//
-
 #include "goalwidget.h"
 #include "ui_goalwidget.h"
+#include "src/models/jpsgoallistmodel.h"
 
 #include <QDebug>
+#include <QModelIndex>
 
 GoalWidget::GoalWidget(QWidget *parent, jpsGraphicsView *view, jpsDatamanager *dmanager) :
     QWidget(parent),
@@ -42,10 +40,95 @@ GoalWidget::GoalWidget(QWidget *parent, jpsGraphicsView *view, jpsDatamanager *d
 {
     ui->setupUi(this);
 
+    currentView = view;
 
+    //Set-up model and listview for sources widget
+    model = new JPSGoalListModel();
+    model->setGoalsList(currentView->getGoals());
+    ui->goalsListView->setModel(model);
+    ui->goalsListView->setEditTriggers(QAbstractItemView::DoubleClicked);
+    showGoals();
+
+    connect(currentView, SIGNAL(goalsChanged()), this, SLOT(showGoals()));
+    connect(ui->goalsListView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(showGoalInformation()));
+    connect(ui->applyButton, SIGNAL(clicked(bool)),this, SLOT(applyGoalInformation()));
+    connect(this, SIGNAL(goalChanged(int)), currentView, SLOT(changeGoal(int)));
+    connect(this, SIGNAL(goalDeleted(int)), currentView, SLOT(deleteGoal()));
+    connect(ui->goalsListView, SIGNAL(clicked(const QModelIndex &)), currentView, SLOT(seleteGoal(const
+    QModelIndex &)));
 }
 
 GoalWidget::~GoalWidget()
 {
     delete ui;
 }
+
+void GoalWidget::showGoals()
+{
+    model->setGoalsList(currentView->getGoals());
+    ui->goalsListView->setModel(model);
+    ui->IDlineEdit->clear();
+    ui->captionLineEdit->clear();
+    ui->finalLineEdit->clear();
+}
+
+
+void GoalWidget::showGoalInformation()
+{
+    qDebug(">> Enter GoalWidget::showGoalInformation");
+    QModelIndex index = ui->goalsListView->currentIndex();
+    auto goal = currentView->getGoals().at(index.row());
+
+    ui->IDlineEdit->setText(QString::number(goal->getId()));
+    ui->captionLineEdit->setText(goal->getCaption());
+    ui->finalLineEdit->setText(goal->getIsFinal());
+
+    if(goal->getBeSaved()=="true")
+    {
+        ui->isSaveButton->setChecked(true);
+    } else
+    {
+        ui->isSaveButton->setChecked(false);
+    }
+
+    qDebug(">> Leave SourceWidget::showGoalInformation");
+}
+
+void GoalWidget::applyGoalInformation()
+{
+    qDebug(">> Enter GoalWidget::applyGoalInformation");
+
+    QModelIndex index = ui->goalsListView->currentIndex();
+    if(index.isValid() && index.row() != -1)
+    {
+        auto goal = currentView->getGoals().at(index.row());
+
+        goal->setId(ui->IDlineEdit->text().toInt());
+        goal->setCaption(ui->captionLineEdit->text());
+        goal->setIsFinal(ui->finalLineEdit->text());
+
+        if(ui->isSaveButton->isChecked())
+        {
+            goal->setBeSaved("true");
+        } else
+        {
+            goal->setBeSaved("false");
+        }
+
+        emit goalChanged(index.row());
+
+    }
+
+    qDebug(">> Leave GoalWidget::applyGoalInformation");
+}
+
+void GoalWidget::deleteButtonClicked()
+{
+    if (ui->goalsListView->currentIndex().isValid())
+    {
+        int index = ui->goalsListView->currentIndex().row();
+        emit goalDeleted(index);
+        showGoals();
+    }
+}
+

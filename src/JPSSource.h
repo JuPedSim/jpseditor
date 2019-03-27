@@ -78,6 +78,7 @@ public:
     void setPercent(const QString &percent);
 
     const QString &getRate() const;
+
     void setRate(const QString &rate);
 
     const QString &getTime_min() const;

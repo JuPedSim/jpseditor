@@ -37,9 +37,27 @@ public:
 
     enum {Type = GoalElementType};
 
+    int type() const { return Type; }
+
     double angle() const { return m_angle; }
     double shearHorizontal() const { return m_shearHorizontal; }
     double shearVertical() const { return m_shearVertical; }
+
+    int getId() const;
+
+    void setId(int id);
+
+    const QString &getCaption() const;
+
+    void setCaption(const QString &caption);
+
+    const QString &getBeSaved() const;
+
+    void setBeSaved(const QString &beSaved);
+
+    const QString &getIsFinal() const;
+
+    void setIsFinal(const QString &isFinal);
 
 signals:
     void dirty();

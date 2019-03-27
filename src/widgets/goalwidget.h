@@ -9,7 +9,7 @@
 #include <QtWidgets>
 #include "src/datamanager.h"
 #include "src/graphicscene.h"
-#include "src/models/jpssourcelistmodel.h"
+#include "src/models/jpsgoallistmodel.h"
 
 namespace  Ui{
 class GoalWidget;
@@ -25,8 +25,20 @@ public:
 
     ~GoalWidget();
 
+protected slots:
+    void showGoals();
+    void showGoalInformation();
+    void applyGoalInformation();
+    void deleteButtonClicked();
 private:
     Ui::GoalWidget *ui;
+    jpsGraphicsView *currentView;
+    JPSGoalListModel *model;
+
+signals:
+    void deletedGoal(int index);
+    void goalDeleted(int index);
+    void goalChanged(int index);
 };
 
 

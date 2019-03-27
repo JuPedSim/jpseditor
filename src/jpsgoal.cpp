@@ -52,10 +52,50 @@ JPSGoal::JPSGoal(QGraphicsRectItem *goalRectItem)
 
     //Set-up rectangle
     setRect(rectItem->rect());
+
+    //Set-up default values of a JPSGoal
+    id = 0;
+    caption="Goal";
+    beSaved="true";
+    isFinal="true";
 }
 
 JPSGoal::~JPSGoal()
 = default;
+
+// For JuPedSim
+int JPSGoal::getId() const {
+    return id;
+}
+
+void JPSGoal::setId(int id) {
+    JPSGoal::id = id;
+}
+
+const QString &JPSGoal::getCaption() const {
+    return caption;
+}
+
+void JPSGoal::setCaption(const QString &caption) {
+    JPSGoal::caption = caption;
+}
+
+const QString &JPSGoal::getBeSaved() const {
+    return beSaved;
+}
+
+void JPSGoal::setBeSaved(const QString &beSaved) {
+    JPSGoal::beSaved = beSaved;
+}
+
+const QString &JPSGoal::getIsFinal() const {
+    return isFinal;
+}
+
+void JPSGoal::setIsFinal(const QString &isFinal) {
+    JPSGoal::isFinal = isFinal;
+}
+
 
 // For drawing
 void JPSGoal::setPen(const QPen &pen_)
@@ -227,3 +267,4 @@ void JPSGoal::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
         painter->drawRect(this->rect());
     }
 }
+

@@ -180,6 +180,7 @@ public:
     void ChangeGridSize(const qreal& factor);
 
     QList<JPSSource *> getSources();
+    QList<JPSGoal *> getGoals();
 
 public slots:
     //Landmarks/Regions
@@ -196,8 +197,12 @@ public slots:
     void Undo();
     void Redo();
     void deleteSource(int index);
-    void itemSeleted(const QModelIndex &index);
+    void seleteSource(const QModelIndex &index);
     void changeSource(int index);
+
+    void changeGoal(int index);
+    void deleteGoal(int index);
+    void seleteGoal(const QModelIndex &index);
 
 protected:
     //Mouse events

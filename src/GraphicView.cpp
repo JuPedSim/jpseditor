@@ -35,8 +35,6 @@
 #include "datamanager.h"
 #include "elementtypes.h"
 
-
-
 jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):QGraphicsView(parent)
 {
     //Set-up data container
@@ -2650,7 +2648,7 @@ void jpsGraphicsView::changeSource(int index)
 
 }
 
-void jpsGraphicsView::itemSeleted(const QModelIndex &index)
+void jpsGraphicsView::seleteSource(const QModelIndex &index)
 {
     for(int i=0; i<getSources().size(); i++)
     {
@@ -2721,4 +2719,63 @@ void jpsGraphicsView::drawGoal()
         delete currentGoal;
         currentGoal = nullptr;
     }
+}
+
+/*
+    since 0.8.8
+
+    Will be used for showing goals in widget, goals list is saved in datamanager
+ */
+QList<JPSGoal *> jpsGraphicsView::getGoals() {
+
+    QList<JPSGoal *> goals;
+
+            foreach(QGraphicsItem *item, items())
+        {
+            switch (item->type()) {
+                case GoalElementType:
+                {
+                    auto *goal = qgraphicsitem_cast<JPSGoal *>(item);
+                    goals.append(goal);
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+    return goals;
+}
+
+void jpsGraphicsView::changeGoal(int index)
+{
+    if(getGoals().at(index) != nullptr)
+    {
+        scene()->update();
+    }
+
+}
+
+void jpsGraphicsView::deleteGoal(int index)
+{
+    if(getGoals().at(index) != nullptr)
+        scene()->removeItem(getGoals().at(index));
+}
+
+
+void jpsGraphicsView::seleteGoal(const QModelIndex &index)
+{
+    for(int i=0; i<getGoals().size(); i++)
+    {
+        if(i==index.row())
+        {
+            getGoals().at(i)->setSelected(true);
+        }
+        else
+        {
+            getGoals().at(i)->setSelected(false);
+        }
+    }
+
+    this->scene()->update();
 }
