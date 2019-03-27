@@ -105,11 +105,17 @@ public:
     QList<QString> getElevationList();
 
     //Sources
-    void writeSources(QXmlStreamWriter *stream, QList<JPSSource *>& sourcelist);
     void writeSourceXML(QFile &file);
     void writeSourceHeader(QXmlStreamWriter *stream);
+    void writeSources(QXmlStreamWriter *stream, QList<JPSSource *>& sourcelist);
     bool readSourceXML(QFile &file);
     void parseSource(QXmlStreamReader &xmlReader);
+
+    //Goals
+    void writeGoalXML(QFile &file);
+    void writeGoalHeader(QXmlStreamWriter *stream);
+//    void writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *>& goallist);
+
 
     void remove_all();
     void remove_marked_lines();
@@ -134,6 +140,7 @@ public:
     void parseObstacles(QXmlStreamReader &xmlReader, jpsRoom *room);
     QPointF parseUp(QXmlStreamReader &xmlReader); /// stair's up point
     QPointF parseDown(QXmlStreamReader &xmlReader); /// stair's down point
+
     // Write XML
     void writeXML(QFile &file);
     void writeRoutingXML(QFile &file);

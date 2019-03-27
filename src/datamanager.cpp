@@ -2811,6 +2811,21 @@ jpsRegion* jpsDatamanager::ParseRegion(QXmlStreamReader &xmlReader)
 
 }
 
+/*
+    since 0.8.8
+
+    For save and read sources
+
+
+    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <JPScore project="JPS-Project" version="0.8">
+        <agents_sources>
+            <source />
+        </agents_sources>
+    </JPScore>
+
+*/
+
 void jpsDatamanager::writeSources(QXmlStreamWriter *stream, QList<JPSSource *> &sourcelist) {
     for(JPSSource* source:sourcelist)
     {
@@ -2864,18 +2879,12 @@ void jpsDatamanager::writeSourceHeader(QXmlStreamWriter *stream)
     stream->setAutoFormatting(true);
     stream->writeStartDocument("1.0",true);
 
-    stream->writeStartElement("sources");
-    stream->writeAttribute("version", "0.8");
-    //stream->writeAttribute("caption","corner");
-    stream->writeAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-    stream->writeAttribute("xsi:noNamespaceSchemaLocation","http://xsd.jupedsim.org/jps_routing.xsd");
-    stream->writeAttribute("unit","m");
+    stream->writeStartElement("JPScore");
+    stream->writeAttribute("project","JPS-Project");
+    stream->writeAttribute("version", "1.0");
+
     qDebug("Leave jpsDatamanager::writeSourceHeader");
 }
-
-/*
-    since 0.8.8
-*/
 
 bool jpsDatamanager::readSourceXML(QFile &file)
 {
@@ -2990,6 +2999,46 @@ void jpsDatamanager::parseSource(QXmlStreamReader &xmlReader)
     }
 }
 
+/*
+    since 0.8.8
+
+    For save and read goals
+ */
+
+void jpsDatamanager::writeGoalXML(QFile &file)
+{
+/*    QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
+
+    writeGoalHeader(stream);
+
+    stream->writeStartElement("agents_sources");
+    sourcelist.clear();
+    sourcelist = _mView->getSources();
+    writeSources(stream, sourcelist);
+    stream->writeEndElement(); //end sources
+
+    stream->writeEndDocument();
+
+    delete stream;
+    stream = nullptr;*/
+}
+
+void jpsDatamanager::writeGoalHeader(QXmlStreamWriter *stream)
+{
+    qDebug("Enter jpsDatamanager::writeRoutingHeader");
+
+    stream->setAutoFormatting(true);
+    stream->writeStartDocument("1.0",true);
+
+    stream->writeStartElement("routing");
+    stream->writeAttribute("version", "0.8");
+    //stream->writeAttribute("caption","corner");
+    stream->writeAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+    stream->writeAttribute("xsi:noNamespaceSchemaLocation","http://xsd.jupedsim.org/jps_routing.xsd");
+    stream->writeAttribute("unit","m");
+
+    qDebug("Leave jpsDatamanager::writeRoutingHeader");
+}
 
 bool LineIsEqual(const QLineF& line1, const QLineF& line2, double eps)
 {
