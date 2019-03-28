@@ -3003,41 +3003,88 @@ void jpsDatamanager::parseSource(QXmlStreamReader &xmlReader)
     since 0.8.8
 
     For save and read goals
- */
+
+    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <JPScore project="JPS-Project" version="0.8">
+        <goals>
+            <goal id="1" final="true" caption="goal1">
+                <polygon>
+                    <vertex px="3.6" py="-3.0" />
+                    <vertex px="3.6" py="-4.0" />
+                    <vertex px="5.2" py="-4.0" />
+                    <vertex px="5.2" py="-3.0" />
+                    <vertex px="3.6" py="-3.0" />
+                </polygon>
+            </goal>
+        </goals>
+    </JPScore>
+*/
 
 void jpsDatamanager::writeGoalXML(QFile &file)
 {
-/*    QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
+    QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
 
-    writeGoalHeader(stream);
+    stream->setAutoFormatting(true);
 
-    stream->writeStartElement("agents_sources");
-    sourcelist.clear();
-    sourcelist = _mView->getSources();
-    writeSources(stream, sourcelist);
-    stream->writeEndElement(); //end sources
+    stream->writeStartDocument("1.0",true);
+
+    stream->writeStartElement("JPScore");
+    stream->writeAttribute("project","JPS-Project");
+    stream->writeAttribute("version", "0.8");
+
+    stream->writeStartElement("goals");
+    goallist.clear();
+    goallist = _mView->getGoals();
+    writeGoals(stream, goallist);
+    stream->writeEndElement(); //end goals
 
     stream->writeEndDocument();
 
     delete stream;
-    stream = nullptr;*/
+    stream = nullptr;
 }
 
-void jpsDatamanager::writeGoalHeader(QXmlStreamWriter *stream)
+void jpsDatamanager::writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *> &goallist)
 {
-    qDebug("Enter jpsDatamanager::writeRoutingHeader");
+    for(JPSGoal* goal:goallist)
+    {
+        if(goal->getBeSaved() == "true")
+        {
+            stream->writeStartElement("goal");
+            stream->writeAttribute("id",QString::number(goal->getId()));
+            stream->writeAttribute("final",goal->getIsFinal());
+            stream->writeAttribute("caption",goal->getCaption());
 
-    stream->setAutoFormatting(true);
-    stream->writeStartDocument("1.0",true);
+            stream->writeStartElement("polygon");
 
-    stream->writeStartElement("routing");
-    stream->writeAttribute("version", "0.8");
-    //stream->writeAttribute("caption","corner");
-    stream->writeAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-    stream->writeAttribute("xsi:noNamespaceSchemaLocation","http://xsd.jupedsim.org/jps_routing.xsd");
-    stream->writeAttribute("unit","m");
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px", QString::number(goal->rect().topLeft().x()));
+            stream->writeAttribute("py", QString::number(goal->rect().topLeft().y()));
+            stream->writeEndElement();
 
-    qDebug("Leave jpsDatamanager::writeRoutingHeader");
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px", QString::number(goal->rect().topRight().x()));
+            stream->writeAttribute("py", QString::number(goal->rect().topRight().y()));
+            stream->writeEndElement();
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px", QString::number(goal->rect().bottomRight().x()));
+            stream->writeAttribute("py", QString::number(goal->rect().bottomRight().y()));
+            stream->writeEndElement();
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px", QString::number(goal->rect().bottomLeft().x()));
+            stream->writeAttribute("py", QString::number(goal->rect().bottomLeft().y()));
+            stream->writeEndElement();
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px", QString::number(goal->rect().topLeft().x()));
+            stream->writeAttribute("py", QString::number(goal->rect().topLeft().y()));
+            stream->writeEndElement();
+
+            stream->writeEndElement();
+        }
+    }
 }
 
 bool LineIsEqual(const QLineF& line1, const QLineF& line2, double eps)

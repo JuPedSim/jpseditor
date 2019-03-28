@@ -113,8 +113,9 @@ public:
 
     //Goals
     void writeGoalXML(QFile &file);
-    void writeGoalHeader(QXmlStreamWriter *stream);
-//    void writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *>& goallist);
+    void writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *>& goallist);
+    bool readGoalXML(QFile &file);
+    void parseGoal(QXmlStreamReader &xmlReader);
 
 
     void remove_all();
@@ -219,7 +220,9 @@ private:
     QList<jpsLandmark* > _landmarksAfterLoose;
     QList<jpsConnection* > _ConnectionsAfterLandmarkLoose;
     QList<jpsRegion* > _regions;
-    QList<JPSSource* > sourcelist;
+
+    QList<JPSSource *> sourcelist;
+    QList<JPSGoal *> goallist;
 
     int room_id_counter;
     int obs_id_counter;

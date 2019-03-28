@@ -518,19 +518,26 @@ void MWindow::saveAsXML(){
 //            return;
 //        }
 
+        //Save geometry
         dmanager->writeXML(file);
 
-        //routing (hlines)
+        // Save routing (hlines)
         QString fileNameRouting=fileName.split(".").first()+"_routing.xml";
         QFile routingFile(fileNameRouting);
         if (routingFile.open(QIODevice::WriteOnly|QIODevice::Text))
             dmanager->writeRoutingXML(routingFile);
 
-        //sources
+        //Save sources
         QString fileNameSource=fileName.split(".").first()+"_sources.xml";
         QFile sourcesFile(fileNameSource);
         if(sourcesFile.open(QIODevice::WriteOnly|QIODevice::Text))
             dmanager->writeSourceXML(sourcesFile);
+
+        //Save goals
+        QString fileNameGoal=fileName.split(".").first()+"_goals.xml";
+        QFile goalsFile(fileNameGoal);
+        if(goalsFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeGoalXML(goalsFile);
 
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
