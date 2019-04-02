@@ -368,61 +368,6 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                     break;
                 }
         }
-/*        if (statWall || statDoor || statExit || _statHLine)
-        {
-            // If line is edited currently
-            if (_statLineEdit)
-            {
-                for (jpsLineItem* line:line_vector)
-                {
-                    locate_intersection(marked_lines.first(),line);
-                }
-                current_line=nullptr;
-                _statLineEdit=false;
-                line_tracked=1;
-                emit no_drawing();
-            }
-            else
-            {
-                drawLine();
-            }
-        }
-        else if (statLandmark)
-        {
-            addLandmark();
-        }
-        else
-        {
-            if (_statDefConnections==1)
-            {
-                emit DefConnection1Completed();
-            }
-            //LineEdit
-            else if (_currentTrackedPoint!=nullptr && line_tracked==1 && _statCopy==0)
-            {
-                EditLine(_currentTrackedPoint);
-                _currentTrackedPoint=nullptr;
-                line_tracked=-1;
-            }
-            else if (_statCopy!=0)
-            {
-                if (_statCopy==1)
-                {
-                    _copyOrigin=return_Pos();
-                    _statCopy += 1;
-                }
-                else
-                    Copy_lines(return_Pos()-_copyOrigin);
-            }
-            else
-            {
-                //Select_mode
-                currentSelectRect=Scene->addRect(translated_pos.x(),translated_pos.y(),0,0,QPen(Qt::blue,0));
-                currentSelectRect->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
-                leftbutton_hold=true;
-            }
-
-        }*/
     }
     else if (mouseEvent->button()==Qt::MidButton)
     {
@@ -1654,12 +1599,25 @@ void jpsGraphicsView::translations(QPointF old_pos)
         current_line->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
 
     }
+
+    if (currentGoal!= nullptr)
+    {
+        currentGoal->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
+
+    if (currentSource != nullptr)
+    {
+        currentSource->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
+
     if (_currentVLine!=nullptr)
     {
         //current_line->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
         _currentVLine->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
 
     }
+
+    // Transform saved elements
 
     for (int i=0; i<line_vector.size(); ++i)
     {
@@ -1733,6 +1691,11 @@ void jpsGraphicsView::translations(QPointF old_pos)
     for (JPSSource *source : getSources())
     {
         source->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
+
+    for (JPSGoal *goal : getGoals())
+    {
+        goal->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
 
     for (jpsConnection* connection:_datamanager->GetAllConnections())
