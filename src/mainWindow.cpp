@@ -373,68 +373,147 @@ void MWindow::openFileDXF(){
     }
 }
 
+/*
+    since 0.8.8
+
+    For "Load XML" menu button
+ */
 void MWindow::openFileXML()
 {
     if(rwidget!=nullptr)
     {
         rwidget->close();
         rwidget=nullptr;
-        actionRoom->setChecked(false);
     }
 
     QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
+
+    openGeometry(fileName);
+
+    openRouting(fileName);
+
+    openGoal(fileName);
+
+    openSource(fileName);
+
+    //AutoZoom to drawing
+    mview->AutoZoom();
+}
+
+void MWindow::openGeometry(QString fileName)
+{
     QFile file(fileName);
+
+    if(fileName.isEmpty())
+        return;
+
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
+        QMessageBox::warning(this, tr("Read Geometry XML"),
+                             tr("Cannot read file %1:\n%2.")
+                                     .arg(QDir::toNativeSeparators(fileName),
+                                          file.errorString()));
         return;
-    }
-
-    //RoutingFile
-    QString fileNameRouting= fileName.split(".").first()+"_routing.xml";
-    QFile fileRouting(fileNameRouting);
-    bool statusFileRouting=true;
-    if (!fileRouting.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        statusFileRouting=false;
-
-    }
-
-    //Sources
-    QString fileNameSource= fileName.split(".").first()+"_sources.xml";
-    QFile fileSource(fileNameSource);
-    bool statusFileSource=true;
-    if (!fileSource.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        statusFileSource=false;
-
     }
 
     if (!dmanager->readXML(file))
     {
         QMessageBox::critical(this,
-                              "OpenFileXML",
-                              "Couldn't open xml-file",
+                              "Prase geometry XML",
+                              "Cannot prase XML-file",
                               QMessageBox::Ok);
-        statusBar()->showMessage("XML-File could not be parsed!",10000);
+        statusBar()->showMessage("XML-File could not be loaded!",10000);
     }
-
-
-
     else
     {
-        //optional: load routing file
-        if (statusFileRouting==true)
-            dmanager->readRoutingXML(fileRouting);
-
-        if (statusFileSource== true)
-            dmanager->readSourceXML(fileSource);
-
-        //AutoZoom to drawing
-        mview->AutoZoom();
-        statusBar()->showMessage("XML-File successfully loaded!",10000);
+        statusBar()->showMessage("XML file loaded!", 10000);
     }
-    file.close();
+}
 
+void MWindow::openRouting(QString fileName)
+{
+    QString fileNameRouting= fileName.split(".").first()+"_routing.xml";
+    QFile fileRouting(fileNameRouting);
+
+    if(fileNameRouting.isEmpty())
+        return;
+
+    if (!fileRouting.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, tr("Read Routing XML"),
+                             tr("Cannot read file %1:\n%2.")
+                                     .arg(QDir::toNativeSeparators(fileName),
+                                          fileRouting.errorString()));
+        return;
+    }
+
+    //Start to read routing
+    if (!dmanager->readRoutingXML(fileRouting))
+    {
+        QMessageBox::critical(this,
+                              "Prase routing XML",
+                              "Cannot prase XML-file",
+                              QMessageBox::Ok);
+    }
+    else
+    {
+    }
+}
+
+void MWindow::openSource(QString fileName)
+{
+    QString fileNameSource= fileName.split(".").first()+"_sources.xml";
+    QFile fileSource(fileNameSource);
+
+    if(fileNameSource.isEmpty())
+        return;
+
+    if(!fileSource.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, tr("Read source XML"),
+                             tr("Cannot read file %1:\n%2.")
+                                     .arg(QDir::toNativeSeparators(fileNameSource),
+                                          fileSource.errorString()));
+        return;
+    }
+
+    SourceReader sourceReader(mview);
+
+    if(!sourceReader.read(&fileSource))
+    {
+        QMessageBox::warning(this, tr("Prasse source XML"),
+                             tr("Cannot prase file %1:\n%2.")
+                                     .arg(QDir::toNativeSeparators(fileNameSource),
+                                          fileSource.errorString()));
+    }
+}
+
+void MWindow::openGoal(QString fileName)
+{
+    QString fileNameGoal= fileName.split(".").first()+"_goals.xml";
+    QFile fileGoal(fileNameGoal);
+
+    if(fileNameGoal.isEmpty())
+        return;
+
+    if(!fileGoal.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, tr("Read Goal XML"),
+                             tr("Cannot read file %1:\n%2.")
+                                     .arg(QDir::toNativeSeparators(fileNameGoal),
+                                          fileGoal.errorString()));
+        return;
+    }
+
+    GoalReader goalReader(mview);
+
+    if(!goalReader.read(&fileGoal))
+    {
+        QMessageBox::warning(this, tr("Prasse goal XML"),
+                             tr("Cannot prase file %1:\n%2.")
+                                     .arg(QDir::toNativeSeparators(fileNameGoal),
+                                          fileGoal.errorString()));
+    }
 }
 
 void MWindow::openFileCogMap()
@@ -734,6 +813,7 @@ void MWindow::define_room()
         rwidget=nullptr;
         actionRoom->setChecked(false);
     }
+
 }
 
 void MWindow::autoDefine_room()

@@ -47,6 +47,8 @@
 #include "src/widgets/snappingoptions.h"
 #include "src/widgets/sourcewidget.h"
 #include "src/widgets/goalwidget.h"
+#include "src/XML/goalreader.h"
+#include "src/XML/sourcereader.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 
@@ -100,9 +102,17 @@ protected slots:
     
     //parseFiles
     void openFileDXF();
+
+    //For "Load XML" menu button
     void openFileXML();
+    void openGeometry(QString fileName);
+    void openRouting(QString fileName);
+    void openSource(QString fileName);
+    void openGoal(QString fileName);
+
     void openFileCogMap();
     void OpenLineFile();
+
     void saveAsXML();
     void saveAsDXF();
 

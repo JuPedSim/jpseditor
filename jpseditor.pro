@@ -41,7 +41,8 @@ FORMS += \
     forms/inifilewidget.ui \
     forms/settingdialog.ui \
     forms/snappingoptions.ui \
-    forms/sourcewidget.ui
+    forms/sourcewidget.ui \
+    forms/goalwidget.ui \
 
 
 HEADERS += \
@@ -86,10 +87,7 @@ HEADERS += \
     src/sourcewidget.h  \
     src/global.h \
     src/jpssource.h \
-    src/ele,emttype.h \
-
-
-
+    src/elementttype.h \
 
 SOURCES += \
     src/mainWindow.cpp \

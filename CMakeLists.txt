@@ -117,7 +117,7 @@ set( SRCS
     src/widgets/settingdialog.cpp
     src/widgets/inifilewidget.cpp
     src/widgets/snappingoptions.cpp
-    src/jpssource.cpp
+        src/jpssource.cpp
     src/widgets/sourcewidget.cpp
     src/jpsgoal.cpp
     src/widgets/goalwidget.cpp
@@ -125,6 +125,8 @@ set( SRCS
     src/models/jpselementlistmodel.cpp
     src/models/jpssourcelistmodel.cpp
     src/models/jpsgoallistmodel.cpp
+    src/XML/goalreader.cpp
+    src/XML/sourcereader.cpp
 
 
     dxflib/src/dl_writer_ascii.cpp
@@ -161,7 +163,7 @@ set( HDR
     src/widgets/settingdialog.h
     src/widgets/inifilewidget.h
     src/widgets/snappingoptions.h
-    src/jpsource.h
+        src/jpssource.h
     src/widgets/sourcewidget.h
     src/widgets/goalwidget.h
     src/elementtype.h
@@ -170,6 +172,8 @@ set( HDR
     src/models/jpssourcelistmodel.h
     src/jpsgoal.h
     src/models/jpsgoallistmodel.h
+    src/XML/goalreader.h
+    src/XML/sourcereader.h
 
     dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h

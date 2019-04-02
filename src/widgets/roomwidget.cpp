@@ -86,7 +86,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->classBox,SIGNAL(activated(int)),this,SLOT(ChangeRoomType()));
     connect(ui->classBox,SIGNAL(currentIndexChanged(int)),this,SLOT(ChangeRoomType()));
     //tab crossing
-    connect(ui->addCrossingButton2,SIGNAL(clicked(bool)),this,SLOT(new_crossing()));
+    connect(ui->addCrossingButton,SIGNAL(clicked(bool)),this,SLOT(new_crossing()));
     connect(ui->crossingList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(enable_roomSelectionCrossings()));
     connect(ui->roomBox_from,SIGNAL(activated(int)),this,SLOT(add_rooms_to_crossing()));
     connect(ui->roomBox_to,SIGNAL(activated(int)),this,SLOT(add_rooms_to_crossing()));
@@ -279,14 +279,16 @@ void roomWidget::change_roomname()
 void roomWidget::addWall()
 {
      qDebug("Enter roomWidget::addWall");
+
     if (graphview->get_markedLines().size()>0)
     {
-
-        if (ui->list_rooms->currentItem()!=nullptr)
+        qDebug("%d",graphview->get_markedLines().size());
+        if (ui->list_rooms->currentItem()!=0L)
         {
             int crow=ui->list_rooms->currentRow();
 
             datamanager->get_roomlist()[crow]->addWall(graphview->get_markedLines());
+
             this->showWallsAndType();
         }
     }

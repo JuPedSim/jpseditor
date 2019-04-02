@@ -354,7 +354,7 @@
         <number>1</number>
        </property>
        <item>
-        <widget class="QPushButton" name="addCrossingButton2">
+        <widget class="QPushButton" name="addCrossingButton">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add new Door&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>

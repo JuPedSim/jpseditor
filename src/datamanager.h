@@ -104,18 +104,15 @@ public:
     //Layers
     QList<QString> getElevationList();
 
-    //Sources
+    //Sources TODO: write sources by a writer class
     void writeSourceXML(QFile &file);
     void writeSourceHeader(QXmlStreamWriter *stream);
     void writeSources(QXmlStreamWriter *stream, QList<JPSSource *>& sourcelist);
-    bool readSourceXML(QFile &file);
-    void parseSource(QXmlStreamReader &xmlReader);
 
-    //Goals
+
+    //Goals TODO: write goals by a writer class
     void writeGoalXML(QFile &file);
     void writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *>& goallist);
-    bool readGoalXML(QFile &file);
-    void parseGoal(QXmlStreamReader &xmlReader);
 
 
     void remove_all();
@@ -130,6 +127,7 @@ public:
 
 
     // Read XML
+
     bool readXML(QFile &file);
     bool readRoutingXML(QFile &file);
     void parseHline(QXmlStreamReader &xmlReader);

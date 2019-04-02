@@ -96,6 +96,14 @@ void JPSGoal::setIsFinal(const QString &isFinal) {
     JPSGoal::isFinal = isFinal;
 }
 
+QGraphicsRectItem *JPSGoal::getRectItem() const {
+    return rectItem;
+}
+
+void JPSGoal::setRectItem(QGraphicsRectItem *rectItem) {
+    JPSGoal::rectItem = rectItem;
+}
+
 
 // For drawing
 void JPSGoal::setPen(const QPen &pen_)

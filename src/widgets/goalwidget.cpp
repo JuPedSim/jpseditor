@@ -53,9 +53,10 @@ GoalWidget::GoalWidget(QWidget *parent, jpsGraphicsView *view, jpsDatamanager *d
     connect(ui->goalsListView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(showGoalInformation()));
     connect(ui->applyButton, SIGNAL(clicked(bool)),this, SLOT(applyGoalInformation()));
     connect(this, SIGNAL(goalChanged(int)), currentView, SLOT(changeGoal(int)));
-    connect(this, SIGNAL(goalDeleted(int)), currentView, SLOT(deleteGoal()));
+    connect(this, SIGNAL(goalDeleted(int)), currentView, SLOT(deleteGoal(int)));
     connect(ui->goalsListView, SIGNAL(clicked(const QModelIndex &)), currentView, SLOT(seleteGoal(const
     QModelIndex &)));
+    connect(ui->deleteSourceButton, SIGNAL(clicked(bool)),this, SLOT(deleteButtonClicked()));
 }
 
 GoalWidget::~GoalWidget()

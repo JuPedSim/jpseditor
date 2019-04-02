@@ -138,6 +138,7 @@ void jpsLineItem::setWall()
     door=false;
     exit=false;
     _hLine=false;*/
+    lineType = wall;
     defaultColor="black";
 }
 
