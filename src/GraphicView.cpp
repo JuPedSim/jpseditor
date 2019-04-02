@@ -33,21 +33,38 @@
 #include <memory>
 #include <QMessageBox>
 #include "datamanager.h"
-
-
+#include "elementtypes.h"
 
 jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):QGraphicsView(parent)
 {
+    //Set-up data container
     _datamanager=datamanager;
+
+    //Set-up parameters
     current_line=nullptr;
     _currentVLine=nullptr;
     current_caption=nullptr;
+    current_rect=nullptr;
+
+    currentSelectRect=nullptr;
+    id_counter=0;
+    point_tracked=false;
+    line_tracked=-1;
+    _statCopy=0;
+    markedLandmark=nullptr;
+    currentLandmarkRect=nullptr;
+    _currentTrackedPoint=nullptr;
+    _statLineEdit=false;
+    intersection_point=nullptr;
+    _statDefConnections=0;
+    stat_break_ = false;
+
     //current_line_mark=nullptr;
-    midbutton_hold=false;
+
+    //Set-up viewing
     translation_x=0;
     translation_y=0;//this->height();
     anglesnap=false;
-    id_counter=0;
     _scaleFactor=1.0;
     _gridSize=1.0;
     gl_scale_f=.01*_scaleFactor;
@@ -56,10 +73,6 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     catch_line_distance=10*gl_scale_f;
     //Set-up the view
     setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-    point_tracked=false;
-    line_tracked=-1;
-    current_rect=nullptr;
-    currentSelectRect=nullptr;
     gridmap=nullptr;
     objectsnap= true;
     start_endpoint_snap=false;
@@ -67,36 +80,26 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     centerpoint_snap=false;
     linepoint_snap=false;
     _gridmode=false;
-    statWall=false;
-    statDoor=false;
-    statExit=false;
-    _statHLine=false;
-    stat_break_ = false;
+    drawingMode = Selecting;
+//    statWall=false;
+//    statDoor=false;
+//    statExit=false;
+//    _statHLine=false;
+//    statLandmark=false;
     statzoomwindows=false;
-    _statCopy=0;
-    statLandmark=false;
-    markedLandmark=nullptr;
-    currentLandmarkRect=nullptr;
     currentPen.setColor(Qt::black);
     currentPen.setCosmetic(true);
     currentPen.setWidth(2);
     this->scale(1/gl_scale_f,-1/gl_scale_f);
-    _currentTrackedPoint=nullptr;
-    _statLineEdit=false;
-    intersection_point=nullptr;
-    _statDefConnections=0;
-
     lines_collided=false;
     _posDef=false;
     _regionDef=false;
-
-
+    midbutton_hold=false;
     //m_graphView->setFixedSize(1600, 900);
     //m_graphView->setScene(m_graphScen);
 
     //setCacheMode(QGraphicsView::CacheBackground);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-
 
     //setRenderHint(QPainter::NonCosmeticDefaultPen);
     // setRenderHint(QPainter::Antialiasing);
@@ -107,23 +110,31 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setCursor(Qt::CrossCursor);
 
-    //Set-up the scene
-    Scene = new GraphicScene(this);
+    //Grid Mode
+    _translationX=0.0;
+    _translationY=0.0;
+    _gridmode=false;
+    _statgrid="Line";
+    _gridSize=1.0;
 
-    setScene(Scene);
-    setSceneRect(0, 0, 1920, 1080);
+    //Source
+//    sourceGroup = new QGraphicsItemGroup;
+    currentSource = nullptr;
+
+    //Goal
+    currentGoal = nullptr;
+
 
 }
 
 jpsGraphicsView::~jpsGraphicsView()
 {
     delete_all(true);
-    delete Scene;
 }
 
 QGraphicsScene *jpsGraphicsView::GetScene()
 {
-    return Scene;
+    return this->scene();
 }
 
 const qreal &jpsGraphicsView::GetTranslationX() const
@@ -151,6 +162,48 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 {
 
     QGraphicsView::mouseMoveEvent(mouseEvent);
+
+    switch (drawingMode){
+        case Selecting:
+            break;
+        case Source:
+            if(currentSource != nullptr)
+            {
+                currentSource->setRect(QRectF(
+                        QPointF(currentSource->rect().x(),currentSource->rect().y()),
+                        QPointF(translated_pos.x(),translated_pos.y())));
+            }
+            break;
+        case Goal:
+            if(currentGoal != nullptr)
+            {
+                currentGoal->setRect(QRectF(
+                        QPointF(currentGoal->rect().x(),currentGoal->rect().y()),
+                        QPointF(translated_pos.x(),translated_pos.y())));
+            }
+            break;
+        case Landmark:
+            break;
+        case Editing:
+            break;
+        default:
+            // draw wall, door, exit, HLine
+            if (current_line!=nullptr)
+            {
+                //if (statWall==true || statDoor==true || statExit==true)
+                //{
+                //emit set_focus_textedit();
+                current_line->setLine(current_line->line().x1(),current_line->line().y1(),translated_pos.x(),translated_pos.y());
+                if (current_line->line().isNull())
+                    current_line->setVisible(false);
+                else
+                    current_line->setVisible(true);
+
+                //}
+                //As line length has changed
+                emit LineLengthChanged();
+            }
+    }
 
     if (current_rect!=nullptr)
     {
@@ -222,27 +275,14 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
 
         //VLine
-        if (point_tracked && (statWall==true || statDoor==true || statExit==true))
+        if (point_tracked && (drawingMode==Wall || drawingMode==Door || drawingMode==Exit))
         {
 //            SetVLine();
         }
     }
 
-    if (current_line!=nullptr)
-    {
-        //if (statWall==true || statDoor==true || statExit==true)
-        //{
-        //emit set_focus_textedit();
-        current_line->setLine(current_line->line().x1(),current_line->line().y1(),translated_pos.x(),translated_pos.y());
-        if (current_line->line().isNull())
-            current_line->setVisible(false);
-        else
-            current_line->setVisible(true);
 
-        //}
-        //As line length has changed
-        emit LineLengthChanged();
-    }
+
     if (_currentVLine!=nullptr)
     {
         emit set_focus_textedit();
@@ -263,63 +303,71 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
 
     if (mouseEvent->button() == Qt::LeftButton)
     {
-
-        if (statWall || statDoor || statExit || _statHLine)
-        {
-            // If line is edited currently
-            if (_statLineEdit)
-            {
-                for (jpsLineItem* line:line_vector)
+        switch (drawingMode){
+            case Landmark:
+                addLandmark();
+                break;
+            case Source:
+                drawSource();
+                break;
+            case Editing:
+                break;
+            case Goal:
+                drawGoal();
+                break;
+            case Selecting:
+                if (_statDefConnections==1)
                 {
-                    locate_intersection(marked_lines.first(),line);
+                    emit DefConnection1Completed();
+                    break;
                 }
-                current_line=nullptr;
-                _statLineEdit=false;
-                line_tracked=1;
-                emit no_drawing();
-            }
-            else
-            {
-                drawLine();
-            }
-        }
-        else if (statLandmark)
-        {
-            addLandmark();
-        }
-        else
-        {
-            if (_statDefConnections==1)
-            {
-                emit DefConnection1Completed();
-            }
-            //LineEdit
-            else if (_currentTrackedPoint!=nullptr && line_tracked==1 && _statCopy==0)
-            {
-                EditLine(_currentTrackedPoint);
-                _currentTrackedPoint=nullptr;
-                line_tracked=-1;
-            }
-            else if (_statCopy!=0)
-            {
-                if (_statCopy==1)
+                    //LineEdit
+                else if (_currentTrackedPoint!=nullptr && line_tracked==1 && _statCopy==0)
                 {
-                    _copyOrigin=return_Pos();
-                    _statCopy += 1;
+                    EditLine(_currentTrackedPoint);
+                    _currentTrackedPoint=nullptr;
+                    line_tracked=-1;
+                    break;
+                }
+                else if (_statCopy!=0)
+                {
+                    if (_statCopy==1)
+                    {
+                        _copyOrigin=return_Pos();
+                        _statCopy += 1;
+                    }
+                    else
+                        Copy_lines(return_Pos()-_copyOrigin);
+                    break;
                 }
                 else
-                    Copy_lines(return_Pos()-_copyOrigin);
-            }
-            else
-            {
-                //Select_mode
-                currentSelectRect=Scene->addRect(translated_pos.x(),translated_pos.y(),0,0,QPen(Qt::blue,0));
-                currentSelectRect->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
-                leftbutton_hold=true;
-            }
-
+                {
+                    //Select_mode
+                    currentSelectRect=scene()->addRect(translated_pos.x(),translated_pos.y(),0,0,QPen(Qt::blue,0));
+                    currentSelectRect->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+                    leftbutton_hold=true;
+                    break;
+                }
+            default:
+                // If door, wall, exit, hline is edited currently
+                if (_statLineEdit)
+                {
+                    for (jpsLineItem* line:line_vector)
+                    {
+                        locate_intersection(marked_lines.first(),line);
+                    }
+                    current_line=nullptr;
+                    _statLineEdit=false;
+                    line_tracked=1;
+                    emit no_drawing();
+                    break;
+                }
+                else
+                {
+                    drawLine();
+                    break;
+                }
         }
-
     }
     else if (mouseEvent->button()==Qt::MidButton)
     {
@@ -366,7 +414,7 @@ void jpsGraphicsView::addLandmark()
 {
     QPixmap pixmap("../jupedsim/forms/statue.jpg");
 
-    QGraphicsPixmapItem* pixmapItem = Scene->addPixmap(pixmap);
+    QGraphicsPixmapItem* pixmapItem = this->scene()->addPixmap(pixmap);
     pixmapItem->setScale(0.002);
     pixmapItem->setTransform(QTransform::fromTranslate(this->translated_pos.x()-pixmap.width()/1000.,this->translated_pos.y()
                           +pixmap.height()/1000.));
@@ -375,7 +423,7 @@ void jpsGraphicsView::addLandmark()
     QString name="Landmark"+QString::number(_datamanager->GetLandmarkCounter());
     jpsLandmark* landmark = new jpsLandmark(pixmapItem,name,pixmapItem->scenePos());
     //text immediately under the pixmap
-    QGraphicsTextItem* text = Scene->addText(name);
+    QGraphicsTextItem* text = this->scene()->addText(name);
     text->setPos(QPointF(landmark->GetPos().x(),
                          landmark->GetPos().y()+0.2));// landmark->GetPos().x()+translation_x,landmark->GetPos().y()+translation_y);
     //text->setScale(gl_scale_f);
@@ -394,7 +442,7 @@ void jpsGraphicsView::addLandmark(const QPointF &pos)
 {
     QPixmap pixmap("../jupedsim/forms/statue.jpg");
 
-    QGraphicsPixmapItem* pixmapItem = Scene->addPixmap(pixmap);
+    QGraphicsPixmapItem* pixmapItem = this->scene()->addPixmap(pixmap);
     pixmapItem->setScale(0.002);
     pixmapItem->setTransform(QTransform::fromTranslate(pos.x()-pixmap.width()/1000.,pos.y()
                           +pixmap.height()/1000.));
@@ -403,7 +451,7 @@ void jpsGraphicsView::addLandmark(const QPointF &pos)
     QString name="Landmark"+QString::number(_datamanager->GetLandmarkCounter());
     jpsLandmark* landmark = new jpsLandmark(pixmapItem,name,pos);
     //text immediately under the pixmap
-    QGraphicsTextItem* text = Scene->addText(name);
+    QGraphicsTextItem* text = this->scene()->addText(name);
     text->setPos(QPointF(landmark->GetPos().x(),
                          landmark->GetPos().y()+0.2));// landmark->GetPos().x()+translation_x,landmark->GetPos().y()+translation_y);
     //text->setScale(gl_scale_f);
@@ -452,9 +500,10 @@ void jpsGraphicsView::ShowYAHPointer(const QPointF &pos, const qreal &dir)
     }
     _yahPointer.clear();
 
-    _yahPointer.push_back(Scene->addLine(pos.x(),pos.y(),pos.x()+0.5*std::cos(dir),pos.y()+0.5*std::sin(dir),QPen(Qt::blue,0)));
-    _yahPointer.push_back(Scene->addLine(pos.x()+0.5*std::cos(dir),pos.y()+0.5*std::sin(dir),pos.x()+0.2*std::cos(dir+M_PI/4.0),pos.y()+0.2*std::sin(dir+M_PI/4.0),QPen(Qt::blue,0)));
-    _yahPointer.push_back(Scene->addLine(pos.x()+0.5*std::cos(dir),pos.y()+0.5*std::sin(dir),pos.x()+0.2*std::cos(dir-M_PI/4.0),pos.y()+0.2*std::sin(dir-M_PI/4.0),QPen(Qt::blue,0)));
+    _yahPointer.push_back(this->scene()->addLine(pos.x(),pos.y(),pos.x()+0.5*std::cos(dir),pos.y()+0.5*std::sin(dir),QPen
+    (Qt::blue,0)));
+    _yahPointer.push_back(this->scene()->addLine(pos.x()+0.5*std::cos(dir),pos.y()+0.5*std::sin(dir),pos.x()+0.2*std::cos(dir+M_PI/4.0),pos.y()+0.2*std::sin(dir+M_PI/4.0),QPen(Qt::blue,0)));
+    _yahPointer.push_back(this->scene()->addLine(pos.x()+0.5*std::cos(dir),pos.y()+0.5*std::sin(dir),pos.x()+0.2*std::cos(dir-M_PI/4.0),pos.y()+0.2*std::sin(dir-M_PI/4.0),QPen(Qt::blue,0)));
 
     for (QGraphicsLineItem* lineItem:_yahPointer)
     {
@@ -470,7 +519,7 @@ void jpsGraphicsView::ShowConnections(QList<ptrConnection> cons)
     ClearConnections();
     for (ptrConnection con:cons)
     {
-        QGraphicsLineItem* line = Scene->addLine(QLineF(con->GetLandmarks().first->GetPos(),con->GetLandmarks().second->GetPos()),QPen(Qt::blue,0));
+        QGraphicsLineItem* line = this->scene()->addLine(QLineF(con->GetLandmarks().first->GetPos(),con->GetLandmarks().second->GetPos()),QPen(Qt::blue,0));
         _connections.push_back(line);
 
 
@@ -494,13 +543,13 @@ void jpsGraphicsView::ClearConnections()
 
 void jpsGraphicsView::ActivateLineGrid()
 {
-    Scene->SetGrid("Line");
+    this->SetGrid("Line");
 
 }
 
 void jpsGraphicsView::ActivatePointGrid()
 {
-    Scene->SetGrid("Point");
+    this->SetGrid("Point");
 
 }
 
@@ -520,7 +569,7 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton)
     {
         // Select lines that are located within the rectangle
-        if (!(statWall==true || statDoor==true || statExit==true || statLandmark==true))
+        if (drawingMode == Selecting)
         {
             leftbutton_hold=false;
 
@@ -566,7 +615,7 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
                     catch_landmark();
                 }
                 delete currentSelectRect;
-                currentSelectRect=nullptr;
+                currentSelectRect = nullptr;
 
             }
 
@@ -721,7 +770,7 @@ void jpsGraphicsView::use_gridmode()
         if (!posy_positiv)
             translated_pos.setY(translated_pos.y()*(-1));
 
-        current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+        current_rect=this->scene()->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
         point_tracked=true;
         _currentTrackedPoint= &translated_pos;
 
@@ -755,7 +804,7 @@ void jpsGraphicsView::catch_points()
             //QPen pen;
             //pen.setColor('red');
             if (current_rect==nullptr)
-                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+                current_rect=this->scene()->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
             // if a point was tracked there is no need to look for further points ( only one point can be tracked)
 
             return;
@@ -777,7 +826,7 @@ void jpsGraphicsView::catch_points()
             //cursor.setPos(mapToGlobal(QPoint(translate_back_x(line_vector[i].x2()),translate_back_y(line_vector[i].y2()))));
             point_tracked=true;
             if (current_rect==nullptr)
-                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+                current_rect=this->scene()->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
             _currentTrackedPoint= &translated_pos;
             return;
         }
@@ -792,7 +841,7 @@ void jpsGraphicsView::catch_points()
             translated_pos.setX(intersect_point_vector[j]->x());
             translated_pos.setY(intersect_point_vector[j]->y());
             if (current_rect==nullptr)
-            current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+            current_rect=this->scene()->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
                 point_tracked=true;
             return;
         }
@@ -805,7 +854,7 @@ void jpsGraphicsView::catch_points()
             translated_pos.setX(0);
             translated_pos.setY(0);
             if (current_rect==nullptr)
-                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+                current_rect=this->scene()->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
 
         }
     //Look for gridpoints
@@ -864,7 +913,7 @@ void jpsGraphicsView::catch_start_endpoints()
             //QPen pen;
             //pen.setColor('red');
             if (current_rect==nullptr)
-                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
+                current_rect=this->scene()->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
                                             translated_pos.y()+translation_y-10*gl_scale_f,
                                             20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
             // if a point was tracked there is no need to look for further points ( only one point can be tracked)
@@ -891,7 +940,7 @@ void jpsGraphicsView::catch_start_endpoints()
             //cursor.setPos(mapToGlobal(QPoint(translate_back_x(line_vector[i].x2()),translate_back_y(line_vector[i].y2()))));
 //            point_tracked=true;
             if (current_rect==nullptr)
-                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
+                current_rect=this->scene()->addRect(translated_pos.x()+translation_x-10*gl_scale_f,translated_pos.y()+translation_y-10*gl_scale_f,20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
 //            _currentTrackedPoint= &translated_pos;
             return;
         }
@@ -914,7 +963,7 @@ void jpsGraphicsView::catch_intersections_point()
             translated_pos.setX(intersect_point_vector[j]->x());
             translated_pos.setY(intersect_point_vector[j]->y());
             if (current_rect==nullptr)
-            current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
+            current_rect=this->scene()->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
                                         translated_pos.y()+translation_y-10*gl_scale_f,
                                         20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
 //                point_tracked=true;
@@ -941,7 +990,7 @@ void jpsGraphicsView::catch_center_point()
             translated_pos.setY(center.y());
             if (current_rect==nullptr)
             {
-                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
+                current_rect=this->scene()->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
                                             translated_pos.y()+translation_y-10*gl_scale_f,
                                             20*gl_scale_f,20*gl_scale_f,QPen(Qt::green,0));
 
@@ -969,7 +1018,7 @@ void jpsGraphicsView::catch_line_point()
             translated_pos.setY(point.y());
             if (current_rect==nullptr)
             {
-                current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
+                current_rect=this->scene()->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
                                             translated_pos.y()+translation_y-10*gl_scale_f,
                                             20*gl_scale_f,20*gl_scale_f,QPen(Qt::blue,0));
 
@@ -997,9 +1046,6 @@ void jpsGraphicsView::catch_lines()
                     && item->get_defaultColor()!="white")
             {
                 select_line(item);
-
-
-
             }
         }
     }
@@ -1026,7 +1072,7 @@ void jpsGraphicsView::drawLine()
         //Determining first point of line
 
         // all two points of the line are inited with the cursorcoordinates
-        current_line = Scene->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),currentPen);
+        current_line = this->scene()->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),currentPen);
         current_line->setVisible(false);
         //current_line->translate(translation_x,translation_y);
         current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
@@ -1037,7 +1083,6 @@ void jpsGraphicsView::drawLine()
     // if the mouse was pressed secondly of two times
     else
     {
-
         jpsLineItem* lineItem= new jpsLineItem(current_line);
         lineItem->set_id(id_counter);
         id_counter++;
@@ -1054,19 +1099,33 @@ void jpsGraphicsView::drawLine()
             }
         }
 
-        lineItem->set_type(statWall,statDoor,statExit,_statHLine);
+//        jpsline->set_type(statWall,statDoor,statExit,_statHLine);
+        switch (drawingMode){
+            case Wall:
+                lineItem->setWall();
+                break;
+            case Door:
+                lineItem->setDoor();
+                break;
+            case Exit:
+                lineItem->setExit();
+                break;
+            case HLine:
+                lineItem->setHLine();
+                break;
+            default:
+                break;
+        }
+
         line_vector.push_back(lineItem);
 
         //reset pointer
-        current_line=nullptr;
+        current_line = nullptr;
 
         //Undo
         RecordUndoLineAction("LineAdded",lineItem->GetType(),lineItem->get_id(),lineItem->get_line()->line());
 
         //drawLine();
-
-
-
     }
 
     //Vline
@@ -1101,14 +1160,16 @@ void jpsGraphicsView::select_line(jpsLineItem *mline)
 
 void jpsGraphicsView::disable_drawing()
 {
-    statWall=false;
+/*    statWall=false;
     statDoor=false;
     statExit=false;
     statLandmark=false;
     _statLineEdit=false;
-    _statHLine=false;
+    _statHLine=false;*/
+
     _statCopy=0;
 
+    drawingMode = Selecting;
 
     // if drawing was canceled by pushing ESC
     if (current_line!=nullptr)
@@ -1123,6 +1184,16 @@ void jpsGraphicsView::disable_drawing()
         delete _currentVLine;
         _currentVLine=nullptr;
     }
+    if (currentSource != nullptr)
+    {
+        delete currentSource;
+        currentSource = nullptr;
+    }
+    if (currentGoal != nullptr)
+    {
+        delete currentGoal;
+        currentGoal = nullptr;
+    }
 }
 
 jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const qreal &x2,const qreal &y2,const QString &type)
@@ -1136,7 +1207,7 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
 
     pen.setCosmetic(true);
 
-    current_line=Scene->addLine(x1,y1,x2,y2,pen);
+    current_line=this->scene()->addLine(x1,y1,x2,y2,pen);
     current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
     jpsLineItem* newLine = new jpsLineItem(current_line);
     newLine->set_id(id_counter);
@@ -1144,19 +1215,19 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
 
     if (type=="Door")
     {
-        newLine->set_Door();
+        newLine->setDoor();
     }
     else if (type=="Exit")
     {
-        newLine->set_Exit();
+        newLine->setExit();
     }
     else if (type=="HLine")
     {
-        newLine->SetHLine();
+        newLine->setHLine();
     }
     else
     {
-        newLine->set_Wall();
+        newLine->setWall();
     }
 
     pen.setColor(newLine->get_defaultColor());
@@ -1226,13 +1297,13 @@ void jpsGraphicsView::SetVLine()
     {
         if (current_line==nullptr)
         {
-            _currentVLine=Scene->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),
+            _currentVLine=this->scene()->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),
                                          QPen(Qt::black,0,Qt::DashLine));
             _currentVLine->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
         }
         else if (current_line->line().p1()!=translated_pos)
         {
-            _currentVLine=Scene->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),
+            _currentVLine=this->scene()->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),
                                          QPen(Qt::black,0,Qt::DashLine));
             _currentVLine->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
         }
@@ -1254,7 +1325,7 @@ void jpsGraphicsView::EditLine(QPointF* point)
             RecordUndoLineAction("LineEdited",marked_lines.first()->GetType(),marked_lines.first()->get_id(),marked_lines.first()->get_line()->line());
             current_line=marked_lines[0]->get_line();
             marked_lines[0]->get_line()->setLine(marked_lines[0]->get_line()->line().x2(),marked_lines[0]->get_line()->line().y2(),translated_pos.x(),translated_pos.y());
-            //current_line=Scene->addLine(marked_lines[0]->get_line()->line().p2().x(),
+            //current_line=this->scene()->addLine(marked_lines[0]->get_line()->line().p2().x(),
              //       marked_lines[0]->get_line()->line().p2().y(),translated_pos.x(),translated_pos.y(),QPen(Qt::red,0));
             //current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
             emit set_focus_textedit();
@@ -1318,7 +1389,7 @@ bool jpsGraphicsView::show_hide_roomCaption(QString name, qreal x, qreal y)
     }
 
     // if caption does not exit yet:
-    current_caption=Scene->addText(name);
+    current_caption=this->scene()->addText(name);
 
     current_caption->setX(x+translation_x);
     current_caption->setY(y+translation_y);
@@ -1456,7 +1527,7 @@ void jpsGraphicsView::line_collision() //FIX ME!!!
                     /// set end point of line to intersection point
                     current_line->setLine(current_line->line().x1(),current_line->line().y1(),
                                           intersectPoint->x(),intersectPoint->y());
-                    current_rect=Scene->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
+                    current_rect=this->scene()->addRect(translated_pos.x()+translation_x-10*gl_scale_f,
                                                         translated_pos.y()+translation_y-10*gl_scale_f,
                                                         20*gl_scale_f,20*gl_scale_f,QPen(Qt::red,0));
                 }
@@ -1493,7 +1564,7 @@ void jpsGraphicsView::zoom(int delta)
         scale(scaleFactor, scaleFactor);
         catch_radius=10*gl_scale_f;
         catch_line_distance=10*gl_scale_f;
-        Scene->ChangeGridSize(this->CalcGridSize());
+        this->ChangeGridSize(this->CalcGridSize());
         //create_grid();
     }
     else
@@ -1505,7 +1576,7 @@ void jpsGraphicsView::zoom(int delta)
         scale(1.0 / scaleFactor, 1.0 / scaleFactor);
         catch_radius=10*gl_scale_f;
         catch_line_distance=10*gl_scale_f;
-        Scene->ChangeGridSize(this->CalcGridSize());
+        this->ChangeGridSize(this->CalcGridSize());
         //create_grid();
     }
 
@@ -1520,7 +1591,7 @@ void jpsGraphicsView::translations(QPointF old_pos)
     translation_y+=pos.y()-old_pos.y();
 
     /// translate the background grid
-    Scene->ChangeTranslation(translation_x,translation_y);
+    this->ChangeTranslation(translation_x,translation_y);
 
     if (current_line!=nullptr)
     {
@@ -1528,12 +1599,25 @@ void jpsGraphicsView::translations(QPointF old_pos)
         current_line->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
 
     }
+
+    if (currentGoal!= nullptr)
+    {
+        currentGoal->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
+
+    if (currentSource != nullptr)
+    {
+        currentSource->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
+
     if (_currentVLine!=nullptr)
     {
         //current_line->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
         _currentVLine->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
 
     }
+
+    // Transform saved elements
 
     for (int i=0; i<line_vector.size(); ++i)
     {
@@ -1602,6 +1686,16 @@ void jpsGraphicsView::translations(QPointF old_pos)
 
         if (landmark->GetEllipseItem()!=nullptr)
             landmark->GetEllipseItem()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
+
+    for (JPSSource *source : getSources())
+    {
+        source->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
+
+    for (JPSGoal *goal : getGoals())
+    {
+        goal->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
 
     for (jpsConnection* connection:_datamanager->GetAllConnections())
@@ -1740,19 +1834,19 @@ void jpsGraphicsView::ShowOrigin()
     if (_origin.isEmpty())
     {
         //Scene->DrawOrigin();
-        _origin.push_back(Scene->addLine(0,0,0,0+gl_scale_f*100,QPen(Qt::red,gl_scale_f*2)));
-        _origin.push_back(Scene->addLine(0,0+gl_scale_f*100,0-gl_scale_f*10,0+gl_scale_f*100-gl_scale_f*10,QPen(Qt::red,gl_scale_f*2)));
-        _origin.push_back(Scene->addLine(0,0+gl_scale_f*100,0+gl_scale_f*10,0+gl_scale_f*100-gl_scale_f*10,QPen(Qt::red,gl_scale_f*2)));
-        _origin.push_back(Scene->addLine(0,0,0+gl_scale_f*100,0,QPen(Qt::red,gl_scale_f*2)));
-        _origin.push_back(Scene->addLine(0+gl_scale_f*100,0,gl_scale_f*100-gl_scale_f*10,-gl_scale_f*10,QPen(Qt::red,gl_scale_f*2)));
-        _origin.push_back(Scene->addLine(0+gl_scale_f*100,0,gl_scale_f*100-gl_scale_f*10,+gl_scale_f*10,QPen(Qt::red,gl_scale_f*2)));
+        _origin.push_back(this->scene()->addLine(0,0,0,0+gl_scale_f*100,QPen(Qt::red,gl_scale_f*2)));
+        _origin.push_back(this->scene()->addLine(0,0+gl_scale_f*100,0-gl_scale_f*10,0+gl_scale_f*100-gl_scale_f*10,QPen(Qt::red,gl_scale_f*2)));
+        _origin.push_back(this->scene()->addLine(0,0+gl_scale_f*100,0+gl_scale_f*10,0+gl_scale_f*100-gl_scale_f*10,QPen(Qt::red,gl_scale_f*2)));
+        _origin.push_back(this->scene()->addLine(0,0,0+gl_scale_f*100,0,QPen(Qt::red,gl_scale_f*2)));
+        _origin.push_back(this->scene()->addLine(0+gl_scale_f*100,0,gl_scale_f*100-gl_scale_f*10,-gl_scale_f*10,QPen(Qt::red,gl_scale_f*2)));
+        _origin.push_back(this->scene()->addLine(0+gl_scale_f*100,0,gl_scale_f*100-gl_scale_f*10,+gl_scale_f*10,QPen(Qt::red,gl_scale_f*2)));
         //Y
-        _origin.push_back(Scene->addLine(0-gl_scale_f*10,gl_scale_f*100-gl_scale_f*50,0-gl_scale_f*5,gl_scale_f*100-gl_scale_f*45,QPen(Qt::black,gl_scale_f*2)));
-        _origin.push_back(Scene->addLine(0-gl_scale_f*10,gl_scale_f*100-gl_scale_f*50,0-gl_scale_f*15,gl_scale_f*100-gl_scale_f*45,QPen(Qt::black,gl_scale_f*2)));
-        _origin.push_back(Scene->addLine(0-gl_scale_f*10,gl_scale_f*100-gl_scale_f*50,0-gl_scale_f*10,gl_scale_f*100-gl_scale_f*60,QPen(Qt::black,gl_scale_f*2)));
+        _origin.push_back(this->scene()->addLine(0-gl_scale_f*10,gl_scale_f*100-gl_scale_f*50,0-gl_scale_f*5,gl_scale_f*100-gl_scale_f*45,QPen(Qt::black,gl_scale_f*2)));
+        _origin.push_back(this->scene()->addLine(0-gl_scale_f*10,gl_scale_f*100-gl_scale_f*50,0-gl_scale_f*15,gl_scale_f*100-gl_scale_f*45,QPen(Qt::black,gl_scale_f*2)));
+        _origin.push_back(this->scene()->addLine(0-gl_scale_f*10,gl_scale_f*100-gl_scale_f*50,0-gl_scale_f*10,gl_scale_f*100-gl_scale_f*60,QPen(Qt::black,gl_scale_f*2)));
         //X
-        _origin.push_back(Scene->addLine(0+gl_scale_f*40,0-gl_scale_f*15,gl_scale_f*50,-gl_scale_f*5,QPen(Qt::black,gl_scale_f*2)));
-        _origin.push_back(Scene->addLine(0+gl_scale_f*40,0-gl_scale_f*5,gl_scale_f*50,-gl_scale_f*15,QPen(Qt::black,gl_scale_f*2)));
+        _origin.push_back(this->scene()->addLine(0+gl_scale_f*40,0-gl_scale_f*15,gl_scale_f*50,-gl_scale_f*5,QPen(Qt::black,gl_scale_f*2)));
+        _origin.push_back(this->scene()->addLine(0+gl_scale_f*40,0-gl_scale_f*5,gl_scale_f*50,-gl_scale_f*15,QPen(Qt::black,gl_scale_f*2)));
 
         for (QGraphicsLineItem* lineItem:_origin)
         {
@@ -1925,7 +2019,7 @@ void jpsGraphicsView::catch_landmark()
 void jpsGraphicsView::select_landmark(jpsLandmark* landmark)
 {
     unmarkLandmark();
-    currentLandmarkRect=Scene->addRect(
+    currentLandmarkRect=this->scene()->addRect(
                 landmark->GetPixmap()->mapRectToScene(landmark->GetPixmap()->pixmap().rect()),QPen(Qt::red,0));
     markedLandmark=landmark;
 }
@@ -1940,7 +2034,21 @@ void jpsGraphicsView::take_l_from_lineEdit(const qreal &length)
         jpsLineItem* jpsline = new jpsLineItem(current_line);
         jpsline->set_id(id_counter);
         id_counter++;
-        jpsline->set_type(statWall,statDoor,statExit);
+//        jpsline->set_type(statWall,statDoor,statExit);
+        switch (drawingMode){
+            case Wall:
+                jpsline->setWall();
+                break;
+            case Door:
+                jpsline->setDoor();
+                break;
+            case Exit:
+                jpsline->setExit();
+                break;
+            default:
+                break;
+        }
+
         line_vector.push_back(jpsline);
         current_line=nullptr;
     }
@@ -1954,7 +2062,7 @@ void jpsGraphicsView::take_l_from_lineEdit(const qreal &length)
         //line_vector.push_back(jpsline);
         translated_pos.setX(_currentVLine->line().p2().x());
         translated_pos.setY(_currentVLine->line().p2().y());
-        current_line = Scene->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),currentPen);
+        current_line = this->scene()->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),currentPen);
         current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
         emit set_focus_textedit();
         //translated_pos.setX(_currentVLine->line().p2().x());
@@ -1974,7 +2082,20 @@ void jpsGraphicsView::take_endpoint_from_xyEdit(const QPointF &endpoint)
         jpsLineItem* jpsline = new jpsLineItem(current_line);
         jpsline->set_id(id_counter);
         id_counter++;
-        jpsline->set_type(statWall,statDoor,statExit);
+//        jpsline->set_type(statWall,statDoor,statExit);
+        switch (drawingMode){
+            case Wall:
+                jpsline->setWall();
+                break;
+            case Door:
+                jpsline->setDoor();
+                break;
+            case Exit:
+                jpsline->setExit();
+                break;
+            default:
+                break;
+        }
         line_vector.push_back(jpsline);
         current_line=nullptr;
     }
@@ -1988,7 +2109,7 @@ void jpsGraphicsView::take_endpoint_from_xyEdit(const QPointF &endpoint)
         //line_vector.push_back(jpsline);
         translated_pos.setX(_currentVLine->line().p2().x());
         translated_pos.setY(_currentVLine->line().p2().y());
-        current_line = Scene->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),currentPen);
+        current_line = this->scene()->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),currentPen);
         current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
         emit set_focus_textedit();
         //translated_pos.setX(_currentVLine->line().p2().x());
@@ -2029,13 +2150,13 @@ bool jpsGraphicsView::get_objectsnap()
 void jpsGraphicsView::change_gridmode()
 {
     _gridmode=!_gridmode;
-    Scene->ChangeGridmode(_gridmode);
-    Scene->update();
+    ChangeGridmode(_gridmode);
+    this->scene()->update();
 }
 
 void jpsGraphicsView::en_disableWall()
 {
-    statWall=!statWall;
+/*    statWall=!statWall;
     statDoor=false;
     statExit=false;
     _statHLine=false;
@@ -2047,14 +2168,27 @@ void jpsGraphicsView::en_disableWall()
     else
     {
         currentPen.setColor(Qt::black);
-    }
+    }*/
 
+    drawingMode = Wall;
+
+    if(drawingMode != Wall)
+    {
+        emit no_drawing();
+    } else
+    {
+        currentPen.setColor(Qt::darkGray);
+    }
 }
 
 
 bool jpsGraphicsView::statusWall()
 {
-    return statWall;
+    if(drawingMode == Wall)
+    {
+        return true;
+    } else
+        return false;
 }
 
 void jpsGraphicsView::change_stat_anglesnap()
@@ -2069,7 +2203,7 @@ bool jpsGraphicsView::get_stat_anglesnap()
 
 void jpsGraphicsView::en_disableDoor()
 {
-    statDoor=!statDoor;
+/*    statDoor=!statDoor;
     statExit=false;
     statWall=false;
     statLandmark=false;
@@ -2081,18 +2215,31 @@ void jpsGraphicsView::en_disableDoor()
     else
     {
         currentPen.setColor(Qt::blue);
-    }
+    }*/
 
+    drawingMode = Door;
+
+    if(drawingMode != Door)
+    {
+        emit no_drawing();
+    } else
+    {
+        currentPen.setColor(Qt::blue);
+    }
 }
 
 bool jpsGraphicsView::statusDoor()
 {
-    return statDoor;
+    if(drawingMode == Door)
+    {
+        return true;
+    } else
+        return false;
 }
 
 void jpsGraphicsView::en_disableExit()
 {
-    statExit=!statExit;
+/*    statExit=!statExit;
     statDoor=false;
     statWall=false;
     _statHLine=false;
@@ -2104,22 +2251,38 @@ void jpsGraphicsView::en_disableExit()
     else
     {
         currentPen.setColor(Qt::darkMagenta);
+    }*/
+
+    drawingMode = Exit;
+
+    if(drawingMode != Exit)
+    {
+        emit no_drawing();
+    } else
+    {
+        currentPen.setColor(Qt::darkMagenta);
     }
 }
 
 bool jpsGraphicsView::statusHLine()
 {
-    return _statHLine;
+//    return _statHLine;
+    if(drawingMode == HLine)
+    {
+        return true;
+    } else
+        return false;
 }
 
 void jpsGraphicsView::en_disableHLine()
 {
-    _statHLine=!_statHLine;
+/*    _statHLine=!_statHLine;
     statExit=false;
     statDoor=false;
     statWall=false;
     statLandmark=false;
-    _statCopy=0;
+
+
     if (_statHLine==false)
     {
         emit no_drawing();
@@ -2127,22 +2290,45 @@ void jpsGraphicsView::en_disableHLine()
     else
     {
         currentPen.setColor(Qt::darkCyan);
+    }*/
+
+    _statCopy=0;
+    drawingMode = HLine;
+
+    if(drawingMode != HLine)
+    {
+        emit no_drawing();
+    } else
+    {
+        currentPen.setColor(Qt::darkCyan);
     }
 }
 
 bool jpsGraphicsView::statusLandmark()
 {
-    return statLandmark;
+//    return statLandmark;
+    if(drawingMode == Landmark)
+    {
+        return true;
+    } else
+        return false;
 }
 
 void jpsGraphicsView::en_disableLandmark()
 {
-    statLandmark=!statLandmark;
+/*    statLandmark=!statLandmark;
     statDoor=false;
     statWall=false;
     statExit=false;
-    _statCopy=0;
+
     if (statLandmark==false)
+    {
+        emit no_drawing();
+    }*/
+    _statCopy=0;
+    drawingMode = Landmark;
+
+    if(drawingMode != Landmark)
     {
         emit no_drawing();
     }
@@ -2150,7 +2336,12 @@ void jpsGraphicsView::en_disableLandmark()
 
 bool jpsGraphicsView::statusExit()
 {
-    return statExit;
+//    return statExit;
+    if(drawingMode == Exit)
+    {
+        return true;
+    } else
+        return false;
 }
 
 void jpsGraphicsView::start_Copy_function()
@@ -2231,4 +2422,323 @@ QPointF jpsGraphicsView::getNearstPointOnLine(jpsLineItem* selected_line)
     }
 
     return newPoint;
+
+}
+
+/*
+    since 0.8.8
+
+    Draw background
+ */
+void jpsGraphicsView::drawBackground(QPainter *painter, const QRectF &rect)
+{
+    if (_gridmode)
+    {
+        if (_statgrid=="Line")
+            DrawLineGrid(painter,rect);
+        else
+            DrawPointGrid(painter,rect);
+    }
+}
+
+void jpsGraphicsView::DrawLineGrid(QPainter *painter, const QRectF &rect)
+{
+    //gridSize=1.0;
+    qreal left = int(rect.left()-_translationX) - std::fmod(int(rect.left()-_translationX), _gridSize);
+    qreal top = int(rect.top()-_translationY)- std::fmod(int(rect.top()-_translationY) , _gridSize);
+
+    QVarLengthArray<QLineF, 100> lines;
+
+    for (qreal x = left; x < rect.right()-_translationX; x += _gridSize)
+        lines.append(QLineF(x+_translationX, rect.top(), x+_translationX, rect.bottom()));
+    for (qreal y = top; y < rect.bottom()-_translationY; y += _gridSize)
+        lines.append(QLineF(rect.left(), y+_translationY, rect.right(), y+_translationY));
+
+    QRectF origin(-0.5,-0.5,1,1);
+    QLineF xaxis(0,0,0,100000);
+    QLineF yaxis(0,0,100000,0);
+
+    //qDebug() << lines.size();
+    painter->setPen(QPen(Qt::gray,0));
+    painter->drawLines(lines.data(), lines.size());
+
+    //draw orgin and x y axis
+//    painter->setPen(QPen(Qt::red,0));
+//    painter->drawRect(origin);
+//    painter->fillRect(origin, Qt::red);
+//    painter->drawLine(xaxis);
+//    painter->drawLine(yaxis);
+}
+
+void jpsGraphicsView::DrawPointGrid(QPainter *painter, const QRectF &rect)
+{
+    qreal left = int(rect.left()-_translationX) - std::fmod(int(rect.left()-_translationX), _gridSize);
+    qreal top = int(rect.top()-_translationY)- std::fmod(int(rect.top()-_translationY) , _gridSize);
+
+    QVarLengthArray<QPointF, 100> points;
+
+    for (qreal x = left; x < rect.right()-_translationX; x += _gridSize)
+    {
+        for (qreal y = top; y < rect.bottom()-_translationY; y += _gridSize)
+        {
+            points.append(QPointF(x+_translationX, y+_translationY));
+        }
+    }
+    //qDebug() << lines.size();
+    painter->setPen(QPen(Qt::black,0));
+    painter->drawPoints(points.data(), points.size());
+}
+
+void jpsGraphicsView::setDrawingMode(DrawingMode mode) {
+    drawingMode = mode;
+}
+
+void jpsGraphicsView::enableEditMode()
+{
+    setDrawingMode(Editing);
+
+    if(drawingMode!= Editing)
+    {
+        emit no_drawing();
+    } else
+    {
+    }
+}
+
+//Grid mode
+void jpsGraphicsView::ChangeGridmode(const bool &stat)
+{
+    _gridmode=stat;
+}
+
+bool jpsGraphicsView::GetGridmode() const
+{
+    return _gridmode;
+}
+
+void jpsGraphicsView::ChangeTranslation(qreal x, qreal y)
+{
+    _translationX=x;
+    _translationY=y;
+}
+
+void jpsGraphicsView::SetGrid(QString grid)
+{
+    _statgrid=grid;
+}
+
+void jpsGraphicsView::ChangeGridSize(const qreal &gridSize)
+{
+    _gridSize=gridSize;
+}
+
+
+// For source
+void jpsGraphicsView::enableSourceMode()
+{
+    setDrawingMode(Source);
+
+    if(drawingMode != Source)
+    {
+        emit no_drawing();
+    } else
+    {
+        currentPen.setColor(Qt::darkRed);
+    }
+}
+
+void jpsGraphicsView::drawSource()
+{
+    if(currentSource == nullptr) // if the mouse was pressed first of two times
+    {
+        //Determining first point of source
+        currentSource = this->scene()->addRect(translated_pos.x(),translated_pos.y(),0,0,currentPen);
+        currentSource->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+
+    } else
+    {
+        // if the mouse was pressed secondly of two times
+        auto *sourceItem = new JPSSource(currentSource);
+        this->scene()->addItem(sourceItem);
+//        sourceGroup->addToGroup(sourceItem);
+        emit sourcesChanged();
+
+        // currentSource shouldn't be kept in scene, when source is saved
+        this->scene()->removeItem(currentSource);
+        delete currentSource;
+        currentSource = nullptr;
+    }
+}
+
+/*
+    since 0.8.8
+
+    Will be used for showing sources in widget, sources list is saved in datamanager
+ */
+QList<JPSSource *> jpsGraphicsView::getSources() {
+
+    QList<JPSSource *> sources;
+
+            foreach(QGraphicsItem *item, items())
+        {
+            switch (item->type()) {
+                case  SourceElementType:
+                {
+                    auto *source = qgraphicsitem_cast<JPSSource *>(item);
+                    sources.append(source);
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+    return sources;
+}
+
+void jpsGraphicsView::deleteSource(int index)
+{
+    if(getSources().at(index) != nullptr)
+        scene()->removeItem(getSources().at(index));
+}
+
+void jpsGraphicsView::changeSource(int index)
+{
+    if(getSources().at(index) != nullptr)
+    {
+        scene()->update();
+    }
+
+}
+
+void jpsGraphicsView::seleteSource(const QModelIndex &index)
+{
+    for(int i=0; i<getSources().size(); i++)
+    {
+        if(i==index.row())
+        {
+            getSources().at(i)->setSelected(true);
+        }
+        else
+        {
+            getSources().at(i)->setSelected(false);
+        }
+    }
+
+//    if(getSources().at(index.row()) != nullptr)
+//        getSources().at(index.row())->setSelected(true);
+
+
+    this->scene()->update();
+}
+
+//QGraphicsItemGroup *jpsGraphicsView::getSourceGroup() const {
+//    return sourceGroup;
+//}
+
+// Goal Mode
+/*
+    since 0.8.8
+
+    Change drawing mode to goal
+ */
+
+void jpsGraphicsView::enableGoalMode()
+{
+    setDrawingMode(Goal);
+
+    if(drawingMode != Goal)
+    {
+        emit no_drawing();
+    } else
+    {
+        currentPen.setColor(Qt::darkGreen);
+    }
+}
+
+/*
+    since 0.8.8
+
+    Responds when mouse click
+ */
+
+void jpsGraphicsView::drawGoal()
+{
+    if(currentGoal == nullptr) // if the mouse was pressed first of two times
+    {
+        //Determining first point of source
+        currentGoal = this->scene()->addRect(translated_pos.x(),translated_pos.y(),0,0,currentPen);
+        currentGoal->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+
+    } else
+    {
+        // if the mouse was pressed secondly of two times
+        auto *goalItem = new JPSGoal(currentGoal);
+        this->scene()->addItem(goalItem);
+        emit goalsChanged();
+
+        // currentGoal shouldn't be kept in scene, when source is saved
+        this->scene()->removeItem(currentGoal);
+        delete currentGoal;
+        currentGoal = nullptr;
+    }
+}
+
+/*
+    since 0.8.8
+
+    Will be used for showing goals in widget, goals list is saved in datamanager
+ */
+QList<JPSGoal *> jpsGraphicsView::getGoals() {
+
+    QList<JPSGoal *> goals;
+
+            foreach(QGraphicsItem *item, items())
+        {
+            switch (item->type()) {
+                case GoalElementType:
+                {
+                    auto *goal = qgraphicsitem_cast<JPSGoal *>(item);
+                    goals.append(goal);
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+    return goals;
+}
+
+void jpsGraphicsView::changeGoal(int index)
+{
+    if(getGoals().at(index) != nullptr)
+    {
+        scene()->update();
+    }
+
+}
+
+void jpsGraphicsView::deleteGoal(int index)
+{
+    if(getGoals().at(index) != nullptr)
+        scene()->removeItem(getGoals().at(index));
+}
+
+
+void jpsGraphicsView::seleteGoal(const QModelIndex &index)
+{
+    for(int i=0; i<getGoals().size(); i++)
+    {
+        if(i==index.row())
+        {
+            getGoals().at(i)->setSelected(true);
+        }
+        else
+        {
+            getGoals().at(i)->setSelected(false);
+        }
+    }
+
+    this->scene()->update();
 }

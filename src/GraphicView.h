@@ -31,11 +31,12 @@
 
 #include <QGraphicsView>
 //#include <QGraphicsSceneMouseEvent>
-#include "graphicscene.h"
 #include <QGraphicsLineItem>
 #include "jpsLineItem.h"
 #include "jpslandmark.h"
 #include "jpsconnection.h"
+#include "jpssource.h"
+#include "jpsgoal.h"
 #include "./UndoFramework/actionstack.h"
 
 using ptrConnection = std::shared_ptr<jpsConnection>;
@@ -49,12 +50,12 @@ class jpsGraphicsView: public QGraphicsView {
 
 public:
     //Constructor
-    jpsGraphicsView(QWidget* parent = nullptr, jpsDatamanager* datamanager=nullptr);
+    explicit jpsGraphicsView(QWidget* parent = nullptr, jpsDatamanager* datamanager=nullptr);
 
     //Destructor
-    ~jpsGraphicsView();
+    ~jpsGraphicsView() override;
 
-    QGraphicsScene* GetScene();
+    QGraphicsScene *GetScene();
     const qreal& GetTranslationX() const;
     const qreal& GetTranslationY() const;
     const qreal& GetScaleF() const;
@@ -62,10 +63,13 @@ public:
     //Pos
     const QPointF& return_Pos() const;
 
-
+    //datamanger
     void SetDatamanager(jpsDatamanager* datamanager);
 
     //Change modes
+    enum DrawingMode {Selecting, Editing, Wall, Door, Exit, HLine, Landmark, Source, Goal};
+    void setDrawingMode(DrawingMode mode);
+
     void change_stat_anglesnap();
     bool get_stat_anglesnap();
     void change_objectsnap();
@@ -81,6 +85,12 @@ public:
     void en_disableHLine();
     bool statusLandmark();
     void en_disableLandmark();
+    void enableSourceMode();
+    void drawSource();
+    void drawGoal();
+    void enableEditMode();
+    void enableGoalMode();
+
 
     // global functions
     qreal get_scale_f();
@@ -162,6 +172,16 @@ public:
     void UndoLineEdit(const int &lineID, const QLineF &old_line);
     void RedoLineEdit(const int &lineID, const QLineF &old_line);
 
+    //Grid Mode
+    void ChangeGridmode(const bool& stat);
+    bool GetGridmode() const;
+    void ChangeTranslation(qreal x, qreal y);
+    void SetGrid(QString grid);
+    void ChangeGridSize(const qreal& factor);
+
+    QList<JPSSource *> getSources();
+    QList<JPSGoal *> getGoals();
+
 public slots:
     //Landmarks/Regions
     void StatPositionDef();
@@ -176,16 +196,26 @@ public slots:
     //Undo Redo
     void Undo();
     void Redo();
+    void deleteSource(int index);
+    void seleteSource(const QModelIndex &index);
+    void changeSource(int index);
 
+    void changeGoal(int index);
+    void deleteGoal(int index);
+    void seleteGoal(const QModelIndex &index);
 
 protected:
     //Mouse events
-    virtual void mouseMoveEvent(QMouseEvent * mouseEvent);
+    void mouseMoveEvent(QMouseEvent * mouseEvent) override;
     //void paintEvent(QPaintEvent* event);
-    virtual void mousePressEvent(QMouseEvent *event);
-    virtual void mouseDoubleClickEvent(QMouseEvent *event);
-    virtual void wheelEvent(QWheelEvent *event);
-    virtual void mouseReleaseEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    //Grid Mode
+    void drawBackground(QPainter *painter, const QRectF &rect) override;
+    void DrawLineGrid(QPainter *painter, const QRectF &rect);
+    void DrawPointGrid(QPainter *painter, const QRectF &rect);
 
 protected slots:
     void changeStart_endpoint(bool state);
@@ -205,25 +235,27 @@ private:
     //QList<QList<jpsLineItem*> *> mainlist;
     QPointF pos;
     //QPointF* intersection_point;
-    GraphicScene* Scene;
     bool midbutton_hold;
     bool leftbutton_hold;
     qreal translation_x;
     qreal translation_y;
     QPointF translated_pos;
     bool anglesnap;
-    bool statWall;
-    bool statDoor;
-    bool statExit;
-    bool statLandmark;
-    bool _statHLine;
+
+    // Drawing Mode
+    DrawingMode drawingMode;
+//    bool statWall;
+//    bool statDoor;
+//    bool statExit;
+//    bool statLandmark;
+//    bool _statHLine;
+
     bool stat_break_;
     int _statCopy;
     QPointF _copyOrigin;
     qreal catch_radius;
     qreal _scaleFactor;
     qreal gl_scale_f;
-    qreal _gridSize;
     bool point_tracked;
     QGraphicsItem* current_rect;
     QGraphicsRectItem* currentSelectRect;
@@ -241,6 +273,16 @@ private:
     QList<QGraphicsTextItem* > caption_list;
     int id_counter;
 
+    //Source
+    QGraphicsRectItem *currentSource;
+
+    //Goal
+    QGraphicsRectItem *currentGoal;
+
+//    QGraphicsItemGroup *sourceGroup;
+//    QGraphicsItemGroup *getSourceGroup() const;
+
+private:
 
     //Landmark and waypoints
     jpsLandmark* markedLandmark;
@@ -257,7 +299,7 @@ private:
     QGraphicsPixmapItem* gridmap;
     bool _statLineEdit;
     bool lines_collided;
-    bool _gridmode;
+
 
     //Undo/Redo
     ActionStack _undoStack;
@@ -265,6 +307,13 @@ private:
 
     //View
     bool statzoomwindows;
+
+    //Grid Mode
+    qreal _gridSize;
+    bool _gridmode;
+    qreal _translationX;
+    qreal _translationY;
+    QString _statgrid;
 
 signals:
     void mouse_moved();
@@ -278,6 +327,8 @@ signals:
     void DefConnection1Completed();
     void DefConnection2Completed();
     void RegionDefCompleted();
+    void sourcesChanged();
+    void goalsChanged();
     //void DoubleClick();
 
 };

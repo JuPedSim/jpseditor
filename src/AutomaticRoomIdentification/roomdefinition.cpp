@@ -102,7 +102,7 @@ void RoomDefinition::SetUpRoomsAndDoors()
         if (crossing->get_roomList().size()<2)
         {
             crossing->SetStatExit(true);
-            crossing->get_cLine()->set_Exit();
+            crossing->get_cLine()->setExit();
         }
     }
 

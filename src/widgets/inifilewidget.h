@@ -2,7 +2,7 @@
 #define INIFILEWIDGET_H
 
 #include <QWidget>
-#include "tinyxml/tinyxml.h"
+#include "src/tinyxml/tinyxml.h"
 
 namespace Ui {
 class InifileWidget;

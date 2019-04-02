@@ -42,11 +42,11 @@
 #include "GraphicView.h"
 #include "jpsconnection.h"
 #include "jpsregion.h"
+#include "jpssource.h"
 #include <random>
 
 #include "../dxflib/src/dl_creationadapter.h"
 #include "../dxflib/src/dl_dxf.h"
-
 
 using ptrConnection = std::shared_ptr<jpsConnection>;
 
@@ -103,7 +103,18 @@ public:
     const int& GetRegionCounter() const;
     //Layers
     QList<QString> getElevationList();
-    //
+
+    //Sources TODO: write sources by a writer class
+    void writeSourceXML(QFile &file);
+    void writeSourceHeader(QXmlStreamWriter *stream);
+    void writeSources(QXmlStreamWriter *stream, QList<JPSSource *>& sourcelist);
+
+
+    //Goals TODO: write goals by a writer class
+    void writeGoalXML(QFile &file);
+    void writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *>& goallist);
+
+
     void remove_all();
     void remove_marked_lines();
     void set_view(jpsGraphicsView* view);
@@ -116,6 +127,7 @@ public:
 
 
     // Read XML
+
     bool readXML(QFile &file);
     bool readRoutingXML(QFile &file);
     void parseHline(QXmlStreamReader &xmlReader);
@@ -127,6 +139,7 @@ public:
     void parseObstacles(QXmlStreamReader &xmlReader, jpsRoom *room);
     QPointF parseUp(QXmlStreamReader &xmlReader); /// stair's up point
     QPointF parseDown(QXmlStreamReader &xmlReader); /// stair's down point
+
     // Write XML
     void writeXML(QFile &file);
     void writeRoutingXML(QFile &file);
@@ -206,6 +219,9 @@ private:
     QList<jpsConnection* > _ConnectionsAfterLandmarkLoose;
     QList<jpsRegion* > _regions;
 
+    QList<JPSSource *> sourcelist;
+    QList<JPSGoal *> goallist;
+
     int room_id_counter;
     int obs_id_counter;
     QWidget* parent_widget;
@@ -222,8 +238,6 @@ private:
     QString _currentCogMapFileName;
 
     std::default_random_engine _generator;
-
-
 
 };
 

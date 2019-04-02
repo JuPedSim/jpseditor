@@ -5,7 +5,7 @@
 
 #include "inifilewidget.h"
 #include "ui_inifilewidget.h"
-#include "tinyxml/tinyxml.h"
+#include "src/tinyxml/tinyxml.h"
 
 InifileWidget::InifileWidget(QWidget *parent) :
     QWidget(parent),

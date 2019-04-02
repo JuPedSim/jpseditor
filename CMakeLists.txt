@@ -26,7 +26,7 @@ cmake_minimum_required(VERSION 3.2)
 # ENDIF (POLICY CMP0025)
 
 project(JPSeditor LANGUAGES CXX)
-set (CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -46,7 +46,7 @@ endif()
 
 message( STATUS "Generating  ................................... ${PROJECT_NAME} (${JPSEDITOR_VERSION}) -- ${CMAKE_BUILD_TYPE}")
 if(APPLE )
-    set(CMAKE_INSTALL_PREFIX "/Applications")
+  set (CMAKE_INSTALL_PREFIX "/Applications")
   set (CMAKE_PREFIX_PATH "/Applications/Qt/5.12.0/clang_64")
 endif()
 message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
@@ -102,7 +102,7 @@ set( SRCS
     src/main.cpp
     src/GraphicView.cpp
     src/graphicscene.cpp
-    src/roomwidget.cpp
+    src/widgets/roomwidget.cpp
     src/rooms.cpp
     src/datamanager.cpp
     src/jpscrossing.cpp
@@ -110,13 +110,24 @@ set( SRCS
     src/jpsexit.cpp
     src/jpsobstacle.cpp
     src/jpslandmark.cpp
-    src/widgetlandmark.cpp
-    src/widgetsettings.cpp
+    src/widgets/widgetlandmark.cpp
+    src/widgets/widgetsettings.cpp
     src/jpsconnection.cpp
     src/jpsregion.cpp
-    src/settingdialog.cpp
-    src/inifilewidget.cpp
-    src/snappingoptions.cpp
+    src/widgets/settingdialog.cpp
+    src/widgets/inifilewidget.cpp
+    src/widgets/snappingoptions.cpp
+        src/jpssource.cpp
+    src/widgets/sourcewidget.cpp
+    src/jpsgoal.cpp
+    src/widgets/goalwidget.cpp
+    src/global.cpp
+    src/models/jpselementlistmodel.cpp
+    src/models/jpssourcelistmodel.cpp
+    src/models/jpsgoallistmodel.cpp
+    src/XML/goalreader.cpp
+    src/XML/sourcereader.cpp
+
 
     dxflib/src/dl_writer_ascii.cpp
     dxflib/src/dl_dxf.cpp
@@ -136,7 +147,7 @@ set( HDR
     src/mainWindow.h
     src/GraphicView.h
     src/graphicscene.h
-    src/roomwidget.h
+    src/widgets/roomwidget.h
     src/rooms.h
     src/datamanager.h
     src/jpscrossing.h
@@ -144,14 +155,25 @@ set( HDR
     src/jpsexit.h
     src/jpsobstacle.h
     src/jpslandmark.h
-    src/widgetlandmark.h
-    src/widgetsettings.h
+    src/widgets/widgetlandmark.h
+    src/widgets/widgetsettings.h
     src/jpsconnection.h
     src/jpsregion.h
     src/dtrace.h
-    src/settingdialog.h
-    src/inifilewidget.h
-    src/snappingoptions.h
+    src/widgets/settingdialog.h
+    src/widgets/inifilewidget.h
+    src/widgets/snappingoptions.h
+        src/jpssource.h
+    src/widgets/sourcewidget.h
+    src/widgets/goalwidget.h
+    src/elementtype.h
+    src/global.h
+    src/models/jpselementlistmodel.h
+    src/models/jpssourcelistmodel.h
+    src/jpsgoal.h
+    src/models/jpsgoallistmodel.h
+    src/XML/goalreader.h
+    src/XML/sourcereader.h
 
     dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h
@@ -184,6 +206,8 @@ set( UIS
     forms/settingdialog.ui
     forms/inifilewidget.ui
     forms/snappingoptions.ui
+    forms/sourcewidget.ui
+    forms/goalwidget.ui
   )
 
 # and finally a resource file
@@ -211,7 +235,7 @@ endif()
 message(STATUS "Searching for Qt version ...................... " ${DESIRED_QT_VERSION})
 # find packages according to qt version
 if("${DESIRED_QT_VERSION}" STREQUAL "5")
-  find_package(Qt5Widgets REQUIRED)
+  FIND_PACKAGE(Qt5Widgets REQUIRED)
   # - these find_packages are not necessary? -----------
   FIND_PACKAGE(Qt5Core REQUIRED)
   FIND_PACKAGE(Qt5Gui REQUIRED)
@@ -378,7 +402,7 @@ endif()
 IF(APPLE)
   # set how it shows up in the Info.plist file
   SET(MACOSX_EDIT_ICON jupedsim.icns)
-  SET(MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2015-2018 Forschungszentrum Juelich. All rights reserved.")
+  SET(MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2015-2019 Forschungszentrum Juelich. All rights reserved.")
   SET(MACOSX_BUNDLE_BUNDLE_NAME "${PROJECT_NAME}")
   SET(MACOSX_BUNDLE_BUNDLE_VERSION "${JPSEDITOR_VERSION}")
   SET(MACOSX_BUNDLE_LONG_VERSION_STRING "version ${JPSEDITOR_VERSION}")
@@ -386,7 +410,6 @@ IF(APPLE)
   SET(MACOSX_BUNDLE_EDIT_IDENTIFIER "https://www.jupedsim.org")
   # set where in the bundle to put the icns file
   # set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Resources/Info.plist.in)
-
 ENDIF(APPLE)
 
 # To Create a package, one can run "cpack -G DragNDrop CPackConfig.cmake" on Mac OS X

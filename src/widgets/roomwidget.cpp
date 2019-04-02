@@ -28,11 +28,11 @@
 
 #include "roomwidget.h"
 #include "ui_roomwidget.h"
-#include "rooms.h"
+#include "src/rooms.h"
 #include <iostream>
 #include <QDebug>
-#include "./AutomaticRoomIdentification/roomdefinition.h"
-#include "./AutomaticRoomIdentification/roomidentification.h"
+#include "src/AutomaticRoomIdentification/roomdefinition.h"
+#include "src/AutomaticRoomIdentification/roomidentification.h"
 
 roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsView *gview) :
     QTabWidget(parent),
@@ -86,7 +86,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->classBox,SIGNAL(activated(int)),this,SLOT(ChangeRoomType()));
     connect(ui->classBox,SIGNAL(currentIndexChanged(int)),this,SLOT(ChangeRoomType()));
     //tab crossing
-    connect(ui->addCrossingButton2,SIGNAL(clicked(bool)),this,SLOT(new_crossing()));
+    connect(ui->addCrossingButton,SIGNAL(clicked(bool)),this,SLOT(new_crossing()));
     connect(ui->crossingList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(enable_roomSelectionCrossings()));
     connect(ui->roomBox_from,SIGNAL(activated(int)),this,SLOT(add_rooms_to_crossing()));
     connect(ui->roomBox_to,SIGNAL(activated(int)),this,SLOT(add_rooms_to_crossing()));
@@ -279,14 +279,16 @@ void roomWidget::change_roomname()
 void roomWidget::addWall()
 {
      qDebug("Enter roomWidget::addWall");
+
     if (graphview->get_markedLines().size()>0)
     {
-
-        if (ui->list_rooms->currentItem()!=nullptr)
+        qDebug("%d",graphview->get_markedLines().size());
+        if (ui->list_rooms->currentItem()!=0L)
         {
             int crow=ui->list_rooms->currentRow();
 
             datamanager->get_roomlist()[crow]->addWall(graphview->get_markedLines());
+
             this->showWallsAndType();
         }
     }
@@ -470,7 +472,7 @@ void roomWidget::add_rooms_to_crossing()
             {
                 datamanager->get_crossingList()[cCrossingRow]->add_rooms(datamanager->get_roomlist()[cRoomRow1]);
                 datamanager->get_crossingList()[cCrossingRow]->SetStatExit(true);
-                datamanager->get_crossingList()[cCrossingRow]->get_cLine()->set_Exit();
+                datamanager->get_crossingList()[cCrossingRow]->get_cLine()->setExit();
             }
 
             else
@@ -478,7 +480,7 @@ void roomWidget::add_rooms_to_crossing()
                 datamanager->get_crossingList()[cCrossingRow]->add_rooms(datamanager->get_roomlist()[cRoomRow1],
                                                                  datamanager->get_roomlist()[cRoomRow2]);
                 datamanager->get_crossingList()[cCrossingRow]->SetStatExit(false);
-                datamanager->get_crossingList()[cCrossingRow]->get_cLine()->set_Door();
+                datamanager->get_crossingList()[cCrossingRow]->get_cLine()->setDoor();
             }
         }
     }

@@ -31,8 +31,8 @@
 #include <iostream>
 #include <utility>
 #include <chrono>
-#include <QFileDialog>
-#include <QDebug>
+#include <QtWidgets>
+
 using myClock = std::chrono::high_resolution_clock;
 
 
@@ -54,6 +54,7 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 
 
     roomlist= QList<jpsRoom *> ();
+    sourcelist = _mView->getSources();
 }
 
 jpsDatamanager::~jpsDatamanager()
@@ -288,7 +289,7 @@ void jpsDatamanager::new_exit(QList <jpsLineItem *> newExits)
 
 void jpsDatamanager::new_exit(jpsLineItem *newExit)
 {
-     qDebug("Enter jpsDatamanager::new_exit");
+    qDebug("Enter jpsDatamanager::new_exit");
     jpsExit* newEx = new jpsExit(newExit);
     exitList.push_back(newEx);
     qDebug("Leave jpsDatamanager::new_exit");
@@ -632,7 +633,6 @@ void jpsDatamanager::WriteRegions(QXmlStreamWriter *stream, int k, double m, dou
 
 void jpsDatamanager::AutoSaveXML(QFile &file)
 {
-     return ; //todo: temporary deactivate. Crashes often
     qDebug("Enter jpsDatamanager::AutoSaveXML");
     QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
     QList<jpsLineItem* > lines = _mView->get_line_vector();
@@ -1801,6 +1801,7 @@ jpsGraphicsView * jpsDatamanager::get_view()
 
 //}
 
+
 bool jpsDatamanager::readXML(QFile &file)
 {
 
@@ -2808,9 +2809,6 @@ jpsRegion* jpsDatamanager::ParseRegion(QXmlStreamReader &xmlReader)
 
 }
 
-
-
-
 bool LineIsEqual(const QLineF& line1, const QLineF& line2, double eps)
 {
    if ((line1.p1().x()>=line2.p1().x()-eps && line1.p1().x()<=line2.p1().x()+eps) &&
@@ -2831,8 +2829,167 @@ bool LineIsEqual(const QLineF& line1, const QLineF& line2, double eps)
        return false;
 }
 
+/*
+    since 0.8.8
+
+    For save and read sources
 
 
+    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <JPScore project="JPS-Project" version="0.8">
+        <agents_sources>
+            <source />
+        </agents_sources>
+    </JPScore>
+
+*/
+
+void jpsDatamanager::writeSources(QXmlStreamWriter *stream, QList<JPSSource *> &sourcelist) {
+    for(JPSSource* source:sourcelist)
+    {
+        if(source->isBeSaved())
+        {
+            stream->writeStartElement("source");
+            stream->writeAttribute("id",QString::number(source->getId()));
+            stream->writeAttribute("frequency",source->getFrequency());
+            stream->writeAttribute("N_create",source->getN_create());
+            stream->writeAttribute("percent",source->getPercent());
+            stream->writeAttribute("rate",source->getRate());
+            stream->writeAttribute("time_min",source->getTime_min());
+            stream->writeAttribute("time_max",source->getTime_max());
+            stream->writeAttribute("agents_max",source->getAgents_max());
+            stream->writeAttribute("group_id",source->getGroup_id());
+            stream->writeAttribute("caption",source->getCaption());
+            stream->writeAttribute("greedy",source->getGreedy());
+            stream->writeAttribute("time",source->getTime());
+            stream->writeAttribute("startX",source->getStartX());
+            stream->writeAttribute("startY",source->getStartY());
+            stream->writeAttribute("x_min",QString::number(source->getX_min()));
+            stream->writeAttribute("x_max",QString::number(source->getX_max()));
+            stream->writeAttribute("y_min",QString::number(source->getY_min()));
+            stream->writeAttribute("y_max",QString::number(source->getY_max()));
+            stream->writeEndElement();
+        }
+
+    }
+}
+
+void jpsDatamanager::writeSourceXML(QFile &file) {
+    QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
+
+    writeSourceHeader(stream);
+
+    stream->writeStartElement("agents_sources");
+    sourcelist.clear();
+    sourcelist = _mView->getSources();
+    writeSources(stream, sourcelist);
+    stream->writeEndElement(); //end sources
+
+    stream->writeEndDocument();
+
+    delete stream;
+    stream = nullptr;
+}
+
+void jpsDatamanager::writeSourceHeader(QXmlStreamWriter *stream)
+{
+    qDebug("Enter jpsDatamanager::writeSourceHeader");
+    stream->setAutoFormatting(true);
+    stream->writeStartDocument("1.0",true);
+
+    stream->writeStartElement("JPScore");
+    stream->writeAttribute("project","JPS-Project");
+    stream->writeAttribute("version", "0.8");
+
+    qDebug("Leave jpsDatamanager::writeSourceHeader");
+}
+/*
+    since 0.8.8
+
+    For save and read goals
+
+    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <JPScore project="JPS-Project" version="0.8">
+        <goals>
+            <goal id="1" final="true" caption="goal1">
+                <polygon>
+                    <vertex px="3.6" py="-3.0" />
+                    <vertex px="3.6" py="-4.0" />
+                    <vertex px="5.2" py="-4.0" />
+                    <vertex px="5.2" py="-3.0" />
+                    <vertex px="3.6" py="-3.0" />
+                </polygon>
+            </goal>
+        </goals>
+    </JPScore>
+*/
+
+void jpsDatamanager::writeGoalXML(QFile &file)
+{
+    QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
+
+    stream->setAutoFormatting(true);
+
+    stream->writeStartDocument("1.0",true);
+
+    stream->writeStartElement("JPScore");
+    stream->writeAttribute("project","JPS-Project");
+    stream->writeAttribute("version", "0.8");
+
+    stream->writeStartElement("goals");
+    goallist.clear();
+    goallist = _mView->getGoals();
+    writeGoals(stream, goallist);
+    stream->writeEndElement(); //end goals
+
+    stream->writeEndDocument();
+
+    delete stream;
+    stream = nullptr;
+}
+
+void jpsDatamanager::writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *> &goallist)
+{
+    for(JPSGoal* goal:goallist)
+    {
+        if(goal->getBeSaved() == "true")
+        {
+            stream->writeStartElement("goal");
+            stream->writeAttribute("id",QString::number(goal->getId()));
+            stream->writeAttribute("final",goal->getIsFinal());
+            stream->writeAttribute("caption",goal->getCaption());
+
+            stream->writeStartElement("polygon");
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px", QString::number(goal->rect().topLeft().x()));
+            stream->writeAttribute("py", QString::number(goal->rect().topLeft().y()));
+            stream->writeEndElement();
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px", QString::number(goal->rect().topRight().x()));
+            stream->writeAttribute("py", QString::number(goal->rect().topRight().y()));
+            stream->writeEndElement();
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px", QString::number(goal->rect().bottomRight().x()));
+            stream->writeAttribute("py", QString::number(goal->rect().bottomRight().y()));
+            stream->writeEndElement();
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px", QString::number(goal->rect().bottomLeft().x()));
+            stream->writeAttribute("py", QString::number(goal->rect().bottomLeft().y()));
+            stream->writeEndElement();
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px", QString::number(goal->rect().topLeft().x()));
+            stream->writeAttribute("py", QString::number(goal->rect().topLeft().y()));
+            stream->writeEndElement();
+
+            stream->writeEndElement();
+        }
+    }
+}
 
 
 

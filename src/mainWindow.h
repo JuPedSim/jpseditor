@@ -34,16 +34,21 @@
 #include <QtGui>
 #include <QLabel>
 #include <QLineEdit>
+#include <QDockWidget>
 #include "ui_mainwindow.h"
-#include "roomwidget.h"
-#include "widgetlandmark.h"
-#include "widgetsettings.h"
+#include "src/widgets/roomwidget.h"
+#include "src/widgets/widgetlandmark.h"
+#include "src/widgets/widgetsettings.h"
 #include "GraphicView.h"
 #include "datamanager.h"
 #include "rooms.h"
-#include "settingdialog.h"
-#include "inifilewidget.h"
-#include "snappingoptions.h"
+#include "src/widgets/settingdialog.h"
+#include "src/widgets/inifilewidget.h"
+#include "src/widgets/snappingoptions.h"
+#include "src/widgets/sourcewidget.h"
+#include "src/widgets/goalwidget.h"
+#include "src/XML/goalreader.h"
+#include "src/XML/sourcereader.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 
@@ -57,10 +62,18 @@ private:
     roomWidget* rwidget;
     widgetLandmark* lwidget;
     InifileWidget * inifileWidget;
+
+    QDockWidget *sourceDockWidget;
+    SourceWidget *sourceWidget;
+
+    QDockWidget *goalDockWidget;
+    GoalWidget *goalWidget;
+
     SnappingOptions* snappingOptions;
 //    WidgetSettings* _settings;
     jpsDatamanager* dmanager;
     jpsGraphicsView* mview;
+    QGraphicsScene *mscene;
     //QVBoxLayout* VBox;
     QLineEdit* length_edit;
     QLineEdit* x_edit;
@@ -84,13 +97,23 @@ private:
     bool _statScale;
     QList<bool> objectsnapping;
 
+    QActionGroup *drawingActionGroup;
+
 protected slots:
     
     //parseFiles
     void openFileDXF();
+
+    //For "Load XML" menu button
     void openFileXML();
+    void openGeometry(QString fileName);
+    void openRouting(QString fileName);
+    void openSource(QString fileName);
+    void openGoal(QString fileName);
+
     void openFileCogMap();
     void OpenLineFile();
+
     void saveAsXML();
     void saveAsDXF();
 
@@ -109,6 +132,10 @@ protected slots:
     void en_disableHLine();
     void disableDrawing();
     void objectsnap();
+    void sourceButtonClicked();
+    void editModeButtonClicked();
+    void goalButtionClicked();
+
 
     //Line operations
     void show_coords();
