@@ -114,7 +114,6 @@ public:
     void writeGoalXML(QFile &file);
     void writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *>& goallist);
 
-
     void remove_all();
     void remove_marked_lines();
     void set_view(jpsGraphicsView* view);
@@ -160,6 +159,7 @@ public:
     void writeNotAssignedDoors(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
 
+    void writeTransitionXML(QFile &file);
 
     //Write Cognitive Map XML
     void WriteCognitiveMapXML(QFile &file, bool fuzzy=false);

@@ -66,6 +66,10 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     ui->classBox->addItem("Entrance");
     ui->classBox->addItem("Stair");
 
+    // Door state
+    ui->stateComboBox->addItem("Open");
+    ui->stateComboBox->addItem("Close");
+
     //SIGNALS AND SLOTS
     //close
 //    connect(ui->closeButton_3,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_room()));

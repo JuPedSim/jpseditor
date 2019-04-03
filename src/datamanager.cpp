@@ -445,11 +445,10 @@ void jpsDatamanager::writeXML(QFile &file)
     stream->writeStartElement("rooms");
     writeRooms(stream,lines);
     stream->writeEndElement();
-    
 
     stream->writeStartElement("transitions");
     writeTransitions(stream,lines);
-    exitList.clear();
+//    exitList.clear();
     stream->writeEndElement();//transitions
 
     stream->writeStartElement("Undefine");
@@ -998,8 +997,8 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineIte
         stream->writeStartElement("transition");
 
         stream->writeAttribute("id",QString::number(i));
-        stream->writeAttribute("caption","NaN");
-        stream->writeAttribute("type","NaN");
+        stream->writeAttribute("caption","exit");
+        stream->writeAttribute("type","emergency");
         // transition to stair
         if (exitList[i]->get_roomList().size()==1 && exitList[i]->get_roomList()[0]->get_type()=="Stair")
         {
@@ -2991,8 +2990,48 @@ void jpsDatamanager::writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *> &goal
     }
 }
 
+/*
+    since v0.8.8
 
+    Save transitions as external file
 
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<JPScore>
+  <transitions>
+    <transition id="1" caption="exit" type="emergency" room1_id="0" subroom1_id="0" room2_id="2" subroom2_id="0">
+      <vertex px="9.2" py="2.8" />
+      <vertex px="9.2" py="6.4" />
+    </transition>
+    <transition id="2" caption="exit" type="emergency" room1_id="0" subroom1_id="0" room2_id="3" subroom2_id="0">
+      <vertex px="3.2" py="9.2" />
+      <vertex px="5.6" py="9.2" />
+    </transition>
+  </transitions>
+</JPScore>
+
+*/
+
+void jpsDatamanager::writeTransitionXML(QFile &file)
+{
+    QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
+    QList<jpsLineItem* > lines = _mView->get_line_vector();
+
+    stream->setAutoFormatting(true);
+
+    stream->writeStartDocument("1.0",true);
+    stream->setCodec("UTF-8");
+
+    stream->writeStartElement("JPScore");
+    stream->writeStartElement("transitions");
+    writeTransitions(stream,lines);
+    exitList.clear();
+    stream->writeEndElement();//transitions
+
+    stream->writeEndDocument();
+
+    delete stream;
+    stream = nullptr;
+}
 
 
 

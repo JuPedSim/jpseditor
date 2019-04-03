@@ -61,15 +61,6 @@ QString jpsLineItem::get_name()
 
 QString jpsLineItem::GetType()
 {
-/*    if (is_Door())
-        return "Door";
-    else if (is_Wall())
-        return "Wall";
-    else if (IsHLine())
-        return "HLine";
-    else
-        return "NOT_KNOWN";*/
-
     switch (lineType){
         case wall:
             return "Wall";
@@ -94,24 +85,6 @@ void jpsLineItem::set_name(QString name)
     mName=name;
 }
 
-/*void jpsLineItem::set_type(bool wall, bool door, bool exit, bool hline)
-{
-    if (wall==true)
-    {
-        setWall();
-    }
-    else if (door==true)
-    {
-        setDoor();
-    }
-    else if (exit==true)
-    {
-        setExit();
-    }
-    else
-        setHLine();
-}*/
-
 void jpsLineItem::setType(LineType type) {
     switch (type){
         case wall:
@@ -129,35 +102,22 @@ void jpsLineItem::setType(LineType type) {
         default:
             break;
     }
-
 }
 
 void jpsLineItem::setWall()
 {
-/*    wall=true;
-    door=false;
-    exit=false;
-    _hLine=false;*/
     lineType = wall;
     defaultColor="black";
 }
 
 void jpsLineItem::setDoor()
 {
-//    door=true;
-//    wall=false;
-//    exit=false;
-//    _hLine=false;
     lineType = door;
     defaultColor="blue";
 }
 
 void jpsLineItem::setExit()
 {
-//    exit=true;
-//    wall=false;
-//    door=false;
-//    _hLine=false;
     lineType = exit;
     defaultColor="darkMagenta";
 
@@ -165,10 +125,6 @@ void jpsLineItem::setExit()
 
 void jpsLineItem::setHLine()
 {
-//    exit=false;
-//    wall=false;
-//    door=false;
-//    _hLine=true;
     lineType = hline;
     defaultColor="darkCyan";
 
