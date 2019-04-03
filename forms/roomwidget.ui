@@ -32,7 +32,7 @@
    <attribute name="title">
     <string>Layers</string>
    </attribute>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QWidget" name="layerWidget">
     <property name="geometry">
      <rect>
       <x>0</x>
