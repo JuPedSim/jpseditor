@@ -35,7 +35,7 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
-    <number>14</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab_general">
     <attribute name="title">
@@ -562,7 +562,7 @@
       <rect>
        <x>10</x>
        <y>50</y>
-       <width>91</width>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
@@ -573,7 +573,7 @@
     <widget class="QSpinBox" name="spinBox_groups_1">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>130</x>
        <y>50</y>
        <width>111</width>
        <height>21</height>
@@ -1378,7 +1378,7 @@
       <rect>
        <x>10</x>
        <y>50</y>
-       <width>91</width>
+       <width>101</width>
        <height>21</height>
       </rect>
      </property>
@@ -1389,7 +1389,7 @@
     <widget class="QSpinBox" name="spinBox_agents_gcfm_1">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>120</x>
        <y>50</y>
        <width>111</width>
        <height>21</height>
@@ -1750,7 +1750,7 @@
     <widget class="QSpinBox" name="spinBox_agents_gompertz_1">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>120</x>
        <y>50</y>
        <width>111</width>
        <height>21</height>
@@ -1765,7 +1765,7 @@
       <rect>
        <x>10</x>
        <y>50</y>
-       <width>91</width>
+       <width>101</width>
        <height>21</height>
       </rect>
      </property>
@@ -2299,7 +2299,7 @@
       <rect>
        <x>10</x>
        <y>50</y>
-       <width>91</width>
+       <width>101</width>
        <height>21</height>
       </rect>
      </property>
@@ -2310,7 +2310,7 @@
     <widget class="QSpinBox" name="spinBox_agents_tordeux_1">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>120</x>
        <y>50</y>
        <width>111</width>
        <height>21</height>
@@ -3020,7 +3020,7 @@
     <widget class="QSpinBox" name="spinBox_agents_gradnav_1">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>120</x>
        <y>50</y>
        <width>111</width>
        <height>21</height>
@@ -3035,7 +3035,7 @@
       <rect>
        <x>10</x>
        <y>50</y>
-       <width>91</width>
+       <width>101</width>
        <height>21</height>
       </rect>
      </property>
@@ -3938,7 +3938,7 @@
       <rect>
        <x>10</x>
        <y>50</y>
-       <width>91</width>
+       <width>101</width>
        <height>21</height>
       </rect>
      </property>
@@ -3949,7 +3949,7 @@
     <widget class="QSpinBox" name="spinBox_agents_krausz_1">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>120</x>
        <y>50</y>
        <width>111</width>
        <height>21</height>
@@ -3982,7 +3982,7 @@
       <rect>
        <x>10</x>
        <y>50</y>
-       <width>91</width>
+       <width>111</width>
        <height>21</height>
       </rect>
      </property>
@@ -3993,7 +3993,7 @@
     <widget class="QSpinBox" name="spinBox_goals_1">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>120</x>
        <y>50</y>
        <width>111</width>
        <height>21</height>
@@ -4092,7 +4092,7 @@
       <rect>
        <x>10</x>
        <y>50</y>
-       <width>91</width>
+       <width>111</width>
        <height>21</height>
       </rect>
      </property>
@@ -4103,7 +4103,7 @@
     <widget class="QSpinBox" name="spinBox_constraints_1">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>130</x>
        <y>50</y>
        <width>111</width>
        <height>21</height>
@@ -4115,7 +4115,7 @@
       <rect>
        <x>430</x>
        <y>10</y>
-       <width>111</width>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
@@ -4126,7 +4126,7 @@
     <widget class="QSpinBox" name="spinBox_constraints_2">
      <property name="geometry">
       <rect>
-       <x>530</x>
+       <x>550</x>
        <y>50</y>
        <width>111</width>
        <height>21</height>
@@ -4138,7 +4138,7 @@
       <rect>
        <x>430</x>
        <y>50</y>
-       <width>91</width>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
@@ -4599,13 +4599,13 @@
     <string/>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>21</x>
      <y>11</y>
      <width>244</width>
-     <height>31</height>
+     <height>32</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -4625,13 +4625,13 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>30</x>
      <y>43</y>
      <width>244</width>
-     <height>31</height>
+     <height>32</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
