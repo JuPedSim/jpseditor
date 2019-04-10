@@ -24,7 +24,6 @@ private slots:
     void on_pushButton_read_clicked();
 
     //Inside Tab General
-    void on_checkBox_general_1_clicked();
     void on_checkBox_general_2_clicked();
 
     //Inside Tab Groups
@@ -42,8 +41,6 @@ private slots:
     void on_spinBox_constraints_1_valueChanged(int);
     void on_spinBox_constraints_2_valueChanged(int);
 
-    //Inside Tab Goals
-    void on_spinBox_goals_1_valueChanged(int);
 
 private:
     Ui::InifileWidget *ui;

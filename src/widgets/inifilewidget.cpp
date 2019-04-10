@@ -87,14 +87,6 @@ void InifileWidget::on_spinBox_agents_krausz_1_valueChanged(int)
 {
     ui->tableWidget_agents_krausz_1->setRowCount(ui->spinBox_agents_krausz_1->value());
 }
-
-// Add rows to tablewidgets by inserting a number into a spinbox
-void InifileWidget::on_spinBox_goals_1_valueChanged(int)
-{
-    ui->tableWidget_goals_1->setRowCount(ui->spinBox_goals_1->value());
-}
-
-
 // Add rows to tablewidgets by inserting a number into a spinbox
 void InifileWidget::on_spinBox_constraints_1_valueChanged(int)
 {
@@ -107,18 +99,6 @@ void InifileWidget::on_spinBox_constraints_2_valueChanged(int)
     ui->tableWidget_constraints_2->setRowCount(ui->spinBox_constraints_2->value());
 }
 
-// Set goals tab visible or invisible
-void InifileWidget::on_checkBox_general_1_clicked()
-{
-    if (ui->checkBox_general_1->isChecked())
-    {
-        ui->tabWidget->insertTab(5, ui->tab_goals, "Goals");
-    }
-    else
-    {
-        ui->tabWidget->removeTab(5);
-    }
-}
 
 // Set constraints tab visible or invisible
 void InifileWidget::on_checkBox_general_2_clicked()
@@ -129,14 +109,6 @@ void InifileWidget::on_checkBox_general_2_clicked()
     }
     else
     {
-        if (ui->checkBox_general_1->isChecked())
-        {
-            ui->tabWidget->removeTab(6);
-        }
-        else
-        {
-            ui->tabWidget->removeTab(5);
-        }
     }
 }
 
@@ -295,61 +267,7 @@ bool InifileWidget::CheckTrafficData()
 
 bool InifileWidget::CheckRoutingData()
 {
-    for(int i = 0; i < ui->spinBox_goals_1->value(); i++)
-    {
-        if (!ui->tableWidget_goals_1->item(i,0) || ui->tableWidget_goals_1->item(i,0)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_goals_1->item(i,1) || ui->tableWidget_goals_1->item(i,1)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_goals_1->item(i,2) || ui->tableWidget_goals_1->item(i,2)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_goals_1->item(i,3) || ui->tableWidget_goals_1->item(i,3)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_goals_1->item(i,4) || ui->tableWidget_goals_1->item(i,4)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_goals_1->item(i,5) || ui->tableWidget_goals_1->item(i,5)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_goals_1->item(i,6) || ui->tableWidget_goals_1->item(i,6)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_goals_1->item(i,7) || ui->tableWidget_goals_1->item(i,7)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_goals_1->item(i,8) || ui->tableWidget_goals_1->item(i,8)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_goals_1->item(i,9) || ui->tableWidget_goals_1->item(i,9)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-    }
-    ui->label_warning->setText("");
-    return 1;
+//TODO: Fix for goal
 }
 
 bool InifileWidget::CheckAgentData()
@@ -999,60 +917,7 @@ QString InifileWidget::WriteTrafficData()
 
 QString InifileWidget::WriteRoutingData()
 {
-    //routing_information
-    QString rout_line_1 = "\t<!-- routing information -->\n";
-
-    QString rout_line_2 = "\t<routing>\n";
-
-    QString rout_line_3 = "\t\t<goals>\n";
-
-    QString rout_line_4 = "";
-    for(int i = 0; i < ui->spinBox_goals_1->value(); i++)
-    {
-        rout_line_4 = rout_line_4 +
-                "\t\t\t<goal id=\"" +
-                ui->tableWidget_goals_1->item(i,0)->text() +
-                "\" caption=\"" +
-                ui->tableWidget_goals_1->item(i,1)->text() +
-                "\">"
-                "\n\t\t\t\t<polygon>\n" +
-                "\t\t\t\t\t<vertex px=\"" +
-                ui->tableWidget_goals_1->item(i,2)->text() +
-                "\" py=\"" +
-                ui->tableWidget_goals_1->item(i,3)->text() +
-                "\" />\n" +
-                "\t\t\t\t\t<vertex px=\"" +
-                ui->tableWidget_goals_1->item(i,4)->text() +
-                "\" py=\"" +
-                ui->tableWidget_goals_1->item(i,5)->text() +
-                "\" />\n" +
-                "\t\t\t\t\t<vertex px=\"" +
-                ui->tableWidget_goals_1->item(i,6)->text() +
-                "\" py=\"" +
-                ui->tableWidget_goals_1->item(i,7)->text() +
-                "\" />\n" +
-                "\t\t\t\t\t<vertex px=\"" +
-                ui->tableWidget_goals_1->item(i,8)->text() +
-                "\" py=\"" +
-                ui->tableWidget_goals_1->item(i,9)->text() +
-                "\" />\n" +
-                "\t\t\t\t\t<vertex px=\"" +
-                ui->tableWidget_goals_1->item(i,2)->text() +
-                "\" py=\"" +
-                ui->tableWidget_goals_1->item(i,3)->text() +
-                "\" />\n" +
-                "\t\t\t\t</polygon>\n" +
-                "\t\t\t</goal>\n";
-    }
-
-    QString rout_line_5 = "\t\t</goals>\n";
-
-    QString rout_line_6 = "\t</routing>\n\n";
-
-    QString rout_lines = rout_line_1 + rout_line_2 + rout_line_3 + rout_line_4 + rout_line_5 +
-                         rout_line_6;
-
-    return rout_lines;
+//TODO: Fix for Goal
 }
 
 QString InifileWidget::WriteAgentData()
@@ -1816,12 +1681,6 @@ void InifileWidget::on_pushButton_write_clicked()
         return;
     }
 
-    //check routing_information
-    if (CheckRoutingData() == 0)
-    {
-        return;
-    }
-
     //check agents information and distribution
     if (CheckAgentData() == 0)
     {
@@ -1901,9 +1760,6 @@ void InifileWidget::on_pushButton_write_clicked()
     //traffic_constraints
     QString traf_lines = WriteTrafficData();
 
-    //routing_information
-    QString rout_lines = WriteRoutingData();
-
     //agents information and distribution
     QString agen_lines = WriteAgentData();
 
@@ -1933,7 +1789,6 @@ void InifileWidget::on_pushButton_write_clicked()
     {
         file.write(head_lines.toUtf8() +
                    traf_lines.toUtf8() +
-                   rout_lines.toUtf8() +
                    agen_lines.toUtf8() +
                    gcfm_lines.toUtf8() +
                    gomp_lines.toUtf8() +
@@ -2160,60 +2015,6 @@ void InifileWidget::ReadTrafficData(TiXmlElement *JuPedSim)
 
 void InifileWidget::ReadRoutingData(TiXmlElement *JuPedSim)
 {
-    //routing_information
-    if (JuPedSim->FirstChild("routing"))
-    {
-        if (JuPedSim->FirstChild("routing")->FirstChild("goals"))
-        {
-            if (JuPedSim->FirstChild("routing")->FirstChild("goals")->FirstChildElement("goal"))
-            {
-                int counter = 0;
-                for (TiXmlElement* goal = JuPedSim->FirstChild("routing")->FirstChild("goals")->FirstChildElement("goal");
-                     goal; goal = goal->NextSiblingElement("goal"))
-                {
-                    if (counter+1 == 1)
-                    {
-                        ui->checkBox_general_1->setChecked(true);
-                        ui->tabWidget->insertTab(5, ui->tab_goals, "Goals");
-                    }
-                    ui->spinBox_goals_1->setValue(counter+1);
-
-                    if (goal->Attribute("id"))
-                    {
-                        QString value = goal->Attribute("id");
-                        ui->tableWidget_goals_1->setItem(counter, 0, new QTableWidgetItem(value));
-                    }
-                    if (goal->Attribute("caption"))
-                    {
-                        QString value = goal->Attribute("caption");
-                        ui->tableWidget_goals_1->setItem(counter, 1, new QTableWidgetItem(value));
-                    }
-
-                    int counter2 = 2;
-                    for (TiXmlElement* vert = goal->FirstChild("polygon")->FirstChildElement("vertex");
-                         vert; vert = vert->NextSiblingElement("vertex"))
-                    {
-                        if (vert->Attribute("px"))
-                        {
-                            QString value = vert->Attribute("px");
-                            ui->tableWidget_goals_1->setItem(counter, counter2, new QTableWidgetItem(value));
-                        }
-                        if (vert->Attribute("py"))
-                        {
-                            QString value = vert->Attribute("py");
-                            ui->tableWidget_goals_1->setItem(counter, counter2+1, new QTableWidgetItem(value));
-                        }
-                        if (counter2 == 8)
-                        {
-                            break;
-                        }
-                        counter2 = counter2 + 2;
-                    }
-                    counter = counter + 1;
-                }
-            }
-        }
-    }
 }
 
 void InifileWidget::ReadAgentData(TiXmlElement *JuPedSim)
@@ -3779,9 +3580,6 @@ void InifileWidget::on_pushButton_read_clicked()
     //traffic_constraints
     ReadTrafficData(JuPedSim);
 
-    //routing_information
-    ReadRoutingData(JuPedSim);
-
     //agents information and distribution
     ReadAgentData(JuPedSim);
 
@@ -3791,3 +3589,4 @@ void InifileWidget::on_pushButton_read_clicked()
     //route_choice_models
     ReadRouteChoiceData(JuPedSim);
 }
+

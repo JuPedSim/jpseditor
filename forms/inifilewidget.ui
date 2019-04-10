@@ -35,7 +35,7 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_general">
     <attribute name="title">
@@ -316,32 +316,6 @@
      </property>
      <property name="text">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Goals and Constraints&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBox_general_1">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>320</y>
-       <width>31</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_general_13">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>320</y>
-       <width>91</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Edit Goals</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_general_14">
@@ -3960,107 +3934,6 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="tab_goals">
-    <attribute name="title">
-     <string>Goals</string>
-    </attribute>
-    <widget class="QLabel" name="label_goals_a">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Goals in geometry&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_goals_1">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Number of goals</string>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBox_goals_1">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>50</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QTableWidget" name="tableWidget_goals_1">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>90</y>
-       <width>1021</width>
-       <height>251</height>
-      </rect>
-     </property>
-     <column>
-      <property name="text">
-       <string>Goal ID</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Caption</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>x1</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>y1</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>x2</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>y2</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>x3</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>y3</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>x4</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>y4</string>
-      </property>
-     </column>
-    </widget>
-   </widget>
    <widget class="QWidget" name="tab_constraints">
     <property name="enabled">
      <bool>true</bool>
@@ -4693,7 +4566,6 @@
   <tabstop>lineEdit_general_10</tabstop>
   <tabstop>comboBox_general_03</tabstop>
   <tabstop>lineEdit_general_12</tabstop>
-  <tabstop>checkBox_general_1</tabstop>
   <tabstop>checkBox_general_2</tabstop>
   <tabstop>spinBox_groups_1</tabstop>
   <tabstop>comboBox_groups_1</tabstop>
@@ -4769,8 +4641,6 @@
   <tabstop>lineEdit_model_krausz_13</tabstop>
   <tabstop>spinBox_agents_krausz_1</tabstop>
   <tabstop>tableWidget_agents_krausz_1</tabstop>
-  <tabstop>spinBox_goals_1</tabstop>
-  <tabstop>tableWidget_goals_1</tabstop>
   <tabstop>spinBox_constraints_1</tabstop>
   <tabstop>tableWidget_constraints_1</tabstop>
   <tabstop>spinBox_constraints_2</tabstop>
