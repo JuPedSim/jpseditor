@@ -1016,7 +1016,7 @@ QMap<QString, QString> MWindow::loadSettings()
 
 void MWindow::on_actionNew_Inifile_triggered()
 {
-    inifileWidget = new InifileWidget(this);
+    inifileWidget = new InifileWidget(this, dmanager);
     inifileWidget->show();
     qDebug()<< "MWindow::on_actionNew_Inifile_triggered(): inifile widget is showed!";
 }

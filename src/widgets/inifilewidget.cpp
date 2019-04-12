@@ -7,11 +7,13 @@
 #include "ui_inifilewidget.h"
 #include "src/tinyxml/tinyxml.h"
 
-InifileWidget::InifileWidget(QWidget *parent) :
+InifileWidget::InifileWidget(QWidget *parent, jpsDatamanager *dmanager) :
     QWidget(parent),
     ui(new Ui::InifileWidget)
 {
     ui->setupUi(this);
+
+    dataManager = dmanager;
 
     // set InifileWidget as a Window
     setWindowFlag(Qt::Dialog);
@@ -45,6 +47,8 @@ InifileWidget::InifileWidget(QWidget *parent) :
 
     // Set goals invisivle
     // ui->tabWidget->removeTab(4);
+
+    //signals and slots connection
 }
 
 InifileWidget::~InifileWidget()
@@ -267,7 +271,7 @@ bool InifileWidget::CheckTrafficData()
 
 bool InifileWidget::CheckRoutingData()
 {
-//TODO: Fix for goal
+    return true;
 }
 
 bool InifileWidget::CheckAgentData()
@@ -803,35 +807,35 @@ QString InifileWidget::WriteHeaderData()
 
     QString head_line_3 = "\t<!-- header -->\n";
 
-    QString head_line_4 = "\t<header>\n";
+//    QString head_line_4 = "\t<header>\n";
 
-    QString head_line_5 = "\t\t<!-- number of cores used -->\n";
+    QString head_line_5 = "\t<!-- number of cores used -->\n";
 
-    QString head_line_6 = "\t\t<num_threads>" +
+    QString head_line_6 = "\t<num_threads>" +
             ui->lineEdit_general_03->text() +
             "</num_threads>\n\n";
 
-    QString head_line_7 = "\t\t<!-- seed used for initialising random generator -->\n";
+    QString head_line_7 = "\t<!-- seed used for initialising random generator -->\n";
 
-    QString head_line_8 = "\t\t<seed>" +
+    QString head_line_8 = "\t<seed>" +
             ui->lineEdit_general_05->text() +
             "</seed>\n\n";
 
-    QString head_line_9 = "\t\t<!-- simulationtime -->\n";
+    QString head_line_9 = "\t<!-- simulationtime -->\n";
 
-    QString head_line_10 = "\t\t<max_sim_time>" +
+    QString head_line_10 = "\t<max_sim_time>" +
             ui->lineEdit_general_06->text() +
             "</max_sim_time>\n\n";
 
-    QString head_line_11 = "\t\t<!-- geometry file -->\n";
+    QString head_line_11 = "\t<!-- geometry file -->\n";
 
-    QString head_line_12 = "\t\t<geometry>" +
+    QString head_line_12 = "\t<geometry>" +
             ui->lineEdit_general_07->text() +
             "</geometry>\n\n";
 
-    QString head_line_13 = "\t\t<!-- trajectories file and format -->\n";
+    QString head_line_13 = "\t<!-- trajectories file and format -->\n";
 
-    QString head_line_14 = "\t\t<trajectories format=\"" +
+    QString head_line_14 = "\t<trajectories format=\"" +
             ui->comboBox_general_02->currentText() +
             "\" fps=\"" +
             ui->lineEdit_general_10->text() +
@@ -839,31 +843,30 @@ QString InifileWidget::WriteHeaderData()
             ui->comboBox_general_03->currentText() +
             "\">\n";
 
-    QString head_line_15 = "\t\t\t<file location=\""
+    QString head_line_15 = "\t\t<file location=\""
             + ui->lineEdit_general_12->text() +
             "\" />\n";
 
-    QString head_line_16 = "\t\t</trajectories>\n\n";
+    QString head_line_16 = "\t</trajectories>\n\n";
 
-    QString head_line_17 = "\t\t<!-- savepath logfile -->\n";
+    QString head_line_17 = "\t<!-- savepath logfile -->\n";
 
-    QString head_line_18 = "\t\t<logfile>" +
+    QString head_line_18 = "\t<logfile>" +
             ui->lineEdit_general_08->text() +
             "</logfile>\n\n";
 
-    QString head_line_19 = "\t\t<!-- statistics -->\n";
+    QString head_line_19 = "\t<!-- statistics -->\n";
 
-    QString head_line_20 = "\t\t<show_statistics>" +
+    QString head_line_20 = "\t<show_statistics>" +
             ui->comboBox_general_01->currentText() +
             "</show_statistics>\n";
 
-    QString head_line_21 = "\t</header>\n\n";
+//    QString head_line_21 = "\t</header>\n\n";
 
-    QString head_lines = head_line_1 + head_line_2 + head_line_3 + head_line_4 + head_line_5 +
+    QString head_lines = head_line_1 + head_line_2 + head_line_3 + head_line_5 +
                          head_line_6 + head_line_7 + head_line_8 + head_line_9 + head_line_10 +
                          head_line_11 + head_line_12 + head_line_13 + head_line_14 + head_line_15 +
-                         head_line_16 + head_line_17 + head_line_18 + head_line_19 + head_line_20 +
-                         head_line_21;
+                         head_line_16 + head_line_17 + head_line_18 + head_line_19 + head_line_20;
 
     return head_lines;
 }
@@ -915,9 +918,28 @@ QString InifileWidget::WriteTrafficData()
     return traf_lines;
 }
 
-QString InifileWidget::WriteRoutingData()
+void InifileWidget::WriteRoutingData(QFile &file)
 {
-//TODO: Fix for Goal
+    auto *stream = new QXmlStreamWriter(&file);
+    stream->setAutoFormatting(true);
+
+    stream->writeComment("routing");
+    stream->writeStartElement("routing");
+
+    stream->writeStartElement("goals");
+    QList<JPSGoal *> goallist = dataManager->getGoallist();
+    dataManager->writeGoals(stream, goallist);
+
+    auto goal_FileName = "goals.xml";
+    stream->writeStartElement("file");
+    stream->writeCharacters(goal_FileName);
+    stream->writeEndElement(); //end files
+
+    stream->writeEndElement(); //end goals
+    stream->writeEndDocument();
+
+    delete stream;
+    stream = nullptr;
 }
 
 QString InifileWidget::WriteAgentData()
@@ -1785,17 +1807,22 @@ void InifileWidget::on_pushButton_write_clicked()
     QString file_name = QFileDialog::getSaveFileName(this,tr("Create ini"),"",tr("XML-Files (*.xml)"));
     QFile file(file_name);
 
+
     if (file.open(QIODevice::WriteOnly|QIODevice::Text))
     {
         file.write(head_lines.toUtf8() +
-                   traf_lines.toUtf8() +
-                   agen_lines.toUtf8() +
+                   traf_lines.toUtf8());
+
+        WriteRoutingData(file);
+
+        file.write(agen_lines.toUtf8() +
                    gcfm_lines.toUtf8() +
                    gomp_lines.toUtf8() +
                    tord_lines.toUtf8() +
                    grad_lines.toUtf8() +
                    krau_lines.toUtf8() +
                    choi_lines.toUtf8());
+
     }
     file.close();
 }
@@ -3589,4 +3616,3 @@ void InifileWidget::on_pushButton_read_clicked()
     //route_choice_models
     ReadRouteChoiceData(JuPedSim);
 }
-

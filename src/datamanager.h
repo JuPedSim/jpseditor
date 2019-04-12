@@ -202,6 +202,8 @@ public:
     // read line file
     bool ReadLineFile(QFile &file);
 
+    const QList<JPSGoal *> &getGoallist();
+
 //    //Show Cognitive Map
 //    void ShowCMapFrame(const int& frame) const;
 //    const double& GetCMapFrameRate() const;

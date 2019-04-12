@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "src/tinyxml/tinyxml.h"
+#include "src/datamanager.h"
 
 namespace Ui {
 class InifileWidget;
@@ -13,9 +14,10 @@ class InifileWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit InifileWidget(QWidget *parent = nullptr);
+    explicit InifileWidget(QWidget *parent = nullptr, jpsDatamanager* dmanager = nullptr);
     ~InifileWidget();
 
+    void writeRouting(QFile &file);
 
 
 private slots:
@@ -41,9 +43,10 @@ private slots:
     void on_spinBox_constraints_1_valueChanged(int);
     void on_spinBox_constraints_2_valueChanged(int);
 
-
 private:
     Ui::InifileWidget *ui;
+
+    jpsDatamanager *dataManager;
 
     bool CheckHeaderData();
     bool CheckTrafficData();
@@ -63,7 +66,7 @@ private:
 
     QString WriteHeaderData();
     QString WriteTrafficData();
-    QString WriteRoutingData();
+    void WriteRoutingData(QFile &file);
     QString WriteAgentData();
     QString WriteModelGcfmData();
     QString WriteModelGompData();

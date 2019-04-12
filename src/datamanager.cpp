@@ -55,6 +55,7 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 
     roomlist= QList<jpsRoom *> ();
     sourcelist = _mView->getSources();
+    goallist = _mView->getGoals();
 }
 
 jpsDatamanager::~jpsDatamanager()
@@ -435,7 +436,7 @@ const int &jpsDatamanager::GetRegionCounter() const
 void jpsDatamanager::writeXML(QFile &file)
 {
     qDebug(">> Enter jpsDatamanager::writeXML");
-    QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
+    auto *stream = new QXmlStreamWriter(&file);
     QList<jpsLineItem* > lines = _mView->get_line_vector();
 
     writeHeader(stream);
@@ -2925,7 +2926,7 @@ void jpsDatamanager::writeSourceHeader(QXmlStreamWriter *stream)
 
 void jpsDatamanager::writeGoalXML(QFile &file)
 {
-    QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
+    auto *stream = new QXmlStreamWriter(&file);
 
     stream->setAutoFormatting(true);
 
@@ -2985,8 +2986,10 @@ void jpsDatamanager::writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *> &goal
             stream->writeAttribute("py", QString::number(goal->rect().topLeft().y()));
             stream->writeEndElement();
 
-            stream->writeEndElement();
+            stream->writeEndElement();//end goal
         }
+
+        stream->writeEndElement();//end goals
     }
 }
 
@@ -3033,7 +3036,12 @@ void jpsDatamanager::writeTransitionXML(QFile &file)
     stream = nullptr;
 }
 
-
+const QList<JPSGoal *> &jpsDatamanager::getGoallist()
+{
+    goallist.clear();
+    goallist = _mView->getGoals();
+    return goallist;
+}
 
 
 
