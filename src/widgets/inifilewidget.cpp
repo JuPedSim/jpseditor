@@ -1,7 +1,7 @@
 #include <QDebug>
 #include <QFile>
-#include <QFileDialog>
-#include <QMessageBox>
+#include <QtWidgets>
+
 
 #include "inifilewidget.h"
 #include "ui_inifilewidget.h"
@@ -49,6 +49,14 @@ InifileWidget::InifileWidget(QWidget *parent, jpsDatamanager *dmanager) :
     // ui->tabWidget->removeTab(4);
 
     //signals and slots connection
+    ui->lineEdit_general_07->setReadOnly(true);
+    ui->lineEdit_GoalFile->setReadOnly(true);
+    ui->lineEdit_SourceFile->setReadOnly(true);
+    ui->lineEdit_TrafficFile->setReadOnly(true);
+    connect(ui->pushButton_Geometry, SIGNAL(clicked(bool)), this, SLOT(pushButton_GeomeryClicked()));
+    connect(ui->pushButton_Goal, SIGNAL(clicked(bool)), this, SLOT(pushButton_GoalClicked()));
+    connect(ui->pushButton_Source, SIGNAL(clicked(bool)), this, SLOT(pushButton_SourceClicked()));
+    connect(ui->pushButton_Traffic, SIGNAL(clicked(bool)), this, SLOT(pushButton_TrafficClicked()));
 }
 
 InifileWidget::~InifileWidget()
@@ -3420,4 +3428,41 @@ void InifileWidget::on_pushButton_read_clicked()
 
     //route_choice_models
     ReadRouteChoiceData(JuPedSim);
+}
+
+/*
+    Since v0.8.8
+    Get geometry file name
+ */
+
+void InifileWidget::pushButton_GeomeryClicked()
+{
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose Geometry"),""
+            ,tr("XML-Files (*.xml)"));
+
+    ui->lineEdit_general_07->setText(fileName);
+}
+
+void InifileWidget::pushButton_GoalClicked()
+{
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose Geometry"),""
+            ,tr("XML-Files (*.xml)"));
+
+    ui->lineEdit_GoalFile->setText(fileName);
+}
+
+void InifileWidget::pushButton_SourceClicked()
+{
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose Geometry"),""
+            ,tr("XML-Files (*.xml)"));
+
+    ui->lineEdit_SourceFile->setText(fileName);
+}
+
+void InifileWidget::pushButton_TrafficClicked()
+{
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose Geometry"),""
+            ,tr("XML-Files (*.xml)"));
+
+    ui->lineEdit_TrafficFile->setText(fileName);
 }

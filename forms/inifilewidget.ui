@@ -234,7 +234,7 @@
           <item>
            <widget class="QLineEdit" name="lineEdit_general_08">
             <property name="text">
-             <string>../log.txt</string>
+             <string>log.txt</string>
             </property>
            </widget>
           </item>

@@ -17,7 +17,7 @@ public:
     explicit InifileWidget(QWidget *parent = nullptr, jpsDatamanager* dmanager = nullptr);
     ~InifileWidget();
 
-private slots:
+public slots:
     //Inside Inifilewidget
     void on_pushButton_write_clicked();
     void on_pushButton_read_clicked();
@@ -34,6 +34,12 @@ private slots:
     void on_spinBox_agents_tordeux_1_valueChanged(int);
     void on_spinBox_agents_gradnav_1_valueChanged(int);
     void on_spinBox_agents_krausz_1_valueChanged(int);
+
+    //External file
+    void pushButton_GeomeryClicked();
+    void pushButton_GoalClicked();
+    void pushButton_SourceClicked();
+    void pushButton_TrafficClicked();
 
 private:
     Ui::InifileWidget *ui;
