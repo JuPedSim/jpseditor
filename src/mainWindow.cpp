@@ -115,7 +115,7 @@ MWindow :: MWindow()
     //Timer needed for autosaving function
     // timer will trigger autosave every 5th minute
     timer = new QTimer(this);
-    timer->setInterval(60000);
+    timer->setInterval(600000);
     timer->start();
 
     _cMapTimer = new QTimer(this);

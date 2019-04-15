@@ -661,7 +661,7 @@ void jpsDatamanager::AutoSaveXML(QFile &file)
 
 void jpsDatamanager::writeHeader(QXmlStreamWriter *stream)
 {
-     qDebug("Enter jpsDatamanager::writeHeader");
+    qDebug("Enter jpsDatamanager::writeHeader");
     stream->setAutoFormatting(true);
     stream->writeStartDocument("1.0",true);
 
@@ -676,7 +676,7 @@ void jpsDatamanager::writeHeader(QXmlStreamWriter *stream)
 
 void jpsDatamanager::writeRoutingHeader(QXmlStreamWriter *stream)
 {
-     qDebug("Enter jpsDatamanager::writeRoutingHeader");
+    qDebug("Enter jpsDatamanager::writeRoutingHeader");
     stream->setAutoFormatting(true);
     stream->writeStartDocument("1.0",true);
 
@@ -942,11 +942,12 @@ void jpsDatamanager::AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem *
 
 void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
-     qDebug("Enter jpsDatamanager::writeCrossings");
+    qDebug("Enter jpsDatamanager::writeCrossings");
     stream->writeStartElement("crossings");
     for (int i=0; i<crossingList.size(); i++)
     {
-        if (crossingList[i]->IsExit()==false && crossingList[i]->get_roomList()[0]->get_type()!="Stair" && crossingList[i]->get_roomList()[1]->get_type()!="Stair")
+        if (!crossingList[i]->IsExit() && crossingList[i]->get_roomList()[0]->get_type()!="Stair" &&
+        crossingList[i]->get_roomList()[1]->get_type()!="Stair")
         {
             stream->writeStartElement("crossing");
             stream->writeAttribute("id",QString::number(i));

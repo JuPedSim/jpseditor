@@ -91,30 +91,6 @@ void InifileWidget::on_spinBox_agents_krausz_1_valueChanged(int)
 {
     ui->tableWidget_agents_krausz_1->setRowCount(ui->spinBox_agents_krausz_1->value());
 }
-// Add rows to tablewidgets by inserting a number into a spinbox
-void InifileWidget::on_spinBox_constraints_1_valueChanged(int)
-{
-    ui->tableWidget_constraints_1->setRowCount(ui->spinBox_constraints_1->value());
-}
-
-// Add  rows to tablewidgets by inserting a number into a spinbox
-void InifileWidget::on_spinBox_constraints_2_valueChanged(int)
-{
-    ui->tableWidget_constraints_2->setRowCount(ui->spinBox_constraints_2->value());
-}
-
-
-// Set constraints tab visible or invisible
-void InifileWidget::on_checkBox_general_2_clicked()
-{
-    if (ui->checkBox_general_2->isChecked())
-    {
-        ui->tabWidget->insertTab(6, ui->tab_constraints, "Constraints");
-    }
-    else
-    {
-    }
-}
 
 // Set models and agents visible or invisible
 void InifileWidget::on_comboBox_groups_1_currentIndexChanged(int index)
@@ -227,46 +203,7 @@ bool InifileWidget::CheckHeaderData()
 
 bool InifileWidget::CheckTrafficData()
 {
-    for(int i = 0; i < ui->spinBox_constraints_1->value(); i++)
-    {
-        if (!ui->tableWidget_constraints_1->item(i,0) || ui->tableWidget_constraints_1->item(i,0)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Door constraints incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_constraints_1->item(i,1) || ui->tableWidget_constraints_1->item(i,1)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Door constraints incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_constraints_1->item(i,2) || ui->tableWidget_constraints_1->item(i,2)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Door constraints incomplete.</font>");
-            return 0;
-        }
-    }
-
-    for(int i = 0; i < ui->spinBox_constraints_2->value(); i++)
-    {
-        if (!ui->tableWidget_constraints_2->item(i,0) || ui->tableWidget_constraints_2->item(i,0)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Room constraints incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_constraints_2->item(i,1) || ui->tableWidget_constraints_2->item(i,1)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Room constraints incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_constraints_2->item(i,2) || ui->tableWidget_constraints_2->item(i,2)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Room constraints incomplete.</font>");
-            return 0;
-        }
-    }
-
-    ui->label_warning->setText("");
-    return 1;
+    return true;
 }
 
 bool InifileWidget::CheckRoutingData()
@@ -871,52 +808,7 @@ QString InifileWidget::WriteHeaderData()
     return head_lines;
 }
 
-QString InifileWidget::WriteTrafficData()
-{
-    //traffic_constraints
-    QString traf_line_1 = "\t<!-- traffic constraints -->\n";
-
-    QString traf_line_2 = "\t<traffic_constraints>\n";
-
-    QString traf_line_3 = "\t\t<doors>\n";
-
-    QString traf_line_4 = "";
-    for(int i = 0; i < ui->spinBox_constraints_1->value(); i++)
-    {
-        traf_line_4 = traf_line_4 + "\t\t\t<door trans_id=\"" +
-                ui->tableWidget_constraints_1->item(i,0)->text() +
-                "\" caption=\"" +
-                ui->tableWidget_constraints_1->item(i,1)->text() +
-                "\" state=\"" +
-                ui->tableWidget_constraints_1->item(i,2)->text() +
-                "\" />\n";
-    }
-
-    QString traf_line_5 = "\t\t</doors>\n";
-
-    QString traf_line_6 = "\t\t<rooms>\n";
-
-    QString traf_line_7 = "";
-    for(int i = 0; i < ui->spinBox_constraints_2->value(); i++)
-    {
-        traf_line_7 = traf_line_7 + "\t\t\t<room room_id=\"" +
-                ui->tableWidget_constraints_2->item(i,0)->text() +
-                "\" caption=\"" +
-                ui->tableWidget_constraints_2->item(i,1)->text() +
-                "\" state=\"" +
-                ui->tableWidget_constraints_2->item(i,2)->text() +
-                "\" />\n";
-    }
-
-    QString traf_line_8 = "\t\t</rooms>\n";
-
-    QString traf_line_9 = "\t</traffic_constraints>\n\n";
-
-    QString traf_lines = traf_line_1 + traf_line_2 + traf_line_3 + traf_line_4 + traf_line_5 +
-                         traf_line_6 + traf_line_7 + traf_line_8 + traf_line_9;
-
-    return traf_lines;
-}
+//TODO: writeTrafficData
 
 void InifileWidget::WriteRoutingData(QFile &file)
 {
@@ -1780,7 +1672,7 @@ void InifileWidget::on_pushButton_write_clicked()
     QString head_lines = WriteHeaderData();
 
     //traffic_constraints
-    QString traf_lines = WriteTrafficData();
+
 
     //agents information and distribution
     QString agen_lines = WriteAgentData();
@@ -1810,8 +1702,7 @@ void InifileWidget::on_pushButton_write_clicked()
 
     if (file.open(QIODevice::WriteOnly|QIODevice::Text))
     {
-        file.write(head_lines.toUtf8() +
-                   traf_lines.toUtf8());
+        file.write(head_lines.toUtf8());
 
         WriteRoutingData(file);
 
@@ -1957,92 +1848,6 @@ void InifileWidget::ReadHeaderData(TiXmlElement *JuPedSim)
     }
 }
 
-void InifileWidget::ReadTrafficData(TiXmlElement *JuPedSim)
-{
-    //traffic_constraints
-    if (JuPedSim->FirstChild("traffic_constraints"))
-    {
-        if (JuPedSim->FirstChild("traffic_constraints")->FirstChild("doors"))
-        {
-            if (JuPedSim->FirstChild("traffic_constraints")->FirstChild("doors")->FirstChildElement("door"))
-            {
-                int counter = 0;
-                for (TiXmlElement* door = JuPedSim->FirstChild("traffic_constraints")->FirstChild("doors")->FirstChildElement("door");
-                     door; door = door->NextSiblingElement("door"))
-                {
-                    if (counter+1 == 1)
-                    {
-                        if (!ui->checkBox_general_2->isChecked())
-                        {
-                            ui->checkBox_general_2->setChecked(true);
-                            ui->tabWidget->insertTab(6, ui->tab_constraints, "Constraints");
-                        }
-                    }
-                    ui->spinBox_constraints_1->setValue(counter+1);
-
-                    if (door->Attribute("trans_id"))
-                    {
-                        QString value = door->Attribute("trans_id");
-                        ui->tableWidget_constraints_1->setItem(counter, 0, new QTableWidgetItem(value));
-                    }
-                    if (door->Attribute("caption"))
-                    {
-                        QString value = door->Attribute("caption");
-                        ui->tableWidget_constraints_1->setItem(counter, 1, new QTableWidgetItem(value));
-                    }
-                    if (door->Attribute("state"))
-                    {
-                        QString value = door->Attribute("state");
-                        ui->tableWidget_constraints_1->setItem(counter, 2, new QTableWidgetItem(value));
-                    }
-                    counter = counter + 1;
-                }
-            }
-        }
-
-        if (JuPedSim->FirstChild("traffic_constraints")->FirstChild("rooms"))
-        {
-            if (JuPedSim->FirstChild("traffic_constraints")->FirstChild("rooms")->FirstChildElement("room"))
-            {
-                int counter = 0;
-                for (TiXmlElement* room = JuPedSim->FirstChild("traffic_constraints")->FirstChild("rooms")->FirstChildElement("room");
-                     room; room = room->NextSiblingElement("room"))
-                {
-                    if (counter+1 == 1)
-                    {
-                        if (!ui->checkBox_general_2->isChecked())
-                        {
-                            ui->checkBox_general_2->setChecked(true);
-                            ui->tabWidget->insertTab(6, ui->tab_constraints, "Constraints");
-                        }
-                    }
-                    ui->spinBox_constraints_2->setValue(counter+1);
-
-                    if (room->Attribute("room_id"))
-                    {
-                        QString value = room->Attribute("room_id");
-                        ui->tableWidget_constraints_2->setItem(counter, 0, new QTableWidgetItem(value));
-                    }
-                    if (room->Attribute("caption"))
-                    {
-                        QString value = room->Attribute("caption");
-                        ui->tableWidget_constraints_2->setItem(counter, 1, new QTableWidgetItem(value));
-                    }
-                    if (room->Attribute("state"))
-                    {
-                        QString value = room->Attribute("state");
-                        ui->tableWidget_constraints_2->setItem(counter, 2, new QTableWidgetItem(value));
-                    }
-                    counter = counter + 1;
-                }
-            }
-        }
-    }
-}
-
-void InifileWidget::ReadRoutingData(TiXmlElement *JuPedSim)
-{
-}
 
 void InifileWidget::ReadAgentData(TiXmlElement *JuPedSim)
 {
@@ -3605,7 +3410,7 @@ void InifileWidget::on_pushButton_read_clicked()
     ReadHeaderData(JuPedSim);
 
     //traffic_constraints
-    ReadTrafficData(JuPedSim);
+
 
     //agents information and distribution
     ReadAgentData(JuPedSim);

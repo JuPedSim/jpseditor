@@ -458,7 +458,7 @@ void roomWidget::disable_roomSelectionCrossings()
 void roomWidget::add_rooms_to_crossing()
 {
      qDebug("Enter roomWidget::add_rooms_to_crossing");
-    if (ui->crossingList->currentItem()!=0L)
+    if (ui->crossingList->currentItem() != nullptr)
     {
         int cCrossingRow=ui->crossingList->currentRow();
         qDebug("\t cCrossingRow = %d", cCrossingRow);
@@ -499,7 +499,6 @@ void roomWidget::delete_crossing()
         datamanager->remove_crossing(datamanager->get_crossingList()[index]);
         ui->crossingList->setCurrentRow(-1);
         this->show_crossings();
-
     }
 }
 
