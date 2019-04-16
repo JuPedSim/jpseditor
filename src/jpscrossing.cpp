@@ -30,7 +30,6 @@
 #include <iostream>
 #include <QDebug>
 
-
 jpsCrossing::jpsCrossing(jpsLineItem *line)
 {
     cLine=line;
@@ -66,6 +65,30 @@ jpsLineItem *jpsCrossing::get_cLine()
 void jpsCrossing::change_name(QString name)
 {
     cName=name;
+}
+
+bool jpsCrossing::isState() const {
+    return state;
+}
+
+void jpsCrossing::setState(bool state) {
+    jpsCrossing::state = state;
+}
+
+QString jpsCrossing::getMaxAgents() const {
+    return max_agents;
+}
+
+void jpsCrossing::setMaxAgents(QString maxAgents) {
+    max_agents = maxAgents;
+}
+
+QString jpsCrossing::getOutflow() const {
+    return outflow;
+}
+
+void jpsCrossing::setOutflow(QString outflow) {
+    jpsCrossing::outflow = outflow;
 }
 
 void jpsCrossing::add_rooms(jpsRoom *room1, jpsRoom *room2)

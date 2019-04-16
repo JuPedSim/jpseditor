@@ -383,6 +383,13 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_apply">
+         <property name="text">
+          <string>Apply</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
      <item>
@@ -527,7 +534,7 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_12">
            <item>
-            <widget class="QLineEdit" name="OutflowLineEdit"/>
+            <widget class="QLineEdit" name="outflowLineEdit"/>
            </item>
            <item>
             <spacer name="horizontalSpacer_7">

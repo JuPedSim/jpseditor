@@ -49,6 +49,7 @@ private:
     bool CheckHeaderData();
     bool CheckTrafficData();
     bool CheckRoutingData();
+    bool CheckSourceData();
     bool CheckAgentData();
     bool CheckModelGcfmData();
     bool CheckAgentGcfmData();

@@ -183,7 +183,10 @@ bool InifileWidget::CheckHeaderData()
 
     if(ui->lineEdit_general_07->text() == "")
     {
-        ui->label_warning->setText("<font color='red'>General incomplete.</font>");
+        QMessageBox::critical(this,
+                              "Saving Inifile",
+                              "Please chooses geometry file",
+                              QMessageBox::Ok);
         return 0;
     }
 
@@ -211,11 +214,40 @@ bool InifileWidget::CheckHeaderData()
 
 bool InifileWidget::CheckTrafficData()
 {
+    if(ui->lineEdit_TrafficFile->text().isEmpty())
+    {
+        QMessageBox::critical(this,
+                              "Save Inifile",
+                              "Please choose traffic file!",
+                              QMessageBox::Ok);
+        return false;
+    }
     return true;
 }
 
 bool InifileWidget::CheckRoutingData()
 {
+    if(ui->lineEdit_GoalFile->text().isEmpty())
+    {
+        QMessageBox::critical(this,
+                              "Save Inifile",
+                              "Please choose goal file!",
+                              QMessageBox::Ok);
+        return false;
+    }
+    return true;
+}
+
+bool InifileWidget::CheckSourceData()
+{
+    if(ui->lineEdit_SourceFile->text().isEmpty())
+    {
+        QMessageBox::critical(this,
+                              "Save Inifile",
+                              "Please choose source file!",
+                              QMessageBox::Ok);
+        return false;
+    }
     return true;
 }
 
@@ -816,7 +848,22 @@ QString InifileWidget::WriteHeaderData()
     return head_lines;
 }
 
-//TODO: writeTrafficData
+/*
+<routing>
+    <goals>
+        <goal id="0" final="false" caption="goal 1">
+            <polygon>
+                <vertex px="-5.0" py="-5.0" />
+                <vertex px="-5.0" py="-2.0" />
+                <vertex px="-3.0" py="-2.0" />
+                <vertex px="-3.0" py="-5.0" />
+                <vertex px="-5.0" py="-5.0" />
+            </polygon>
+        </goal>
+        <file>goals.xml</file>
+    </goals>
+</routing>
+*/
 
 void InifileWidget::WriteRoutingData(QFile &file)
 {
@@ -1597,11 +1644,17 @@ void InifileWidget::on_pushButton_write_clicked()
         return;
     }
 
-    //check traffic_constraints
-    if (CheckTrafficData() == 0)
-    {
+    //goal
+    if (CheckRoutingData() == false)
         return;
-    }
+
+    //source
+    if (CheckSourceData() == false)
+        return;
+
+    //traffic(door)
+    if (CheckTrafficData() == false)
+        return;
 
     //check agents information and distribution
     if (CheckAgentData() == 0)
@@ -1675,12 +1728,8 @@ void InifileWidget::on_pushButton_write_clicked()
         return;
     }
 
-
     //header
     QString head_lines = WriteHeaderData();
-
-    //traffic_constraints
-
 
     //agents information and distribution
     QString agen_lines = WriteAgentData();
@@ -1704,7 +1753,10 @@ void InifileWidget::on_pushButton_write_clicked()
     QString choi_lines = WriteRouteChoiceData();
 
     //save to file
-    QString file_name = QFileDialog::getSaveFileName(this,tr("Create ini"),"",tr("XML-Files (*.xml)"));
+    QString file_name = QFileDialog::getSaveFileName(this,
+            tr("Create ini"),
+            "",
+            tr("XML-Files (*.xml)"));
     QFile file(file_name);
 
 
@@ -3416,9 +3468,6 @@ void InifileWidget::on_pushButton_read_clicked()
 
     //header
     ReadHeaderData(JuPedSim);
-
-    //traffic_constraints
-
 
     //agents information and distribution
     ReadAgentData(JuPedSim);
