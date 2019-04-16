@@ -114,6 +114,10 @@ public:
     void writeGoalXML(QFile &file);
     void writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *>& goallist);
 
+    //Traffic
+    void writeTrafficXML(QFile &file);
+    void writeTraffics(QXmlStreamWriter *stream, QList<jpsCrossing *> const &doorlist);
+
     void remove_all();
     void remove_marked_lines();
     void set_view(jpsGraphicsView* view);

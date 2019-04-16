@@ -53,11 +53,6 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     show_obstacles();
     showLayersInfo();
 
-
-    //temporary uncommented
-    ui->auto_assign_doors->setVisible(false);
-    //ui->auto_assign_exits->setVisible(false);
-
     // roomClasses
     ui->classBox->addItem("Not specified");
     ui->classBox->addItem("Corridor");
@@ -1224,7 +1219,7 @@ void roomWidget::showLayersInfo()
 /*
     Since v0.8.8
 
-    Save crossing data
+    Save crossing data into datamanager
  */
 void roomWidget::applyCrossing()
 {

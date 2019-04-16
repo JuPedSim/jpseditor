@@ -2871,7 +2871,6 @@ void jpsDatamanager::writeSources(QXmlStreamWriter *stream, QList<JPSSource *> &
             stream->writeAttribute("y_max",QString::number(source->getY_max()));
             stream->writeEndElement();
         }
-
     }
 }
 
@@ -3044,11 +3043,73 @@ const QList<JPSGoal *> &jpsDatamanager::getGoallist()
     return goallist;
 }
 
+/*
+    Since v0.8.8
 
+    Write traffic (doors) as a external xml file.
 
+    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <JPScore project="JPS-Project" version="0.8">
+        <traffic_constraints>
+            <doors> <!-- doors states are: close or open -->
+                <door trans_id="2" caption="NaN" state="open" />
+                <door trans_id="6" caption="NaN" state="open" outflow="1.0" max_agents="20"/>
+            </doors>
+        </traffic_constraints>
+    </JPScore>
+ */
 
+void jpsDatamanager::writeTrafficXML(QFile &file)
+{
+    QXmlStreamWriter *stream = new QXmlStreamWriter(&file);
+    QList<jpsCrossing *> crossings =get_crossingList();
+    QList<jpsCrossing *> doorlist;
 
+    for(jpsCrossing *crossing:crossings)
+    {
+        if(crossing->IsExit())
+            doorlist.append(crossing);
+    }
 
+    stream->setAutoFormatting(true);
+
+    stream->writeStartDocument("1.0",true);
+    stream->setCodec("UTF-8");
+
+    stream->writeStartElement("JPScore");
+    stream->writeAttribute("project","JPS-Project");
+    stream->writeAttribute("version", "0.8");
+
+    stream->writeStartElement("traffic_constrains");
+    writeTraffics(stream, doorlist);
+    doorlist.clear();
+    stream->writeEndElement(); //end traffic_constrains
+
+    stream->writeEndDocument();
+
+    delete stream;
+    stream = nullptr;
+}
+
+void jpsDatamanager::writeTraffics(QXmlStreamWriter *stream, QList<jpsCrossing *> const &doorlist)
+{
+    for(jpsCrossing* door:doorlist)
+    {
+        stream->writeStartElement("doors");
+
+        stream->writeStartElement("door");
+        stream->writeAttribute("trans_id", QString::number(door->get_id()));
+        stream->writeAttribute("caption", "NaN");
+        if(door->isState())
+            stream->writeAttribute("state", "open");
+        else
+            stream->writeAttribute("state", "close");
+        stream->writeAttribute("outflow", door->getOutflow());
+        stream->writeAttribute("max_agents", door->getMaxAgents());
+
+        stream->writeEndElement(); //end doors and door
+    }
+}
 
 
 

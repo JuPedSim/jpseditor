@@ -630,6 +630,12 @@ void MWindow::saveAsXML(){
         if(goalsFile.open(QIODevice::WriteOnly|QIODevice::Text))
             dmanager->writeGoalXML(goalsFile);
 
+        //Save traffic
+        QString fileNameTraffic = fileName.split(".").first()+"_traffic.xml";
+        QFile trafficFile(fileNameTraffic);
+        if(trafficFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeTrafficXML(trafficFile);
+
         //Save transitions
         QString fileNameTransition=fileName.split(".").first()+"_transitions.xml";
         QFile transitionFile(fileNameTransition);

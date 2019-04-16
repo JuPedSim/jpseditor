@@ -375,6 +375,18 @@
        </item>
        <item>
         <widget class="QPushButton" name="auto_assign_doors">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>75</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Assign Door to room&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
