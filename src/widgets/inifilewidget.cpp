@@ -848,47 +848,6 @@ QString InifileWidget::WriteHeaderData()
     return head_lines;
 }
 
-/*
-<routing>
-    <goals>
-        <goal id="0" final="false" caption="goal 1">
-            <polygon>
-                <vertex px="-5.0" py="-5.0" />
-                <vertex px="-5.0" py="-2.0" />
-                <vertex px="-3.0" py="-2.0" />
-                <vertex px="-3.0" py="-5.0" />
-                <vertex px="-5.0" py="-5.0" />
-            </polygon>
-        </goal>
-        <file>goals.xml</file>
-    </goals>
-</routing>
-*/
-
-void InifileWidget::WriteRoutingData(QFile &file)
-{
-    auto *stream = new QXmlStreamWriter(&file);
-    stream->setAutoFormatting(true);
-
-    stream->writeComment("routing");
-    stream->writeStartElement("routing");
-
-    stream->writeStartElement("goals");
-    QList<JPSGoal *> goallist = dataManager->getGoallist();
-    dataManager->writeGoals(stream, goallist);
-
-    auto goal_FileName = "goals.xml";
-    stream->writeStartElement("file");
-    stream->writeCharacters(goal_FileName);
-    stream->writeEndElement(); //end files
-
-    stream->writeEndElement(); //end goals
-    stream->writeEndDocument();
-
-    delete stream;
-    stream = nullptr;
-}
-
 QString InifileWidget::WriteAgentData()
 {
     //agents information and distribution
@@ -1638,22 +1597,22 @@ QString InifileWidget::WriteRouteChoiceData()
 // Create ini.xml on button push
 void InifileWidget::on_pushButton_write_clicked()
 {
-    //check header
+    //check header (geometry)
     if (CheckHeaderData() == 0)
     {
         return;
     }
 
     //goal
-    if (CheckRoutingData() == false)
+    if (!CheckRoutingData())
         return;
 
     //source
-    if (CheckSourceData() == false)
+    if (!CheckSourceData())
         return;
 
     //traffic(door)
-    if (CheckTrafficData() == false)
+    if (!CheckTrafficData())
         return;
 
     //check agents information and distribution
@@ -1765,6 +1724,7 @@ void InifileWidget::on_pushButton_write_clicked()
         file.write(head_lines.toUtf8());
 
         WriteRoutingData(file);
+        WriteTrafficData(file);
 
         file.write(agen_lines.toUtf8() +
                    gcfm_lines.toUtf8() +
@@ -3515,3 +3475,88 @@ void InifileWidget::pushButton_TrafficClicked()
 
     ui->lineEdit_TrafficFile->setText(fileName);
 }
+
+/*
+<routing>
+    <goals>
+        <goal id="0" final="false" caption="goal 1">
+            <polygon>
+                <vertex px="-5.0" py="-5.0" />
+                <vertex px="-5.0" py="-2.0" />
+                <vertex px="-3.0" py="-2.0" />
+                <vertex px="-3.0" py="-5.0" />
+                <vertex px="-5.0" py="-5.0" />
+            </polygon>
+        </goal>
+        <file>goals.xml</file>
+    </goals>
+</routing>
+*/
+
+void InifileWidget::WriteRoutingData(QFile &file)
+{
+    auto *stream = new QXmlStreamWriter(&file);
+    stream->setAutoFormatting(true);
+
+    stream->writeComment("routing");
+    stream->writeStartElement("routing");
+
+    stream->writeStartElement("goals");
+    QList<JPSGoal *> goallist = dataManager->getGoallist();
+    dataManager->writeGoals(stream, goallist);
+
+    auto goal_FileName = "goals.xml";
+    stream->writeStartElement("file");
+    stream->writeCharacters(goal_FileName);
+    stream->writeEndElement(); //end files
+
+    stream->writeEndElement(); //end goals
+    stream->writeEndDocument();
+
+    delete stream;
+    stream = nullptr;
+}
+
+/*
+    since v0.8.8
+
+    <traffic_constraints>
+        <doors>
+          <door trans_id="1" caption="NaN" state="open" />
+        </doors>
+        <file>traffic.xml</file>
+    </traffic_constraints>
+*/
+
+void InifileWidget::WriteTrafficData(QFile &file)
+{
+    auto *stream = new QXmlStreamWriter(&file);
+    stream->setAutoFormatting(true);
+
+    stream->writeComment("traffic information: e.g closed doors or smoked rooms");
+    stream->writeStartElement("traffic_constraints");
+
+    stream->writeStartElement("doors");
+    QList<jpsCrossing *> crossings = dataManager->get_crossingList();
+    QList<jpsCrossing *> doorlist;
+
+    for(jpsCrossing *crossing:crossings)
+    {
+        if(crossing->IsExit())
+            doorlist.append(crossing);
+    }
+
+    dataManager->writeTraffics(stream, doorlist);
+
+    auto traffic_FileName = ui->lineEdit_TrafficFile->text().split("/").first();
+    stream->writeStartElement("file");
+    stream->writeCharacters(traffic_FileName);
+    stream->writeEndElement(); //end files
+
+    stream->writeEndElement(); //end traffic
+    stream->writeEndDocument();
+
+    delete stream;
+    stream = nullptr;
+}
+

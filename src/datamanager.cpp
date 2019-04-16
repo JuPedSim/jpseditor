@@ -2201,9 +2201,10 @@ void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
     qreal y2=xmlReader.attributes().value("py").toString().toFloat();
     qDebug("\t x1 = %.2f, y1 = %.2f, x2 = %.2f y2 = %.2f", x1, y1, x2, y2);
     jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"Exit");
+
     if (id!=-2)
     {
-        jpsCrossing* exit = new jpsCrossing(lineItem);
+        jpsCrossing *exit = new jpsCrossing(lineItem);
         exit->set_id(id);
         exit->change_name(caption);
         //exit->set_type(type);
@@ -3081,9 +3082,10 @@ void jpsDatamanager::writeTrafficXML(QFile &file)
     stream->writeAttribute("version", "0.8");
 
     stream->writeStartElement("traffic_constrains");
+    stream->writeStartElement("doors");
     writeTraffics(stream, doorlist);
     doorlist.clear();
-    stream->writeEndElement(); //end traffic_constrains
+    stream->writeEndElement(); //end
 
     stream->writeEndDocument();
 
@@ -3095,8 +3097,6 @@ void jpsDatamanager::writeTraffics(QXmlStreamWriter *stream, QList<jpsCrossing *
 {
     for(jpsCrossing* door:doorlist)
     {
-        stream->writeStartElement("doors");
-
         stream->writeStartElement("door");
         stream->writeAttribute("trans_id", QString::number(door->get_id()));
         stream->writeAttribute("caption", "NaN");
@@ -3106,10 +3106,62 @@ void jpsDatamanager::writeTraffics(QXmlStreamWriter *stream, QList<jpsCrossing *
             stream->writeAttribute("state", "close");
         stream->writeAttribute("outflow", door->getOutflow());
         stream->writeAttribute("max_agents", door->getMaxAgents());
-
-        stream->writeEndElement(); //end doors and door
+        stream->writeEndElement(); //end door
     }
 }
 
+bool jpsDatamanager::readTrafficXML(QFile &file)
+{
 
+    QXmlStreamReader xmlReader(&file);
+
+    xmlReader.readNext(); // read first token
+
+    while (!xmlReader.atEnd())
+    {
+        if(xmlReader.isStartElement() && xmlReader.name() == QLatin1String("doors"))
+        {
+            readDoor(xmlReader);
+        } else
+        {
+            xmlReader.readNext();
+        }
+    }
+
+    return true;
+}
+
+void jpsDatamanager::readDoor(QXmlStreamReader &xmlReader)
+{
+    bool state;
+    QString max_agents;
+    QString outflow;
+    int id;
+
+    while (xmlReader.readNextStartElement())
+    {
+        if(xmlReader.name() == QLatin1String("door"))
+        {
+            state = xmlReader.attributes().value("state") == "open" ? true : false;
+
+            max_agents = xmlReader.attributes().value("max_agents").toString();
+            outflow = xmlReader.attributes().value("outflow").toString();
+            id = xmlReader.attributes().value("trans_id").toInt();
+
+            for(jpsCrossing *door : crossingList)
+            {
+                if(door->get_id() == id && door->IsExit())
+                {
+                    door->setState(state);
+                    door->setMaxAgents(max_agents);
+                    door->setOutflow(outflow);
+                }
+            }
+
+            // now token is end element, readNextStartElement() will return false. Have to use readNext
+            // to go to next start element.
+            xmlReader.readNext();
+        }
+    }
+}
 

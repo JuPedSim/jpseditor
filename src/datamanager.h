@@ -117,6 +117,8 @@ public:
     //Traffic
     void writeTrafficXML(QFile &file);
     void writeTraffics(QXmlStreamWriter *stream, QList<jpsCrossing *> const &doorlist);
+    bool readTrafficXML(QFile &file);
+    void readDoor(QXmlStreamReader &xmlReader);
 
     void remove_all();
     void remove_marked_lines();

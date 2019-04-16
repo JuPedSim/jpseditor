@@ -110,6 +110,7 @@ protected slots:
     void openRouting(QString fileName);
     void openSource(QString fileName);
     void openGoal(QString fileName);
+    void openTraffic(QString fileName);
 
     void openFileCogMap();
     void OpenLineFile();

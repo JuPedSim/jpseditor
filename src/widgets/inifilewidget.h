@@ -65,6 +65,7 @@ private:
 
     QString WriteHeaderData();
     void WriteRoutingData(QFile &file);
+    void WriteTrafficData(QFile &file);
     QString WriteAgentData();
     QString WriteModelGcfmData();
     QString WriteModelGompData();

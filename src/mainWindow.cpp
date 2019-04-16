@@ -408,6 +408,8 @@ void MWindow::openFileXML()
 
     openSource(fileName);
 
+    openTraffic(fileName);
+
     //AutoZoom to drawing
     mview->AutoZoom();
 }
@@ -1099,5 +1101,39 @@ void MWindow::goalButtionClicked()
         goalDockWidget = nullptr;
         delete goalWidget;
         goalWidget = nullptr;
+    }
+}
+
+/*
+    Since v0.8.8
+
+    Open traffic file
+ */
+
+void MWindow::openTraffic(QString fileName)
+{
+    QString fileNameTraffic = fileName.split(".").first() + "_traffic.xml";
+    QFile fileTraffic(fileNameTraffic);
+
+    if(fileNameTraffic.isEmpty())
+        return;
+
+    if (!fileTraffic.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, tr("Read traffic XML"),
+                             tr("Cannot read file %1:\n%2.")
+                                     .arg(QDir::toNativeSeparators(fileName),
+                                          fileTraffic.errorString()));
+        return;
+    }
+
+    if(!dmanager->readTrafficXML(fileTraffic))
+    {
+        QMessageBox::critical(this,
+                              "Prase traffic XML",
+                              "Cannot prase XML-file",
+                              QMessageBox::Ok);
+    } else
+    {
     }
 }
