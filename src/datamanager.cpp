@@ -2850,26 +2850,52 @@ void jpsDatamanager::writeSources(QXmlStreamWriter *stream, QList<JPSSource *> &
         {
             stream->writeStartElement("source");
             stream->writeAttribute("id",QString::number(source->getId()));
-            stream->writeAttribute("frequency",source->getFrequency());
-            stream->writeAttribute("N_create",source->getN_create());
-            stream->writeAttribute("percent",source->getPercent());
-            stream->writeAttribute("rate",source->getRate());
-            stream->writeAttribute("time_min",source->getTime_min());
-            stream->writeAttribute("time_max",source->getTime_max());
-            stream->writeAttribute("agents_max",source->getAgents_max());
-            stream->writeAttribute("group_id",source->getGroup_id());
-            stream->writeAttribute("caption",source->getCaption());
-            stream->writeAttribute("greedy",source->getGreedy());
-            stream->writeAttribute("time",source->getTime());
-            stream->writeAttribute("startX",source->getStartX());
-            stream->writeAttribute("startY",source->getStartY());
+
+            if(!source->getFrequency().isEmpty())
+                stream->writeAttribute("frequency",source->getFrequency());
+
+            if(!source->getN_create().isEmpty())
+                stream->writeAttribute("N_create",source->getN_create());
+
+            if(!source->getPercent().isEmpty())
+                stream->writeAttribute("percent",source->getPercent());
+
+            if(!source->getRate().isEmpty())
+                stream->writeAttribute("rate",source->getRate());
+
+            if(!source->getTime_min().isEmpty())
+                stream->writeAttribute("time_min",source->getTime_min());
+
+            if(!source->getTime_max().isEmpty())
+                stream->writeAttribute("time_max",source->getTime_max());
+
+            if(!source->getAgents_max().isEmpty())
+                stream->writeAttribute("agents_max",source->getAgents_max());
+
+            if(!source->getGroup_id().isEmpty())
+                stream->writeAttribute("group_id",source->getGroup_id());
+
+            if(!source->getCaption().isEmpty())
+                stream->writeAttribute("caption",source->getCaption());
+
+            if(!source->getGreedy().isEmpty())
+                stream->writeAttribute("greedy",source->getGreedy());
+
+            if(!source->getTime().isEmpty())
+                stream->writeAttribute("time",source->getTime());
+
+            if(!source->getStartX().isEmpty())
+                stream->writeAttribute("startX",source->getStartX());
+
+            if(!source->getStartY().isEmpty())
+                stream->writeAttribute("startY",source->getStartY());
+
             stream->writeAttribute("x_min",QString::number(source->getX_min()));
             stream->writeAttribute("x_max",QString::number(source->getX_max()));
             stream->writeAttribute("y_min",QString::number(source->getY_min()));
             stream->writeAttribute("y_max",QString::number(source->getY_max()));
             stream->writeEndElement();
         }
-
     }
 }
 

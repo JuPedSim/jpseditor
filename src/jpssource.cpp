@@ -54,18 +54,18 @@ JPSSource::JPSSource(QGraphicsRectItem *sourceRectItem)
     //Set-up default values of a JPSsource
     id = 0;
     caption="Source";
-    agents_max = "0";
-    frequency = "0";
-    group_id = "0";
-    N_create = "0";
-    percent = "0";
-    rate = "0";
-    startX = "0";
-    startY = "0";
-    time = "0";
-    time_max = "0";
-    time_min = "0";
-    greedy = "false";
+    agents_max = "";
+    frequency = "";
+    group_id = "";
+    N_create = "";
+    percent = "";
+    rate = "";
+    startX = "";
+    startY = "";
+    time = "";
+    time_max = "";
+    time_min = "";
+    greedy = "";
     beSaved = true;
 
     x_min = this->rect().bottomLeft().x();
