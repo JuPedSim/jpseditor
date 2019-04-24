@@ -58,6 +58,10 @@ JPSGoal::JPSGoal(QGraphicsRectItem *goalRectItem)
     caption="Goal";
     beSaved="true";
     isFinal="true";
+    x_min = QString::number(this->rect().bottomLeft().x());
+    y_min = QString::number(this->rect().bottomLeft().y());
+    x_max = QString::number(this->rect().topRight().x());
+    y_max = QString::number(this->rect().topRight().y());
 }
 
 JPSGoal::~JPSGoal()
@@ -104,6 +108,37 @@ void JPSGoal::setRectItem(QGraphicsRectItem *rectItem) {
     JPSGoal::rectItem = rectItem;
 }
 
+const QString &JPSGoal::getXMin() const {
+    return x_min;
+}
+
+void JPSGoal::setXMin(const QString &xMin) {
+    x_min = xMin;
+}
+
+const QString &JPSGoal::getXMax() const {
+    return x_max;
+}
+
+void JPSGoal::setXMax(const QString &xMax) {
+    x_max = xMax;
+}
+
+const QString &JPSGoal::getYMin() const {
+    return y_min;
+}
+
+void JPSGoal::setYMin(const QString &yMin) {
+    y_min = yMin;
+}
+
+const QString &JPSGoal::getYMax() const {
+    return y_max;
+}
+
+void JPSGoal::setYMax(const QString &yMax) {
+    y_max = yMax;
+}
 
 // For drawing
 void JPSGoal::setPen(const QPen &pen_)

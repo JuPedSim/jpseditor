@@ -2983,6 +2983,10 @@ void jpsDatamanager::writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *> &goal
             stream->writeAttribute("id",QString::number(goal->getId()));
             stream->writeAttribute("final",goal->getIsFinal());
             stream->writeAttribute("caption",goal->getCaption());
+            stream->writeAttribute("x_min",goal->getXMin());
+            stream->writeAttribute("x_max",goal->getXMax());
+            stream->writeAttribute("y_min",goal->getYMin());
+            stream->writeAttribute("y_max",goal->getYMax());
 
             stream->writeStartElement("polygon");
 

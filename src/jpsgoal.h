@@ -80,6 +80,22 @@ public slots:
 
     void setRectItem(QGraphicsRectItem *rectItem);
 
+    const QString &getXMin() const;
+
+    void setXMin(const QString &xMin);
+
+    const QString &getXMax() const;
+
+    void setXMax(const QString &xMax);
+
+    const QString &getYMin() const;
+
+    void setYMin(const QString &yMin);
+
+    const QString &getYMax() const;
+
+    void setYMax(const QString &yMax);
+
 protected:
     QVariant itemChange(GraphicsItemChange change,const QVariant &value);
     void keyPressEvent(QKeyEvent *event);
@@ -93,6 +109,10 @@ private:
     QString caption;
     QString beSaved;
     QString isFinal;
+    QString x_min;
+    QString x_max;
+    QString y_min;
+    QString y_max;
 
     //QGraphicsItem attributes
     QPen currentPen;
