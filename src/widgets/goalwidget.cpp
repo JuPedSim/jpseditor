@@ -66,11 +66,18 @@ GoalWidget::~GoalWidget()
 
 void GoalWidget::showGoals()
 {
+    /*
+        show the new added goal informations
+     */
     model->setGoalsList(currentView->getGoals());
     ui->goalsListView->setModel(model);
     ui->IDlineEdit->clear();
     ui->captionLineEdit->clear();
     ui->finalLineEdit->clear();
+    ui->lineEdit_XMin->clear();
+    ui->lineEdit_XMax->clear();
+    ui->lineEdit_YMin->clear();
+    ui->lineEdit_YMax->clear();
 }
 
 
@@ -83,6 +90,10 @@ void GoalWidget::showGoalInformation()
     ui->IDlineEdit->setText(QString::number(goal->getId()));
     ui->captionLineEdit->setText(goal->getCaption());
     ui->finalLineEdit->setText(goal->getIsFinal());
+    ui->lineEdit_XMin->setText(goal->getXMin());
+    ui->lineEdit_XMax->setText(goal->getXMax());
+    ui->lineEdit_YMin->setText(goal->getYMin());
+    ui->lineEdit_YMax->setText(goal->getYMax());
 
     if(goal->getBeSaved()=="true")
     {
@@ -107,6 +118,10 @@ void GoalWidget::applyGoalInformation()
         goal->setId(ui->IDlineEdit->text().toInt());
         goal->setCaption(ui->captionLineEdit->text());
         goal->setIsFinal(ui->finalLineEdit->text());
+        goal->setXMin(ui->lineEdit_XMin->text());
+        goal->setXMax(ui->lineEdit_XMax->text());
+        goal->setYMin(ui->lineEdit_YMin->text());
+        goal->setYMax(ui->lineEdit_YMax->text());
 
         if(ui->isSaveButton->isChecked())
         {

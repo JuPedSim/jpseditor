@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>200</width>
-    <height>400</height>
+    <height>500</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -31,7 +31,7 @@
      <x>10</x>
      <y>0</y>
      <width>181</width>
-     <height>381</height>
+     <height>491</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -97,7 +97,35 @@
         <item>
          <widget class="QLabel" name="finalLabel">
           <property name="text">
-           <string>final:</string>
+           <string>Final:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="xminLabel">
+          <property name="text">
+           <string>X Min</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="xmaxLabel">
+          <property name="text">
+           <string>X Max</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="yminLabel">
+          <property name="text">
+           <string>Y Min</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="ymaxLabel">
+          <property name="text">
+           <string>Y Max</string>
           </property>
          </widget>
         </item>
@@ -113,6 +141,18 @@
         </item>
         <item>
          <widget class="QLineEdit" name="finalLineEdit"/>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_XMin"/>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_XMax"/>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_YMin"/>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_YMax"/>
         </item>
        </layout>
       </item>
