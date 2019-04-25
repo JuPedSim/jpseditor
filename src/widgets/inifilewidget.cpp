@@ -3520,8 +3520,8 @@ void InifileWidget::writeRoutingData(QXmlStreamWriter *stream, QFile &file)
     stream->writeStartElement("file");
     stream->writeCharacters(goal_FileName);
     stream->writeEndElement(); //end files
-
     stream->writeEndElement(); //end goals
+    stream->writeEndElement(); //end routing
 }
 
 /*
