@@ -842,62 +842,52 @@ void InifileWidget::writeHeaderData(QXmlStreamWriter *stream, QFile &file)
     return;
 }
 
-QString InifileWidget::WriteAgentData()
+void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
 {
-    //agents information and distribution
-    QString agen_line_1 = "\t<!-- agents information and distribution -->\n";
+    stream->writeComment("persons information and distribution");
+    stream->writeStartElement("agents");
+    stream->writeAttribute("operational_model_id", QString::number(ui->comboBox_groups_1->currentIndex() + 1));
+    stream->writeStartElement("agents_distribution");
 
-    QString agen_line_2 = "\t<agents operational_model_id=\"" +
-            QString::number(ui->comboBox_groups_1->currentIndex() + 1) +
-            "\">\n";
-
-    QString agen_line_3 = "\t\t<agents_distribution>\n";
-
-    QString agen_line_4 = "";
     for(int i = 0; i < ui->spinBox_groups_1->value(); i++)
     {
-        agen_line_4 = agen_line_4 +
-                "\t\t\t<group group_id=\"" +
-                ui->tableWidget_groups_1->item(i,0)->text() +
-                "\" agent_parameter_id=\"" +
-                ui->tableWidget_groups_1->item(i,1)->text() +
-                "\" room_id=\"" +
-                ui->tableWidget_groups_1->item(i,2)->text() +
-                "\" subroom_id=\"" +
-                ui->tableWidget_groups_1->item(i,3)->text() +
-                "\" number=\"" +
-                ui->tableWidget_groups_1->item(i,4)->text() +
-                "\" goal_id=\"" +
-                ui->tableWidget_groups_1->item(i,5)->text() +
-                "\" router_id=\"" +
-                ui->tableWidget_groups_1->item(i,6)->text() +
-                "\" x_min=\"" +
-                ui->tableWidget_groups_1->item(i,7)->text() +
-                "\" x_max=\"" +
-                ui->tableWidget_groups_1->item(i,8)->text() +
-                "\" y_min=\"" +
-                ui->tableWidget_groups_1->item(i,9)->text() +
-                "\" y_max=\"" +
-                ui->tableWidget_groups_1->item(i,10)->text() +
-                "\" pre_movement_mean=\"" +
-                ui->tableWidget_groups_1->item(i,11)->text() +
-                "\" pre_movement_sigma=\"" +
-                ui->tableWidget_groups_1->item(i,12)->text() +
-                "\" risk_tolerance_mean=\"" +
-                ui->tableWidget_groups_1->item(i,13)->text() +
-                "\" risk_tolerance_sigma=\"" +
-                ui->tableWidget_groups_1->item(i,14)->text() +
-                "\" />\n";
+        stream->writeStartElement("group");
+        stream->writeAttribute("group_id", ui->tableWidget_groups_1->item(i,0)->text());
+        stream->writeAttribute("agent_parameter_id", ui->tableWidget_groups_1->item(i,1)->text());
+        stream->writeAttribute("room_id",ui->tableWidget_groups_1->item(i,2)->text());
+        stream->writeAttribute("subroom_id",ui->tableWidget_groups_1->item(i,3)->text());
+        stream->writeAttribute("number",ui->tableWidget_groups_1->item(i,4)->text());
+        stream->writeAttribute("goal_id",ui->tableWidget_groups_1->item(i,5)->text());
+        stream->writeAttribute("router_id",ui->tableWidget_groups_1->item(i,6)->text());
+        stream->writeAttribute("x_min",ui->tableWidget_groups_1->item(i,7)->text());
+        stream->writeAttribute("x_max",ui->tableWidget_groups_1->item(i,8)->text());
+        stream->writeAttribute("y_min",ui->tableWidget_groups_1->item(i,9)->text());
+        stream->writeAttribute("y_max",ui->tableWidget_groups_1->item(i,10)->text());
+        stream->writeAttribute("pre_movement_mean",ui->tableWidget_groups_1->item(i,11)->text());
+        stream->writeAttribute("pre_movement_sigma",ui->tableWidget_groups_1->item(i,12)->text());
+        stream->writeAttribute("risk_tolerance_mean",ui->tableWidget_groups_1->item(i,13)->text());
+        stream->writeAttribute("risk_tolerance_sigma",ui->tableWidget_groups_1->item(i,14)->text());
+        stream->writeEndElement(); //end group
     }
 
-    QString agen_line_5 = "\t\t</agents_distribution>\n";
+    stream->writeEndElement(); //end agents_distribution;
 
-    QString agen_line_6 = "\t</agents>\n\n";
+    // write agents sources
+    stream->writeComment("frequency in persons/seconds");
+    stream->writeStartElement("agents_sources");
 
-    QString agen_lines = agen_line_1 + agen_line_2 + agen_line_3 + agen_line_4 + agen_line_5 +
-                         agen_line_6;
+    QList<JPSSource *> sources = dataManager->getSourcelist();
+    dataManager->writeSources(stream, sources);
 
-    return agen_lines;
+    auto source_FileName = ui->lineEdit_SourceFile->text().split("/").last();
+    stream->writeStartElement("file");
+    stream->writeCharacters(source_FileName);
+    stream->writeEndElement(); //end files
+
+    stream->writeEndElement(); //end agents_sources
+    stream->writeEndElement(); //end agents
+
+    return;
 }
 
 QString InifileWidget::WriteModelGcfmData()
@@ -1684,7 +1674,7 @@ void InifileWidget::on_pushButton_write_clicked()
 //    QString head_lines = writeHeaderData();
 //
 //    //agents information and distribution
-//    QString agen_lines = WriteAgentData();
+//    QString agen_lines = writeAgentData();
 //
 //    //operational model and agent parameters - gcfm
 //    QString gcfm_lines = WriteModelGcfmData();
@@ -1732,9 +1722,7 @@ void InifileWidget::on_pushButton_write_clicked()
 
         writeRoutingData(stream, file);
 
-//        file.write(agen_lines.toUtf8());
-
-        writeSourceData(stream, file);
+        writeAgentData(stream, file);
 
 //        file.write(gcfm_lines.toUtf8() +
 //                   gomp_lines.toUtf8() +

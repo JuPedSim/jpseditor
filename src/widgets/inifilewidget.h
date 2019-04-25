@@ -67,7 +67,7 @@ private:
     void writeRoutingData(QXmlStreamWriter *stream, QFile &file);
     void writeTrafficData(QXmlStreamWriter *stream, QFile &file);
     void writeSourceData(QXmlStreamWriter *stream, QFile &file);
-    QString WriteAgentData();
+    void writeAgentData(QXmlStreamWriter *stream, QFile &file);
     QString WriteModelGcfmData();
     QString WriteModelGompData();
     QString WriteModelTordData();
