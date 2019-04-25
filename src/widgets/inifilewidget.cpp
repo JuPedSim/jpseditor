@@ -65,6 +65,7 @@ InifileWidget::~InifileWidget()
 }
 
 // Add rows to tablewidgets by inserting a number into a spinbox
+
 void InifileWidget::on_spinBox_groups_1_valueChanged(int)
 {
     ui->tableWidget_groups_1->setRowCount(ui->spinBox_groups_1->value());
@@ -770,67 +771,62 @@ bool InifileWidget::CheckRouteChoiceData()
     return 1;
 }
 
-QString InifileWidget::WriteHeaderData()
+/*
+    <!-- seed used for initialising random generator -->
+    <seed>12542</seed>
+
+    <!-- geometry file -->
+    <geometry>geometry.xml</geometry>
+
+    <max_sim_time>50</max_sim_time>
+
+    <!-- trajectories file and format -->
+    <trajectories format="xml-plain" fps="16" color_mode="group">
+        <file location="trajectories.xml" />
+        <!-- <socket_ hostname="127.0.0.1" port="8989" /> -->
+    </trajectories>
+
+    <!-- where to store the logs -->
+    <logfile>log.txt</logfile>
+*/
+
+void InifileWidget::writeHeaderData(QXmlStreamWriter *stream, QFile &file)
 {
-    //header
-    QString head_line_1 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n\n";
+    stream->writeComment("number of cores used");
+    stream->writeStartElement("num_threads");
+    stream->writeCharacters(ui->lineEdit_general_03->text());
+    stream->writeEndElement();
 
-    QString head_line_2 = "<JuPedSim project=\"" +
-            ui->lineEdit_general_01->text() +
-            "\" version=\"" +
-            ui->lineEdit_general_02->text() +
-            "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
-            "xsi:noNamespaceSchemaLocation=\"../../xsd/jps_ini_core.xsd\">\n\n";
+    stream->writeComment("seed used for initialising random generator");
+    stream->writeStartElement("seed");
+    stream->writeCharacters(ui->lineEdit_general_05->text());
+    stream->writeEndElement();
 
-    QString head_line_3 = "\t<!-- header -->\n";
+    stream->writeComment("geometry file");
+    stream->writeStartElement("geometry");
+    stream->writeCharacters(ui->lineEdit_general_07->text().split("/").last());
+    stream->writeEndElement();
 
-//    QString head_line_4 = "\t<header>\n";
+    stream->writeComment("simulationtime");
+    stream->writeStartElement("max_sim_time");
+    stream->writeCharacters(ui->lineEdit_general_06->text());
+    stream->writeEndElement();
 
-    QString head_line_5 = "\t<!-- number of cores used -->\n";
 
-    QString head_line_6 = "\t<num_threads>" +
-            ui->lineEdit_general_03->text() +
-            "</num_threads>\n\n";
+    stream->writeComment("trajectories file and format");
+    stream->writeStartElement("trajectories");
+    stream->writeAttribute("format",ui->comboBox_general_02->currentText());
+    stream->writeAttribute("fps", ui->lineEdit_general_10->text());
+    stream->writeAttribute("color_mode",ui->comboBox_general_03->currentText());
+    stream->writeStartElement("file");
+    stream->writeAttribute("file location", ui->lineEdit_general_12->text());
+    stream->writeEndElement(); //end file
+    stream->writeEndElement(); //end trajectories
 
-    QString head_line_7 = "\t<!-- seed used for initialising random generator -->\n";
-
-    QString head_line_8 = "\t<seed>" +
-            ui->lineEdit_general_05->text() +
-            "</seed>\n\n";
-
-    QString head_line_9 = "\t<!-- simulationtime -->\n";
-
-    QString head_line_10 = "\t<max_sim_time>" +
-            ui->lineEdit_general_06->text() +
-            "</max_sim_time>\n\n";
-
-    QString head_line_11 = "\t<!-- geometry file -->\n";
-
-    QString head_line_12 = "\t<geometry>" +
-            ui->lineEdit_general_07->text() +
-            "</geometry>\n\n";
-
-    QString head_line_13 = "\t<!-- trajectories file and format -->\n";
-
-    QString head_line_14 = "\t<trajectories format=\"" +
-            ui->comboBox_general_02->currentText() +
-            "\" fps=\"" +
-            ui->lineEdit_general_10->text() +
-            "\" color_mode=\"" +
-            ui->comboBox_general_03->currentText() +
-            "\">\n";
-
-    QString head_line_15 = "\t\t<file location=\""
-            + ui->lineEdit_general_12->text() +
-            "\" />\n";
-
-    QString head_line_16 = "\t</trajectories>\n\n";
-
-    QString head_line_17 = "\t<!-- savepath logfile -->\n";
-
-    QString head_line_18 = "\t<logfile>" +
-            ui->lineEdit_general_08->text() +
-            "</logfile>\n\n";
+    stream->writeComment("where to store the logs");
+    stream->writeStartElement("logfile");
+    stream->writeCharacters(ui->lineEdit_general_08->text());
+    stream->writeEndElement();
 
     QString head_line_19 = "\t<!-- statistics -->\n";
 
@@ -838,14 +834,12 @@ QString InifileWidget::WriteHeaderData()
             ui->comboBox_general_01->currentText() +
             "</show_statistics>\n";
 
-//    QString head_line_21 = "\t</header>\n\n";
+    stream->writeComment("statistics");
+    stream->writeStartElement("show_statistics");
+    stream->writeCharacters(ui->comboBox_general_01->currentText());
+    stream->writeEndElement();
 
-    QString head_lines = head_line_1 + head_line_2 + head_line_3 + head_line_5 +
-                         head_line_6 + head_line_7 + head_line_8 + head_line_9 + head_line_10 +
-                         head_line_11 + head_line_12 + head_line_13 + head_line_14 + head_line_15 +
-                         head_line_16 + head_line_17 + head_line_18 + head_line_19 + head_line_20;
-
-    return head_lines;
+    return;
 }
 
 QString InifileWidget::WriteAgentData()
@@ -1583,13 +1577,12 @@ QString InifileWidget::WriteRouteChoiceData()
 
     QString choi_line_21 = "\t</route_choice_models>\n\n";
 
-    QString choi_line_22 = "</JuPedSim>";
 
     QString choi_lines = choi_line_1 + choi_line_2 + choi_line_3 + choi_line_4 + choi_line_5 +
                          choi_line_6 + choi_line_7 + choi_line_8 + choi_line_9 + choi_line_10 +
                          choi_line_11 + choi_line_12 + choi_line_13 + choi_line_14 + choi_line_15 +
                          choi_line_16 + choi_line_17 + choi_line_18 + choi_line_19 + choi_line_20 +
-                         choi_line_21 + choi_line_22;
+                         choi_line_21;
 
     return choi_lines;
 }
@@ -1597,120 +1590,120 @@ QString InifileWidget::WriteRouteChoiceData()
 // Create ini.xml on button push
 void InifileWidget::on_pushButton_write_clicked()
 {
-    //check header (geometry)
-    if (CheckHeaderData() == 0)
-    {
-        return;
-    }
-
-    //goal
-    if (!CheckRoutingData())
-        return;
-
-    //source
-    if (!CheckSourceData())
-        return;
-
-    //traffic(door)
-    if (!CheckTrafficData())
-        return;
-
-    //check agents information and distribution
-    if (CheckAgentData() == 0)
-    {
-        return;
-    }
-
-    //check operational model - gcfm
-    if (CheckModelGcfmData() == 0)
-    {
-        return;
-    }
-
-    //check agent parameters - gcfm
-    if (CheckAgentGcfmData() == 0)
-    {
-        return;
-    }
-
-    //check operational model - gompertz
-    if (CheckModelGompData() == 0)
-    {
-        return;
-    }
-
-    //check agent parameters - gompertz
-    if (CheckAgentGompData() == 0)
-    {
-        return;
-    }
-
-    //check operational model - tordeux
-    if (CheckModelTordData() == 0)
-    {
-        return;
-    }
-
-    //check agent parameters - tordeux
-    if (CheckAgentTordData() == 0)
-    {
-        return;
-    }
-
-    //check operational model - gradnav
-    if (CheckModelGradData() == 0)
-    {
-        return;
-    }
-
-    //check agent parameters - gradnav
-    if (CheckAgentGradData() == 0)
-    {
-        return;
-    }
-
-    //check operational model - krausz
-    if (CheckModelKrauData() == 0)
-    {
-        return;
-    }
-
-    //check agent parameters - krausz
-    if (CheckAgentKrauData() == 0)
-    {
-        return;
-    }
-
-    //check route_choice_models
-    if (CheckRouteChoiceData() == 0)
-    {
-        return;
-    }
-
-    //header
-    QString head_lines = WriteHeaderData();
-
-    //agents information and distribution
-    QString agen_lines = WriteAgentData();
-
-    //operational model and agent parameters - gcfm
-    QString gcfm_lines = WriteModelGcfmData();
-
-    //operational model and agent parameters - gompertz
-    QString gomp_lines = WriteModelGompData();
-
-    //operational model and agent parameters - tordeux
-    QString tord_lines = WriteModelTordData();
-
-    //operational model and agent parameters - gradnav
-    QString grad_lines = WriteModelGradData();
-
-    //operational model and agent parameters - krausz
-    QString krau_lines = WriteModelKrauData();
-
-    //route_choice_models
-    QString choi_lines = WriteRouteChoiceData();
-
+//    //check header (geometry)
+//    if (CheckHeaderData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //goal
+//    if (!CheckRoutingData())
+//        return;
+//
+//    //source
+//    if (!CheckSourceData())
+//        return;
+//
+//    //traffic(door)
+//    if (!CheckTrafficData())
+//        return;
+//
+//    //check agents information and distribution
+//    if (CheckAgentData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check operational model - gcfm
+//    if (CheckModelGcfmData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check agent parameters - gcfm
+//    if (CheckAgentGcfmData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check operational model - gompertz
+//    if (CheckModelGompData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check agent parameters - gompertz
+//    if (CheckAgentGompData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check operational model - tordeux
+//    if (CheckModelTordData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check agent parameters - tordeux
+//    if (CheckAgentTordData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check operational model - gradnav
+//    if (CheckModelGradData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check agent parameters - gradnav
+//    if (CheckAgentGradData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check operational model - krausz
+//    if (CheckModelKrauData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check agent parameters - krausz
+//    if (CheckAgentKrauData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check route_choice_models
+//    if (CheckRouteChoiceData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //header
+//    QString head_lines = writeHeaderData();
+//
+//    //agents information and distribution
+//    QString agen_lines = WriteAgentData();
+//
+//    //operational model and agent parameters - gcfm
+//    QString gcfm_lines = WriteModelGcfmData();
+//
+//    //operational model and agent parameters - gompertz
+//    QString gomp_lines = WriteModelGompData();
+//
+//    //operational model and agent parameters - tordeux
+//    QString tord_lines = WriteModelTordData();
+//
+//    //operational model and agent parameters - gradnav
+//    QString grad_lines = WriteModelGradData();
+//
+//    //operational model and agent parameters - krausz
+//    QString krau_lines = WriteModelKrauData();
+//
+//    //route_choice_models
+//    QString choi_lines = WriteRouteChoiceData();
+//
     //save to file
     QString file_name = QFileDialog::getSaveFileName(this,
             tr("Create ini"),
@@ -1721,21 +1714,42 @@ void InifileWidget::on_pushButton_write_clicked()
 
     if (file.open(QIODevice::WriteOnly|QIODevice::Text))
     {
-        file.write(head_lines.toUtf8());
+        auto *stream = new QXmlStreamWriter(&file);
+        stream->setAutoFormatting(true);
 
-        WriteRoutingData(file);
-        WriteTrafficData(file);
+        stream->writeStartDocument("1.0");
+        stream->setCodec("UTF-8");
 
-        file.write(agen_lines.toUtf8() +
-                   gcfm_lines.toUtf8() +
-                   gomp_lines.toUtf8() +
-                   tord_lines.toUtf8() +
-                   grad_lines.toUtf8() +
-                   krau_lines.toUtf8() +
-                   choi_lines.toUtf8());
+        stream->writeStartElement("JuPedSim");
+        stream->writeAttribute("project","JPS-Project");
+        stream->writeAttribute("version", "0.8");
+        stream->writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        stream->writeAttribute("xsi:noNamespaceSchemaLocation","http://xsd.jupedsim.org/0.6/jps_ini_core.xsd");
 
+        writeHeaderData(stream, file);
+
+        writeTrafficData(stream, file);
+
+        writeRoutingData(stream, file);
+
+//        file.write(agen_lines.toUtf8());
+
+        writeSourceData(stream, file);
+
+//        file.write(gcfm_lines.toUtf8() +
+//                   gomp_lines.toUtf8() +
+//                   tord_lines.toUtf8() +
+//                   grad_lines.toUtf8() +
+//                   krau_lines.toUtf8() +
+//                   choi_lines.toUtf8());
+
+        stream->writeEndElement();
+        stream->writeEndDocument();
+        delete stream;
+        stream = nullptr;
     }
     file.close();
+
 }
 
 void InifileWidget::ReadJuPedSimData(TiXmlElement* JuPedSim)
@@ -3493,11 +3507,8 @@ void InifileWidget::pushButton_TrafficClicked()
 </routing>
 */
 
-void InifileWidget::WriteRoutingData(QFile &file)
+void InifileWidget::writeRoutingData(QXmlStreamWriter *stream, QFile &file)
 {
-    auto *stream = new QXmlStreamWriter(&file);
-    stream->setAutoFormatting(true);
-
     stream->writeComment("routing");
     stream->writeStartElement("routing");
 
@@ -3505,16 +3516,12 @@ void InifileWidget::WriteRoutingData(QFile &file)
     QList<JPSGoal *> goallist = dataManager->getGoallist();
     dataManager->writeGoals(stream, goallist);
 
-    auto goal_FileName = "goals.xml";
+    auto goal_FileName = ui->lineEdit_GoalFile->text().split("/").last();
     stream->writeStartElement("file");
     stream->writeCharacters(goal_FileName);
     stream->writeEndElement(); //end files
 
     stream->writeEndElement(); //end goals
-    stream->writeEndDocument();
-
-    delete stream;
-    stream = nullptr;
 }
 
 /*
@@ -3528,11 +3535,8 @@ void InifileWidget::WriteRoutingData(QFile &file)
     </traffic_constraints>
 */
 
-void InifileWidget::WriteTrafficData(QFile &file)
+void InifileWidget::writeTrafficData(QXmlStreamWriter *stream, QFile &file)
 {
-    auto *stream = new QXmlStreamWriter(&file);
-    stream->setAutoFormatting(true);
-
     stream->writeComment("traffic information: e.g closed doors or smoked rooms");
     stream->writeStartElement("traffic_constraints");
 
@@ -3548,15 +3552,36 @@ void InifileWidget::WriteTrafficData(QFile &file)
 
     dataManager->writeTraffics(stream, doorlist);
 
-    auto traffic_FileName = ui->lineEdit_TrafficFile->text().split("/").first();
+    auto traffic_FileName = ui->lineEdit_TrafficFile->text().split("/").last();
     stream->writeStartElement("file");
     stream->writeCharacters(traffic_FileName);
     stream->writeEndElement(); //end files
-
-    stream->writeEndElement(); //end traffic
-    stream->writeEndDocument();
-
-    delete stream;
-    stream = nullptr;
+    stream->writeEndElement(); //end doors
+    stream->writeEndElement(); //end traffic_constraints
 }
 
+/*
+    since v0.8.8
+
+    <agents_sources>
+      <source_ id="10" caption="new-source" time_min="5" time_max="30" frequency="5" N_create="10" agents_max="300"
+      group_id="0"  x_min="0" x_max="3" y_min="0" y_max="3" percent="0.5" rate="2"  greedy="true"/>
+      <file>sources.xml</file>
+    </agents_sources>
+*/
+
+void InifileWidget::writeSourceData(QXmlStreamWriter *stream, QFile &file)
+{
+    stream->writeComment("frequency in persons/seconds");
+    stream->writeStartElement("agents_sources");
+
+    QList<JPSSource *> sources = dataManager->getSourcelist();
+    dataManager->writeSources(stream, sources);
+
+    auto source_FileName = ui->lineEdit_SourceFile->text().split("/").last();
+    stream->writeStartElement("file");
+    stream->writeCharacters(source_FileName);
+    stream->writeEndElement(); //end files
+
+    stream->writeEndElement(); //end goals
+}

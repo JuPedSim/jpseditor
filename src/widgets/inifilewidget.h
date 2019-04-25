@@ -63,9 +63,10 @@ private:
     bool CheckAgentKrauData();
     bool CheckRouteChoiceData();
 
-    QString WriteHeaderData();
-    void WriteRoutingData(QFile &file);
-    void WriteTrafficData(QFile &file);
+    void writeHeaderData(QXmlStreamWriter *stream, QFile &file);
+    void writeRoutingData(QXmlStreamWriter *stream, QFile &file);
+    void writeTrafficData(QXmlStreamWriter *stream, QFile &file);
+    void writeSourceData(QXmlStreamWriter *stream, QFile &file);
     QString WriteAgentData();
     QString WriteModelGcfmData();
     QString WriteModelGompData();

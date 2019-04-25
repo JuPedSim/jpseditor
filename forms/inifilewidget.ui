@@ -300,7 +300,7 @@
           <item>
            <widget class="QLineEdit" name="lineEdit_general_12">
             <property name="text">
-             <string/>
+             <string>trajectories.xml</string>
             </property>
            </widget>
           </item>

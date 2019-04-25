@@ -2847,6 +2847,9 @@ bool LineIsEqual(const QLineF& line1, const QLineF& line2, double eps)
 */
 
 void jpsDatamanager::writeSources(QXmlStreamWriter *stream, QList<JPSSource *> &sourcelist) {
+    sourcelist.clear();
+    sourcelist = _mView->getSources();
+
     for(JPSSource* source:sourcelist)
     {
         if(source->isBeSaved())
@@ -2938,8 +2941,6 @@ void jpsDatamanager::writeGoalXML(QFile &file)
     stream->writeAttribute("version", "0.8");
 
     stream->writeStartElement("goals");
-    goallist.clear();
-    goallist = _mView->getGoals();
     writeGoals(stream, goallist);
     stream->writeEndElement(); //end goals
 
@@ -2951,6 +2952,9 @@ void jpsDatamanager::writeGoalXML(QFile &file)
 
 void jpsDatamanager::writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *> &goallist)
 {
+    goallist.clear();
+    goallist = _mView->getGoals();
+
     for(JPSGoal* goal:goallist)
     {
         if(goal->getBeSaved() == "true")
@@ -3085,7 +3089,7 @@ void jpsDatamanager::writeTrafficXML(QFile &file)
     stream->writeStartElement("doors");
     writeTraffics(stream, doorlist);
     doorlist.clear();
-    stream->writeEndElement(); //end
+    stream->writeEndElement(); //end doors
 
     stream->writeEndDocument();
 
@@ -3104,8 +3108,13 @@ void jpsDatamanager::writeTraffics(QXmlStreamWriter *stream, QList<jpsCrossing *
             stream->writeAttribute("state", "open");
         else
             stream->writeAttribute("state", "close");
-        stream->writeAttribute("outflow", door->getOutflow());
-        stream->writeAttribute("max_agents", door->getMaxAgents());
+
+        if(!door->getOutflow().isEmpty())
+            stream->writeAttribute("outflow", door->getOutflow());
+
+        if(!door->getMaxAgents().isEmpty())
+            stream->writeAttribute("max_agents", door->getMaxAgents());
+
         stream->writeEndElement(); //end door
     }
 }
@@ -3163,5 +3172,9 @@ void jpsDatamanager::readDoor(QXmlStreamReader &xmlReader)
             xmlReader.readNext();
         }
     }
+}
+
+const QList<JPSSource *> &jpsDatamanager::getSourcelist() const {
+    return sourcelist;
 }
 
