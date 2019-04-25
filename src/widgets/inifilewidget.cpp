@@ -53,6 +53,7 @@ InifileWidget::InifileWidget(QWidget *parent, jpsDatamanager *dmanager) :
     ui->lineEdit_GoalFile->setReadOnly(true);
     ui->lineEdit_SourceFile->setReadOnly(true);
     ui->lineEdit_TrafficFile->setReadOnly(true);
+
     connect(ui->pushButton_Geometry, SIGNAL(clicked(bool)), this, SLOT(pushButton_GeomeryClicked()));
     connect(ui->pushButton_Goal, SIGNAL(clicked(bool)), this, SLOT(pushButton_GoalClicked()));
     connect(ui->pushButton_Source, SIGNAL(clicked(bool)), this, SLOT(pushButton_SourceClicked()));
@@ -1501,84 +1502,69 @@ void InifileWidget::writeRouteChoiceData(QXmlStreamWriter *stream, QFile &file)
 
     stream->writeComment("route chice model");
     stream->writeStartElement("route_choice_models");
-    stream->writeStartElement("router");
-//    stream->writeAttribute("router_id",ui->lineEdit_route_choice_01->text());
 
+    int router = ui->comboBox_Router->currentIndex();
 
-//    QString choi_line_2 = "\t<route_choice_models>\n";
-//
-//    QString choi_line_3 = "\t\t<!-- ff global shortest model -->\n";
-//
-//    QString choi_line_4 = "\t\t<router router_id=\"" +
-//            ui->lineEdit_route_choice_01->text() +
-//            "\" description=\"ff_global_shortest\">\n";
-//
-//    QString choi_line_5 = "\t\t</router>\n";
-//
-//    QString choi_line_6 = "\t\t<!-- global shortest model -->\n";
-//
-//    QString choi_line_7 = "\t\t<router router_id=\"" +
-//            ui->lineEdit_route_choice_02->text() +
-//            "\" description=\"global_shortest\">\n";
-//
-//    QString choi_line_8 = "\t\t\t<parameters>\n";
-//
-//    QString choi_line_9 = "\t\t\t\t<navigation_lines file=\"" +
-//            ui->lineEdit_route_choice_03->text() +
-//            "\" />\n";
-//
-//    QString choi_line_10 = "\t\t\t</parameters>\n";
-//
-//    QString choi_line_11 = "\t\t</router>\n";
-//
-//    QString choi_line_12 = "\t\t<!-- cognitive map model -->\n";
-//
-//    QString choi_line_13 = "\t\t<router router_id=\"" +
-//            ui->lineEdit_route_choice_04->text() +
-//            "\" description=\"cognitive_map\">\n";
-//
-//    QString choi_line_14 = "\t\t\t<sensors>\n";
-//
-//    QString choi_line_15 = "\t\t\t\t<sensor sensor_id=\"" +
-//            ui->lineEdit_route_choice_05->text() +
-//            "\" description=\"" +
-//            ui->lineEdit_route_choice_06->text() +
-//            "\" />\n";
-//
-//    QString choi_line_16 = "\t\t\t\t<sensor sensor_id=\"" +
-//            ui->lineEdit_route_choice_07->text() +
-//            "\" description=\"" +
-//            ui->lineEdit_route_choice_08->text() +
-//            "\" p_field_path=\"" +
-//            ui->lineEdit_route_choice_09->text() +
-//            "\" update_time=\"" +
-//            ui->lineEdit_route_choice_10->text() +
-//            "\" final_time=\"" +
-//            ui->lineEdit_route_choice_11->text() +
-//            "\" />\n";
-//
-//    QString choi_line_17 = "\t\t\t\t<sensor sensor_id=\"" +
-//            ui->lineEdit_route_choice_12->text() +
-//            "\" description=\"" +
-//            ui->lineEdit_route_choice_13->text() +
-//            "\" />\n";
-//
-//    QString choi_line_18 = "\t\t\t</sensors>\n";
-//
-//    QString choi_line_19 = "\t\t\t<cognitive_map status=\"complete\" />\n";
-//
-//    QString choi_line_20 = "\t\t</router>\n";
-//
-//    QString choi_line_21 = "\t</route_choice_models>\n\n";
-//
-//
-//    QString choi_lines = choi_line_1 + choi_line_2 + choi_line_3 + choi_line_4 + choi_line_5 +
-//                         choi_line_6 + choi_line_7 + choi_line_8 + choi_line_9 + choi_line_10 +
-//                         choi_line_11 + choi_line_12 + choi_line_13 + choi_line_14 + choi_line_15 +
-//                         choi_line_16 + choi_line_17 + choi_line_18 + choi_line_19 + choi_line_20 +
-//                         choi_line_21;
+    switch(router){
+        case 0:
+            writeFFGlobalShortestModel(stream, file);
+            break;
+        case 1:
+            writeGlobalShortestModel(stream, file);
+            break;
+        case 2:
+            writeCognitiveMap(stream, file);
+            break;
+        default:
+            break;
+    }
+
+    stream->writeEndElement();
 
     return ;
+}
+
+void InifileWidget::writeFFGlobalShortestModel(QXmlStreamWriter *stream, QFile &file)
+{
+    stream->writeStartElement("router");
+    stream->writeAttribute("router_id", ui->lineEdit_ID->text());
+    stream->writeAttribute("description","ff_global_shortest");
+
+    if(ui->radioButton_VTK->isChecked())
+        stream->writeTextElement("write_VTK_files", "true");
+    else
+        stream->writeTextElement("write_VTK_files", "false");
+
+    stream->writeEndElement();
+}
+
+void InifileWidget::writeGlobalShortestModel(QXmlStreamWriter *stream, QFile &file)
+{
+    stream->writeStartElement("router");
+    stream->writeAttribute("router_id", ui->lineEdit_ID->text());
+    stream->writeAttribute("description","global_shortest");
+
+    stream->writeStartElement("parameters");
+    stream->writeStartElement("navigation_lines");
+    stream->writeAttribute("file", ui->lineEdit_route_choice_03->text());
+    stream->writeEndElement(); //end navigation lines
+    stream->writeEndElement(); //end patameters
+    stream->writeEndElement(); //end router
+}
+
+void InifileWidget::writeCognitiveMap(QXmlStreamWriter *stream, QFile &file)
+{
+    stream->writeStartElement("router");
+    stream->writeAttribute("router_id", ui->lineEdit_ID->text());
+    stream->writeAttribute("description","cognitive_map");
+    stream->writeStartElement("sensors");
+    //TODO: finish sensors
+    stream->writeEndElement();//end sensors
+
+    stream->writeStartElement("cognitive_map");
+    stream->writeAttribute("status", "complete");
+    stream->writeEndElement(); //end cognitive map
+    stream->writeEndElement(); //router
 }
 
 // Create ini.xml on button push
@@ -1735,7 +1721,8 @@ void InifileWidget::on_pushButton_write_clicked()
 //                   krau_lines.toUtf8() +
 //                   choi_lines.toUtf8());
 
-        stream->writeEndElement();
+        writeRouteChoiceData(stream, file);
+        stream->writeEndElement(); //end JuPedSim
         stream->writeEndDocument();
         delete stream;
         stream = nullptr;
