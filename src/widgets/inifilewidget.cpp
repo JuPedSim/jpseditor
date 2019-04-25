@@ -57,6 +57,7 @@ InifileWidget::InifileWidget(QWidget *parent, jpsDatamanager *dmanager) :
     connect(ui->pushButton_Goal, SIGNAL(clicked(bool)), this, SLOT(pushButton_GoalClicked()));
     connect(ui->pushButton_Source, SIGNAL(clicked(bool)), this, SLOT(pushButton_SourceClicked()));
     connect(ui->pushButton_Traffic, SIGNAL(clicked(bool)), this, SLOT(pushButton_TrafficClicked()));
+    connect(ui->pushButton_Routing, SIGNAL(clicked(bool)), this, SLOT(pushButton_RoutingClicked()));
 }
 
 InifileWidget::~InifileWidget()
@@ -701,73 +702,73 @@ bool InifileWidget::CheckAgentKrauData()
 
 bool InifileWidget::CheckRouteChoiceData()
 {
-    if(ui->lineEdit_route_choice_01->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_02->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_03->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_04->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_05->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_06->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_07->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_08->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_09->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_10->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_11->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_12->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_13->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-
-    ui->label_warning->setText("");
+//    if(ui->lineEdit_route_choice_01->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_02->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_03->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_04->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_05->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_06->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_07->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_08->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_09->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_10->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_11->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_12->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_13->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//
+//    ui->label_warning->setText("");
     return 1;
 }
 
@@ -883,7 +884,6 @@ void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
     stream->writeStartElement("file");
     stream->writeCharacters(source_FileName);
     stream->writeEndElement(); //end files
-
     stream->writeEndElement(); //end agents_sources
     stream->writeEndElement(); //end agents
 
@@ -1496,85 +1496,89 @@ QString InifileWidget::WriteModelKrauData()
     return krau_lines;
 }
 
-QString InifileWidget::WriteRouteChoiceData()
+void InifileWidget::writeRouteChoiceData(QXmlStreamWriter *stream, QFile &file)
 {
-    //route_choice_models
-    QString choi_line_1 = "\t<!-- route choice model -->\n";
 
-    QString choi_line_2 = "\t<route_choice_models>\n";
-
-    QString choi_line_3 = "\t\t<!-- ff global shortest model -->\n";
-
-    QString choi_line_4 = "\t\t<router router_id=\"" +
-            ui->lineEdit_route_choice_01->text() +
-            "\" description=\"ff_global_shortest\">\n";
-
-    QString choi_line_5 = "\t\t</router>\n";
-
-    QString choi_line_6 = "\t\t<!-- global shortest model -->\n";
-
-    QString choi_line_7 = "\t\t<router router_id=\"" +
-            ui->lineEdit_route_choice_02->text() +
-            "\" description=\"global_shortest\">\n";
-
-    QString choi_line_8 = "\t\t\t<parameters>\n";
-
-    QString choi_line_9 = "\t\t\t\t<navigation_lines file=\"" +
-            ui->lineEdit_route_choice_03->text() +
-            "\" />\n";
-
-    QString choi_line_10 = "\t\t\t</parameters>\n";
-
-    QString choi_line_11 = "\t\t</router>\n";
-
-    QString choi_line_12 = "\t\t<!-- cognitive map model -->\n";
-
-    QString choi_line_13 = "\t\t<router router_id=\"" +
-            ui->lineEdit_route_choice_04->text() +
-            "\" description=\"cognitive_map\">\n";
-
-    QString choi_line_14 = "\t\t\t<sensors>\n";
-
-    QString choi_line_15 = "\t\t\t\t<sensor sensor_id=\"" +
-            ui->lineEdit_route_choice_05->text() +
-            "\" description=\"" +
-            ui->lineEdit_route_choice_06->text() +
-            "\" />\n";
-
-    QString choi_line_16 = "\t\t\t\t<sensor sensor_id=\"" +
-            ui->lineEdit_route_choice_07->text() +
-            "\" description=\"" +
-            ui->lineEdit_route_choice_08->text() +
-            "\" p_field_path=\"" +
-            ui->lineEdit_route_choice_09->text() +
-            "\" update_time=\"" +
-            ui->lineEdit_route_choice_10->text() +
-            "\" final_time=\"" +
-            ui->lineEdit_route_choice_11->text() +
-            "\" />\n";
-
-    QString choi_line_17 = "\t\t\t\t<sensor sensor_id=\"" +
-            ui->lineEdit_route_choice_12->text() +
-            "\" description=\"" +
-            ui->lineEdit_route_choice_13->text() +
-            "\" />\n";
-
-    QString choi_line_18 = "\t\t\t</sensors>\n";
-
-    QString choi_line_19 = "\t\t\t<cognitive_map status=\"complete\" />\n";
-
-    QString choi_line_20 = "\t\t</router>\n";
-
-    QString choi_line_21 = "\t</route_choice_models>\n\n";
+    stream->writeComment("route chice model");
+    stream->writeStartElement("route_choice_models");
+    stream->writeStartElement("router");
+//    stream->writeAttribute("router_id",ui->lineEdit_route_choice_01->text());
 
 
-    QString choi_lines = choi_line_1 + choi_line_2 + choi_line_3 + choi_line_4 + choi_line_5 +
-                         choi_line_6 + choi_line_7 + choi_line_8 + choi_line_9 + choi_line_10 +
-                         choi_line_11 + choi_line_12 + choi_line_13 + choi_line_14 + choi_line_15 +
-                         choi_line_16 + choi_line_17 + choi_line_18 + choi_line_19 + choi_line_20 +
-                         choi_line_21;
+//    QString choi_line_2 = "\t<route_choice_models>\n";
+//
+//    QString choi_line_3 = "\t\t<!-- ff global shortest model -->\n";
+//
+//    QString choi_line_4 = "\t\t<router router_id=\"" +
+//            ui->lineEdit_route_choice_01->text() +
+//            "\" description=\"ff_global_shortest\">\n";
+//
+//    QString choi_line_5 = "\t\t</router>\n";
+//
+//    QString choi_line_6 = "\t\t<!-- global shortest model -->\n";
+//
+//    QString choi_line_7 = "\t\t<router router_id=\"" +
+//            ui->lineEdit_route_choice_02->text() +
+//            "\" description=\"global_shortest\">\n";
+//
+//    QString choi_line_8 = "\t\t\t<parameters>\n";
+//
+//    QString choi_line_9 = "\t\t\t\t<navigation_lines file=\"" +
+//            ui->lineEdit_route_choice_03->text() +
+//            "\" />\n";
+//
+//    QString choi_line_10 = "\t\t\t</parameters>\n";
+//
+//    QString choi_line_11 = "\t\t</router>\n";
+//
+//    QString choi_line_12 = "\t\t<!-- cognitive map model -->\n";
+//
+//    QString choi_line_13 = "\t\t<router router_id=\"" +
+//            ui->lineEdit_route_choice_04->text() +
+//            "\" description=\"cognitive_map\">\n";
+//
+//    QString choi_line_14 = "\t\t\t<sensors>\n";
+//
+//    QString choi_line_15 = "\t\t\t\t<sensor sensor_id=\"" +
+//            ui->lineEdit_route_choice_05->text() +
+//            "\" description=\"" +
+//            ui->lineEdit_route_choice_06->text() +
+//            "\" />\n";
+//
+//    QString choi_line_16 = "\t\t\t\t<sensor sensor_id=\"" +
+//            ui->lineEdit_route_choice_07->text() +
+//            "\" description=\"" +
+//            ui->lineEdit_route_choice_08->text() +
+//            "\" p_field_path=\"" +
+//            ui->lineEdit_route_choice_09->text() +
+//            "\" update_time=\"" +
+//            ui->lineEdit_route_choice_10->text() +
+//            "\" final_time=\"" +
+//            ui->lineEdit_route_choice_11->text() +
+//            "\" />\n";
+//
+//    QString choi_line_17 = "\t\t\t\t<sensor sensor_id=\"" +
+//            ui->lineEdit_route_choice_12->text() +
+//            "\" description=\"" +
+//            ui->lineEdit_route_choice_13->text() +
+//            "\" />\n";
+//
+//    QString choi_line_18 = "\t\t\t</sensors>\n";
+//
+//    QString choi_line_19 = "\t\t\t<cognitive_map status=\"complete\" />\n";
+//
+//    QString choi_line_20 = "\t\t</router>\n";
+//
+//    QString choi_line_21 = "\t</route_choice_models>\n\n";
+//
+//
+//    QString choi_lines = choi_line_1 + choi_line_2 + choi_line_3 + choi_line_4 + choi_line_5 +
+//                         choi_line_6 + choi_line_7 + choi_line_8 + choi_line_9 + choi_line_10 +
+//                         choi_line_11 + choi_line_12 + choi_line_13 + choi_line_14 + choi_line_15 +
+//                         choi_line_16 + choi_line_17 + choi_line_18 + choi_line_19 + choi_line_20 +
+//                         choi_line_21;
 
-    return choi_lines;
+    return ;
 }
 
 // Create ini.xml on button push
@@ -1692,7 +1696,7 @@ void InifileWidget::on_pushButton_write_clicked()
 //    QString krau_lines = WriteModelKrauData();
 //
 //    //route_choice_models
-//    QString choi_lines = WriteRouteChoiceData();
+//    QString choi_lines = writeRouteChoiceData();
 //
     //save to file
     QString file_name = QFileDialog::getSaveFileName(this,
@@ -3314,7 +3318,7 @@ void InifileWidget::ReadRouteChoiceData(TiXmlElement* JuPedSim)
                     if (rout->Attribute("router_id"))
                     {
                         QString value = rout->Attribute("router_id");
-                        ui->lineEdit_route_choice_01->setText(value);
+//                        ui->lineEdit_route_choice_01->setText(value);
                     }
                 }
                 if (desc == "global_shortest")
@@ -3322,7 +3326,7 @@ void InifileWidget::ReadRouteChoiceData(TiXmlElement* JuPedSim)
                     if (rout->Attribute("router_id"))
                     {
                         QString value = rout->Attribute("router_id");
-                        ui->lineEdit_route_choice_02->setText(value);
+//                        ui->lineEdit_route_choice_02->setText(value);
                     }
                     if (rout->FirstChild("parameters"))
                     {
@@ -3339,7 +3343,7 @@ void InifileWidget::ReadRouteChoiceData(TiXmlElement* JuPedSim)
                 if (desc == "cognitive_map")
                 {
                     QString value = rout->Attribute("router_id");
-                    ui->lineEdit_route_choice_04->setText(value);
+//                    ui->lineEdit_route_choice_04->setText(value);
 
                     int counter = 0;
                     for (TiXmlElement* sens = rout->FirstChild("sensors")->FirstChildElement("sensor");
@@ -3456,7 +3460,7 @@ void InifileWidget::pushButton_GeomeryClicked()
 
 void InifileWidget::pushButton_GoalClicked()
 {
-    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose Geometry"),""
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose goals"),""
             ,tr("XML-Files (*.xml)"));
 
     ui->lineEdit_GoalFile->setText(fileName);
@@ -3464,7 +3468,7 @@ void InifileWidget::pushButton_GoalClicked()
 
 void InifileWidget::pushButton_SourceClicked()
 {
-    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose Geometry"),""
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose sources"),""
             ,tr("XML-Files (*.xml)"));
 
     ui->lineEdit_SourceFile->setText(fileName);
@@ -3472,7 +3476,7 @@ void InifileWidget::pushButton_SourceClicked()
 
 void InifileWidget::pushButton_TrafficClicked()
 {
-    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose Geometry"),""
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose trffic"),""
             ,tr("XML-Files (*.xml)"));
 
     ui->lineEdit_TrafficFile->setText(fileName);
@@ -3572,4 +3576,12 @@ void InifileWidget::writeSourceData(QXmlStreamWriter *stream, QFile &file)
     stream->writeEndElement(); //end files
 
     stream->writeEndElement(); //end goals
+}
+
+void InifileWidget::pushButton_RoutingClicked()
+{
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose Routing"),""
+            ,tr("XML-Files (*.xml)"));
+
+    ui->lineEdit_route_choice_03->setText(fileName);
 }

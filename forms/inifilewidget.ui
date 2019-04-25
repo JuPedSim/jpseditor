@@ -35,7 +35,7 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>12</number>
    </property>
    <widget class="QWidget" name="tab_general">
     <attribute name="title">
@@ -3902,103 +3902,25 @@
     <attribute name="title">
      <string>Route choice</string>
     </attribute>
-    <widget class="QLabel" name="label_route_choice_a">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>211</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;ff Global shortest Model&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_route_choice_01">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>10</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>ID</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_route_choice_01">
-     <property name="geometry">
-      <rect>
-       <x>350</x>
-       <y>10</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>1</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_route_choice_b">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>60</y>
-       <width>211</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Global shortest Model&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_route_choice_02">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>60</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>ID</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_route_choice_02">
-     <property name="geometry">
-      <rect>
-       <x>350</x>
-       <y>60</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>4</string>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="lineEdit_route_choice_03">
      <property name="geometry">
       <rect>
-       <x>350</x>
-       <y>100</y>
+       <x>340</x>
+       <y>20</y>
        <width>111</width>
-       <height>20</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>../routing.xml</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_route_choice_03">
      <property name="geometry">
       <rect>
-       <x>250</x>
-       <y>100</y>
-       <width>91</width>
+       <x>240</x>
+       <y>20</y>
+       <width>97</width>
        <height>16</height>
       </rect>
      </property>
@@ -4006,50 +3928,11 @@
       <string>Navigation lines</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_route_choice_c">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>150</y>
-       <width>211</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Cognitive Map&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_route_choice_04">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>150</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>ID</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_route_choice_04">
-     <property name="geometry">
-      <rect>
-       <x>350</x>
-       <y>150</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>7</string>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="lineEdit_route_choice_05">
      <property name="geometry">
       <rect>
-       <x>350</x>
-       <y>190</y>
+       <x>340</x>
+       <y>60</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -4061,8 +3944,8 @@
     <widget class="QLabel" name="label_route_choice_05">
      <property name="geometry">
       <rect>
-       <x>250</x>
-       <y>190</y>
+       <x>240</x>
+       <y>60</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -4074,8 +3957,8 @@
     <widget class="QLineEdit" name="lineEdit_route_choice_06">
      <property name="geometry">
       <rect>
-       <x>590</x>
-       <y>190</y>
+       <x>580</x>
+       <y>60</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -4087,8 +3970,8 @@
     <widget class="QLabel" name="label_route_choice_06">
      <property name="geometry">
       <rect>
-       <x>490</x>
-       <y>190</y>
+       <x>480</x>
+       <y>60</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -4100,8 +3983,8 @@
     <widget class="QLineEdit" name="lineEdit_route_choice_08">
      <property name="geometry">
       <rect>
-       <x>590</x>
-       <y>230</y>
+       <x>580</x>
+       <y>100</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -4113,8 +3996,8 @@
     <widget class="QLineEdit" name="lineEdit_route_choice_07">
      <property name="geometry">
       <rect>
-       <x>350</x>
-       <y>230</y>
+       <x>340</x>
+       <y>100</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -4126,8 +4009,8 @@
     <widget class="QLabel" name="label_route_choice_08">
      <property name="geometry">
       <rect>
-       <x>490</x>
-       <y>230</y>
+       <x>480</x>
+       <y>100</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -4139,8 +4022,8 @@
     <widget class="QLabel" name="label_route_choice_07">
      <property name="geometry">
       <rect>
-       <x>250</x>
-       <y>230</y>
+       <x>240</x>
+       <y>100</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -4152,8 +4035,8 @@
     <widget class="QLabel" name="label_route_choice_13">
      <property name="geometry">
       <rect>
-       <x>490</x>
-       <y>310</y>
+       <x>480</x>
+       <y>180</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -4165,8 +4048,8 @@
     <widget class="QLineEdit" name="lineEdit_route_choice_12">
      <property name="geometry">
       <rect>
-       <x>350</x>
-       <y>310</y>
+       <x>340</x>
+       <y>180</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -4178,8 +4061,8 @@
     <widget class="QLabel" name="label_route_choice_12">
      <property name="geometry">
       <rect>
-       <x>250</x>
-       <y>310</y>
+       <x>240</x>
+       <y>180</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -4191,8 +4074,8 @@
     <widget class="QLineEdit" name="lineEdit_route_choice_13">
      <property name="geometry">
       <rect>
-       <x>590</x>
-       <y>310</y>
+       <x>580</x>
+       <y>180</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -4204,8 +4087,8 @@
     <widget class="QLabel" name="label_route_choice_09">
      <property name="geometry">
       <rect>
-       <x>730</x>
-       <y>230</y>
+       <x>720</x>
+       <y>100</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -4217,8 +4100,8 @@
     <widget class="QLineEdit" name="lineEdit_route_choice_09">
      <property name="geometry">
       <rect>
-       <x>830</x>
-       <y>230</y>
+       <x>820</x>
+       <y>100</y>
        <width>291</width>
        <height>21</height>
       </rect>
@@ -4230,8 +4113,8 @@
     <widget class="QLabel" name="label_route_choice_10">
      <property name="geometry">
       <rect>
-       <x>490</x>
-       <y>270</y>
+       <x>480</x>
+       <y>140</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -4243,8 +4126,8 @@
     <widget class="QLineEdit" name="lineEdit_route_choice_10">
      <property name="geometry">
       <rect>
-       <x>590</x>
-       <y>270</y>
+       <x>580</x>
+       <y>140</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -4256,8 +4139,8 @@
     <widget class="QLabel" name="label_route_choice_11">
      <property name="geometry">
       <rect>
-       <x>730</x>
-       <y>270</y>
+       <x>720</x>
+       <y>140</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -4269,14 +4152,52 @@
     <widget class="QLineEdit" name="lineEdit_route_choice_11">
      <property name="geometry">
       <rect>
-       <x>830</x>
-       <y>270</y>
+       <x>820</x>
+       <y>140</y>
        <width>111</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
       <string>300</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_Router">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>15</y>
+       <width>201</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>ff Global shortest Model</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Global shortest Model</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>cognitive Map</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QPushButton" name="pushButton_Routing">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>15</y>
+       <width>114</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Choose</string>
      </property>
     </widget>
    </widget>
@@ -4476,10 +4397,7 @@
   <tabstop>lineEdit_model_krausz_13</tabstop>
   <tabstop>spinBox_agents_krausz_1</tabstop>
   <tabstop>tableWidget_agents_krausz_1</tabstop>
-  <tabstop>lineEdit_route_choice_01</tabstop>
-  <tabstop>lineEdit_route_choice_02</tabstop>
   <tabstop>lineEdit_route_choice_03</tabstop>
-  <tabstop>lineEdit_route_choice_04</tabstop>
   <tabstop>lineEdit_route_choice_05</tabstop>
   <tabstop>lineEdit_route_choice_06</tabstop>
   <tabstop>lineEdit_route_choice_07</tabstop>

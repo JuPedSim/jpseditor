@@ -40,6 +40,7 @@ public slots:
     void pushButton_GoalClicked();
     void pushButton_SourceClicked();
     void pushButton_TrafficClicked();
+    void pushButton_RoutingClicked();
 
 private:
     Ui::InifileWidget *ui;
@@ -73,7 +74,7 @@ private:
     QString WriteModelTordData();
     QString WriteModelGradData();
     QString WriteModelKrauData();
-    QString WriteRouteChoiceData();
+    void writeRouteChoiceData(QXmlStreamWriter *stream, QFile &file);
 
     void ReadJuPedSimData(TiXmlElement* JuPedSim);
     void ReadHeaderData(TiXmlElement* JuPedSim);
