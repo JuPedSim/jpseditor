@@ -821,7 +821,7 @@ void InifileWidget::writeHeaderData(QXmlStreamWriter *stream, QFile &file)
     stream->writeAttribute("fps", ui->lineEdit_general_10->text());
     stream->writeAttribute("color_mode",ui->comboBox_general_03->currentText());
     stream->writeStartElement("file");
-    stream->writeAttribute("file location", ui->lineEdit_general_12->text());
+    stream->writeAttribute("location", ui->lineEdit_general_12->text());
     stream->writeEndElement(); //end file
     stream->writeEndElement(); //end trajectories
 
@@ -894,8 +894,8 @@ void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
 void InifileWidget::writeModelGcfmData(QXmlStreamWriter *stream, QFile &file)
 {
     //operational model and agent parameters - gcfm
-    stream->writeComment("operational model");
-    stream->writeStartElement("operational_model");
+    stream->writeComment("operational models");
+    stream->writeStartElement("operational_models");
 
     stream->writeStartElement("model");
     stream->writeAttribute("operational_model_id","1");
@@ -996,7 +996,7 @@ void InifileWidget::writeModelGompData(QXmlStreamWriter *stream, QFile &file)
 {
     //operational model and agent parameters - gcfm
     stream->writeComment("operational model");
-    stream->writeStartElement("operational_model");
+    stream->writeStartElement("operational_models");
 
     stream->writeStartElement("model");
     stream->writeAttribute("operational_model_id","2");
@@ -1095,7 +1095,7 @@ void InifileWidget::writeModelTordData(QXmlStreamWriter *stream, QFile &file)
 {
     //operational model and agent parameters - gcfm
     stream->writeComment("operational model");
-    stream->writeStartElement("operational_model");
+    stream->writeStartElement("operational_models");
 
     stream->writeStartElement("model");
     stream->writeAttribute("operational_model_id","3");
@@ -1195,7 +1195,7 @@ void InifileWidget::writeModelGradData(QXmlStreamWriter *stream, QFile &file)
 {
     //operational model and agent parameters - gcfm
     stream->writeComment("operational model");
-    stream->writeStartElement("operational_model");
+    stream->writeStartElement("operational_models");
 
     stream->writeStartElement("model");
     stream->writeAttribute("operational_model_id","4");
@@ -1303,7 +1303,7 @@ void InifileWidget::writeModelKrauData(QXmlStreamWriter *stream, QFile &file)
 {
     //operational model and agent parameters - gcfm
     stream->writeComment("operational model");
-    stream->writeStartElement("operational_model");
+    stream->writeStartElement("operational_models");
 
     stream->writeStartElement("model");
     stream->writeAttribute("operational_model_id","5");
@@ -1674,114 +1674,111 @@ void InifileWidget::ReadJuPedSimData(TiXmlElement* JuPedSim)
 
 void InifileWidget::ReadHeaderData(TiXmlElement *JuPedSim)
 {
-    //header
-    if (JuPedSim->FirstChild("header"))
+    if (JuPedSim->FirstChild("num_threads") && !JuPedSim->FirstChild("num_threads")->NoChildren())
     {
-        if (JuPedSim->FirstChild("header")->FirstChild("num_threads"))
-        {
-            QString value = JuPedSim->FirstChild("header")->FirstChild("num_threads")->FirstChild()->Value();
-            ui->lineEdit_general_03->setText(value);
-        }
+        QString value = JuPedSim->FirstChild("num_threads")->FirstChild()->Value();
+        ui->lineEdit_general_03->setText(value);
+    }
 
-        if (JuPedSim->FirstChild("header")->FirstChild("seed"))
-        {
-            QString value = JuPedSim->FirstChild("header")->FirstChild("seed")->FirstChild()->Value();
-            ui->lineEdit_general_05->setText(value);
-        }
+    if (JuPedSim->FirstChild("seed") && !JuPedSim->FirstChild("seed")->NoChildren())
+    {
+        QString value = JuPedSim->FirstChild("seed")->FirstChild()->Value();
+        ui->lineEdit_general_05->setText(value);
+    }
 
-        if (JuPedSim->FirstChild("header")->FirstChild("max_sim_time"))
-        {
-            QString value = JuPedSim->FirstChild("header")->FirstChild("max_sim_time")->FirstChild()->Value();
-            ui->lineEdit_general_06->setText(value);
-        }
+    if (JuPedSim->FirstChild("max_sim_time") && !JuPedSim->FirstChild("max_sim_time")->NoChildren())
+    {
+        QString value = JuPedSim->FirstChild("max_sim_time")->FirstChild()->Value();
+        ui->lineEdit_general_06->setText(value);
+    }
 
-        if (JuPedSim->FirstChild("header")->FirstChild("geometry"))
-        {
-            QString value = JuPedSim->FirstChild("header")->FirstChild("geometry")->FirstChild()->Value();
-            ui->lineEdit_general_07->setText(value);
-        }
+    if (JuPedSim->FirstChild("geometry") && !JuPedSim->FirstChild("geometry")->NoChildren())
+    {
 
-        if (JuPedSim->FirstChild("header")->FirstChildElement("trajectories"))
+        QString value = JuPedSim->FirstChild("geometry")->FirstChild()->Value();
+        ui->lineEdit_general_07->setText(value);
+    }
+
+    if (JuPedSim->FirstChildElement("trajectories"))
+    {
+        if (JuPedSim->FirstChildElement("trajectories")->Attribute("format"))
         {
-            if (JuPedSim->FirstChild("header")->FirstChildElement("trajectories")->Attribute("format"))
+            QString value = JuPedSim->FirstChildElement("trajectories")->Attribute("format");
+            if (value == "xml-plain")
             {
-                QString value = JuPedSim->FirstChild("header")->FirstChildElement("trajectories")->Attribute("format");
-                if (value == "xml-plain")
-                {
-                    ui->comboBox_general_02->setCurrentIndex(0);
-                }
-                if (value == "plain")
-                {
-                    ui->comboBox_general_02->setCurrentIndex(1);
-                }
+                ui->comboBox_general_02->setCurrentIndex(0);
             }
-
-            if (JuPedSim->FirstChild("header")->FirstChildElement("trajectories")->Attribute("fps"))
+            if (value == "plain")
             {
-                QString value = JuPedSim->FirstChild("header")->FirstChildElement("trajectories")->Attribute("fps");
-                ui->lineEdit_general_10->setText(value);
-            }
-
-            if (JuPedSim->FirstChild("header")->FirstChildElement("trajectories")->Attribute("color_mode"))
-            {
-                QString value = JuPedSim->FirstChild("header")->FirstChildElement("trajectories")->Attribute("color_mode");
-                if (value == "velocity")
-                {
-                    ui->comboBox_general_03->setCurrentIndex(0);
-                }
-                if (value == "spotlight")
-                {
-                    ui->comboBox_general_03->setCurrentIndex(1);
-                }
-                if (value == "group")
-                {
-                    ui->comboBox_general_03->setCurrentIndex(2);
-                }
-                if (value == "knowledge")
-                {
-                    ui->comboBox_general_03->setCurrentIndex(3);
-                }
-                if (value == "router")
-                {
-                    ui->comboBox_general_03->setCurrentIndex(4);
-                }
-                if (value == "final_goal")
-                {
-                    ui->comboBox_general_03->setCurrentIndex(5);
-                }
-                if (value == "intermediate_goal")
-                {
-                    ui->comboBox_general_03->setCurrentIndex(6);
-                }
-            }
-
-            if (JuPedSim->FirstChild("header")->FirstChild("trajectories")->FirstChildElement("file"))
-            {
-                if (JuPedSim->FirstChild("header")->FirstChild("trajectories")->FirstChildElement("file")->Attribute("location"))
-                {
-                    QString value = JuPedSim->FirstChild("header")->FirstChild("trajectories")->FirstChildElement("file")->Attribute("location");
-                    ui->lineEdit_general_12->setText(value);
-                }
+                ui->comboBox_general_02->setCurrentIndex(1);
             }
         }
 
-        if (JuPedSim->FirstChild("header")->FirstChild("logfile"))
+        if (JuPedSim->FirstChildElement("trajectories")->Attribute("fps"))
         {
-            QString value = JuPedSim->FirstChild("header")->FirstChild("logfile")->FirstChild()->Value();
-            ui->lineEdit_general_08->setText(value);
+            QString value = JuPedSim->FirstChildElement("trajectories")->Attribute("fps");
+            ui->lineEdit_general_10->setText(value);
         }
 
-        if (JuPedSim->FirstChild("header")->FirstChild("show_statistics"))
+        if (JuPedSim->FirstChildElement("trajectories")->Attribute("color_mode"))
         {
-            QString value = JuPedSim->FirstChild("header")->FirstChild("show_statistics")->FirstChild()->Value();
-            if (value == "false")
+            QString value = JuPedSim->FirstChildElement("trajectories")->Attribute("color_mode");
+            if (value == "velocity")
             {
-                ui->comboBox_general_01->setCurrentIndex(0);
+                ui->comboBox_general_03->setCurrentIndex(0);
             }
-            if (value == "true")
+            if (value == "spotlight")
             {
-                ui->comboBox_general_01->setCurrentIndex(1);
+                ui->comboBox_general_03->setCurrentIndex(1);
             }
+            if (value == "group")
+            {
+                ui->comboBox_general_03->setCurrentIndex(2);
+            }
+            if (value == "knowledge")
+            {
+                ui->comboBox_general_03->setCurrentIndex(3);
+            }
+            if (value == "router")
+            {
+                ui->comboBox_general_03->setCurrentIndex(4);
+            }
+            if (value == "final_goal")
+            {
+                ui->comboBox_general_03->setCurrentIndex(5);
+            }
+            if (value == "intermediate_goal")
+            {
+                ui->comboBox_general_03->setCurrentIndex(6);
+            }
+        }
+
+        if (JuPedSim->FirstChild("trajectories")->FirstChildElement("file"))
+        {
+            if (JuPedSim->FirstChild("trajectories")->FirstChildElement("file")->Attribute("location"))
+            {
+                QString value = JuPedSim->FirstChild("trajectories")->FirstChildElement("file")->Attribute("location");
+                ui->lineEdit_general_12->setText(value);
+            }
+        }
+    }
+
+    if (JuPedSim->FirstChild("logfile") && !JuPedSim->FirstChild("logfile")->NoChildren())
+    {
+        QString value = JuPedSim->FirstChild("logfile")->FirstChild()->Value();
+        ui->lineEdit_general_08->setText(value);
+    }
+
+    if (JuPedSim->FirstChild("show_statistics"))
+    {
+        QString value = JuPedSim->FirstChild("show_statistics")->FirstChild()->Value();
+        if (value == "false")
+        {
+            ui->comboBox_general_01->setCurrentIndex(0);
+        }
+        if (value == "true")
+        {
+            ui->comboBox_general_01->setCurrentIndex(1);
         }
     }
 }
@@ -1922,6 +1919,9 @@ void InifileWidget::ReadModelData(TiXmlElement *JuPedSim)
                 QString desc = model->Attribute("description");
                 if (desc == "gcfm")
                 {
+                    int index = 0;
+                    on_comboBox_groups_1_currentIndexChanged(index);
+
                     if (model->FirstChild("model_parameters"))
                     {
                         if (model->FirstChild("model_parameters")->FirstChild("solver"))
@@ -2174,6 +2174,8 @@ void InifileWidget::ReadModelData(TiXmlElement *JuPedSim)
 
                 if (desc == "gompertz")
                 {
+                    int index = 1;
+                    on_comboBox_groups_1_currentIndexChanged(index);
                     if (model->FirstChild("model_parameters"))
                     {
                         if (model->FirstChild("model_parameters")->FirstChild("solver"))
@@ -2416,6 +2418,8 @@ void InifileWidget::ReadModelData(TiXmlElement *JuPedSim)
 
                 if (desc == "Tordeux2015")
                 {
+                    int index = 2;
+                    on_comboBox_groups_1_currentIndexChanged(index);
                     if (model->FirstChild("model_parameters"))
                     {
                         if (model->FirstChild("model_parameters")->FirstChild("solver"))
@@ -2663,6 +2667,8 @@ void InifileWidget::ReadModelData(TiXmlElement *JuPedSim)
 
                 if (desc == "gradnav")
                 {
+                    int index = 3;
+                    on_comboBox_groups_1_currentIndexChanged(index);
                     if (model->FirstChild("model_parameters"))
                     {
                         if (model->FirstChild("model_parameters")->FirstChild("solver"))
@@ -2931,6 +2937,9 @@ void InifileWidget::ReadModelData(TiXmlElement *JuPedSim)
 
                 if (desc == "krausz")
                 {
+                    int index = 4;
+                    ui->comboBox_groups_1->setCurrentIndex(index);
+                    on_comboBox_groups_1_currentIndexChanged(index);
                     if (model->FirstChild("model_parameters"))
                     {
                         if (model->FirstChild("model_parameters")->FirstChild("solver"))
@@ -3334,7 +3343,6 @@ void InifileWidget::on_pushButton_read_clicked()
     {
         return;
     }
-    file.close();
 
     //Load data
     TiXmlDocument doc;
@@ -3470,4 +3478,9 @@ void InifileWidget::pushButton_RoutingClicked()
             ,tr("XML-Files (*.xml)"));
 
     ui->lineEdit_route_choice_03->setText(fileName);
+}
+
+void InifileWidget::readTrafficFile(QFile &file)
+{
+//TODO: do this in v0.8.9
 }

@@ -83,6 +83,7 @@ private:
     void ReadAgentData(TiXmlElement* JuPedSim);
     void ReadModelData(TiXmlElement* JuPedSim);
     void ReadRouteChoiceData(TiXmlElement* JuPedSim);
+    void readTrafficFile(QFile &file);
 };
 
 #endif // INIFILEWIDGET_H
