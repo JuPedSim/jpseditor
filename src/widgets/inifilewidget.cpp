@@ -1194,126 +1194,108 @@ void InifileWidget::writeModelTordData(QXmlStreamWriter *stream, QFile &file)
 
 void InifileWidget::writeModelGradData(QXmlStreamWriter *stream, QFile &file)
 {
-    //operational model and agent parameters - gradnav
-    QString grad_line_1 = "\t\t<!-- gradnav model -->\n";
+    //operational model and agent parameters - gcfm
+    stream->writeComment("operational model");
+    stream->writeStartElement("operational_model");
 
-    QString grad_line_2 = "\t\t<model operational_model_id=\"4\" description=\"gradnav\">\n";
+    stream->writeStartElement("model");
+    stream->writeAttribute("operational_model_id","4");
+    stream->writeAttribute("description", "gradnav");
 
-    QString grad_line_3 = "\t\t\t<model_parameters>\n";
+    stream->writeStartElement("model_parameters");
+    stream->writeTextElement("solver", ui->lineEdit_model_gradnav_01->text());
+    stream->writeTextElement("stepsize", ui->lineEdit_model_gradnav_02->text());
+    stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_gradnav_03->text());
 
-    QString grad_line_4 = "\t\t\t\t<solver>" +
-            ui->lineEdit_model_gradnav_01->text() +
-            "</solver>\n";
+    stream->writeStartElement("linkedcells");
+    stream->writeAttribute("enabled", ui->lineEdit_model_gradnav_04->text());
+    stream->writeAttribute("cell_size", ui->lineEdit_model_gradnav_05->text());
+    stream->writeEndElement(); //end linkedcells
 
-    QString grad_line_5 = "\t\t\t\t<stepsize>" +
-            ui->lineEdit_model_gradnav_02->text() +
-            "</stepsize>\n";
+    stream->writeStartElement("floorfield");
+    stream->writeAttribute("delta_h", ui->lineEdit_model_gradnav_06->text());
+    stream->writeAttribute("wall_avoid_distance", ui->lineEdit_model_gradnav_07->text());
+    stream->writeAttribute("use_wall_avoidance", ui->lineEdit_model_gradnav_08->text());
+    stream->writeEndElement(); //end floorfield
 
-    QString grad_line_6 = "\t\t\t\t<exit_crossing_strategy>" +
-            ui->lineEdit_model_gradnav_03->text() +
-            "</exit_crossing_strategy>\n";
+    stream->writeStartElement("anti_clipping");
+    stream->writeAttribute("slow_down_distance", ui->lineEdit_model_gradnav_09->text());
+    stream->writeEndElement(); //end anti_clipping
 
-    QString grad_line_7 = "\t\t\t\t<linkedcells enabled=\"" +
-            ui->lineEdit_model_gradnav_04->text() +
-            "\" cell_size=\"" +
-            ui->lineEdit_model_gradnav_05->text() +
-            "\" />\n";
+    stream->writeStartElement("force_ped");
+    stream->writeAttribute("nu", ui->lineEdit_model_gradnav_10->text());
+    stream->writeAttribute("b", ui->lineEdit_model_gradnav_11->text());
+    stream->writeAttribute("c", ui->lineEdit_model_gradnav_12->text());
+    stream->writeEndElement(); //end force_ped
 
-    QString grad_line_8 = "\t\t\t\t<floorfield delta_h=\"" +
-            ui->lineEdit_model_gradnav_06->text() +
-            "\" wall_avoid_distance=\"" +
-            ui->lineEdit_model_gradnav_07->text() +
-            "\" use_wall_avoidance=\"" +
-            ui->lineEdit_model_gradnav_08->text() +
-            "\" />\n";
+    stream->writeStartElement("force_wall");
+    stream->writeAttribute("nu", ui->lineEdit_model_gradnav_13->text());
+    stream->writeAttribute("b", ui->lineEdit_model_gradnav_14->text());
+    stream->writeAttribute("c", ui->lineEdit_model_gradnav_15->text());
+    stream->writeEndElement(); //end force_wall
+    stream->writeEndElement(); // end model_parameters
 
-    QString grad_line_9 = "\t\t\t\t<anti_clipping slow_down_distance=\"" +
-            ui->lineEdit_model_gradnav_09->text() +
-            "\" />\n";
-
-    QString grad_line_10 = "\t\t\t\t<force_ped nu=\"" +
-            ui->lineEdit_model_gradnav_10->text() +
-            "\" b=\"" +
-            ui->lineEdit_model_gradnav_11->text() +
-            "\" c=\"" +
-            ui->lineEdit_model_gradnav_12->text() +
-            "\" />\n";
-
-    QString grad_line_11 = "\t\t\t\t<force_wall nu=\"" +
-            ui->lineEdit_model_gradnav_13->text() +
-            "\" b=\"" +
-            ui->lineEdit_model_gradnav_14->text() +
-            "\" c=\"" +
-            ui->lineEdit_model_gradnav_15->text() +
-            "\" />\n";
-
-    QString grad_line_12 = "\t\t\t</model_parameters>\n";
-
-    QString grad_line_13 = "";
     for(int i = 0; i < ui->spinBox_agents_gradnav_1->value(); i++)
     {
-        grad_line_13 = grad_line_13 +
-                "\t\t\t<agent_parameters agent_parameter_id=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,0)->text() +
-                "\">\n" +
-                "\t\t\t\t<v0 mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,1)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,2)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_upstairs mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,3)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,4)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_downstairs mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,5)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,6)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_idle_escalator_upstairs mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,7)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,8)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_idle_escalator_downstairs mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,9)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,10)->text() +
-                "\" />\n" +
-                "\t\t\t\t<bmax mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,11)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,12)->text() +
-                "\" />\n" +
-                "\t\t\t\t<bmin mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,13)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,14)->text() +
-                "\" />\n" +
-                "\t\t\t\t<amin mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,15)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,16)->text() +
-                "\" />\n" +
-                "\t\t\t\t<tau mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,17)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,18)->text() +
-                "\" />\n" +
-                "\t\t\t\t<atau mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,19)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,20)->text() +
-                "\" />\n" +
-                "\t\t\t</agent_parameters>\n";
+        stream->writeStartElement("agent_parameters");
+        stream->writeAttribute("agent_parameter_id", ui->tableWidget_agents_gradnav_1->item(i,0)->text());
+
+        stream->writeStartElement("v0");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,1)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,2)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_upstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,3)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,4)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,5)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,6)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_upstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,7)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,8)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,9)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,10)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("bmax");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,11)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,12)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("bmin");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,13)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,14)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("amin");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,15)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,16)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("tau");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,17)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,18)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("atau");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,19)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,20)->text());
+        stream->writeEndElement();
+
+        stream->writeEndElement(); // end agent_parameters
+
     }
 
-    QString grad_line_14 = "\t\t</model>\n";
-
-    QString grad_lines = grad_line_1 + grad_line_2 + grad_line_3 + grad_line_4 + grad_line_5 +
-                         grad_line_6 + grad_line_7 + grad_line_8 + grad_line_9 + grad_line_10 +
-                         grad_line_11 + grad_line_12 + grad_line_13 + grad_line_14;
+    stream->writeEndElement(); //end model
+    stream->writeEndElement(); //end operational model
 
     return ;
 }
