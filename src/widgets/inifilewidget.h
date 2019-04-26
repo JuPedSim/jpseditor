@@ -70,13 +70,12 @@ private:
     void writeGlobalShortestModel(QXmlStreamWriter *stream, QFile &file);
     void writeCognitiveMap(QXmlStreamWriter *stream, QFile &file);
     void writeTrafficData(QXmlStreamWriter *stream, QFile &file);
-    void writeSourceData(QXmlStreamWriter *stream, QFile &file);
     void writeAgentData(QXmlStreamWriter *stream, QFile &file);
-    QString WriteModelGcfmData();
-    QString WriteModelGompData();
-    QString WriteModelTordData();
-    QString WriteModelGradData();
-    QString WriteModelKrauData();
+    void writeModelGcfmData(QXmlStreamWriter *stream, QFile &file);
+    void writeModelGompData(QXmlStreamWriter *stream, QFile &file);
+    void writeModelTordData(QXmlStreamWriter *stream, QFile &file);
+    void writeModelGradData(QXmlStreamWriter *stream, QFile &file);
+    void writeModelKrauData(QXmlStreamWriter *stream, QFile &file);
     void writeRouteChoiceData(QXmlStreamWriter *stream, QFile &file);
 
     void ReadJuPedSimData(TiXmlElement* JuPedSim);

@@ -891,129 +891,114 @@ void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
     return;
 }
 
-QString InifileWidget::WriteModelGcfmData()
+void InifileWidget::writeModelGcfmData(QXmlStreamWriter *stream, QFile &file)
 {
     //operational model and agent parameters - gcfm
-    QString gcfm_line_1 = "\t<!-- operational model -->\n";
+//    QString gcfm_line_1 = "\t<!-- operational model -->\n";
+    stream->writeComment("operational model");
+    stream->writeStartElement("operational_model");
 
-    QString gcfm_line_2 = "\t<operational_models>\n";
+    stream->writeStartElement("model");
 
-    QString gcfm_line_3 = "\t\t<!-- generalized centrifugal force model -->\n";
+    stream->writeAttribute("operational_model_id","1");
+    stream->writeAttribute("description", "gcfm");
+    stream->writeStartElement("model_parameters");
+    stream->writeTextElement("solver", ui->lineEdit_model_gcfm_01->text());
+    stream->writeTextElement("stepsize", ui->lineEdit_model_gcfm_02->text());
+    stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_gcfm_03->text());
 
-    QString gcfm_line_4 = "\t\t<model operational_model_id=\"1\" description=\"gcfm\">\n";
+    stream->writeStartElement("linkedcells");
+    stream->writeAttribute("enabled", ui->lineEdit_model_gcfm_04->text());
+    stream->writeAttribute("cell_size", ui->lineEdit_model_gcfm_05->text());
+    stream->writeEndElement(); //end linkedcells
 
-    QString gcfm_line_5 = "\t\t\t<model_parameters>\n";
+    stream->writeStartElement("force_ped");
+    stream->writeAttribute("nu", ui->lineEdit_model_gcfm_06->text());
+    stream->writeAttribute("dist_max", ui->lineEdit_model_gcfm_07->text());
+    stream->writeAttribute("desteff_max", ui->lineEdit_model_gcfm_08->text());
+    stream->writeAttribute("interpolation_width", ui->lineEdit_model_gcfm_09->text());
+    stream->writeEndElement(); //end force_ped
 
-    QString gcfm_line_6 = "\t\t\t\t<solver>" +
-            ui->lineEdit_model_gcfm_01->text() +
-            "</solver>\n";
+    stream->writeStartElement("force_wall");
+    stream->writeAttribute("nu",ui->lineEdit_model_gcfm_10->text());
+    stream->writeAttribute("dist_max", ui->lineEdit_model_gcfm_11->text());
+    stream->writeAttribute("desteff_max", ui->lineEdit_model_gcfm_12->text());
+    stream->writeAttribute("interpolation_width", ui->lineEdit_model_gcfm_13->text());
+    stream->writeEndElement(); //end force_wall
 
-    QString gcfm_line_7 = "\t\t\t\t<stepsize>" +
-            ui->lineEdit_model_gcfm_02->text() +
-            "</stepsize>\n";
+    stream->writeEndElement(); // end model_parameters
 
-    QString gcfm_line_8 = "\t\t\t\t<exit_crossing_strategy>" +
-            ui->lineEdit_model_gcfm_03->text() +
-            "</exit_crossing_strategy>\n";
-
-    QString gcfm_line_9 = "\t\t\t\t<linkedcells enabled=\"" +
-            ui->lineEdit_model_gcfm_04->text() +
-            "\" cell_size=\"" +
-            ui->lineEdit_model_gcfm_05->text() +
-            "\" />\n";
-
-    QString gcfm_line_10 = "\t\t\t\t<force_ped nu=\"" +
-            ui->lineEdit_model_gcfm_06->text() +
-            "\" dist_max=\"" +
-            ui->lineEdit_model_gcfm_07->text() +
-            "\" desteff_max=\"" +
-            ui->lineEdit_model_gcfm_08->text() +
-            "\" interpolation_width=\"" +
-            ui->lineEdit_model_gcfm_09->text() +
-            "\" />\n";
-
-    QString gcfm_line_11 = "\t\t\t\t<force_wall nu=\"" +
-            ui->lineEdit_model_gcfm_10->text() +
-            "\" dist_max=\"" +
-            ui->lineEdit_model_gcfm_11->text() +
-            "\" desteff_max=\"" +
-            ui->lineEdit_model_gcfm_12->text() +
-            "\" interpolation_width=\"" +
-            ui->lineEdit_model_gcfm_13->text() +
-            "\" />\n";
-
-    QString gcfm_line_12 = "\t\t\t</model_parameters>\n";
-
-    QString gcfm_line_13 = "";
     for(int i = 0; i < ui->spinBox_agents_gcfm_1->value(); i++)
     {
-        gcfm_line_13 = gcfm_line_13 +
-                "\t\t\t<agent_parameters agent_parameter_id=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,0)->text() +
-                "\">\n" +
-                "\t\t\t\t<v0 mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,1)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,2)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_upstairs mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,3)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,4)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_downstairs mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,5)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,6)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_idle_escalator_upstairs mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,7)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,8)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_idle_escalator_downstairs mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,9)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,10)->text() +
-                "\" />\n" +
-                "\t\t\t\t<bmax mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,11)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,12)->text() +
-                "\" />\n" +
-                "\t\t\t\t<bmin mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,13)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,14)->text() +
-                "\" />\n" +
-                "\t\t\t\t<amin mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,15)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,16)->text() +
-                "\" />\n" +
-                "\t\t\t\t<tau mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,17)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,18)->text() +
-                "\" />\n" +
-                "\t\t\t\t<atau mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,19)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,20)->text() +
-                "\" />\n" +
-                "\t\t\t</agent_parameters>\n";
+        stream->writeStartElement("agent_parameters");
+        stream->writeAttribute("agent_parameter_id", ui->tableWidget_agents_gcfm_1->item(i,0)->text());
+
+        stream->writeStartElement("v0");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,1)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,2)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_upstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,3)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,4)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,5)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,6)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_upstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,7)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,8)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,9)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,10)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,9)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,10)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("bmax");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,11)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,12)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("bmin");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,13)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,14)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("amin");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,15)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,16)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("tau");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,17)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,18)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("atau");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,19)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,20)->text());
+        stream->writeEndElement();
+
+        stream->writeEndElement(); // end agent_parameters
+
     }
 
-    QString gcfm_line_14 = "\t\t</model>\n";
+    stream->writeEndElement(); //end model
+    stream->writeEndElement(); //end operational model
 
-    QString gcfm_lines = gcfm_line_1 + gcfm_line_2 + gcfm_line_3 + gcfm_line_4 + gcfm_line_5 +
-                         gcfm_line_6 + gcfm_line_7 + gcfm_line_8 + gcfm_line_9 + gcfm_line_10 +
-                         gcfm_line_11 + gcfm_line_12 + gcfm_line_13 + gcfm_line_14;
-
-    return gcfm_lines;
+    return ;
 }
 
-QString InifileWidget::WriteModelGompData()
+void InifileWidget::writeModelGompData(QXmlStreamWriter *stream, QFile &file)
 {
     //operational model and agent parameters - gompertz
     QString gomp_line_1 = "\t\t<!-- gompertz model -->\n";
@@ -1124,10 +1109,10 @@ QString InifileWidget::WriteModelGompData()
                          gomp_line_6 + gomp_line_7 + gomp_line_8 + gomp_line_9 + gomp_line_10 +
                          gomp_line_11 + gomp_line_12;
 
-    return gomp_lines;
+    return ;
 }
 
-QString InifileWidget::WriteModelTordData()
+void InifileWidget::writeModelTordData(QXmlStreamWriter *stream, QFile &file)
 {
     //operational model and agent parameters - tordeux
     QString tord_line_1 = "\t\t<!-- collision free speed model -->\n";
@@ -1239,10 +1224,10 @@ QString InifileWidget::WriteModelTordData()
                          tord_line_6 + tord_line_7 + tord_line_8 + tord_line_9 + tord_line_10 +
                          tord_line_11 + tord_line_12;
 
-    return tord_lines;
+    return ;
 }
 
-QString InifileWidget::WriteModelGradData()
+void InifileWidget::writeModelGradData(QXmlStreamWriter *stream, QFile &file)
 {
     //operational model and agent parameters - gradnav
     QString grad_line_1 = "\t\t<!-- gradnav model -->\n";
@@ -1365,10 +1350,10 @@ QString InifileWidget::WriteModelGradData()
                          grad_line_6 + grad_line_7 + grad_line_8 + grad_line_9 + grad_line_10 +
                          grad_line_11 + grad_line_12 + grad_line_13 + grad_line_14;
 
-    return grad_lines;
+    return ;
 }
 
-QString InifileWidget::WriteModelKrauData()
+void InifileWidget::writeModelKrauData(QXmlStreamWriter *stream, QFile &file)
 {
     //operational model and agent parameters - krausz
     QString krau_line_1 = "\t\t<!-- krausz model -->\n";
@@ -1494,7 +1479,7 @@ QString InifileWidget::WriteModelKrauData()
                          krau_line_6 + krau_line_7 + krau_line_8 + krau_line_9 + krau_line_10 +
                          krau_line_11 + krau_line_12 + krau_line_13;
 
-    return krau_lines;
+    return ;
 }
 
 void InifileWidget::writeRouteChoiceData(QXmlStreamWriter *stream, QFile &file)
@@ -1667,19 +1652,19 @@ void InifileWidget::on_pushButton_write_clicked()
 //    QString agen_lines = writeAgentData();
 //
 //    //operational model and agent parameters - gcfm
-//    QString gcfm_lines = WriteModelGcfmData();
+//    QString gcfm_lines = writeModelGcfmData();
 //
 //    //operational model and agent parameters - gompertz
-//    QString gomp_lines = WriteModelGompData();
+//    QString gomp_lines = writeModelGompData();
 //
 //    //operational model and agent parameters - tordeux
-//    QString tord_lines = WriteModelTordData();
+//    QString tord_lines = writeModelTordData();
 //
 //    //operational model and agent parameters - gradnav
-//    QString grad_lines = WriteModelGradData();
+//    QString grad_lines = writeModelGradData();
 //
 //    //operational model and agent parameters - krausz
-//    QString krau_lines = WriteModelKrauData();
+//    QString krau_lines = writeModelKrauData();
 //
 //    //route_choice_models
 //    QString choi_lines = writeRouteChoiceData();
@@ -1714,14 +1699,31 @@ void InifileWidget::on_pushButton_write_clicked()
 
         writeAgentData(stream, file);
 
-//        file.write(gcfm_lines.toUtf8() +
-//                   gomp_lines.toUtf8() +
-//                   tord_lines.toUtf8() +
-//                   grad_lines.toUtf8() +
-//                   krau_lines.toUtf8() +
-//                   choi_lines.toUtf8());
+        int model = ui->comboBox_groups_1->currentIndex();
+
+        switch(model)
+        {
+            case 0:
+                writeModelGcfmData(stream, file);
+                break;
+            case 1:
+                writeModelGompData(stream, file);
+                break;
+            case 2:
+                writeModelTordData(stream, file);
+                break;
+            case 3:
+                writeModelGradData(stream, file);
+                break;
+            case 4:
+                writeModelKrauData(stream, file);
+                break;
+            default:
+                break;
+        }
 
         writeRouteChoiceData(stream, file);
+
         stream->writeEndElement(); //end JuPedSim
         stream->writeEndDocument();
         delete stream;
@@ -3537,32 +3539,6 @@ void InifileWidget::writeTrafficData(QXmlStreamWriter *stream, QFile &file)
     stream->writeEndElement(); //end files
     stream->writeEndElement(); //end doors
     stream->writeEndElement(); //end traffic_constraints
-}
-
-/*
-    since v0.8.8
-
-    <agents_sources>
-      <source_ id="10" caption="new-source" time_min="5" time_max="30" frequency="5" N_create="10" agents_max="300"
-      group_id="0"  x_min="0" x_max="3" y_min="0" y_max="3" percent="0.5" rate="2"  greedy="true"/>
-      <file>sources.xml</file>
-    </agents_sources>
-*/
-
-void InifileWidget::writeSourceData(QXmlStreamWriter *stream, QFile &file)
-{
-    stream->writeComment("frequency in persons/seconds");
-    stream->writeStartElement("agents_sources");
-
-    QList<JPSSource *> sources = dataManager->getSourcelist();
-    dataManager->writeSources(stream, sources);
-
-    auto source_FileName = ui->lineEdit_SourceFile->text().split("/").last();
-    stream->writeStartElement("file");
-    stream->writeCharacters(source_FileName);
-    stream->writeEndElement(); //end files
-
-    stream->writeEndElement(); //end goals
 }
 
 void InifileWidget::pushButton_RoutingClicked()
