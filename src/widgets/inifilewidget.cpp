@@ -1183,7 +1183,6 @@ void InifileWidget::writeModelTordData(QXmlStreamWriter *stream, QFile &file)
         stream->writeEndElement();
 
         stream->writeEndElement(); // end agent_parameters
-
     }
 
     stream->writeEndElement(); //end model
@@ -1302,129 +1301,106 @@ void InifileWidget::writeModelGradData(QXmlStreamWriter *stream, QFile &file)
 
 void InifileWidget::writeModelKrauData(QXmlStreamWriter *stream, QFile &file)
 {
-    //operational model and agent parameters - krausz
-    QString krau_line_1 = "\t\t<!-- krausz model -->\n";
+    //operational model and agent parameters - gcfm
+    stream->writeComment("operational model");
+    stream->writeStartElement("operational_model");
 
-    QString krau_line_2 = "\t\t<model operational_model_id=\"5\" description=\"krausz\">\n";
+    stream->writeStartElement("model");
+    stream->writeAttribute("operational_model_id","5");
+    stream->writeAttribute("description", "krausz");
 
-    QString krau_line_3 = "\t\t\t<model_parameters>\n";
+    stream->writeStartElement("model_parameters");
+    stream->writeTextElement("solver", ui->lineEdit_model_krausz_01->text());
+    stream->writeTextElement("stepsize", ui->lineEdit_model_krausz_02->text());
+    stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_krausz_03->text());
 
-    QString krau_line_4 = "\t\t\t\t<solver>" +
-            ui->lineEdit_model_krausz_01->text() +
-            "</solver>\n";
+    stream->writeStartElement("linkedcells");
+    stream->writeAttribute("enabled", ui->lineEdit_model_krausz_04->text());
+    stream->writeAttribute("cell_size", ui->lineEdit_model_krausz_05->text());
+    stream->writeEndElement(); //end linkedcells
 
-    QString krau_line_5 = "\t\t\t\t<stepsize>" +
-            ui->lineEdit_model_krausz_02->text() +
-            "</stepsize>\n";
+    stream->writeStartElement("force_ped");
+    stream->writeAttribute("nu", ui->lineEdit_model_krausz_06->text());
+    stream->writeAttribute("dist_max", ui->lineEdit_model_krausz_07->text());
+    stream->writeAttribute("desteff_max", ui->lineEdit_model_krausz_08->text());
+    stream->writeAttribute("interpolation_width", ui->lineEdit_model_krausz_09->text());
+    stream->writeEndElement(); //end force_ped
 
-    QString krau_line_6 = "\t\t\t\t<exit_crossing_strategy>" +
-            ui->lineEdit_model_krausz_03->text() +
-            "</exit_crossing_strategy>\n";
+    stream->writeStartElement("force_wall");
+    stream->writeAttribute("nu", ui->lineEdit_model_krausz_10->text());
+    stream->writeAttribute("dist_max", ui->lineEdit_model_krausz_11->text());
+    stream->writeAttribute("desteff_max", ui->lineEdit_model_krausz_12->text());
+    stream->writeAttribute("interpolation_width", ui->lineEdit_model_krausz_13->text());
+    stream->writeEndElement(); //end force_wall
+    stream->writeEndElement(); // end model_parameters
 
-    QString krau_line_7 = "\t\t\t\t<linkedcells enabled=\"" +
-            ui->lineEdit_model_krausz_04->text() +
-            "\" cell_size=\"" +
-            ui->lineEdit_model_krausz_05->text() +
-            "\" />\n";
-
-    QString krau_line_8 = "\t\t\t\t<force_ped nu=\"" +
-            ui->lineEdit_model_krausz_06->text() +
-            "\" dist_max=\"" +
-            ui->lineEdit_model_krausz_07->text() +
-            "\" desteff_max=\"" +
-            ui->lineEdit_model_krausz_08->text() +
-            "\" interpolation_width=\"" +
-            ui->lineEdit_model_krausz_09->text() +
-            "\" />\n";
-
-    QString krau_line_9 = "\t\t\t\t<force_wall nu=\"" +
-            ui->lineEdit_model_krausz_10->text() +
-            "\" dist_max=\"" +
-            ui->lineEdit_model_krausz_11->text() +
-            "\" desteff_max=\"" +
-            ui->lineEdit_model_krausz_12->text() +
-            "\" interpolation_width=\"" +
-            ui->lineEdit_model_krausz_13->text() +
-            "\" />\n";
-
-    QString krau_line_10 = "\t\t\t</model_parameters>\n";
-
-    QString krau_line_11 = "";
     for(int i = 0; i < ui->spinBox_agents_krausz_1->value(); i++)
     {
-        krau_line_11 = krau_line_11 +
-                "\t\t\t<agent_parameters agent_parameter_id=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,0)->text() +
-                "\">\n" +
-                "\t\t\t\t<v0 mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,1)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,2)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_upstairs mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,3)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,4)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_downstairs mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,5)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,6)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_idle_escalator_upstairs mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,7)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,8)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_idle_escalator_downstairs mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,9)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,10)->text() +
-                "\" />\n" +
-                "\t\t\t\t<bmax mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,11)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,12)->text() +
-                "\" />\n" +
-                "\t\t\t\t<bmin mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,13)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,14)->text() +
-                "\" />\n" +
-                "\t\t\t\t<amin mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,15)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,16)->text() +
-                "\" />\n" +
-                "\t\t\t\t<tau mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,17)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,18)->text() +
-                "\" />\n" +
-                "\t\t\t\t<atau mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,19)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,20)->text() +
-                "\" />\n" +
-                "\t\t\t\t<sway ampA=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,21)->text() +
-                "\" ampB=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,22)->text() +
-                "\" freqA=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,23)->text() +
-                "\" freqB=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,24)->text() +
-                "\" />\n" +
-                "\t\t\t</agent_parameters>\n";
+        stream->writeStartElement("agent_parameters");
+        stream->writeAttribute("agent_parameter_id", ui->tableWidget_agents_krausz_1->item(i,0)->text());
+
+        stream->writeStartElement("v0");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,1)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,2)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_upstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,3)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,4)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,5)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,6)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_upstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,7)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,8)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,9)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,10)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("bmax");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,11)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,12)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("bmin");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,13)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,14)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("amin");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,15)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,16)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("tau");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,17)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,18)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("atau");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,19)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,20)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("sway");
+        stream->writeAttribute("ampA", ui->tableWidget_agents_krausz_1->item(i,21)->text());
+        stream->writeAttribute("ampB", ui->tableWidget_agents_krausz_1->item(i,22)->text());
+        stream->writeAttribute("freqA", ui->tableWidget_agents_krausz_1->item(i,23)->text());
+        stream->writeAttribute("freqB", ui->tableWidget_agents_krausz_1->item(i,24)->text());
+        stream->writeEndElement();
+
+        stream->writeEndElement(); // end agent_parameters
     }
 
-    QString krau_line_12 = "\t\t</model>\n";
-
-    QString krau_line_13 = "\t</operational_models>\n\n";
-
-    QString krau_lines = krau_line_1 + krau_line_2 + krau_line_3 + krau_line_4 + krau_line_5 +
-                         krau_line_6 + krau_line_7 + krau_line_8 + krau_line_9 + krau_line_10 +
-                         krau_line_11 + krau_line_12 + krau_line_13;
+    stream->writeEndElement(); //end model
+    stream->writeEndElement(); //end operational model
 
     return ;
 }
