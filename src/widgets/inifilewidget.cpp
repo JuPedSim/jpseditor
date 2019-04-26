@@ -1093,115 +1093,101 @@ void InifileWidget::writeModelGompData(QXmlStreamWriter *stream, QFile &file)
 
 void InifileWidget::writeModelTordData(QXmlStreamWriter *stream, QFile &file)
 {
-    //operational model and agent parameters - tordeux
-    QString tord_line_1 = "\t\t<!-- collision free speed model -->\n";
+    //operational model and agent parameters - gcfm
+    stream->writeComment("operational model");
+    stream->writeStartElement("operational_model");
 
-    QString tord_line_2 = "\t\t<model operational_model_id=\"3\" description=\"Tordeux2015\">\n";
+    stream->writeStartElement("model");
+    stream->writeAttribute("operational_model_id","3");
+    stream->writeAttribute("description", "Tordeux2015");
 
-    QString tord_line_3 = "\t\t\t<model_parameters>\n";
+    stream->writeStartElement("model_parameters");
+    stream->writeTextElement("solver", ui->lineEdit_model_tordeux_01->text());
+    stream->writeTextElement("stepsize", ui->lineEdit_model_tordeux_02->text());
+    stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_tordeux_03->text());
 
-    QString tord_line_4 = "\t\t\t\t<solver>" +
-            ui->lineEdit_model_tordeux_01->text() +
-            "</solver>\n";
+    stream->writeStartElement("linkedcells");
+    stream->writeAttribute("enabled", ui->lineEdit_model_tordeux_04->text());
+    stream->writeAttribute("cell_size", ui->lineEdit_model_tordeux_05->text());
+    stream->writeEndElement(); //end linkedcells
 
-    QString tord_line_5 = "\t\t\t\t<stepsize>" +
-            ui->lineEdit_model_tordeux_02->text() +
-            "</stepsize>\n";
+    stream->writeStartElement("force_ped");
+    stream->writeAttribute("a", ui->lineEdit_model_tordeux_06->text());
+    stream->writeAttribute("D", ui->lineEdit_model_tordeux_07->text());
+    stream->writeEndElement(); //end force_ped
 
-    QString tord_line_6 = "\t\t\t\t<exit_crossing_strategy>" +
-            ui->lineEdit_model_tordeux_03->text() +
-            "</exit_crossing_strategy>\n";
+    stream->writeStartElement("force_wall");
+    stream->writeAttribute("a",ui->lineEdit_model_tordeux_08->text());
+    stream->writeAttribute("D", ui->lineEdit_model_tordeux_09->text());
+    stream->writeEndElement(); //end force_wall
+    stream->writeEndElement(); // end model_parameters
 
-    QString tord_line_7 = "\t\t\t\t<linkedcells enabled=\"" +
-            ui->lineEdit_model_tordeux_04->text() +
-            "\" cell_size=\"" +
-            ui->lineEdit_model_tordeux_05->text() +
-            "\" />\n";
-
-    QString tord_line_8 = "\t\t\t\t<force_ped a=\"" +
-            ui->lineEdit_model_tordeux_06->text() +
-            "\" D=\"" +
-            ui->lineEdit_model_tordeux_07->text() +
-            "\" />\n";
-
-    QString tord_line_9 = "\t\t\t\t<force_wall a=\"" +
-            ui->lineEdit_model_tordeux_08->text() +
-            "\" D=\"" +
-            ui->lineEdit_model_tordeux_09->text() +
-            "\" />\n";
-
-    QString tord_line_10 = "\t\t\t</model_parameters>\n";
-
-    QString tord_line_11 = "";
     for(int i = 0; i < ui->spinBox_agents_tordeux_1->value(); i++)
     {
-        tord_line_11 = tord_line_11 +
-                "\t\t\t<agent_parameters agent_parameter_id=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,0)->text() +
-                "\">\n" +
-                "\t\t\t\t<v0 mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,1)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,2)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_upstairs mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,3)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,4)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_downstairs mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,5)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,6)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_idle_escalator_upstairs mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,7)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,8)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_idle_escalator_downstairs mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,9)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,10)->text() +
-                "\" />\n" +
-                "\t\t\t\t<bmax mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,11)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,12)->text() +
-                "\" />\n" +
-                "\t\t\t\t<bmin mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,13)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,14)->text() +
-                "\" />\n" +
-                "\t\t\t\t<amin mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,15)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,16)->text() +
-                "\" />\n" +
-                "\t\t\t\t<tau mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,17)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,18)->text() +
-                "\" />\n" +
-                "\t\t\t\t<atau mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,19)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,20)->text() +
-                "\" />\n" +
-                "\t\t\t\t<T mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,21)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,22)->text() +
-                "\" />\n"
-                "\t\t\t</agent_parameters>\n";
+        stream->writeStartElement("agent_parameters");
+        stream->writeAttribute("agent_parameter_id", ui->tableWidget_agents_tordeux_1->item(i,0)->text());
+
+        stream->writeStartElement("v0");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,1)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,2)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_upstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,3)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,4)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,5)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,6)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_upstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,7)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,8)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,9)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,10)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("bmax");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,11)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,12)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("bmin");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,13)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,14)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("amin");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,15)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,16)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("tau");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,17)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,18)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("atau");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,19)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,20)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("T");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,21)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,22)->text());
+        stream->writeEndElement();
+
+        stream->writeEndElement(); // end agent_parameters
+
     }
 
-    QString tord_line_12 = "\t\t</model>\n";
-
-    QString tord_lines = tord_line_1 + tord_line_2 + tord_line_3 + tord_line_4 + tord_line_5 +
-                         tord_line_6 + tord_line_7 + tord_line_8 + tord_line_9 + tord_line_10 +
-                         tord_line_11 + tord_line_12;
+    stream->writeEndElement(); //end model
+    stream->writeEndElement(); //end operational model
 
     return ;
 }
