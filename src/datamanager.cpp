@@ -55,6 +55,7 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 
     roomlist= QList<jpsRoom *> ();
     sourcelist = _mView->getSources();
+    goallist = _mView->getGoals();
 }
 
 jpsDatamanager::~jpsDatamanager()
@@ -435,7 +436,7 @@ const int &jpsDatamanager::GetRegionCounter() const
 void jpsDatamanager::writeXML(QFile &file)
 {
     qDebug(">> Enter jpsDatamanager::writeXML");
-    QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
+    auto *stream = new QXmlStreamWriter(&file);
     QList<jpsLineItem* > lines = _mView->get_line_vector();
 
     writeHeader(stream);
@@ -660,7 +661,7 @@ void jpsDatamanager::AutoSaveXML(QFile &file)
 
 void jpsDatamanager::writeHeader(QXmlStreamWriter *stream)
 {
-     qDebug("Enter jpsDatamanager::writeHeader");
+    qDebug("Enter jpsDatamanager::writeHeader");
     stream->setAutoFormatting(true);
     stream->writeStartDocument("1.0",true);
 
@@ -675,7 +676,7 @@ void jpsDatamanager::writeHeader(QXmlStreamWriter *stream)
 
 void jpsDatamanager::writeRoutingHeader(QXmlStreamWriter *stream)
 {
-     qDebug("Enter jpsDatamanager::writeRoutingHeader");
+    qDebug("Enter jpsDatamanager::writeRoutingHeader");
     stream->setAutoFormatting(true);
     stream->writeStartDocument("1.0",true);
 
@@ -941,11 +942,12 @@ void jpsDatamanager::AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem *
 
 void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
-     qDebug("Enter jpsDatamanager::writeCrossings");
+    qDebug("Enter jpsDatamanager::writeCrossings");
     stream->writeStartElement("crossings");
     for (int i=0; i<crossingList.size(); i++)
     {
-        if (crossingList[i]->IsExit()==false && crossingList[i]->get_roomList()[0]->get_type()!="Stair" && crossingList[i]->get_roomList()[1]->get_type()!="Stair")
+        if (!crossingList[i]->IsExit() && crossingList[i]->get_roomList()[0]->get_type()!="Stair" &&
+        crossingList[i]->get_roomList()[1]->get_type()!="Stair")
         {
             stream->writeStartElement("crossing");
             stream->writeAttribute("id",QString::number(i));
@@ -2199,9 +2201,10 @@ void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
     qreal y2=xmlReader.attributes().value("py").toString().toFloat();
     qDebug("\t x1 = %.2f, y1 = %.2f, x2 = %.2f y2 = %.2f", x1, y1, x2, y2);
     jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"Exit");
+
     if (id!=-2)
     {
-        jpsCrossing* exit = new jpsCrossing(lineItem);
+        jpsCrossing *exit = new jpsCrossing(lineItem);
         exit->set_id(id);
         exit->change_name(caption);
         //exit->set_type(type);
@@ -2844,6 +2847,9 @@ bool LineIsEqual(const QLineF& line1, const QLineF& line2, double eps)
 */
 
 void jpsDatamanager::writeSources(QXmlStreamWriter *stream, QList<JPSSource *> &sourcelist) {
+    sourcelist.clear();
+    sourcelist = _mView->getSources();
+
     for(JPSSource* source:sourcelist)
     {
         if(source->isBeSaved())
@@ -2951,7 +2957,7 @@ void jpsDatamanager::writeSourceHeader(QXmlStreamWriter *stream)
 
 void jpsDatamanager::writeGoalXML(QFile &file)
 {
-    QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
+    auto *stream = new QXmlStreamWriter(&file);
 
     stream->setAutoFormatting(true);
 
@@ -2962,8 +2968,6 @@ void jpsDatamanager::writeGoalXML(QFile &file)
     stream->writeAttribute("version", "0.8");
 
     stream->writeStartElement("goals");
-    goallist.clear();
-    goallist = _mView->getGoals();
     writeGoals(stream, goallist);
     stream->writeEndElement(); //end goals
 
@@ -2975,6 +2979,9 @@ void jpsDatamanager::writeGoalXML(QFile &file)
 
 void jpsDatamanager::writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *> &goallist)
 {
+    goallist.clear();
+    goallist = _mView->getGoals();
+
     for(JPSGoal* goal:goallist)
     {
         if(goal->getBeSaved() == "true")
@@ -3015,8 +3022,10 @@ void jpsDatamanager::writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *> &goal
             stream->writeAttribute("py", QString::number(goal->rect().topLeft().y()));
             stream->writeEndElement();
 
-            stream->writeEndElement();
+            stream->writeEndElement();//end goal
         }
+
+        stream->writeEndElement();//end goals
     }
 }
 
@@ -3063,13 +3072,140 @@ void jpsDatamanager::writeTransitionXML(QFile &file)
     stream = nullptr;
 }
 
+const QList<JPSGoal *> &jpsDatamanager::getGoallist()
+{
+    goallist.clear();
+    goallist = _mView->getGoals();
+    return goallist;
+}
 
+/*
+    Since v0.8.8
 
+    Write traffic (doors) as a external xml file.
 
+    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <JPScore project="JPS-Project" version="0.8">
+        <traffic_constraints>
+            <doors> <!-- doors states are: close or open -->
+                <door trans_id="2" caption="NaN" state="open" />
+                <door trans_id="6" caption="NaN" state="open" outflow="1.0" max_agents="20"/>
+            </doors>
+        </traffic_constraints>
+    </JPScore>
+ */
 
+void jpsDatamanager::writeTrafficXML(QFile &file)
+{
+    QXmlStreamWriter *stream = new QXmlStreamWriter(&file);
+    QList<jpsCrossing *> crossings =get_crossingList();
+    QList<jpsCrossing *> doorlist;
 
+    for(jpsCrossing *crossing:crossings)
+    {
+        if(crossing->IsExit())
+            doorlist.append(crossing);
+    }
 
+    stream->setAutoFormatting(true);
 
+    stream->writeStartDocument("1.0",true);
+    stream->setCodec("UTF-8");
 
+    stream->writeStartElement("JPScore");
+    stream->writeAttribute("project","JPS-Project");
+    stream->writeAttribute("version", "0.8");
 
+    stream->writeStartElement("traffic_constrains");
+    stream->writeStartElement("doors");
+    writeTraffics(stream, doorlist);
+    doorlist.clear();
+    stream->writeEndElement(); //end doors
+
+    stream->writeEndDocument();
+
+    delete stream;
+    stream = nullptr;
+}
+
+void jpsDatamanager::writeTraffics(QXmlStreamWriter *stream, QList<jpsCrossing *> const &doorlist)
+{
+    for(jpsCrossing* door:doorlist)
+    {
+        stream->writeStartElement("door");
+        stream->writeAttribute("trans_id", QString::number(door->get_id()));
+        stream->writeAttribute("caption", "NaN");
+        if(door->isState())
+            stream->writeAttribute("state", "open");
+        else
+            stream->writeAttribute("state", "close");
+
+        if(!door->getOutflow().isEmpty())
+            stream->writeAttribute("outflow", door->getOutflow());
+
+        if(!door->getMaxAgents().isEmpty())
+            stream->writeAttribute("max_agents", door->getMaxAgents());
+
+        stream->writeEndElement(); //end door
+    }
+}
+
+bool jpsDatamanager::readTrafficXML(QFile &file)
+{
+
+    QXmlStreamReader xmlReader(&file);
+
+    xmlReader.readNext(); // read first token
+
+    while (!xmlReader.atEnd())
+    {
+        if(xmlReader.isStartElement() && xmlReader.name() == QLatin1String("doors"))
+        {
+            readDoor(xmlReader);
+        } else
+        {
+            xmlReader.readNext();
+        }
+    }
+
+    return true;
+}
+
+void jpsDatamanager::readDoor(QXmlStreamReader &xmlReader)
+{
+    bool state;
+    QString max_agents;
+    QString outflow;
+    int id;
+
+    while (xmlReader.readNextStartElement())
+    {
+        if(xmlReader.name() == QLatin1String("door"))
+        {
+            state = xmlReader.attributes().value("state") == "open" ? true : false;
+
+            max_agents = xmlReader.attributes().value("max_agents").toString();
+            outflow = xmlReader.attributes().value("outflow").toString();
+            id = xmlReader.attributes().value("trans_id").toInt();
+
+            for(jpsCrossing *door : crossingList)
+            {
+                if(door->get_id() == id && door->IsExit())
+                {
+                    door->setState(state);
+                    door->setMaxAgents(max_agents);
+                    door->setOutflow(outflow);
+                }
+            }
+
+            // now token is end element, readNextStartElement() will return false. Have to use readNext
+            // to go to next start element.
+            xmlReader.readNext();
+        }
+    }
+}
+
+const QList<JPSSource *> &jpsDatamanager::getSourcelist() const {
+    return sourcelist;
+}
 

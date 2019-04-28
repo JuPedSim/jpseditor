@@ -35,509 +35,447 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>12</number>
    </property>
    <widget class="QWidget" name="tab_general">
     <attribute name="title">
      <string>General</string>
     </attribute>
-    <widget class="QLineEdit" name="lineEdit_general_02">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
-       <x>350</x>
-       <y>50</y>
-       <width>111</width>
-       <height>21</height>
+       <x>20</x>
+       <y>20</y>
+       <width>244</width>
+       <height>149</height>
       </rect>
      </property>
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>0.8</string>
-     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <item>
+       <widget class="QLabel" name="label_general_a">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;General&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QLabel" name="label_general_03">
+            <property name="text">
+             <string>Coreusage</string>
+            </property>
+            <property name="buddy">
+             <cstring>lineEdit_general_01</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_general_01">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="text">
+             <string>Project name</string>
+            </property>
+            <property name="buddy">
+             <cstring>lineEdit_general_01</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_general_04">
+            <property name="text">
+             <string>Statistics</string>
+            </property>
+            <property name="buddy">
+             <cstring>lineEdit_general_01</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_general_02">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="text">
+             <string>Version number</string>
+            </property>
+            <property name="buddy">
+             <cstring>lineEdit_general_02</cstring>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QLineEdit" name="lineEdit_general_03">
+            <property name="text">
+             <string>4</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_general_01">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="text">
+             <string>project_name</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboBox_general_01">
+            <item>
+             <property name="text">
+              <string>false</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>true</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_general_02">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="text">
+             <string>0.8</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
-    <widget class="QLabel" name="label_general_06">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
-       <x>250</x>
-       <y>140</y>
-       <width>91</width>
-       <height>21</height>
+       <x>270</x>
+       <y>180</y>
+       <width>191</width>
+       <height>113</height>
       </rect>
      </property>
-     <property name="text">
-      <string>Simulation time</string>
-     </property>
-     <property name="buddy">
-      <cstring>lineEdit_general_06</cstring>
-     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_7">
+      <item>
+       <widget class="QLabel" name="label_general_b">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Simulation&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QLabel" name="label_general_05">
+            <property name="text">
+             <string>Seed</string>
+            </property>
+            <property name="buddy">
+             <cstring>lineEdit_general_05</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_general_06">
+            <property name="text">
+             <string>Simulation time</string>
+            </property>
+            <property name="buddy">
+             <cstring>lineEdit_general_06</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_general_08">
+            <property name="text">
+             <string>Log file</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <widget class="QLineEdit" name="lineEdit_general_05">
+            <property name="text">
+             <string>100</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_general_06">
+            <property name="text">
+             <string>1000</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_general_08">
+            <property name="text">
+             <string>log.txt</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
-    <widget class="QLabel" name="label_general_c">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>190</y>
-       <width>91</width>
-       <height>21</height>
+       <x>20</x>
+       <y>180</y>
+       <width>241</width>
+       <height>157</height>
       </rect>
      </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Output&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_10">
+      <item>
+       <widget class="QLabel" name="label_general_c">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Output&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <item>
+           <widget class="QLabel" name="label_general_12">
+            <property name="text">
+             <string>Output file</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_general_09">
+            <property name="text">
+             <string>Format</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_general_10">
+            <property name="text">
+             <string>Fps</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_general_11">
+            <property name="text">
+             <string>Color mode</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_9">
+          <item>
+           <widget class="QLineEdit" name="lineEdit_general_12">
+            <property name="text">
+             <string>trajectories.xml</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboBox_general_02">
+            <item>
+             <property name="text">
+              <string>xml-plain</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>plain</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_general_10">
+            <property name="text">
+             <string>8</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboBox_general_03">
+            <item>
+             <property name="text">
+              <string>velocity</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>spotlight</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>group</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>knowledge</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>router</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>final_goal</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>intermediate_goal</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
-    <widget class="QLabel" name="label_general_12">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
-       <x>730</x>
-       <y>230</y>
-       <width>91</width>
-       <height>16</height>
+       <x>270</x>
+       <y>20</y>
+       <width>451</width>
+       <height>162</height>
       </rect>
      </property>
-     <property name="text">
-      <string>Output name</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_general_05">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>140</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Seed</string>
-     </property>
-     <property name="buddy">
-      <cstring>lineEdit_general_05</cstring>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_general_10">
-     <property name="geometry">
-      <rect>
-       <x>350</x>
-       <y>230</y>
-       <width>111</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>8</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_general_09">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>230</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Format</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_general_05">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>140</y>
-       <width>111</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>100</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_general_02">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>50</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>Version number</string>
-     </property>
-     <property name="buddy">
-      <cstring>lineEdit_general_02</cstring>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_general_01">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>Project name</string>
-     </property>
-     <property name="buddy">
-      <cstring>lineEdit_general_01</cstring>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_general_01">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>50</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>project_name</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_general_10">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>230</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Fps</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_general_b">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>100</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Simulation&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_general_a">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;General&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_general_12">
-     <property name="geometry">
-      <rect>
-       <x>830</x>
-       <y>230</y>
-       <width>111</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>../output_name.xml</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_general_07">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>140</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Geometry file</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_general_07">
-     <property name="geometry">
-      <rect>
-       <x>590</x>
-       <y>140</y>
-       <width>111</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>../geometry.xml</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_general_06">
-     <property name="geometry">
-      <rect>
-       <x>350</x>
-       <y>140</y>
-       <width>111</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>1000</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_general_d">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>280</y>
-       <width>151</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Goals and Constraints&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBox_general_1">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>320</y>
-       <width>31</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_general_13">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>320</y>
-       <width>91</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Edit Goals</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_general_14">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>320</y>
-       <width>91</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Edit Constraints</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBox_general_2">
-     <property name="geometry">
-      <rect>
-       <x>350</x>
-       <y>320</y>
-       <width>31</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="comboBox_general_02">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>230</y>
-       <width>111</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <item>
-      <property name="text">
-       <string>xml-plain</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>plain</string>
-      </property>
-     </item>
-    </widget>
-    <widget class="QLabel" name="label_general_11">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>230</y>
-       <width>91</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Color mode</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="comboBox_general_03">
-     <property name="geometry">
-      <rect>
-       <x>590</x>
-       <y>230</y>
-       <width>111</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <item>
-      <property name="text">
-       <string>velocity</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>spotlight</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>group</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>knowledge</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>router</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>final_goal</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>intermediate_goal</string>
-      </property>
-     </item>
-    </widget>
-    <widget class="QLabel" name="label_general_08">
-     <property name="geometry">
-      <rect>
-       <x>730</x>
-       <y>140</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Log file</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_general_08">
-     <property name="geometry">
-      <rect>
-       <x>830</x>
-       <y>140</y>
-       <width>111</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>../log.txt</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_general_03">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>50</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Coreusage</string>
-     </property>
-     <property name="buddy">
-      <cstring>lineEdit_general_01</cstring>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_general_03">
-     <property name="geometry">
-      <rect>
-       <x>590</x>
-       <y>50</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>4</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_general_04">
-     <property name="geometry">
-      <rect>
-       <x>730</x>
-       <y>50</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Statistics</string>
-     </property>
-     <property name="buddy">
-      <cstring>lineEdit_general_01</cstring>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="comboBox_general_01">
-     <property name="geometry">
-      <rect>
-       <x>830</x>
-       <y>50</y>
-       <width>111</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <item>
-      <property name="text">
-       <string>false</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>true</string>
-      </property>
-     </item>
+     <layout class="QVBoxLayout" name="verticalLayout_14">
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Needed files&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_11">
+          <item>
+           <widget class="QLabel" name="label_general_07">
+            <property name="text">
+             <string>Geometry file</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Goal file</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Source file</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Traffic file</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_12">
+          <item>
+           <widget class="QLineEdit" name="lineEdit_general_07">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_GoalFile"/>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_SourceFile"/>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_TrafficFile"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_13">
+          <item>
+           <widget class="QPushButton" name="pushButton_Geometry">
+            <property name="text">
+             <string>Choose</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_Goal">
+            <property name="text">
+             <string>Choose</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_Source">
+            <property name="text">
+             <string>Choose</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_Traffic">
+            <property name="text">
+             <string>Choose</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_groups">
@@ -3960,344 +3898,29 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="tab_goals">
-    <attribute name="title">
-     <string>Goals</string>
-    </attribute>
-    <widget class="QLabel" name="label_goals_a">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Goals in geometry&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_goals_1">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Number of goals</string>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBox_goals_1">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>50</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QTableWidget" name="tableWidget_goals_1">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>90</y>
-       <width>1021</width>
-       <height>251</height>
-      </rect>
-     </property>
-     <column>
-      <property name="text">
-       <string>Goal ID</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Caption</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>x1</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>y1</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>x2</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>y2</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>x3</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>y3</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>x4</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>y4</string>
-      </property>
-     </column>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="tab_constraints">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="whatsThis">
-     <string/>
-    </property>
-    <property name="styleSheet">
-     <string notr="true"/>
-    </property>
-    <attribute name="title">
-     <string>Constraints</string>
-    </attribute>
-    <widget class="QLabel" name="label_constraints_a">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Door constraints&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_constraints_1">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Number of doors</string>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBox_constraints_1">
-     <property name="geometry">
-      <rect>
-       <x>130</x>
-       <y>50</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_constraints_b">
-     <property name="geometry">
-      <rect>
-       <x>430</x>
-       <y>10</y>
-       <width>121</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Room constraints&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBox_constraints_2">
-     <property name="geometry">
-      <rect>
-       <x>550</x>
-       <y>50</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_constraints_2">
-     <property name="geometry">
-      <rect>
-       <x>430</x>
-       <y>50</y>
-       <width>121</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Number of rooms</string>
-     </property>
-    </widget>
-    <widget class="QTableWidget" name="tableWidget_constraints_1">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>90</y>
-       <width>331</width>
-       <height>251</height>
-      </rect>
-     </property>
-     <column>
-      <property name="text">
-       <string>Door ID</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Caption</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>State</string>
-      </property>
-     </column>
-    </widget>
-    <widget class="QTableWidget" name="tableWidget_constraints_2">
-     <property name="geometry">
-      <rect>
-       <x>430</x>
-       <y>90</y>
-       <width>331</width>
-       <height>251</height>
-      </rect>
-     </property>
-     <column>
-      <property name="text">
-       <string>Room ID</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Caption</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>State</string>
-      </property>
-     </column>
-    </widget>
-   </widget>
    <widget class="QWidget" name="tab_route_choice">
     <attribute name="title">
      <string>Route choice</string>
     </attribute>
-    <widget class="QLabel" name="label_route_choice_a">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>211</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;ff Global shortest Model&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_route_choice_01">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>10</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>ID</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_route_choice_01">
-     <property name="geometry">
-      <rect>
-       <x>350</x>
-       <y>10</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>1</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_route_choice_b">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>60</y>
-       <width>211</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Global shortest Model&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_route_choice_02">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>60</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>ID</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_route_choice_02">
-     <property name="geometry">
-      <rect>
-       <x>350</x>
-       <y>60</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>4</string>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="lineEdit_route_choice_03">
      <property name="geometry">
       <rect>
-       <x>350</x>
-       <y>100</y>
+       <x>340</x>
+       <y>50</y>
        <width>111</width>
-       <height>20</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>../routing.xml</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_route_choice_03">
      <property name="geometry">
       <rect>
-       <x>250</x>
-       <y>100</y>
-       <width>91</width>
+       <x>240</x>
+       <y>50</y>
+       <width>97</width>
        <height>16</height>
       </rect>
      </property>
@@ -4305,63 +3928,24 @@
       <string>Navigation lines</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_route_choice_c">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>150</y>
-       <width>211</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Cognitive Map&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_route_choice_04">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>150</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>ID</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_route_choice_04">
-     <property name="geometry">
-      <rect>
-       <x>350</x>
-       <y>150</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>7</string>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="lineEdit_route_choice_05">
      <property name="geometry">
       <rect>
-       <x>350</x>
-       <y>190</y>
+       <x>340</x>
+       <y>90</y>
        <width>111</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>1</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_route_choice_05">
      <property name="geometry">
       <rect>
-       <x>250</x>
-       <y>190</y>
+       <x>240</x>
+       <y>90</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -4373,21 +3957,21 @@
     <widget class="QLineEdit" name="lineEdit_route_choice_06">
      <property name="geometry">
       <rect>
-       <x>590</x>
-       <y>190</y>
+       <x>580</x>
+       <y>90</y>
        <width>111</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>Room2Corridor</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_route_choice_06">
      <property name="geometry">
       <rect>
-       <x>490</x>
-       <y>190</y>
+       <x>480</x>
+       <y>90</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -4399,34 +3983,34 @@
     <widget class="QLineEdit" name="lineEdit_route_choice_08">
      <property name="geometry">
       <rect>
-       <x>590</x>
-       <y>230</y>
+       <x>580</x>
+       <y>130</y>
        <width>111</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>Smoke</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_route_choice_07">
      <property name="geometry">
       <rect>
-       <x>350</x>
-       <y>230</y>
+       <x>340</x>
+       <y>130</y>
        <width>111</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>2</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_route_choice_08">
      <property name="geometry">
       <rect>
-       <x>490</x>
-       <y>230</y>
+       <x>480</x>
+       <y>130</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -4438,8 +4022,8 @@
     <widget class="QLabel" name="label_route_choice_07">
      <property name="geometry">
       <rect>
-       <x>250</x>
-       <y>230</y>
+       <x>240</x>
+       <y>130</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -4451,8 +4035,8 @@
     <widget class="QLabel" name="label_route_choice_13">
      <property name="geometry">
       <rect>
-       <x>490</x>
-       <y>310</y>
+       <x>480</x>
+       <y>210</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -4464,21 +4048,21 @@
     <widget class="QLineEdit" name="lineEdit_route_choice_12">
      <property name="geometry">
       <rect>
-       <x>350</x>
-       <y>310</y>
+       <x>340</x>
+       <y>210</y>
        <width>111</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>3</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_route_choice_12">
      <property name="geometry">
       <rect>
-       <x>250</x>
-       <y>310</y>
+       <x>240</x>
+       <y>210</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -4490,21 +4074,21 @@
     <widget class="QLineEdit" name="lineEdit_route_choice_13">
      <property name="geometry">
       <rect>
-       <x>590</x>
-       <y>310</y>
+       <x>580</x>
+       <y>210</y>
        <width>111</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>LastDestination</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_route_choice_09">
      <property name="geometry">
       <rect>
-       <x>730</x>
-       <y>230</y>
+       <x>720</x>
+       <y>130</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -4516,21 +4100,21 @@
     <widget class="QLineEdit" name="lineEdit_route_choice_09">
      <property name="geometry">
       <rect>
-       <x>830</x>
-       <y>230</y>
+       <x>820</x>
+       <y>130</y>
        <width>291</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>.../JuPedSim/jpscore/inputfiles/cognitive_map/pFields/</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_route_choice_10">
      <property name="geometry">
       <rect>
-       <x>490</x>
-       <y>270</y>
+       <x>480</x>
+       <y>170</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -4542,21 +4126,21 @@
     <widget class="QLineEdit" name="lineEdit_route_choice_10">
      <property name="geometry">
       <rect>
-       <x>590</x>
-       <y>270</y>
+       <x>580</x>
+       <y>170</y>
        <width>111</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>30</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_route_choice_11">
      <property name="geometry">
       <rect>
-       <x>730</x>
-       <y>270</y>
+       <x>720</x>
+       <y>170</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -4568,14 +4152,88 @@
     <widget class="QLineEdit" name="lineEdit_route_choice_11">
      <property name="geometry">
       <rect>
-       <x>830</x>
-       <y>270</y>
+       <x>820</x>
+       <y>170</y>
        <width>111</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>300</string>
+      <string/>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_Router">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>15</y>
+       <width>201</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>ff Global shortest Model</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Global shortest Model</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>cognitive Map</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QPushButton" name="pushButton_Routing">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>45</y>
+       <width>114</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Choose</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_5">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>20</y>
+       <width>59</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>ID</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_ID">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>20</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="radioButton_VTK">
+     <property name="geometry">
+      <rect>
+       <x>470</x>
+       <y>20</y>
+       <width>121</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Write VTK files</string>
      </property>
     </widget>
    </widget>
@@ -4583,8 +4241,8 @@
   <widget class="QLabel" name="label_warning">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>10</y>
+     <x>40</x>
+     <y>450</y>
      <width>571</width>
      <height>21</height>
     </rect>
@@ -4602,77 +4260,86 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>21</x>
-     <y>11</y>
-     <width>244</width>
-     <height>32</height>
+     <x>20</x>
+     <y>0</y>
+     <width>261</width>
+     <height>81</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_2">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QPushButton" name="pushButton_write">
-      <property name="text">
-       <string>Create Ini File</string>
-      </property>
-     </widget>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QPushButton" name="pushButton_write">
+        <property name="text">
+         <string>Create Ini File</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_read">
+        <property name="text">
+         <string>Read Ini File</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
     </item>
     <item>
-     <widget class="QPushButton" name="pushButton_read">
-      <property name="text">
-       <string>Read Ini File</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>43</y>
-     <width>244</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout">
-    <item>
-     <widget class="QLabel" name="label_groups_2">
-      <property name="text">
-       <string>Operation model</string>
-      </property>
-      <property name="buddy">
-       <cstring>comboBox_groups_1</cstring>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QComboBox" name="comboBox_groups_1">
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <property name="text">
-        <string>Gcfm</string>
-       </property>
+       <widget class="QLabel" name="label_groups_2">
+        <property name="text">
+         <string>Operation model</string>
+        </property>
+        <property name="buddy">
+         <cstring>comboBox_groups_1</cstring>
+        </property>
+       </widget>
       </item>
       <item>
-       <property name="text">
-        <string>Gompertz</string>
-       </property>
+       <widget class="QComboBox" name="comboBox_groups_1">
+        <item>
+         <property name="text">
+          <string>Gcfm</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Gompertz</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Tordeux</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Gradnav</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Krausz</string>
+         </property>
+        </item>
+       </widget>
       </item>
-      <item>
-       <property name="text">
-        <string>Tordeux</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Gradnav</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Krausz</string>
-       </property>
-      </item>
-     </widget>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -4688,13 +4355,10 @@
   <tabstop>lineEdit_general_05</tabstop>
   <tabstop>lineEdit_general_06</tabstop>
   <tabstop>lineEdit_general_07</tabstop>
-  <tabstop>lineEdit_general_08</tabstop>
   <tabstop>comboBox_general_02</tabstop>
   <tabstop>lineEdit_general_10</tabstop>
   <tabstop>comboBox_general_03</tabstop>
   <tabstop>lineEdit_general_12</tabstop>
-  <tabstop>checkBox_general_1</tabstop>
-  <tabstop>checkBox_general_2</tabstop>
   <tabstop>spinBox_groups_1</tabstop>
   <tabstop>comboBox_groups_1</tabstop>
   <tabstop>tableWidget_groups_1</tabstop>
@@ -4769,16 +4433,7 @@
   <tabstop>lineEdit_model_krausz_13</tabstop>
   <tabstop>spinBox_agents_krausz_1</tabstop>
   <tabstop>tableWidget_agents_krausz_1</tabstop>
-  <tabstop>spinBox_goals_1</tabstop>
-  <tabstop>tableWidget_goals_1</tabstop>
-  <tabstop>spinBox_constraints_1</tabstop>
-  <tabstop>tableWidget_constraints_1</tabstop>
-  <tabstop>spinBox_constraints_2</tabstop>
-  <tabstop>tableWidget_constraints_2</tabstop>
-  <tabstop>lineEdit_route_choice_01</tabstop>
-  <tabstop>lineEdit_route_choice_02</tabstop>
   <tabstop>lineEdit_route_choice_03</tabstop>
-  <tabstop>lineEdit_route_choice_04</tabstop>
   <tabstop>lineEdit_route_choice_05</tabstop>
   <tabstop>lineEdit_route_choice_06</tabstop>
   <tabstop>lineEdit_route_choice_07</tabstop>

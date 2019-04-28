@@ -115,7 +115,7 @@ MWindow :: MWindow()
     //Timer needed for autosaving function
     // timer will trigger autosave every 5th minute
     timer = new QTimer(this);
-    timer->setInterval(60000);
+    timer->setInterval(600000);
     timer->start();
 
     _cMapTimer = new QTimer(this);
@@ -408,6 +408,8 @@ void MWindow::openFileXML()
 
     openSource(fileName);
 
+    openTraffic(fileName);
+
     //AutoZoom to drawing
     mview->AutoZoom();
 }
@@ -629,6 +631,12 @@ void MWindow::saveAsXML(){
         QFile goalsFile(fileNameGoal);
         if(goalsFile.open(QIODevice::WriteOnly|QIODevice::Text))
             dmanager->writeGoalXML(goalsFile);
+
+        //Save traffic
+        QString fileNameTraffic = fileName.split(".").first()+"_traffic.xml";
+        QFile trafficFile(fileNameTraffic);
+        if(trafficFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeTrafficXML(trafficFile);
 
         //Save transitions
         QString fileNameTransition=fileName.split(".").first()+"_transitions.xml";
@@ -1016,7 +1024,7 @@ QMap<QString, QString> MWindow::loadSettings()
 
 void MWindow::on_actionNew_Inifile_triggered()
 {
-    inifileWidget = new InifileWidget(this);
+    inifileWidget = new InifileWidget(this, dmanager);
     inifileWidget->show();
     qDebug()<< "MWindow::on_actionNew_Inifile_triggered(): inifile widget is showed!";
 }
@@ -1093,5 +1101,39 @@ void MWindow::goalButtionClicked()
         goalDockWidget = nullptr;
         delete goalWidget;
         goalWidget = nullptr;
+    }
+}
+
+/*
+    Since v0.8.8
+
+    Open traffic file
+ */
+
+void MWindow::openTraffic(QString fileName)
+{
+    QString fileNameTraffic = fileName.split(".").first() + "_traffic.xml";
+    QFile fileTraffic(fileNameTraffic);
+
+    if(fileNameTraffic.isEmpty())
+        return;
+
+    if (!fileTraffic.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, tr("Read traffic XML"),
+                             tr("Cannot read file %1:\n%2.")
+                                     .arg(QDir::toNativeSeparators(fileName),
+                                          fileTraffic.errorString()));
+        return;
+    }
+
+    if(!dmanager->readTrafficXML(fileTraffic))
+    {
+        QMessageBox::critical(this,
+                              "Prase traffic XML",
+                              "Cannot prase XML-file",
+                              QMessageBox::Ok);
+    } else
+    {
     }
 }

@@ -1,17 +1,19 @@
 #include <QDebug>
 #include <QFile>
-#include <QFileDialog>
-#include <QMessageBox>
+#include <QtWidgets>
+
 
 #include "inifilewidget.h"
 #include "ui_inifilewidget.h"
 #include "src/tinyxml/tinyxml.h"
 
-InifileWidget::InifileWidget(QWidget *parent) :
+InifileWidget::InifileWidget(QWidget *parent, jpsDatamanager *dmanager) :
     QWidget(parent),
     ui(new Ui::InifileWidget)
 {
     ui->setupUi(this);
+
+    dataManager = dmanager;
 
     // set InifileWidget as a Window
     setWindowFlag(Qt::Dialog);
@@ -45,6 +47,18 @@ InifileWidget::InifileWidget(QWidget *parent) :
 
     // Set goals invisivle
     // ui->tabWidget->removeTab(4);
+
+    //signals and slots connection
+    ui->lineEdit_general_07->setReadOnly(true);
+    ui->lineEdit_GoalFile->setReadOnly(true);
+    ui->lineEdit_SourceFile->setReadOnly(true);
+    ui->lineEdit_TrafficFile->setReadOnly(true);
+
+    connect(ui->pushButton_Geometry, SIGNAL(clicked(bool)), this, SLOT(pushButton_GeomeryClicked()));
+    connect(ui->pushButton_Goal, SIGNAL(clicked(bool)), this, SLOT(pushButton_GoalClicked()));
+    connect(ui->pushButton_Source, SIGNAL(clicked(bool)), this, SLOT(pushButton_SourceClicked()));
+    connect(ui->pushButton_Traffic, SIGNAL(clicked(bool)), this, SLOT(pushButton_TrafficClicked()));
+    connect(ui->pushButton_Routing, SIGNAL(clicked(bool)), this, SLOT(pushButton_RoutingClicked()));
 }
 
 InifileWidget::~InifileWidget()
@@ -53,6 +67,7 @@ InifileWidget::~InifileWidget()
 }
 
 // Add rows to tablewidgets by inserting a number into a spinbox
+
 void InifileWidget::on_spinBox_groups_1_valueChanged(int)
 {
     ui->tableWidget_groups_1->setRowCount(ui->spinBox_groups_1->value());
@@ -86,58 +101,6 @@ void InifileWidget::on_spinBox_agents_gradnav_1_valueChanged(int)
 void InifileWidget::on_spinBox_agents_krausz_1_valueChanged(int)
 {
     ui->tableWidget_agents_krausz_1->setRowCount(ui->spinBox_agents_krausz_1->value());
-}
-
-// Add rows to tablewidgets by inserting a number into a spinbox
-void InifileWidget::on_spinBox_goals_1_valueChanged(int)
-{
-    ui->tableWidget_goals_1->setRowCount(ui->spinBox_goals_1->value());
-}
-
-
-// Add rows to tablewidgets by inserting a number into a spinbox
-void InifileWidget::on_spinBox_constraints_1_valueChanged(int)
-{
-    ui->tableWidget_constraints_1->setRowCount(ui->spinBox_constraints_1->value());
-}
-
-// Add  rows to tablewidgets by inserting a number into a spinbox
-void InifileWidget::on_spinBox_constraints_2_valueChanged(int)
-{
-    ui->tableWidget_constraints_2->setRowCount(ui->spinBox_constraints_2->value());
-}
-
-// Set goals tab visible or invisible
-void InifileWidget::on_checkBox_general_1_clicked()
-{
-    if (ui->checkBox_general_1->isChecked())
-    {
-        ui->tabWidget->insertTab(5, ui->tab_goals, "Goals");
-    }
-    else
-    {
-        ui->tabWidget->removeTab(5);
-    }
-}
-
-// Set constraints tab visible or invisible
-void InifileWidget::on_checkBox_general_2_clicked()
-{
-    if (ui->checkBox_general_2->isChecked())
-    {
-        ui->tabWidget->insertTab(6, ui->tab_constraints, "Constraints");
-    }
-    else
-    {
-        if (ui->checkBox_general_1->isChecked())
-        {
-            ui->tabWidget->removeTab(6);
-        }
-        else
-        {
-            ui->tabWidget->removeTab(5);
-        }
-    }
 }
 
 // Set models and agents visible or invisible
@@ -223,7 +186,10 @@ bool InifileWidget::CheckHeaderData()
 
     if(ui->lineEdit_general_07->text() == "")
     {
-        ui->label_warning->setText("<font color='red'>General incomplete.</font>");
+        QMessageBox::critical(this,
+                              "Saving Inifile",
+                              "Please chooses geometry file",
+                              QMessageBox::Ok);
         return 0;
     }
 
@@ -251,105 +217,41 @@ bool InifileWidget::CheckHeaderData()
 
 bool InifileWidget::CheckTrafficData()
 {
-    for(int i = 0; i < ui->spinBox_constraints_1->value(); i++)
+    if(ui->lineEdit_TrafficFile->text().isEmpty())
     {
-        if (!ui->tableWidget_constraints_1->item(i,0) || ui->tableWidget_constraints_1->item(i,0)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Door constraints incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_constraints_1->item(i,1) || ui->tableWidget_constraints_1->item(i,1)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Door constraints incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_constraints_1->item(i,2) || ui->tableWidget_constraints_1->item(i,2)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Door constraints incomplete.</font>");
-            return 0;
-        }
+        QMessageBox::critical(this,
+                              "Save Inifile",
+                              "Please choose traffic file!",
+                              QMessageBox::Ok);
+        return false;
     }
-
-    for(int i = 0; i < ui->spinBox_constraints_2->value(); i++)
-    {
-        if (!ui->tableWidget_constraints_2->item(i,0) || ui->tableWidget_constraints_2->item(i,0)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Room constraints incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_constraints_2->item(i,1) || ui->tableWidget_constraints_2->item(i,1)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Room constraints incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_constraints_2->item(i,2) || ui->tableWidget_constraints_2->item(i,2)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Room constraints incomplete.</font>");
-            return 0;
-        }
-    }
-
-    ui->label_warning->setText("");
-    return 1;
+    return true;
 }
 
 bool InifileWidget::CheckRoutingData()
 {
-    for(int i = 0; i < ui->spinBox_goals_1->value(); i++)
+    if(ui->lineEdit_GoalFile->text().isEmpty())
     {
-        if (!ui->tableWidget_goals_1->item(i,0) || ui->tableWidget_goals_1->item(i,0)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_goals_1->item(i,1) || ui->tableWidget_goals_1->item(i,1)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_goals_1->item(i,2) || ui->tableWidget_goals_1->item(i,2)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_goals_1->item(i,3) || ui->tableWidget_goals_1->item(i,3)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_goals_1->item(i,4) || ui->tableWidget_goals_1->item(i,4)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_goals_1->item(i,5) || ui->tableWidget_goals_1->item(i,5)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_goals_1->item(i,6) || ui->tableWidget_goals_1->item(i,6)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_goals_1->item(i,7) || ui->tableWidget_goals_1->item(i,7)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_goals_1->item(i,8) || ui->tableWidget_goals_1->item(i,8)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
-        if (!ui->tableWidget_goals_1->item(i,9) || ui->tableWidget_goals_1->item(i,9)->text().isEmpty())
-        {
-            ui->label_warning->setText("<font color='red'>Goals incomplete.</font>");
-            return 0;
-        }
+        QMessageBox::critical(this,
+                              "Save Inifile",
+                              "Please choose goal file!",
+                              QMessageBox::Ok);
+        return false;
     }
-    ui->label_warning->setText("");
-    return 1;
+    return true;
+}
+
+bool InifileWidget::CheckSourceData()
+{
+    if(ui->lineEdit_SourceFile->text().isEmpty())
+    {
+        QMessageBox::critical(this,
+                              "Save Inifile",
+                              "Please choose source file!",
+                              QMessageBox::Ok);
+        return false;
+    }
+    return true;
 }
 
 bool InifileWidget::CheckAgentData()
@@ -801,1148 +703,957 @@ bool InifileWidget::CheckAgentKrauData()
 
 bool InifileWidget::CheckRouteChoiceData()
 {
-    if(ui->lineEdit_route_choice_01->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_02->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_03->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_04->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_05->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_06->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_07->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_08->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_09->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_10->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_11->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_12->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_route_choice_13->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-        return 0;
-    }
-
-    ui->label_warning->setText("");
+//    if(ui->lineEdit_route_choice_01->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_02->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_03->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_04->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_05->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_06->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_07->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_08->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_09->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_10->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_11->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_12->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//    if(ui->lineEdit_route_choice_13->text() == "")
+//    {
+//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
+//        return 0;
+//    }
+//
+//    ui->label_warning->setText("");
     return 1;
 }
 
-QString InifileWidget::WriteHeaderData()
+/*
+    <!-- seed used for initialising random generator -->
+    <seed>12542</seed>
+
+    <!-- geometry file -->
+    <geometry>geometry.xml</geometry>
+
+    <max_sim_time>50</max_sim_time>
+
+    <!-- trajectories file and format -->
+    <trajectories format="xml-plain" fps="16" color_mode="group">
+        <file location="trajectories.xml" />
+        <!-- <socket_ hostname="127.0.0.1" port="8989" /> -->
+    </trajectories>
+
+    <!-- where to store the logs -->
+    <logfile>log.txt</logfile>
+*/
+
+void InifileWidget::writeHeaderData(QXmlStreamWriter *stream, QFile &file)
 {
-    //header
-    QString head_line_1 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n\n";
+    stream->writeComment("number of cores used");
+    stream->writeStartElement("num_threads");
+    stream->writeCharacters(ui->lineEdit_general_03->text());
+    stream->writeEndElement();
 
-    QString head_line_2 = "<JuPedSim project=\"" +
-            ui->lineEdit_general_01->text() +
-            "\" version=\"" +
-            ui->lineEdit_general_02->text() +
-            "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
-            "xsi:noNamespaceSchemaLocation=\"../../xsd/jps_ini_core.xsd\">\n\n";
+    stream->writeComment("seed used for initialising random generator");
+    stream->writeStartElement("seed");
+    stream->writeCharacters(ui->lineEdit_general_05->text());
+    stream->writeEndElement();
 
-    QString head_line_3 = "\t<!-- header -->\n";
+    stream->writeComment("geometry file");
+    stream->writeStartElement("geometry");
+    stream->writeCharacters(ui->lineEdit_general_07->text().split("/").last());
+    stream->writeEndElement();
 
-    QString head_line_4 = "\t<header>\n";
+    stream->writeComment("simulationtime");
+    stream->writeStartElement("max_sim_time");
+    stream->writeCharacters(ui->lineEdit_general_06->text());
+    stream->writeEndElement();
 
-    QString head_line_5 = "\t\t<!-- number of cores used -->\n";
 
-    QString head_line_6 = "\t\t<num_threads>" +
-            ui->lineEdit_general_03->text() +
-            "</num_threads>\n\n";
+    stream->writeComment("trajectories file and format");
+    stream->writeStartElement("trajectories");
+    stream->writeAttribute("format",ui->comboBox_general_02->currentText());
+    stream->writeAttribute("fps", ui->lineEdit_general_10->text());
+    stream->writeAttribute("color_mode",ui->comboBox_general_03->currentText());
+    stream->writeStartElement("file");
+    stream->writeAttribute("location", ui->lineEdit_general_12->text());
+    stream->writeEndElement(); //end file
+    stream->writeEndElement(); //end trajectories
 
-    QString head_line_7 = "\t\t<!-- seed used for initialising random generator -->\n";
+    stream->writeComment("where to store the logs");
+    stream->writeStartElement("logfile");
+    stream->writeCharacters(ui->lineEdit_general_08->text());
+    stream->writeEndElement();
 
-    QString head_line_8 = "\t\t<seed>" +
-            ui->lineEdit_general_05->text() +
-            "</seed>\n\n";
+    QString head_line_19 = "\t<!-- statistics -->\n";
 
-    QString head_line_9 = "\t\t<!-- simulationtime -->\n";
-
-    QString head_line_10 = "\t\t<max_sim_time>" +
-            ui->lineEdit_general_06->text() +
-            "</max_sim_time>\n\n";
-
-    QString head_line_11 = "\t\t<!-- geometry file -->\n";
-
-    QString head_line_12 = "\t\t<geometry>" +
-            ui->lineEdit_general_07->text() +
-            "</geometry>\n\n";
-
-    QString head_line_13 = "\t\t<!-- trajectories file and format -->\n";
-
-    QString head_line_14 = "\t\t<trajectories format=\"" +
-            ui->comboBox_general_02->currentText() +
-            "\" fps=\"" +
-            ui->lineEdit_general_10->text() +
-            "\" color_mode=\"" +
-            ui->comboBox_general_03->currentText() +
-            "\">\n";
-
-    QString head_line_15 = "\t\t\t<file location=\""
-            + ui->lineEdit_general_12->text() +
-            "\" />\n";
-
-    QString head_line_16 = "\t\t</trajectories>\n\n";
-
-    QString head_line_17 = "\t\t<!-- savepath logfile -->\n";
-
-    QString head_line_18 = "\t\t<logfile>" +
-            ui->lineEdit_general_08->text() +
-            "</logfile>\n\n";
-
-    QString head_line_19 = "\t\t<!-- statistics -->\n";
-
-    QString head_line_20 = "\t\t<show_statistics>" +
+    QString head_line_20 = "\t<show_statistics>" +
             ui->comboBox_general_01->currentText() +
             "</show_statistics>\n";
 
-    QString head_line_21 = "\t</header>\n\n";
+    stream->writeComment("statistics");
+    stream->writeStartElement("show_statistics");
+    stream->writeCharacters(ui->comboBox_general_01->currentText());
+    stream->writeEndElement();
 
-    QString head_lines = head_line_1 + head_line_2 + head_line_3 + head_line_4 + head_line_5 +
-                         head_line_6 + head_line_7 + head_line_8 + head_line_9 + head_line_10 +
-                         head_line_11 + head_line_12 + head_line_13 + head_line_14 + head_line_15 +
-                         head_line_16 + head_line_17 + head_line_18 + head_line_19 + head_line_20 +
-                         head_line_21;
-
-    return head_lines;
+    return;
 }
 
-QString InifileWidget::WriteTrafficData()
+void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
 {
-    //traffic_constraints
-    QString traf_line_1 = "\t<!-- traffic constraints -->\n";
+    stream->writeComment("persons information and distribution");
+    stream->writeStartElement("agents");
+    stream->writeAttribute("operational_model_id", QString::number(ui->comboBox_groups_1->currentIndex() + 1));
+    stream->writeStartElement("agents_distribution");
 
-    QString traf_line_2 = "\t<traffic_constraints>\n";
-
-    QString traf_line_3 = "\t\t<doors>\n";
-
-    QString traf_line_4 = "";
-    for(int i = 0; i < ui->spinBox_constraints_1->value(); i++)
-    {
-        traf_line_4 = traf_line_4 + "\t\t\t<door trans_id=\"" +
-                ui->tableWidget_constraints_1->item(i,0)->text() +
-                "\" caption=\"" +
-                ui->tableWidget_constraints_1->item(i,1)->text() +
-                "\" state=\"" +
-                ui->tableWidget_constraints_1->item(i,2)->text() +
-                "\" />\n";
-    }
-
-    QString traf_line_5 = "\t\t</doors>\n";
-
-    QString traf_line_6 = "\t\t<rooms>\n";
-
-    QString traf_line_7 = "";
-    for(int i = 0; i < ui->spinBox_constraints_2->value(); i++)
-    {
-        traf_line_7 = traf_line_7 + "\t\t\t<room room_id=\"" +
-                ui->tableWidget_constraints_2->item(i,0)->text() +
-                "\" caption=\"" +
-                ui->tableWidget_constraints_2->item(i,1)->text() +
-                "\" state=\"" +
-                ui->tableWidget_constraints_2->item(i,2)->text() +
-                "\" />\n";
-    }
-
-    QString traf_line_8 = "\t\t</rooms>\n";
-
-    QString traf_line_9 = "\t</traffic_constraints>\n\n";
-
-    QString traf_lines = traf_line_1 + traf_line_2 + traf_line_3 + traf_line_4 + traf_line_5 +
-                         traf_line_6 + traf_line_7 + traf_line_8 + traf_line_9;
-
-    return traf_lines;
-}
-
-QString InifileWidget::WriteRoutingData()
-{
-    //routing_information
-    QString rout_line_1 = "\t<!-- routing information -->\n";
-
-    QString rout_line_2 = "\t<routing>\n";
-
-    QString rout_line_3 = "\t\t<goals>\n";
-
-    QString rout_line_4 = "";
-    for(int i = 0; i < ui->spinBox_goals_1->value(); i++)
-    {
-        rout_line_4 = rout_line_4 +
-                "\t\t\t<goal id=\"" +
-                ui->tableWidget_goals_1->item(i,0)->text() +
-                "\" caption=\"" +
-                ui->tableWidget_goals_1->item(i,1)->text() +
-                "\">"
-                "\n\t\t\t\t<polygon>\n" +
-                "\t\t\t\t\t<vertex px=\"" +
-                ui->tableWidget_goals_1->item(i,2)->text() +
-                "\" py=\"" +
-                ui->tableWidget_goals_1->item(i,3)->text() +
-                "\" />\n" +
-                "\t\t\t\t\t<vertex px=\"" +
-                ui->tableWidget_goals_1->item(i,4)->text() +
-                "\" py=\"" +
-                ui->tableWidget_goals_1->item(i,5)->text() +
-                "\" />\n" +
-                "\t\t\t\t\t<vertex px=\"" +
-                ui->tableWidget_goals_1->item(i,6)->text() +
-                "\" py=\"" +
-                ui->tableWidget_goals_1->item(i,7)->text() +
-                "\" />\n" +
-                "\t\t\t\t\t<vertex px=\"" +
-                ui->tableWidget_goals_1->item(i,8)->text() +
-                "\" py=\"" +
-                ui->tableWidget_goals_1->item(i,9)->text() +
-                "\" />\n" +
-                "\t\t\t\t\t<vertex px=\"" +
-                ui->tableWidget_goals_1->item(i,2)->text() +
-                "\" py=\"" +
-                ui->tableWidget_goals_1->item(i,3)->text() +
-                "\" />\n" +
-                "\t\t\t\t</polygon>\n" +
-                "\t\t\t</goal>\n";
-    }
-
-    QString rout_line_5 = "\t\t</goals>\n";
-
-    QString rout_line_6 = "\t</routing>\n\n";
-
-    QString rout_lines = rout_line_1 + rout_line_2 + rout_line_3 + rout_line_4 + rout_line_5 +
-                         rout_line_6;
-
-    return rout_lines;
-}
-
-QString InifileWidget::WriteAgentData()
-{
-    //agents information and distribution
-    QString agen_line_1 = "\t<!-- agents information and distribution -->\n";
-
-    QString agen_line_2 = "\t<agents operational_model_id=\"" +
-            QString::number(ui->comboBox_groups_1->currentIndex() + 1) +
-            "\">\n";
-
-    QString agen_line_3 = "\t\t<agents_distribution>\n";
-
-    QString agen_line_4 = "";
     for(int i = 0; i < ui->spinBox_groups_1->value(); i++)
     {
-        agen_line_4 = agen_line_4 +
-                "\t\t\t<group group_id=\"" +
-                ui->tableWidget_groups_1->item(i,0)->text() +
-                "\" agent_parameter_id=\"" +
-                ui->tableWidget_groups_1->item(i,1)->text() +
-                "\" room_id=\"" +
-                ui->tableWidget_groups_1->item(i,2)->text() +
-                "\" subroom_id=\"" +
-                ui->tableWidget_groups_1->item(i,3)->text() +
-                "\" number=\"" +
-                ui->tableWidget_groups_1->item(i,4)->text() +
-                "\" goal_id=\"" +
-                ui->tableWidget_groups_1->item(i,5)->text() +
-                "\" router_id=\"" +
-                ui->tableWidget_groups_1->item(i,6)->text() +
-                "\" x_min=\"" +
-                ui->tableWidget_groups_1->item(i,7)->text() +
-                "\" x_max=\"" +
-                ui->tableWidget_groups_1->item(i,8)->text() +
-                "\" y_min=\"" +
-                ui->tableWidget_groups_1->item(i,9)->text() +
-                "\" y_max=\"" +
-                ui->tableWidget_groups_1->item(i,10)->text() +
-                "\" pre_movement_mean=\"" +
-                ui->tableWidget_groups_1->item(i,11)->text() +
-                "\" pre_movement_sigma=\"" +
-                ui->tableWidget_groups_1->item(i,12)->text() +
-                "\" risk_tolerance_mean=\"" +
-                ui->tableWidget_groups_1->item(i,13)->text() +
-                "\" risk_tolerance_sigma=\"" +
-                ui->tableWidget_groups_1->item(i,14)->text() +
-                "\" />\n";
+        stream->writeStartElement("group");
+        stream->writeAttribute("group_id", ui->tableWidget_groups_1->item(i,0)->text());
+        stream->writeAttribute("agent_parameter_id", ui->tableWidget_groups_1->item(i,1)->text());
+        stream->writeAttribute("room_id",ui->tableWidget_groups_1->item(i,2)->text());
+        stream->writeAttribute("subroom_id",ui->tableWidget_groups_1->item(i,3)->text());
+        stream->writeAttribute("number",ui->tableWidget_groups_1->item(i,4)->text());
+        stream->writeAttribute("goal_id",ui->tableWidget_groups_1->item(i,5)->text());
+        stream->writeAttribute("router_id",ui->tableWidget_groups_1->item(i,6)->text());
+        stream->writeAttribute("x_min",ui->tableWidget_groups_1->item(i,7)->text());
+        stream->writeAttribute("x_max",ui->tableWidget_groups_1->item(i,8)->text());
+        stream->writeAttribute("y_min",ui->tableWidget_groups_1->item(i,9)->text());
+        stream->writeAttribute("y_max",ui->tableWidget_groups_1->item(i,10)->text());
+        stream->writeAttribute("pre_movement_mean",ui->tableWidget_groups_1->item(i,11)->text());
+        stream->writeAttribute("pre_movement_sigma",ui->tableWidget_groups_1->item(i,12)->text());
+        stream->writeAttribute("risk_tolerance_mean",ui->tableWidget_groups_1->item(i,13)->text());
+        stream->writeAttribute("risk_tolerance_sigma",ui->tableWidget_groups_1->item(i,14)->text());
+        stream->writeEndElement(); //end group
     }
 
-    QString agen_line_5 = "\t\t</agents_distribution>\n";
+    stream->writeEndElement(); //end agents_distribution;
 
-    QString agen_line_6 = "\t</agents>\n\n";
+    // write agents sources
+    stream->writeComment("frequency in persons/seconds");
+    stream->writeStartElement("agents_sources");
 
-    QString agen_lines = agen_line_1 + agen_line_2 + agen_line_3 + agen_line_4 + agen_line_5 +
-                         agen_line_6;
+    QList<JPSSource *> sources = dataManager->getSourcelist();
+    dataManager->writeSources(stream, sources);
 
-    return agen_lines;
+    auto source_FileName = ui->lineEdit_SourceFile->text().split("/").last();
+    stream->writeStartElement("file");
+    stream->writeCharacters(source_FileName);
+    stream->writeEndElement(); //end files
+    stream->writeEndElement(); //end agents_sources
+    stream->writeEndElement(); //end agents
+
+    return;
 }
 
-QString InifileWidget::WriteModelGcfmData()
+void InifileWidget::writeModelGcfmData(QXmlStreamWriter *stream, QFile &file)
 {
     //operational model and agent parameters - gcfm
-    QString gcfm_line_1 = "\t<!-- operational model -->\n";
+    stream->writeComment("operational models");
+    stream->writeStartElement("operational_models");
 
-    QString gcfm_line_2 = "\t<operational_models>\n";
+    stream->writeStartElement("model");
+    stream->writeAttribute("operational_model_id","1");
+    stream->writeAttribute("description", "gcfm");
 
-    QString gcfm_line_3 = "\t\t<!-- generalized centrifugal force model -->\n";
+    stream->writeStartElement("model_parameters");
+    stream->writeTextElement("solver", ui->lineEdit_model_gcfm_01->text());
+    stream->writeTextElement("stepsize", ui->lineEdit_model_gcfm_02->text());
+    stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_gcfm_03->text());
 
-    QString gcfm_line_4 = "\t\t<model operational_model_id=\"1\" description=\"gcfm\">\n";
+    stream->writeStartElement("linkedcells");
+    stream->writeAttribute("enabled", ui->lineEdit_model_gcfm_04->text());
+    stream->writeAttribute("cell_size", ui->lineEdit_model_gcfm_05->text());
+    stream->writeEndElement(); //end linkedcells
 
-    QString gcfm_line_5 = "\t\t\t<model_parameters>\n";
+    stream->writeStartElement("force_ped");
+    stream->writeAttribute("nu", ui->lineEdit_model_gcfm_06->text());
+    stream->writeAttribute("dist_max", ui->lineEdit_model_gcfm_07->text());
+    stream->writeAttribute("desteff_max", ui->lineEdit_model_gcfm_08->text());
+    stream->writeAttribute("interpolation_width", ui->lineEdit_model_gcfm_09->text());
+    stream->writeEndElement(); //end force_ped
 
-    QString gcfm_line_6 = "\t\t\t\t<solver>" +
-            ui->lineEdit_model_gcfm_01->text() +
-            "</solver>\n";
+    stream->writeStartElement("force_wall");
+    stream->writeAttribute("nu",ui->lineEdit_model_gcfm_10->text());
+    stream->writeAttribute("dist_max", ui->lineEdit_model_gcfm_11->text());
+    stream->writeAttribute("desteff_max", ui->lineEdit_model_gcfm_12->text());
+    stream->writeAttribute("interpolation_width", ui->lineEdit_model_gcfm_13->text());
+    stream->writeEndElement(); //end force_wall
 
-    QString gcfm_line_7 = "\t\t\t\t<stepsize>" +
-            ui->lineEdit_model_gcfm_02->text() +
-            "</stepsize>\n";
+    stream->writeEndElement(); // end model_parameters
 
-    QString gcfm_line_8 = "\t\t\t\t<exit_crossing_strategy>" +
-            ui->lineEdit_model_gcfm_03->text() +
-            "</exit_crossing_strategy>\n";
-
-    QString gcfm_line_9 = "\t\t\t\t<linkedcells enabled=\"" +
-            ui->lineEdit_model_gcfm_04->text() +
-            "\" cell_size=\"" +
-            ui->lineEdit_model_gcfm_05->text() +
-            "\" />\n";
-
-    QString gcfm_line_10 = "\t\t\t\t<force_ped nu=\"" +
-            ui->lineEdit_model_gcfm_06->text() +
-            "\" dist_max=\"" +
-            ui->lineEdit_model_gcfm_07->text() +
-            "\" desteff_max=\"" +
-            ui->lineEdit_model_gcfm_08->text() +
-            "\" interpolation_width=\"" +
-            ui->lineEdit_model_gcfm_09->text() +
-            "\" />\n";
-
-    QString gcfm_line_11 = "\t\t\t\t<force_wall nu=\"" +
-            ui->lineEdit_model_gcfm_10->text() +
-            "\" dist_max=\"" +
-            ui->lineEdit_model_gcfm_11->text() +
-            "\" desteff_max=\"" +
-            ui->lineEdit_model_gcfm_12->text() +
-            "\" interpolation_width=\"" +
-            ui->lineEdit_model_gcfm_13->text() +
-            "\" />\n";
-
-    QString gcfm_line_12 = "\t\t\t</model_parameters>\n";
-
-    QString gcfm_line_13 = "";
     for(int i = 0; i < ui->spinBox_agents_gcfm_1->value(); i++)
     {
-        gcfm_line_13 = gcfm_line_13 +
-                "\t\t\t<agent_parameters agent_parameter_id=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,0)->text() +
-                "\">\n" +
-                "\t\t\t\t<v0 mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,1)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,2)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_upstairs mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,3)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,4)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_downstairs mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,5)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,6)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_idle_escalator_upstairs mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,7)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,8)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_idle_escalator_downstairs mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,9)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,10)->text() +
-                "\" />\n" +
-                "\t\t\t\t<bmax mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,11)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,12)->text() +
-                "\" />\n" +
-                "\t\t\t\t<bmin mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,13)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,14)->text() +
-                "\" />\n" +
-                "\t\t\t\t<amin mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,15)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,16)->text() +
-                "\" />\n" +
-                "\t\t\t\t<tau mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,17)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,18)->text() +
-                "\" />\n" +
-                "\t\t\t\t<atau mu=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,19)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gcfm_1->item(i,20)->text() +
-                "\" />\n" +
-                "\t\t\t</agent_parameters>\n";
+        stream->writeStartElement("agent_parameters");
+        stream->writeAttribute("agent_parameter_id", ui->tableWidget_agents_gcfm_1->item(i,0)->text());
+
+        stream->writeStartElement("v0");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,1)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,2)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_upstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,3)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,4)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,5)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,6)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_upstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,7)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,8)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,9)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,10)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("bmax");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,11)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,12)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("bmin");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,13)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,14)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("amin");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,15)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,16)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("tau");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,17)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,18)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("atau");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,19)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,20)->text());
+        stream->writeEndElement();
+
+        stream->writeEndElement(); // end agent_parameters
+
     }
 
-    QString gcfm_line_14 = "\t\t</model>\n";
+    stream->writeEndElement(); //end model
+    stream->writeEndElement(); //end operational model
 
-    QString gcfm_lines = gcfm_line_1 + gcfm_line_2 + gcfm_line_3 + gcfm_line_4 + gcfm_line_5 +
-                         gcfm_line_6 + gcfm_line_7 + gcfm_line_8 + gcfm_line_9 + gcfm_line_10 +
-                         gcfm_line_11 + gcfm_line_12 + gcfm_line_13 + gcfm_line_14;
-
-    return gcfm_lines;
+    return ;
 }
 
-QString InifileWidget::WriteModelGompData()
+void InifileWidget::writeModelGompData(QXmlStreamWriter *stream, QFile &file)
 {
-    //operational model and agent parameters - gompertz
-    QString gomp_line_1 = "\t\t<!-- gompertz model -->\n";
+    //operational model and agent parameters - gcfm
+    stream->writeComment("operational model");
+    stream->writeStartElement("operational_models");
 
-    QString gomp_line_2 = "\t\t<model operational_model_id=\"2\" description=\"gompertz\">\n";
+    stream->writeStartElement("model");
+    stream->writeAttribute("operational_model_id","2");
+    stream->writeAttribute("description", "gompertz");
 
-    QString gomp_line_3 = "\t\t\t<model_parameters>\n";
+    stream->writeStartElement("model_parameters");
+    stream->writeTextElement("solver", ui->lineEdit_model_gompertz_01->text());
+    stream->writeTextElement("stepsize", ui->lineEdit_model_gompertz_02->text());
+    stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_gompertz_03->text());
 
-    QString gomp_line_4 = "\t\t\t\t<solver>" +
-            ui->lineEdit_model_gompertz_01->text() +
-            "</solver>\n";
+    stream->writeStartElement("linkedcells");
+    stream->writeAttribute("enabled", ui->lineEdit_model_gompertz_04->text());
+    stream->writeAttribute("cell_size", ui->lineEdit_model_gompertz_05->text());
+    stream->writeEndElement(); //end linkedcells
 
-    QString gomp_line_5 = "\t\t\t\t<stepsize>" +
-            ui->lineEdit_model_gompertz_02->text() +
-            "</stepsize>\n";
+    stream->writeStartElement("force_ped");
+    stream->writeAttribute("nu", ui->lineEdit_model_gompertz_06->text());
+    stream->writeAttribute("b", ui->lineEdit_model_gompertz_07->text());
+    stream->writeAttribute("c", ui->lineEdit_model_gompertz_08->text());
+    stream->writeEndElement(); //end force_ped
 
-    QString gomp_line_6 = "\t\t\t\t<exit_crossing_strategy>" +
-            ui->lineEdit_model_gompertz_03->text() +
-            "</exit_crossing_strategy>\n";
+    stream->writeStartElement("force_wall");
+    stream->writeAttribute("nu",ui->lineEdit_model_gompertz_09->text());
+    stream->writeAttribute("b", ui->lineEdit_model_gompertz_10->text());
+    stream->writeAttribute("c", ui->lineEdit_model_gompertz_11->text());
+    stream->writeEndElement(); //end force_wall
 
-    QString gomp_line_7 = "\t\t\t\t<linkedcells enabled=\"" +
-            ui->lineEdit_model_gompertz_04->text() +
-            "\" cell_size=\"" +
-            ui->lineEdit_model_gompertz_05->text() +
-            "\" />\n";
+    stream->writeEndElement(); // end model_parameters
 
-    QString gomp_line_8 = "\t\t\t\t<force_ped nu=\"" +
-            ui->lineEdit_model_gompertz_06->text() +
-            "\" b=\"" +
-            ui->lineEdit_model_gompertz_07->text() +
-            "\" c=\"" +
-            ui->lineEdit_model_gompertz_08->text() +
-            "\" />\n";
-
-    QString gomp_line_9 = "\t\t\t\t<force_wall nu=\"" +
-            ui->lineEdit_model_gompertz_09->text() +
-            "\" b=\"" +
-            ui->lineEdit_model_gompertz_10->text() +
-            "\" c=\"" +
-            ui->lineEdit_model_gompertz_11->text() +
-            "\" />\n";
-
-    QString gomp_line_10 = "\t\t\t</model_parameters>\n";
-
-    QString gomp_line_11 = "";
     for(int i = 0; i < ui->spinBox_agents_gompertz_1->value(); i++)
     {
-        gomp_line_11 = gomp_line_11 +
-                "\t\t\t<agent_parameters agent_parameter_id=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,0)->text() +
-                "\">\n" +
-                "\t\t\t\t<v0 mu=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,1)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,2)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_upstairs mu=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,3)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,4)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_downstairs mu=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,5)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,6)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_idle_escalator_upstairs mu=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,7)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,8)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_idle_escalator_downstairs mu=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,9)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,10)->text() +
-                "\" />\n" +
-                "\t\t\t\t<bmax mu=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,11)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,12)->text() +
-                "\" />\n" +
-                "\t\t\t\t<bmin mu=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,13)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,14)->text() +
-                "\" />\n" +
-                "\t\t\t\t<amin mu=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,15)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,16)->text() +
-                "\" />\n" +
-                "\t\t\t\t<tau mu=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,17)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,18)->text() +
-                "\" />\n" +
-                "\t\t\t\t<atau mu=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,19)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gompertz_1->item(i,20)->text() +
-                "\" />\n" +
-                "\t\t\t</agent_parameters>\n";
+        stream->writeStartElement("agent_parameters");
+        stream->writeAttribute("agent_parameter_id", ui->tableWidget_agents_gompertz_1->item(i,0)->text());
+
+        stream->writeStartElement("v0");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,1)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,2)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_upstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,3)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,4)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,5)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,6)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_upstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,7)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,8)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,9)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,10)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("bmax");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,11)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,12)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("bmin");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,13)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,14)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("amin");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,15)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,16)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("tau");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,17)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,18)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("atau");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,19)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,20)->text());
+        stream->writeEndElement();
+
+        stream->writeEndElement(); // end agent_parameters
+
     }
 
-    QString gomp_line_12 = "\t\t</model>\n";
+    stream->writeEndElement(); //end model
+    stream->writeEndElement(); //end operational model
 
-    QString gomp_lines = gomp_line_1 + gomp_line_2 + gomp_line_3 + gomp_line_4 + gomp_line_5 +
-                         gomp_line_6 + gomp_line_7 + gomp_line_8 + gomp_line_9 + gomp_line_10 +
-                         gomp_line_11 + gomp_line_12;
-
-    return gomp_lines;
+    return ;
 }
 
-QString InifileWidget::WriteModelTordData()
+void InifileWidget::writeModelTordData(QXmlStreamWriter *stream, QFile &file)
 {
-    //operational model and agent parameters - tordeux
-    QString tord_line_1 = "\t\t<!-- collision free speed model -->\n";
+    //operational model and agent parameters - gcfm
+    stream->writeComment("operational model");
+    stream->writeStartElement("operational_models");
 
-    QString tord_line_2 = "\t\t<model operational_model_id=\"3\" description=\"Tordeux2015\">\n";
+    stream->writeStartElement("model");
+    stream->writeAttribute("operational_model_id","3");
+    stream->writeAttribute("description", "Tordeux2015");
 
-    QString tord_line_3 = "\t\t\t<model_parameters>\n";
+    stream->writeStartElement("model_parameters");
+    stream->writeTextElement("solver", ui->lineEdit_model_tordeux_01->text());
+    stream->writeTextElement("stepsize", ui->lineEdit_model_tordeux_02->text());
+    stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_tordeux_03->text());
 
-    QString tord_line_4 = "\t\t\t\t<solver>" +
-            ui->lineEdit_model_tordeux_01->text() +
-            "</solver>\n";
+    stream->writeStartElement("linkedcells");
+    stream->writeAttribute("enabled", ui->lineEdit_model_tordeux_04->text());
+    stream->writeAttribute("cell_size", ui->lineEdit_model_tordeux_05->text());
+    stream->writeEndElement(); //end linkedcells
 
-    QString tord_line_5 = "\t\t\t\t<stepsize>" +
-            ui->lineEdit_model_tordeux_02->text() +
-            "</stepsize>\n";
+    stream->writeStartElement("force_ped");
+    stream->writeAttribute("a", ui->lineEdit_model_tordeux_06->text());
+    stream->writeAttribute("D", ui->lineEdit_model_tordeux_07->text());
+    stream->writeEndElement(); //end force_ped
 
-    QString tord_line_6 = "\t\t\t\t<exit_crossing_strategy>" +
-            ui->lineEdit_model_tordeux_03->text() +
-            "</exit_crossing_strategy>\n";
+    stream->writeStartElement("force_wall");
+    stream->writeAttribute("a",ui->lineEdit_model_tordeux_08->text());
+    stream->writeAttribute("D", ui->lineEdit_model_tordeux_09->text());
+    stream->writeEndElement(); //end force_wall
+    stream->writeEndElement(); // end model_parameters
 
-    QString tord_line_7 = "\t\t\t\t<linkedcells enabled=\"" +
-            ui->lineEdit_model_tordeux_04->text() +
-            "\" cell_size=\"" +
-            ui->lineEdit_model_tordeux_05->text() +
-            "\" />\n";
-
-    QString tord_line_8 = "\t\t\t\t<force_ped a=\"" +
-            ui->lineEdit_model_tordeux_06->text() +
-            "\" D=\"" +
-            ui->lineEdit_model_tordeux_07->text() +
-            "\" />\n";
-
-    QString tord_line_9 = "\t\t\t\t<force_wall a=\"" +
-            ui->lineEdit_model_tordeux_08->text() +
-            "\" D=\"" +
-            ui->lineEdit_model_tordeux_09->text() +
-            "\" />\n";
-
-    QString tord_line_10 = "\t\t\t</model_parameters>\n";
-
-    QString tord_line_11 = "";
     for(int i = 0; i < ui->spinBox_agents_tordeux_1->value(); i++)
     {
-        tord_line_11 = tord_line_11 +
-                "\t\t\t<agent_parameters agent_parameter_id=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,0)->text() +
-                "\">\n" +
-                "\t\t\t\t<v0 mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,1)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,2)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_upstairs mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,3)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,4)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_downstairs mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,5)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,6)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_idle_escalator_upstairs mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,7)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,8)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_idle_escalator_downstairs mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,9)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,10)->text() +
-                "\" />\n" +
-                "\t\t\t\t<bmax mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,11)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,12)->text() +
-                "\" />\n" +
-                "\t\t\t\t<bmin mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,13)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,14)->text() +
-                "\" />\n" +
-                "\t\t\t\t<amin mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,15)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,16)->text() +
-                "\" />\n" +
-                "\t\t\t\t<tau mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,17)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,18)->text() +
-                "\" />\n" +
-                "\t\t\t\t<atau mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,19)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,20)->text() +
-                "\" />\n" +
-                "\t\t\t\t<T mu=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,21)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_tordeux_1->item(i,22)->text() +
-                "\" />\n"
-                "\t\t\t</agent_parameters>\n";
+        stream->writeStartElement("agent_parameters");
+        stream->writeAttribute("agent_parameter_id", ui->tableWidget_agents_tordeux_1->item(i,0)->text());
+
+        stream->writeStartElement("v0");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,1)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,2)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_upstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,3)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,4)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,5)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,6)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_upstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,7)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,8)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,9)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,10)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("bmax");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,11)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,12)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("bmin");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,13)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,14)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("amin");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,15)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,16)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("tau");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,17)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,18)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("atau");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,19)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,20)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("T");
+        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,21)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,22)->text());
+        stream->writeEndElement();
+
+        stream->writeEndElement(); // end agent_parameters
     }
 
-    QString tord_line_12 = "\t\t</model>\n";
+    stream->writeEndElement(); //end model
+    stream->writeEndElement(); //end operational model
 
-    QString tord_lines = tord_line_1 + tord_line_2 + tord_line_3 + tord_line_4 + tord_line_5 +
-                         tord_line_6 + tord_line_7 + tord_line_8 + tord_line_9 + tord_line_10 +
-                         tord_line_11 + tord_line_12;
-
-    return tord_lines;
+    return ;
 }
 
-QString InifileWidget::WriteModelGradData()
+void InifileWidget::writeModelGradData(QXmlStreamWriter *stream, QFile &file)
 {
-    //operational model and agent parameters - gradnav
-    QString grad_line_1 = "\t\t<!-- gradnav model -->\n";
+    //operational model and agent parameters - gcfm
+    stream->writeComment("operational model");
+    stream->writeStartElement("operational_models");
 
-    QString grad_line_2 = "\t\t<model operational_model_id=\"4\" description=\"gradnav\">\n";
+    stream->writeStartElement("model");
+    stream->writeAttribute("operational_model_id","4");
+    stream->writeAttribute("description", "gradnav");
 
-    QString grad_line_3 = "\t\t\t<model_parameters>\n";
+    stream->writeStartElement("model_parameters");
+    stream->writeTextElement("solver", ui->lineEdit_model_gradnav_01->text());
+    stream->writeTextElement("stepsize", ui->lineEdit_model_gradnav_02->text());
+    stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_gradnav_03->text());
 
-    QString grad_line_4 = "\t\t\t\t<solver>" +
-            ui->lineEdit_model_gradnav_01->text() +
-            "</solver>\n";
+    stream->writeStartElement("linkedcells");
+    stream->writeAttribute("enabled", ui->lineEdit_model_gradnav_04->text());
+    stream->writeAttribute("cell_size", ui->lineEdit_model_gradnav_05->text());
+    stream->writeEndElement(); //end linkedcells
 
-    QString grad_line_5 = "\t\t\t\t<stepsize>" +
-            ui->lineEdit_model_gradnav_02->text() +
-            "</stepsize>\n";
+    stream->writeStartElement("floorfield");
+    stream->writeAttribute("delta_h", ui->lineEdit_model_gradnav_06->text());
+    stream->writeAttribute("wall_avoid_distance", ui->lineEdit_model_gradnav_07->text());
+    stream->writeAttribute("use_wall_avoidance", ui->lineEdit_model_gradnav_08->text());
+    stream->writeEndElement(); //end floorfield
 
-    QString grad_line_6 = "\t\t\t\t<exit_crossing_strategy>" +
-            ui->lineEdit_model_gradnav_03->text() +
-            "</exit_crossing_strategy>\n";
+    stream->writeStartElement("anti_clipping");
+    stream->writeAttribute("slow_down_distance", ui->lineEdit_model_gradnav_09->text());
+    stream->writeEndElement(); //end anti_clipping
 
-    QString grad_line_7 = "\t\t\t\t<linkedcells enabled=\"" +
-            ui->lineEdit_model_gradnav_04->text() +
-            "\" cell_size=\"" +
-            ui->lineEdit_model_gradnav_05->text() +
-            "\" />\n";
+    stream->writeStartElement("force_ped");
+    stream->writeAttribute("nu", ui->lineEdit_model_gradnav_10->text());
+    stream->writeAttribute("b", ui->lineEdit_model_gradnav_11->text());
+    stream->writeAttribute("c", ui->lineEdit_model_gradnav_12->text());
+    stream->writeEndElement(); //end force_ped
 
-    QString grad_line_8 = "\t\t\t\t<floorfield delta_h=\"" +
-            ui->lineEdit_model_gradnav_06->text() +
-            "\" wall_avoid_distance=\"" +
-            ui->lineEdit_model_gradnav_07->text() +
-            "\" use_wall_avoidance=\"" +
-            ui->lineEdit_model_gradnav_08->text() +
-            "\" />\n";
+    stream->writeStartElement("force_wall");
+    stream->writeAttribute("nu", ui->lineEdit_model_gradnav_13->text());
+    stream->writeAttribute("b", ui->lineEdit_model_gradnav_14->text());
+    stream->writeAttribute("c", ui->lineEdit_model_gradnav_15->text());
+    stream->writeEndElement(); //end force_wall
+    stream->writeEndElement(); // end model_parameters
 
-    QString grad_line_9 = "\t\t\t\t<anti_clipping slow_down_distance=\"" +
-            ui->lineEdit_model_gradnav_09->text() +
-            "\" />\n";
-
-    QString grad_line_10 = "\t\t\t\t<force_ped nu=\"" +
-            ui->lineEdit_model_gradnav_10->text() +
-            "\" b=\"" +
-            ui->lineEdit_model_gradnav_11->text() +
-            "\" c=\"" +
-            ui->lineEdit_model_gradnav_12->text() +
-            "\" />\n";
-
-    QString grad_line_11 = "\t\t\t\t<force_wall nu=\"" +
-            ui->lineEdit_model_gradnav_13->text() +
-            "\" b=\"" +
-            ui->lineEdit_model_gradnav_14->text() +
-            "\" c=\"" +
-            ui->lineEdit_model_gradnav_15->text() +
-            "\" />\n";
-
-    QString grad_line_12 = "\t\t\t</model_parameters>\n";
-
-    QString grad_line_13 = "";
     for(int i = 0; i < ui->spinBox_agents_gradnav_1->value(); i++)
     {
-        grad_line_13 = grad_line_13 +
-                "\t\t\t<agent_parameters agent_parameter_id=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,0)->text() +
-                "\">\n" +
-                "\t\t\t\t<v0 mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,1)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,2)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_upstairs mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,3)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,4)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_downstairs mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,5)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,6)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_idle_escalator_upstairs mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,7)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,8)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_idle_escalator_downstairs mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,9)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,10)->text() +
-                "\" />\n" +
-                "\t\t\t\t<bmax mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,11)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,12)->text() +
-                "\" />\n" +
-                "\t\t\t\t<bmin mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,13)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,14)->text() +
-                "\" />\n" +
-                "\t\t\t\t<amin mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,15)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,16)->text() +
-                "\" />\n" +
-                "\t\t\t\t<tau mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,17)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,18)->text() +
-                "\" />\n" +
-                "\t\t\t\t<atau mu=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,19)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_gradnav_1->item(i,20)->text() +
-                "\" />\n" +
-                "\t\t\t</agent_parameters>\n";
+        stream->writeStartElement("agent_parameters");
+        stream->writeAttribute("agent_parameter_id", ui->tableWidget_agents_gradnav_1->item(i,0)->text());
+
+        stream->writeStartElement("v0");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,1)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,2)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_upstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,3)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,4)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,5)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,6)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_upstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,7)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,8)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,9)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,10)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("bmax");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,11)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,12)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("bmin");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,13)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,14)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("amin");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,15)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,16)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("tau");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,17)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,18)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("atau");
+        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,19)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,20)->text());
+        stream->writeEndElement();
+
+        stream->writeEndElement(); // end agent_parameters
+
     }
 
-    QString grad_line_14 = "\t\t</model>\n";
+    stream->writeEndElement(); //end model
+    stream->writeEndElement(); //end operational model
 
-    QString grad_lines = grad_line_1 + grad_line_2 + grad_line_3 + grad_line_4 + grad_line_5 +
-                         grad_line_6 + grad_line_7 + grad_line_8 + grad_line_9 + grad_line_10 +
-                         grad_line_11 + grad_line_12 + grad_line_13 + grad_line_14;
-
-    return grad_lines;
+    return ;
 }
 
-QString InifileWidget::WriteModelKrauData()
+void InifileWidget::writeModelKrauData(QXmlStreamWriter *stream, QFile &file)
 {
-    //operational model and agent parameters - krausz
-    QString krau_line_1 = "\t\t<!-- krausz model -->\n";
+    //operational model and agent parameters - gcfm
+    stream->writeComment("operational model");
+    stream->writeStartElement("operational_models");
 
-    QString krau_line_2 = "\t\t<model operational_model_id=\"5\" description=\"krausz\">\n";
+    stream->writeStartElement("model");
+    stream->writeAttribute("operational_model_id","5");
+    stream->writeAttribute("description", "krausz");
 
-    QString krau_line_3 = "\t\t\t<model_parameters>\n";
+    stream->writeStartElement("model_parameters");
+    stream->writeTextElement("solver", ui->lineEdit_model_krausz_01->text());
+    stream->writeTextElement("stepsize", ui->lineEdit_model_krausz_02->text());
+    stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_krausz_03->text());
 
-    QString krau_line_4 = "\t\t\t\t<solver>" +
-            ui->lineEdit_model_krausz_01->text() +
-            "</solver>\n";
+    stream->writeStartElement("linkedcells");
+    stream->writeAttribute("enabled", ui->lineEdit_model_krausz_04->text());
+    stream->writeAttribute("cell_size", ui->lineEdit_model_krausz_05->text());
+    stream->writeEndElement(); //end linkedcells
 
-    QString krau_line_5 = "\t\t\t\t<stepsize>" +
-            ui->lineEdit_model_krausz_02->text() +
-            "</stepsize>\n";
+    stream->writeStartElement("force_ped");
+    stream->writeAttribute("nu", ui->lineEdit_model_krausz_06->text());
+    stream->writeAttribute("dist_max", ui->lineEdit_model_krausz_07->text());
+    stream->writeAttribute("desteff_max", ui->lineEdit_model_krausz_08->text());
+    stream->writeAttribute("interpolation_width", ui->lineEdit_model_krausz_09->text());
+    stream->writeEndElement(); //end force_ped
 
-    QString krau_line_6 = "\t\t\t\t<exit_crossing_strategy>" +
-            ui->lineEdit_model_krausz_03->text() +
-            "</exit_crossing_strategy>\n";
+    stream->writeStartElement("force_wall");
+    stream->writeAttribute("nu", ui->lineEdit_model_krausz_10->text());
+    stream->writeAttribute("dist_max", ui->lineEdit_model_krausz_11->text());
+    stream->writeAttribute("desteff_max", ui->lineEdit_model_krausz_12->text());
+    stream->writeAttribute("interpolation_width", ui->lineEdit_model_krausz_13->text());
+    stream->writeEndElement(); //end force_wall
+    stream->writeEndElement(); // end model_parameters
 
-    QString krau_line_7 = "\t\t\t\t<linkedcells enabled=\"" +
-            ui->lineEdit_model_krausz_04->text() +
-            "\" cell_size=\"" +
-            ui->lineEdit_model_krausz_05->text() +
-            "\" />\n";
-
-    QString krau_line_8 = "\t\t\t\t<force_ped nu=\"" +
-            ui->lineEdit_model_krausz_06->text() +
-            "\" dist_max=\"" +
-            ui->lineEdit_model_krausz_07->text() +
-            "\" desteff_max=\"" +
-            ui->lineEdit_model_krausz_08->text() +
-            "\" interpolation_width=\"" +
-            ui->lineEdit_model_krausz_09->text() +
-            "\" />\n";
-
-    QString krau_line_9 = "\t\t\t\t<force_wall nu=\"" +
-            ui->lineEdit_model_krausz_10->text() +
-            "\" dist_max=\"" +
-            ui->lineEdit_model_krausz_11->text() +
-            "\" desteff_max=\"" +
-            ui->lineEdit_model_krausz_12->text() +
-            "\" interpolation_width=\"" +
-            ui->lineEdit_model_krausz_13->text() +
-            "\" />\n";
-
-    QString krau_line_10 = "\t\t\t</model_parameters>\n";
-
-    QString krau_line_11 = "";
     for(int i = 0; i < ui->spinBox_agents_krausz_1->value(); i++)
     {
-        krau_line_11 = krau_line_11 +
-                "\t\t\t<agent_parameters agent_parameter_id=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,0)->text() +
-                "\">\n" +
-                "\t\t\t\t<v0 mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,1)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,2)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_upstairs mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,3)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,4)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_downstairs mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,5)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,6)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_idle_escalator_upstairs mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,7)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,8)->text() +
-                "\" />\n" +
-                "\t\t\t\t<v0_idle_escalator_downstairs mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,9)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,10)->text() +
-                "\" />\n" +
-                "\t\t\t\t<bmax mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,11)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,12)->text() +
-                "\" />\n" +
-                "\t\t\t\t<bmin mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,13)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,14)->text() +
-                "\" />\n" +
-                "\t\t\t\t<amin mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,15)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,16)->text() +
-                "\" />\n" +
-                "\t\t\t\t<tau mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,17)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,18)->text() +
-                "\" />\n" +
-                "\t\t\t\t<atau mu=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,19)->text() +
-                "\" sigma=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,20)->text() +
-                "\" />\n" +
-                "\t\t\t\t<sway ampA=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,21)->text() +
-                "\" ampB=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,22)->text() +
-                "\" freqA=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,23)->text() +
-                "\" freqB=\"" +
-                ui->tableWidget_agents_krausz_1->item(i,24)->text() +
-                "\" />\n" +
-                "\t\t\t</agent_parameters>\n";
+        stream->writeStartElement("agent_parameters");
+        stream->writeAttribute("agent_parameter_id", ui->tableWidget_agents_krausz_1->item(i,0)->text());
+
+        stream->writeStartElement("v0");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,1)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,2)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_upstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,3)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,4)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,5)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,6)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_upstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,7)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,8)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("v0_idle_escalator_downstairs");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,9)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,10)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("bmax");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,11)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,12)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("bmin");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,13)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,14)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("amin");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,15)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,16)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("tau");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,17)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,18)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("atau");
+        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,19)->text());
+        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,20)->text());
+        stream->writeEndElement();
+
+        stream->writeStartElement("sway");
+        stream->writeAttribute("ampA", ui->tableWidget_agents_krausz_1->item(i,21)->text());
+        stream->writeAttribute("ampB", ui->tableWidget_agents_krausz_1->item(i,22)->text());
+        stream->writeAttribute("freqA", ui->tableWidget_agents_krausz_1->item(i,23)->text());
+        stream->writeAttribute("freqB", ui->tableWidget_agents_krausz_1->item(i,24)->text());
+        stream->writeEndElement();
+
+        stream->writeEndElement(); // end agent_parameters
     }
 
-    QString krau_line_12 = "\t\t</model>\n";
+    stream->writeEndElement(); //end model
+    stream->writeEndElement(); //end operational model
 
-    QString krau_line_13 = "\t</operational_models>\n\n";
-
-    QString krau_lines = krau_line_1 + krau_line_2 + krau_line_3 + krau_line_4 + krau_line_5 +
-                         krau_line_6 + krau_line_7 + krau_line_8 + krau_line_9 + krau_line_10 +
-                         krau_line_11 + krau_line_12 + krau_line_13;
-
-    return krau_lines;
+    return ;
 }
 
-QString InifileWidget::WriteRouteChoiceData()
+void InifileWidget::writeRouteChoiceData(QXmlStreamWriter *stream, QFile &file)
 {
-    //route_choice_models
-    QString choi_line_1 = "\t<!-- route choice model -->\n";
 
-    QString choi_line_2 = "\t<route_choice_models>\n";
+    stream->writeComment("route chice model");
+    stream->writeStartElement("route_choice_models");
 
-    QString choi_line_3 = "\t\t<!-- ff global shortest model -->\n";
+    int router = ui->comboBox_Router->currentIndex();
 
-    QString choi_line_4 = "\t\t<router router_id=\"" +
-            ui->lineEdit_route_choice_01->text() +
-            "\" description=\"ff_global_shortest\">\n";
+    switch(router){
+        case 0:
+            writeFFGlobalShortestModel(stream, file);
+            break;
+        case 1:
+            writeGlobalShortestModel(stream, file);
+            break;
+        case 2:
+            writeCognitiveMap(stream, file);
+            break;
+        default:
+            break;
+    }
 
-    QString choi_line_5 = "\t\t</router>\n";
+    stream->writeEndElement();
 
-    QString choi_line_6 = "\t\t<!-- global shortest model -->\n";
+    return ;
+}
 
-    QString choi_line_7 = "\t\t<router router_id=\"" +
-            ui->lineEdit_route_choice_02->text() +
-            "\" description=\"global_shortest\">\n";
+void InifileWidget::writeFFGlobalShortestModel(QXmlStreamWriter *stream, QFile &file)
+{
+    stream->writeStartElement("router");
+    stream->writeAttribute("router_id", ui->lineEdit_ID->text());
+    stream->writeAttribute("description","ff_global_shortest");
 
-    QString choi_line_8 = "\t\t\t<parameters>\n";
+    if(ui->radioButton_VTK->isChecked())
+        stream->writeTextElement("write_VTK_files", "true");
+    else
+        stream->writeTextElement("write_VTK_files", "false");
 
-    QString choi_line_9 = "\t\t\t\t<navigation_lines file=\"" +
-            ui->lineEdit_route_choice_03->text() +
-            "\" />\n";
+    stream->writeEndElement();
+}
 
-    QString choi_line_10 = "\t\t\t</parameters>\n";
+void InifileWidget::writeGlobalShortestModel(QXmlStreamWriter *stream, QFile &file)
+{
+    stream->writeStartElement("router");
+    stream->writeAttribute("router_id", ui->lineEdit_ID->text());
+    stream->writeAttribute("description","global_shortest");
 
-    QString choi_line_11 = "\t\t</router>\n";
+    stream->writeStartElement("parameters");
+    stream->writeStartElement("navigation_lines");
+    stream->writeAttribute("file", ui->lineEdit_route_choice_03->text());
+    stream->writeEndElement(); //end navigation lines
+    stream->writeEndElement(); //end patameters
+    stream->writeEndElement(); //end router
+}
 
-    QString choi_line_12 = "\t\t<!-- cognitive map model -->\n";
+void InifileWidget::writeCognitiveMap(QXmlStreamWriter *stream, QFile &file)
+{
+    stream->writeStartElement("router");
+    stream->writeAttribute("router_id", ui->lineEdit_ID->text());
+    stream->writeAttribute("description","cognitive_map");
+    stream->writeStartElement("sensors");
+    //TODO: finish sensors
+    stream->writeEndElement();//end sensors
 
-    QString choi_line_13 = "\t\t<router router_id=\"" +
-            ui->lineEdit_route_choice_04->text() +
-            "\" description=\"cognitive_map\">\n";
-
-    QString choi_line_14 = "\t\t\t<sensors>\n";
-
-    QString choi_line_15 = "\t\t\t\t<sensor sensor_id=\"" +
-            ui->lineEdit_route_choice_05->text() +
-            "\" description=\"" +
-            ui->lineEdit_route_choice_06->text() +
-            "\" />\n";
-
-    QString choi_line_16 = "\t\t\t\t<sensor sensor_id=\"" +
-            ui->lineEdit_route_choice_07->text() +
-            "\" description=\"" +
-            ui->lineEdit_route_choice_08->text() +
-            "\" p_field_path=\"" +
-            ui->lineEdit_route_choice_09->text() +
-            "\" update_time=\"" +
-            ui->lineEdit_route_choice_10->text() +
-            "\" final_time=\"" +
-            ui->lineEdit_route_choice_11->text() +
-            "\" />\n";
-
-    QString choi_line_17 = "\t\t\t\t<sensor sensor_id=\"" +
-            ui->lineEdit_route_choice_12->text() +
-            "\" description=\"" +
-            ui->lineEdit_route_choice_13->text() +
-            "\" />\n";
-
-    QString choi_line_18 = "\t\t\t</sensors>\n";
-
-    QString choi_line_19 = "\t\t\t<cognitive_map status=\"complete\" />\n";
-
-    QString choi_line_20 = "\t\t</router>\n";
-
-    QString choi_line_21 = "\t</route_choice_models>\n\n";
-
-    QString choi_line_22 = "</JuPedSim>";
-
-    QString choi_lines = choi_line_1 + choi_line_2 + choi_line_3 + choi_line_4 + choi_line_5 +
-                         choi_line_6 + choi_line_7 + choi_line_8 + choi_line_9 + choi_line_10 +
-                         choi_line_11 + choi_line_12 + choi_line_13 + choi_line_14 + choi_line_15 +
-                         choi_line_16 + choi_line_17 + choi_line_18 + choi_line_19 + choi_line_20 +
-                         choi_line_21 + choi_line_22;
-
-    return choi_lines;
+    stream->writeStartElement("cognitive_map");
+    stream->writeAttribute("status", "complete");
+    stream->writeEndElement(); //end cognitive map
+    stream->writeEndElement(); //router
 }
 
 // Create ini.xml on button push
 void InifileWidget::on_pushButton_write_clicked()
 {
-    //check header
-    if (CheckHeaderData() == 0)
-    {
-        return;
-    }
-
-    //check traffic_constraints
-    if (CheckTrafficData() == 0)
-    {
-        return;
-    }
-
-    //check routing_information
-    if (CheckRoutingData() == 0)
-    {
-        return;
-    }
-
-    //check agents information and distribution
-    if (CheckAgentData() == 0)
-    {
-        return;
-    }
-
-    //check operational model - gcfm
-    if (CheckModelGcfmData() == 0)
-    {
-        return;
-    }
-
-    //check agent parameters - gcfm
-    if (CheckAgentGcfmData() == 0)
-    {
-        return;
-    }
-
-    //check operational model - gompertz
-    if (CheckModelGompData() == 0)
-    {
-        return;
-    }
-
-    //check agent parameters - gompertz
-    if (CheckAgentGompData() == 0)
-    {
-        return;
-    }
-
-    //check operational model - tordeux
-    if (CheckModelTordData() == 0)
-    {
-        return;
-    }
-
-    //check agent parameters - tordeux
-    if (CheckAgentTordData() == 0)
-    {
-        return;
-    }
-
-    //check operational model - gradnav
-    if (CheckModelGradData() == 0)
-    {
-        return;
-    }
-
-    //check agent parameters - gradnav
-    if (CheckAgentGradData() == 0)
-    {
-        return;
-    }
-
-    //check operational model - krausz
-    if (CheckModelKrauData() == 0)
-    {
-        return;
-    }
-
-    //check agent parameters - krausz
-    if (CheckAgentKrauData() == 0)
-    {
-        return;
-    }
-
-    //check route_choice_models
-    if (CheckRouteChoiceData() == 0)
-    {
-        return;
-    }
-
-
-    //header
-    QString head_lines = WriteHeaderData();
-
-    //traffic_constraints
-    QString traf_lines = WriteTrafficData();
-
-    //routing_information
-    QString rout_lines = WriteRoutingData();
-
-    //agents information and distribution
-    QString agen_lines = WriteAgentData();
-
-    //operational model and agent parameters - gcfm
-    QString gcfm_lines = WriteModelGcfmData();
-
-    //operational model and agent parameters - gompertz
-    QString gomp_lines = WriteModelGompData();
-
-    //operational model and agent parameters - tordeux
-    QString tord_lines = WriteModelTordData();
-
-    //operational model and agent parameters - gradnav
-    QString grad_lines = WriteModelGradData();
-
-    //operational model and agent parameters - krausz
-    QString krau_lines = WriteModelKrauData();
-
-    //route_choice_models
-    QString choi_lines = WriteRouteChoiceData();
-
+//    //check header (geometry)
+//    if (CheckHeaderData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //goal
+//    if (!CheckRoutingData())
+//        return;
+//
+//    //source
+//    if (!CheckSourceData())
+//        return;
+//
+//    //traffic(door)
+//    if (!CheckTrafficData())
+//        return;
+//
+//    //check agents information and distribution
+//    if (CheckAgentData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check operational model - gcfm
+//    if (CheckModelGcfmData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check agent parameters - gcfm
+//    if (CheckAgentGcfmData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check operational model - gompertz
+//    if (CheckModelGompData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check agent parameters - gompertz
+//    if (CheckAgentGompData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check operational model - tordeux
+//    if (CheckModelTordData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check agent parameters - tordeux
+//    if (CheckAgentTordData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check operational model - gradnav
+//    if (CheckModelGradData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check agent parameters - gradnav
+//    if (CheckAgentGradData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check operational model - krausz
+//    if (CheckModelKrauData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check agent parameters - krausz
+//    if (CheckAgentKrauData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //check route_choice_models
+//    if (CheckRouteChoiceData() == 0)
+//    {
+//        return;
+//    }
+//
+//    //header
+//    QString head_lines = writeHeaderData();
+//
+//    //agents information and distribution
+//    QString agen_lines = writeAgentData();
+//
+//    //operational model and agent parameters - gcfm
+//    QString gcfm_lines = writeModelGcfmData();
+//
+//    //operational model and agent parameters - gompertz
+//    QString gomp_lines = writeModelGompData();
+//
+//    //operational model and agent parameters - tordeux
+//    QString tord_lines = writeModelTordData();
+//
+//    //operational model and agent parameters - gradnav
+//    QString grad_lines = writeModelGradData();
+//
+//    //operational model and agent parameters - krausz
+//    QString krau_lines = writeModelKrauData();
+//
+//    //route_choice_models
+//    QString choi_lines = writeRouteChoiceData();
+//
     //save to file
-    QString file_name = QFileDialog::getSaveFileName(this,tr("Create ini"),"",tr("XML-Files (*.xml)"));
+    QString file_name = QFileDialog::getSaveFileName(this,
+            tr("Create ini"),
+            "",
+            tr("XML-Files (*.xml)"));
     QFile file(file_name);
+
 
     if (file.open(QIODevice::WriteOnly|QIODevice::Text))
     {
-        file.write(head_lines.toUtf8() +
-                   traf_lines.toUtf8() +
-                   rout_lines.toUtf8() +
-                   agen_lines.toUtf8() +
-                   gcfm_lines.toUtf8() +
-                   gomp_lines.toUtf8() +
-                   tord_lines.toUtf8() +
-                   grad_lines.toUtf8() +
-                   krau_lines.toUtf8() +
-                   choi_lines.toUtf8());
+        auto *stream = new QXmlStreamWriter(&file);
+        stream->setAutoFormatting(true);
+
+        stream->writeStartDocument("1.0");
+        stream->setCodec("UTF-8");
+
+        stream->writeStartElement("JuPedSim");
+        stream->writeAttribute("project","JPS-Project");
+        stream->writeAttribute("version", "0.8");
+        stream->writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        stream->writeAttribute("xsi:noNamespaceSchemaLocation","http://xsd.jupedsim.org/0.6/jps_ini_core.xsd");
+
+        writeHeaderData(stream, file);
+
+        writeTrafficData(stream, file);
+
+        writeRoutingData(stream, file);
+
+        writeAgentData(stream, file);
+
+        int model = ui->comboBox_groups_1->currentIndex();
+
+        switch(model)
+        {
+            case 0:
+                writeModelGcfmData(stream, file);
+                break;
+            case 1:
+                writeModelGompData(stream, file);
+                break;
+            case 2:
+                writeModelTordData(stream, file);
+                break;
+            case 3:
+                writeModelGradData(stream, file);
+                break;
+            case 4:
+                writeModelKrauData(stream, file);
+                break;
+            default:
+                break;
+        }
+
+        writeRouteChoiceData(stream, file);
+
+        stream->writeEndElement(); //end JuPedSim
+        stream->writeEndDocument();
+        delete stream;
+        stream = nullptr;
     }
     file.close();
+
 }
 
 void InifileWidget::ReadJuPedSimData(TiXmlElement* JuPedSim)
@@ -1963,258 +1674,115 @@ void InifileWidget::ReadJuPedSimData(TiXmlElement* JuPedSim)
 
 void InifileWidget::ReadHeaderData(TiXmlElement *JuPedSim)
 {
-    //header
-    if (JuPedSim->FirstChild("header"))
+    if (JuPedSim->FirstChild("num_threads") && !JuPedSim->FirstChild("num_threads")->NoChildren())
     {
-        if (JuPedSim->FirstChild("header")->FirstChild("num_threads"))
-        {
-            QString value = JuPedSim->FirstChild("header")->FirstChild("num_threads")->FirstChild()->Value();
-            ui->lineEdit_general_03->setText(value);
-        }
+        QString value = JuPedSim->FirstChild("num_threads")->FirstChild()->Value();
+        ui->lineEdit_general_03->setText(value);
+    }
 
-        if (JuPedSim->FirstChild("header")->FirstChild("seed"))
-        {
-            QString value = JuPedSim->FirstChild("header")->FirstChild("seed")->FirstChild()->Value();
-            ui->lineEdit_general_05->setText(value);
-        }
+    if (JuPedSim->FirstChild("seed") && !JuPedSim->FirstChild("seed")->NoChildren())
+    {
+        QString value = JuPedSim->FirstChild("seed")->FirstChild()->Value();
+        ui->lineEdit_general_05->setText(value);
+    }
 
-        if (JuPedSim->FirstChild("header")->FirstChild("max_sim_time"))
-        {
-            QString value = JuPedSim->FirstChild("header")->FirstChild("max_sim_time")->FirstChild()->Value();
-            ui->lineEdit_general_06->setText(value);
-        }
+    if (JuPedSim->FirstChild("max_sim_time") && !JuPedSim->FirstChild("max_sim_time")->NoChildren())
+    {
+        QString value = JuPedSim->FirstChild("max_sim_time")->FirstChild()->Value();
+        ui->lineEdit_general_06->setText(value);
+    }
 
-        if (JuPedSim->FirstChild("header")->FirstChild("geometry"))
-        {
-            QString value = JuPedSim->FirstChild("header")->FirstChild("geometry")->FirstChild()->Value();
-            ui->lineEdit_general_07->setText(value);
-        }
+    if (JuPedSim->FirstChild("geometry") && !JuPedSim->FirstChild("geometry")->NoChildren())
+    {
 
-        if (JuPedSim->FirstChild("header")->FirstChildElement("trajectories"))
+        QString value = JuPedSim->FirstChild("geometry")->FirstChild()->Value();
+        ui->lineEdit_general_07->setText(value);
+    }
+
+    if (JuPedSim->FirstChildElement("trajectories"))
+    {
+        if (JuPedSim->FirstChildElement("trajectories")->Attribute("format"))
         {
-            if (JuPedSim->FirstChild("header")->FirstChildElement("trajectories")->Attribute("format"))
+            QString value = JuPedSim->FirstChildElement("trajectories")->Attribute("format");
+            if (value == "xml-plain")
             {
-                QString value = JuPedSim->FirstChild("header")->FirstChildElement("trajectories")->Attribute("format");
-                if (value == "xml-plain")
-                {
-                    ui->comboBox_general_02->setCurrentIndex(0);
-                }
-                if (value == "plain")
-                {
-                    ui->comboBox_general_02->setCurrentIndex(1);
-                }
+                ui->comboBox_general_02->setCurrentIndex(0);
             }
-
-            if (JuPedSim->FirstChild("header")->FirstChildElement("trajectories")->Attribute("fps"))
+            if (value == "plain")
             {
-                QString value = JuPedSim->FirstChild("header")->FirstChildElement("trajectories")->Attribute("fps");
-                ui->lineEdit_general_10->setText(value);
-            }
-
-            if (JuPedSim->FirstChild("header")->FirstChildElement("trajectories")->Attribute("color_mode"))
-            {
-                QString value = JuPedSim->FirstChild("header")->FirstChildElement("trajectories")->Attribute("color_mode");
-                if (value == "velocity")
-                {
-                    ui->comboBox_general_03->setCurrentIndex(0);
-                }
-                if (value == "spotlight")
-                {
-                    ui->comboBox_general_03->setCurrentIndex(1);
-                }
-                if (value == "group")
-                {
-                    ui->comboBox_general_03->setCurrentIndex(2);
-                }
-                if (value == "knowledge")
-                {
-                    ui->comboBox_general_03->setCurrentIndex(3);
-                }
-                if (value == "router")
-                {
-                    ui->comboBox_general_03->setCurrentIndex(4);
-                }
-                if (value == "final_goal")
-                {
-                    ui->comboBox_general_03->setCurrentIndex(5);
-                }
-                if (value == "intermediate_goal")
-                {
-                    ui->comboBox_general_03->setCurrentIndex(6);
-                }
-            }
-
-            if (JuPedSim->FirstChild("header")->FirstChild("trajectories")->FirstChildElement("file"))
-            {
-                if (JuPedSim->FirstChild("header")->FirstChild("trajectories")->FirstChildElement("file")->Attribute("location"))
-                {
-                    QString value = JuPedSim->FirstChild("header")->FirstChild("trajectories")->FirstChildElement("file")->Attribute("location");
-                    ui->lineEdit_general_12->setText(value);
-                }
+                ui->comboBox_general_02->setCurrentIndex(1);
             }
         }
 
-        if (JuPedSim->FirstChild("header")->FirstChild("logfile"))
+        if (JuPedSim->FirstChildElement("trajectories")->Attribute("fps"))
         {
-            QString value = JuPedSim->FirstChild("header")->FirstChild("logfile")->FirstChild()->Value();
-            ui->lineEdit_general_08->setText(value);
+            QString value = JuPedSim->FirstChildElement("trajectories")->Attribute("fps");
+            ui->lineEdit_general_10->setText(value);
         }
 
-        if (JuPedSim->FirstChild("header")->FirstChild("show_statistics"))
+        if (JuPedSim->FirstChildElement("trajectories")->Attribute("color_mode"))
         {
-            QString value = JuPedSim->FirstChild("header")->FirstChild("show_statistics")->FirstChild()->Value();
-            if (value == "false")
+            QString value = JuPedSim->FirstChildElement("trajectories")->Attribute("color_mode");
+            if (value == "velocity")
             {
-                ui->comboBox_general_01->setCurrentIndex(0);
+                ui->comboBox_general_03->setCurrentIndex(0);
             }
-            if (value == "true")
+            if (value == "spotlight")
             {
-                ui->comboBox_general_01->setCurrentIndex(1);
+                ui->comboBox_general_03->setCurrentIndex(1);
             }
+            if (value == "group")
+            {
+                ui->comboBox_general_03->setCurrentIndex(2);
+            }
+            if (value == "knowledge")
+            {
+                ui->comboBox_general_03->setCurrentIndex(3);
+            }
+            if (value == "router")
+            {
+                ui->comboBox_general_03->setCurrentIndex(4);
+            }
+            if (value == "final_goal")
+            {
+                ui->comboBox_general_03->setCurrentIndex(5);
+            }
+            if (value == "intermediate_goal")
+            {
+                ui->comboBox_general_03->setCurrentIndex(6);
+            }
+        }
+
+        if (JuPedSim->FirstChild("trajectories")->FirstChildElement("file"))
+        {
+            if (JuPedSim->FirstChild("trajectories")->FirstChildElement("file")->Attribute("location"))
+            {
+                QString value = JuPedSim->FirstChild("trajectories")->FirstChildElement("file")->Attribute("location");
+                ui->lineEdit_general_12->setText(value);
+            }
+        }
+    }
+
+    if (JuPedSim->FirstChild("logfile") && !JuPedSim->FirstChild("logfile")->NoChildren())
+    {
+        QString value = JuPedSim->FirstChild("logfile")->FirstChild()->Value();
+        ui->lineEdit_general_08->setText(value);
+    }
+
+    if (JuPedSim->FirstChild("show_statistics"))
+    {
+        QString value = JuPedSim->FirstChild("show_statistics")->FirstChild()->Value();
+        if (value == "false")
+        {
+            ui->comboBox_general_01->setCurrentIndex(0);
+        }
+        if (value == "true")
+        {
+            ui->comboBox_general_01->setCurrentIndex(1);
         }
     }
 }
 
-void InifileWidget::ReadTrafficData(TiXmlElement *JuPedSim)
-{
-    //traffic_constraints
-    if (JuPedSim->FirstChild("traffic_constraints"))
-    {
-        if (JuPedSim->FirstChild("traffic_constraints")->FirstChild("doors"))
-        {
-            if (JuPedSim->FirstChild("traffic_constraints")->FirstChild("doors")->FirstChildElement("door"))
-            {
-                int counter = 0;
-                for (TiXmlElement* door = JuPedSim->FirstChild("traffic_constraints")->FirstChild("doors")->FirstChildElement("door");
-                     door; door = door->NextSiblingElement("door"))
-                {
-                    if (counter+1 == 1)
-                    {
-                        if (!ui->checkBox_general_2->isChecked())
-                        {
-                            ui->checkBox_general_2->setChecked(true);
-                            ui->tabWidget->insertTab(6, ui->tab_constraints, "Constraints");
-                        }
-                    }
-                    ui->spinBox_constraints_1->setValue(counter+1);
-
-                    if (door->Attribute("trans_id"))
-                    {
-                        QString value = door->Attribute("trans_id");
-                        ui->tableWidget_constraints_1->setItem(counter, 0, new QTableWidgetItem(value));
-                    }
-                    if (door->Attribute("caption"))
-                    {
-                        QString value = door->Attribute("caption");
-                        ui->tableWidget_constraints_1->setItem(counter, 1, new QTableWidgetItem(value));
-                    }
-                    if (door->Attribute("state"))
-                    {
-                        QString value = door->Attribute("state");
-                        ui->tableWidget_constraints_1->setItem(counter, 2, new QTableWidgetItem(value));
-                    }
-                    counter = counter + 1;
-                }
-            }
-        }
-
-        if (JuPedSim->FirstChild("traffic_constraints")->FirstChild("rooms"))
-        {
-            if (JuPedSim->FirstChild("traffic_constraints")->FirstChild("rooms")->FirstChildElement("room"))
-            {
-                int counter = 0;
-                for (TiXmlElement* room = JuPedSim->FirstChild("traffic_constraints")->FirstChild("rooms")->FirstChildElement("room");
-                     room; room = room->NextSiblingElement("room"))
-                {
-                    if (counter+1 == 1)
-                    {
-                        if (!ui->checkBox_general_2->isChecked())
-                        {
-                            ui->checkBox_general_2->setChecked(true);
-                            ui->tabWidget->insertTab(6, ui->tab_constraints, "Constraints");
-                        }
-                    }
-                    ui->spinBox_constraints_2->setValue(counter+1);
-
-                    if (room->Attribute("room_id"))
-                    {
-                        QString value = room->Attribute("room_id");
-                        ui->tableWidget_constraints_2->setItem(counter, 0, new QTableWidgetItem(value));
-                    }
-                    if (room->Attribute("caption"))
-                    {
-                        QString value = room->Attribute("caption");
-                        ui->tableWidget_constraints_2->setItem(counter, 1, new QTableWidgetItem(value));
-                    }
-                    if (room->Attribute("state"))
-                    {
-                        QString value = room->Attribute("state");
-                        ui->tableWidget_constraints_2->setItem(counter, 2, new QTableWidgetItem(value));
-                    }
-                    counter = counter + 1;
-                }
-            }
-        }
-    }
-}
-
-void InifileWidget::ReadRoutingData(TiXmlElement *JuPedSim)
-{
-    //routing_information
-    if (JuPedSim->FirstChild("routing"))
-    {
-        if (JuPedSim->FirstChild("routing")->FirstChild("goals"))
-        {
-            if (JuPedSim->FirstChild("routing")->FirstChild("goals")->FirstChildElement("goal"))
-            {
-                int counter = 0;
-                for (TiXmlElement* goal = JuPedSim->FirstChild("routing")->FirstChild("goals")->FirstChildElement("goal");
-                     goal; goal = goal->NextSiblingElement("goal"))
-                {
-                    if (counter+1 == 1)
-                    {
-                        ui->checkBox_general_1->setChecked(true);
-                        ui->tabWidget->insertTab(5, ui->tab_goals, "Goals");
-                    }
-                    ui->spinBox_goals_1->setValue(counter+1);
-
-                    if (goal->Attribute("id"))
-                    {
-                        QString value = goal->Attribute("id");
-                        ui->tableWidget_goals_1->setItem(counter, 0, new QTableWidgetItem(value));
-                    }
-                    if (goal->Attribute("caption"))
-                    {
-                        QString value = goal->Attribute("caption");
-                        ui->tableWidget_goals_1->setItem(counter, 1, new QTableWidgetItem(value));
-                    }
-
-                    int counter2 = 2;
-                    for (TiXmlElement* vert = goal->FirstChild("polygon")->FirstChildElement("vertex");
-                         vert; vert = vert->NextSiblingElement("vertex"))
-                    {
-                        if (vert->Attribute("px"))
-                        {
-                            QString value = vert->Attribute("px");
-                            ui->tableWidget_goals_1->setItem(counter, counter2, new QTableWidgetItem(value));
-                        }
-                        if (vert->Attribute("py"))
-                        {
-                            QString value = vert->Attribute("py");
-                            ui->tableWidget_goals_1->setItem(counter, counter2+1, new QTableWidgetItem(value));
-                        }
-                        if (counter2 == 8)
-                        {
-                            break;
-                        }
-                        counter2 = counter2 + 2;
-                    }
-                    counter = counter + 1;
-                }
-            }
-        }
-    }
-}
 
 void InifileWidget::ReadAgentData(TiXmlElement *JuPedSim)
 {
@@ -2351,6 +1919,9 @@ void InifileWidget::ReadModelData(TiXmlElement *JuPedSim)
                 QString desc = model->Attribute("description");
                 if (desc == "gcfm")
                 {
+                    int index = 0;
+                    on_comboBox_groups_1_currentIndexChanged(index);
+
                     if (model->FirstChild("model_parameters"))
                     {
                         if (model->FirstChild("model_parameters")->FirstChild("solver"))
@@ -2603,6 +2174,8 @@ void InifileWidget::ReadModelData(TiXmlElement *JuPedSim)
 
                 if (desc == "gompertz")
                 {
+                    int index = 1;
+                    on_comboBox_groups_1_currentIndexChanged(index);
                     if (model->FirstChild("model_parameters"))
                     {
                         if (model->FirstChild("model_parameters")->FirstChild("solver"))
@@ -2845,6 +2418,8 @@ void InifileWidget::ReadModelData(TiXmlElement *JuPedSim)
 
                 if (desc == "Tordeux2015")
                 {
+                    int index = 2;
+                    on_comboBox_groups_1_currentIndexChanged(index);
                     if (model->FirstChild("model_parameters"))
                     {
                         if (model->FirstChild("model_parameters")->FirstChild("solver"))
@@ -3092,6 +2667,8 @@ void InifileWidget::ReadModelData(TiXmlElement *JuPedSim)
 
                 if (desc == "gradnav")
                 {
+                    int index = 3;
+                    on_comboBox_groups_1_currentIndexChanged(index);
                     if (model->FirstChild("model_parameters"))
                     {
                         if (model->FirstChild("model_parameters")->FirstChild("solver"))
@@ -3360,6 +2937,9 @@ void InifileWidget::ReadModelData(TiXmlElement *JuPedSim)
 
                 if (desc == "krausz")
                 {
+                    int index = 4;
+                    ui->comboBox_groups_1->setCurrentIndex(index);
+                    on_comboBox_groups_1_currentIndexChanged(index);
                     if (model->FirstChild("model_parameters"))
                     {
                         if (model->FirstChild("model_parameters")->FirstChild("solver"))
@@ -3659,7 +3239,7 @@ void InifileWidget::ReadRouteChoiceData(TiXmlElement* JuPedSim)
                     if (rout->Attribute("router_id"))
                     {
                         QString value = rout->Attribute("router_id");
-                        ui->lineEdit_route_choice_01->setText(value);
+//                        ui->lineEdit_route_choice_01->setText(value);
                     }
                 }
                 if (desc == "global_shortest")
@@ -3667,7 +3247,7 @@ void InifileWidget::ReadRouteChoiceData(TiXmlElement* JuPedSim)
                     if (rout->Attribute("router_id"))
                     {
                         QString value = rout->Attribute("router_id");
-                        ui->lineEdit_route_choice_02->setText(value);
+//                        ui->lineEdit_route_choice_02->setText(value);
                     }
                     if (rout->FirstChild("parameters"))
                     {
@@ -3684,7 +3264,7 @@ void InifileWidget::ReadRouteChoiceData(TiXmlElement* JuPedSim)
                 if (desc == "cognitive_map")
                 {
                     QString value = rout->Attribute("router_id");
-                    ui->lineEdit_route_choice_04->setText(value);
+//                    ui->lineEdit_route_choice_04->setText(value);
 
                     int counter = 0;
                     for (TiXmlElement* sens = rout->FirstChild("sensors")->FirstChildElement("sensor");
@@ -3763,7 +3343,6 @@ void InifileWidget::on_pushButton_read_clicked()
     {
         return;
     }
-    file.close();
 
     //Load data
     TiXmlDocument doc;
@@ -3776,12 +3355,6 @@ void InifileWidget::on_pushButton_read_clicked()
     //header
     ReadHeaderData(JuPedSim);
 
-    //traffic_constraints
-    ReadTrafficData(JuPedSim);
-
-    //routing_information
-    ReadRoutingData(JuPedSim);
-
     //agents information and distribution
     ReadAgentData(JuPedSim);
 
@@ -3790,4 +3363,124 @@ void InifileWidget::on_pushButton_read_clicked()
 
     //route_choice_models
     ReadRouteChoiceData(JuPedSim);
+}
+
+/*
+    Since v0.8.8
+    Get geometry file name
+ */
+
+void InifileWidget::pushButton_GeomeryClicked()
+{
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose Geometry"),""
+            ,tr("XML-Files (*.xml)"));
+
+    ui->lineEdit_general_07->setText(fileName);
+}
+
+void InifileWidget::pushButton_GoalClicked()
+{
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose goals"),""
+            ,tr("XML-Files (*.xml)"));
+
+    ui->lineEdit_GoalFile->setText(fileName);
+}
+
+void InifileWidget::pushButton_SourceClicked()
+{
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose sources"),""
+            ,tr("XML-Files (*.xml)"));
+
+    ui->lineEdit_SourceFile->setText(fileName);
+}
+
+void InifileWidget::pushButton_TrafficClicked()
+{
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose trffic"),""
+            ,tr("XML-Files (*.xml)"));
+
+    ui->lineEdit_TrafficFile->setText(fileName);
+}
+
+/*
+<routing>
+    <goals>
+        <goal id="0" final="false" caption="goal 1">
+            <polygon>
+                <vertex px="-5.0" py="-5.0" />
+                <vertex px="-5.0" py="-2.0" />
+                <vertex px="-3.0" py="-2.0" />
+                <vertex px="-3.0" py="-5.0" />
+                <vertex px="-5.0" py="-5.0" />
+            </polygon>
+        </goal>
+        <file>goals.xml</file>
+    </goals>
+</routing>
+*/
+
+void InifileWidget::writeRoutingData(QXmlStreamWriter *stream, QFile &file)
+{
+    stream->writeComment("routing");
+    stream->writeStartElement("routing");
+
+    stream->writeStartElement("goals");
+    QList<JPSGoal *> goallist = dataManager->getGoallist();
+    dataManager->writeGoals(stream, goallist);
+
+    auto goal_FileName = ui->lineEdit_GoalFile->text().split("/").last();
+    stream->writeStartElement("file");
+    stream->writeCharacters(goal_FileName);
+    stream->writeEndElement(); //end files
+    stream->writeEndElement(); //end goals
+    stream->writeEndElement(); //end routing
+}
+
+/*
+    since v0.8.8
+
+    <traffic_constraints>
+        <doors>
+          <door trans_id="1" caption="NaN" state="open" />
+        </doors>
+        <file>traffic.xml</file>
+    </traffic_constraints>
+*/
+
+void InifileWidget::writeTrafficData(QXmlStreamWriter *stream, QFile &file)
+{
+    stream->writeComment("traffic information: e.g closed doors or smoked rooms");
+    stream->writeStartElement("traffic_constraints");
+
+    stream->writeStartElement("doors");
+    QList<jpsCrossing *> crossings = dataManager->get_crossingList();
+    QList<jpsCrossing *> doorlist;
+
+    for(jpsCrossing *crossing:crossings)
+    {
+        if(crossing->IsExit())
+            doorlist.append(crossing);
+    }
+
+    dataManager->writeTraffics(stream, doorlist);
+
+    auto traffic_FileName = ui->lineEdit_TrafficFile->text().split("/").last();
+    stream->writeStartElement("file");
+    stream->writeCharacters(traffic_FileName);
+    stream->writeEndElement(); //end files
+    stream->writeEndElement(); //end doors
+    stream->writeEndElement(); //end traffic_constraints
+}
+
+void InifileWidget::pushButton_RoutingClicked()
+{
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose Routing"),""
+            ,tr("XML-Files (*.xml)"));
+
+    ui->lineEdit_route_choice_03->setText(fileName);
+}
+
+void InifileWidget::readTrafficFile(QFile &file)
+{
+//TODO: do this in v0.8.9
 }

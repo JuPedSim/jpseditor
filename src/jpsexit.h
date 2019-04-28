@@ -21,8 +21,8 @@
  * along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
  *
  * \section Description
- * This class is representing an exit to the outside. This class will vanish in the nearer future since the class
- * jpscrossing will overtake the objectives of this class.
+ * This class is representing an exit to the outside.
+ * This class will vanish in the nearer future since the class jpscrossing will overtake the objectives of this class.
  *
  **/
 

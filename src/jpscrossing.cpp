@@ -30,7 +30,6 @@
 #include <iostream>
 #include <QDebug>
 
-
 jpsCrossing::jpsCrossing(jpsLineItem *line)
 {
     cLine=line;
@@ -68,16 +67,40 @@ void jpsCrossing::change_name(QString name)
     cName=name;
 }
 
+bool jpsCrossing::isState() const {
+    return state;
+}
+
+void jpsCrossing::setState(bool state) {
+    jpsCrossing::state = state;
+}
+
+QString jpsCrossing::getMaxAgents() const {
+    return max_agents;
+}
+
+void jpsCrossing::setMaxAgents(QString maxAgents) {
+    max_agents = maxAgents;
+}
+
+QString jpsCrossing::getOutflow() const {
+    return outflow;
+}
+
+void jpsCrossing::setOutflow(QString outflow) {
+    jpsCrossing::outflow = outflow;
+}
+
 void jpsCrossing::add_rooms(jpsRoom *room1, jpsRoom *room2)
 {
      qDebug("Enter jpsCrossing::add_rooms");
      qDebug("\t room1 = <%s> of type <%s>", 
             room1->get_name().toStdString().c_str(),
-            room1->get_type().toStdString().c_str()
-          );
+            room1->get_type().toStdString().c_str());
     roomList.clear();
     roomList.push_back(room1);
     room1->AddDoor(this);
+
     if(room1->get_type().toUpper() != "STAIR")  // assuming a crossing can
                                                //  not separate two stairs
          this->set_elevation(room1->get_elevation());
@@ -86,12 +109,11 @@ void jpsCrossing::add_rooms(jpsRoom *room1, jpsRoom *room2)
     {
          qDebug("\t room2 = <%s> of type <%s>", 
                 room2->get_name().toStdString().c_str(),
-                room2->get_type().toStdString().c_str()
-              );
+                room2->get_type().toStdString().c_str());
          if(room2->get_type().toUpper() != "STAIR")
               this->set_elevation(room2->get_elevation());
         roomList.push_back(room2);
-       room2->AddDoor(this);
+        room2->AddDoor(this);
     }
     qDebug("Leave jpsCrossing::add_rooms");
 }

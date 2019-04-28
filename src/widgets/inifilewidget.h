@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "src/tinyxml/tinyxml.h"
+#include "src/datamanager.h"
 
 namespace Ui {
 class InifileWidget;
@@ -13,19 +14,15 @@ class InifileWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit InifileWidget(QWidget *parent = nullptr);
+    explicit InifileWidget(QWidget *parent = nullptr, jpsDatamanager* dmanager = nullptr);
     ~InifileWidget();
 
-
-
-private slots:
+public slots:
     //Inside Inifilewidget
     void on_pushButton_write_clicked();
     void on_pushButton_read_clicked();
 
     //Inside Tab General
-    void on_checkBox_general_1_clicked();
-    void on_checkBox_general_2_clicked();
 
     //Inside Tab Groups
     void on_spinBox_groups_1_valueChanged(int);
@@ -38,19 +35,22 @@ private slots:
     void on_spinBox_agents_gradnav_1_valueChanged(int);
     void on_spinBox_agents_krausz_1_valueChanged(int);
 
-    //Inside Tab Constraints
-    void on_spinBox_constraints_1_valueChanged(int);
-    void on_spinBox_constraints_2_valueChanged(int);
-
-    //Inside Tab Goals
-    void on_spinBox_goals_1_valueChanged(int);
+    //External file
+    void pushButton_GeomeryClicked();
+    void pushButton_GoalClicked();
+    void pushButton_SourceClicked();
+    void pushButton_TrafficClicked();
+    void pushButton_RoutingClicked();
 
 private:
     Ui::InifileWidget *ui;
 
+    jpsDatamanager *dataManager;
+
     bool CheckHeaderData();
     bool CheckTrafficData();
     bool CheckRoutingData();
+    bool CheckSourceData();
     bool CheckAgentData();
     bool CheckModelGcfmData();
     bool CheckAgentGcfmData();
@@ -64,24 +64,26 @@ private:
     bool CheckAgentKrauData();
     bool CheckRouteChoiceData();
 
-    QString WriteHeaderData();
-    QString WriteTrafficData();
-    QString WriteRoutingData();
-    QString WriteAgentData();
-    QString WriteModelGcfmData();
-    QString WriteModelGompData();
-    QString WriteModelTordData();
-    QString WriteModelGradData();
-    QString WriteModelKrauData();
-    QString WriteRouteChoiceData();
+    void writeHeaderData(QXmlStreamWriter *stream, QFile &file);
+    void writeRoutingData(QXmlStreamWriter *stream, QFile &file);
+    void writeFFGlobalShortestModel(QXmlStreamWriter *stream, QFile &file);
+    void writeGlobalShortestModel(QXmlStreamWriter *stream, QFile &file);
+    void writeCognitiveMap(QXmlStreamWriter *stream, QFile &file);
+    void writeTrafficData(QXmlStreamWriter *stream, QFile &file);
+    void writeAgentData(QXmlStreamWriter *stream, QFile &file);
+    void writeModelGcfmData(QXmlStreamWriter *stream, QFile &file);
+    void writeModelGompData(QXmlStreamWriter *stream, QFile &file);
+    void writeModelTordData(QXmlStreamWriter *stream, QFile &file);
+    void writeModelGradData(QXmlStreamWriter *stream, QFile &file);
+    void writeModelKrauData(QXmlStreamWriter *stream, QFile &file);
+    void writeRouteChoiceData(QXmlStreamWriter *stream, QFile &file);
 
     void ReadJuPedSimData(TiXmlElement* JuPedSim);
     void ReadHeaderData(TiXmlElement* JuPedSim);
-    void ReadTrafficData(TiXmlElement* JuPedSim);
-    void ReadRoutingData(TiXmlElement* JuPedSim);
     void ReadAgentData(TiXmlElement* JuPedSim);
     void ReadModelData(TiXmlElement* JuPedSim);
     void ReadRouteChoiceData(TiXmlElement* JuPedSim);
+    void readTrafficFile(QFile &file);
 };
 
 #endif // INIFILEWIDGET_H

@@ -108,11 +108,20 @@ public:
     void writeSourceXML(QFile &file);
     void writeSourceHeader(QXmlStreamWriter *stream);
     void writeSources(QXmlStreamWriter *stream, QList<JPSSource *>& sourcelist);
+    const QList<JPSSource *> &getSourcelist() const;
 
 
     //Goals TODO: write goals by a writer class
     void writeGoalXML(QFile &file);
     void writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *>& goallist);
+    const QList<JPSGoal *> &getGoallist();
+
+    //Traffic
+    void writeTrafficXML(QFile &file);
+    void writeTraffics(QXmlStreamWriter *stream, QList<jpsCrossing *> const &doorlist);
+    bool readTrafficXML(QFile &file);
+    void readDoor(QXmlStreamReader &xmlReader);
+
 
     void remove_all();
     void remove_marked_lines();
@@ -201,6 +210,8 @@ public:
 
     // read line file
     bool ReadLineFile(QFile &file);
+
+
 
 //    //Show Cognitive Map
 //    void ShowCMapFrame(const int& frame) const;

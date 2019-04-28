@@ -179,9 +179,6 @@ public:
     void SetGrid(QString grid);
     void ChangeGridSize(const qreal& factor);
 
-    QList<JPSSource *> getSources();
-    QList<JPSGoal *> getGoals();
-
 public slots:
     //Landmarks/Regions
     void StatPositionDef();
@@ -203,6 +200,9 @@ public slots:
     void changeGoal(int index);
     void deleteGoal(int index);
     void seleteGoal(const QModelIndex &index);
+
+    QList<JPSSource *> getSources();
+    QList<JPSGoal *> getGoals();
 
 protected:
     //Mouse events

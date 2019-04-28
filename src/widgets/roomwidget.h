@@ -102,6 +102,8 @@ protected slots:
 //    void autoAssignExits();
     void ChangeRoomType();
 
+    void applyCrossing();
+
 
 
 

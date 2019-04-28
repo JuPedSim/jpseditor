@@ -53,11 +53,6 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     show_obstacles();
     showLayersInfo();
 
-
-    //temporary uncommented
-    ui->auto_assign_doors->setVisible(false);
-    //ui->auto_assign_exits->setVisible(false);
-
     // roomClasses
     ui->classBox->addItem("Not specified");
     ui->classBox->addItem("Corridor");
@@ -89,7 +84,9 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     //connect(ui->highlight,SIGNAL(clicked(bool)),this,SLOT(highlight_room()));
     connect(ui->classBox,SIGNAL(activated(int)),this,SLOT(ChangeRoomType()));
     connect(ui->classBox,SIGNAL(currentIndexChanged(int)),this,SLOT(ChangeRoomType()));
+
     //tab crossing
+    connect(ui->pushButton_apply, SIGNAL(clicked(bool)), this, SLOT(applyCrossing()));
     connect(ui->addCrossingButton,SIGNAL(clicked(bool)),this,SLOT(new_crossing()));
     connect(ui->crossingList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(enable_roomSelectionCrossings()));
     connect(ui->roomBox_from,SIGNAL(activated(int)),this,SLOT(add_rooms_to_crossing()));
@@ -97,6 +94,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     connect(ui->deleteCrossingButton,SIGNAL(clicked(bool)),this,SLOT(delete_crossing()));
     connect(ui->crossingList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(select_crossing()));
     //connect(ui->auto_assign_doors,SIGNAL(clicked(bool)),this,SLOT(autoAssignDoors()));
+
     //tab exit
 //    connect(ui->addExitButton,SIGNAL(clicked(bool)),this,SLOT(new_exit()));
 //    connect(ui->exitList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(enable_roomSelectionExits()));
@@ -390,7 +388,7 @@ void roomWidget::new_crossing()
 
 void roomWidget::enable_roomSelectionCrossings()
 {
-     qDebug("Enter roomWidget::enable_roomSelectionCrossings");
+    qDebug("Enter roomWidget::enable_roomSelectionCrossings");
     if (datamanager->get_crossingList().size()>0)
     {
         ui->roomBox_from->setEnabled(true);
@@ -435,6 +433,16 @@ void roomWidget::enable_roomSelectionCrossings()
                 {
                     add_rooms_to_crossing();
                 }
+
+                //show parameters
+                if(datamanager->get_crossingList()[cCrossingRow]->isState())
+                    ui->stateComboBox->setCurrentIndex(0);
+                else
+                    ui->stateComboBox->setCurrentIndex(1);
+
+                ui->maxAgentsLineEdit->setText(datamanager->get_crossingList()[cCrossingRow]->getMaxAgents());
+                ui->outflowLineEdit->setText(datamanager->get_crossingList()[cCrossingRow]->getOutflow());
+
             }
         }
     }
@@ -457,8 +465,8 @@ void roomWidget::disable_roomSelectionCrossings()
 
 void roomWidget::add_rooms_to_crossing()
 {
-     qDebug("Enter roomWidget::add_rooms_to_crossing");
-    if (ui->crossingList->currentItem()!=0L)
+    qDebug("Enter roomWidget::add_rooms_to_crossing");
+    if (ui->crossingList->currentItem() != nullptr)
     {
         int cCrossingRow=ui->crossingList->currentRow();
         qDebug("\t cCrossingRow = %d", cCrossingRow);
@@ -499,7 +507,6 @@ void roomWidget::delete_crossing()
         datamanager->remove_crossing(datamanager->get_crossingList()[index]);
         ui->crossingList->setCurrentRow(-1);
         this->show_crossings();
-
     }
 }
 
@@ -524,7 +531,6 @@ void roomWidget::new_exit()
         datamanager->new_exit(graphview->get_markedLines());
     }
     show_exits();
-
 }
 
 void roomWidget::enable_roomSelectionExits()
@@ -1210,4 +1216,34 @@ void roomWidget::showLayersInfo()
         ui->layerListWidget->addItem(layerinfo);
     }
     qDebug("Layer ListWidget is updated!");
+}
+
+/*
+    Since v0.8.8
+
+    Save crossing data into datamanager
+ */
+void roomWidget::applyCrossing()
+{
+    qDebug("Enter roomWidget::applyCrossing");
+    if (ui->crossingList->currentItem() != nullptr)
+    {
+        int cCrossingRow=ui->crossingList->currentRow();
+
+        QString state = ui->stateComboBox->currentText();
+        QString max_agents = ui->maxAgentsLineEdit->text();
+        QString outflow = ui->outflowLineEdit->text();
+
+        if(state == "Open")
+        {
+            datamanager->get_crossingList()[cCrossingRow]->setState(true);
+        } else
+        {
+            datamanager->get_crossingList()[cCrossingRow]->setState(false);
+        }
+
+        datamanager->get_crossingList()[cCrossingRow]->setMaxAgents(max_agents);
+        datamanager->get_crossingList()[cCrossingRow]->setOutflow(outflow);
+    }
+    qDebug("Leave roomWidget::applyCrossing");
 }
