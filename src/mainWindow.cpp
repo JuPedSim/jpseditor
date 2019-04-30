@@ -213,20 +213,15 @@ MWindow :: MWindow()
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(en_disableExit()));
     connect(actionHLine,SIGNAL(triggered(bool)),this,SLOT(en_disableHLine()));
     connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
-    connect(actionSource, SIGNAL(toggled(bool)),this,SLOT(sourceButtonClicked()));
-    connect(actionEditMode,SIGNAL(toggled(bool)),this,SLOT(editModeButtonClicked()));
-    connect(actionGoal,SIGNAL(toggled(bool)),this,SLOT(goalButtionClicked()));
+    connect(actionSource, SIGNAL(triggered(bool)),this,SLOT(sourceButtonClicked()));
+    connect(actionEditMode,SIGNAL(triggered(bool)),this,SLOT(editModeButtonClicked()));
+    connect(actionGoal,SIGNAL(triggered(bool)),this,SLOT(goalButtionClicked()));
 
 //    connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
 //    connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
 //    connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
 //    connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
-
-    sourceWidget = nullptr;
-    sourceDockWidget = nullptr;
-
-    goalWidget = nullptr;
-    goalDockWidget = nullptr;
+    propertyDockWidget = nullptr;
 
     //object snapping
     objectsnapping = {};
@@ -875,17 +870,10 @@ void MWindow::define_landmark()
 
 void MWindow::en_selectMode()
 {
-    mview->disable_drawing();
-
-//    actionSelect_Mode->setChecked(true);
-
-//    actionWall->setChecked(false);
-//    actionDoor->setChecked(false);
-//    actionExit->setChecked(false);
-//    actionHLine->setChecked(false);
-//    actionLandmark->setChecked(false);
-
+    actionSelect_Mode->setChecked(true);
     actionCopy->setChecked(false);
+
+    mview->disable_drawing();
     length_edit->clearFocus();
 }
 
@@ -1047,25 +1035,46 @@ void MWindow::on_actionZoom_Extents_triggered()
 
 void MWindow::sourceButtonClicked()
 {
-    mview->enableSourceMode();
-
-
-    // source dochwidget
-    if(sourceDockWidget == nullptr && actionSource->isChecked())
+    if(propertyDockWidget == nullptr)
     {
-        sourceDockWidget = new QDockWidget(tr("Sources"), this);
-        sourceDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-        sourceDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+        //source widget off, dockwidget off -> open source widget
+        mview->enableSourceMode();
 
-        sourceWidget = new SourceWidget(this, mview, this->dmanager);
-        addDockWidget(Qt::RightDockWidgetArea, sourceDockWidget);
-        sourceDockWidget->setWidget(sourceWidget);
+        propertyDockWidget = new QDockWidget(tr("Sources"), this);
+        propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+        auto *sourceWidget = new SourceWidget(this, mview, this->dmanager);
+        addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+        propertyDockWidget->setWidget(sourceWidget);
+    } else if (propertyDockWidget != nullptr && propertyDockWidget->windowTitle() == "Sources")
+    {
+        // goal widget on, dockwidget on -> close goal widget
+        mview->disable_drawing();
+        actionSelect_Mode->setChecked(true);
+
+        propertyDockWidget->close(); //close() has deleted pointer
+        propertyDockWidget = nullptr;
+
+
+    } else if (propertyDockWidget != nullptr && propertyDockWidget->windowTitle() != "Sources")
+    {
+        // goal widget off, dockwidget on -> close other widget, open goal widget
+        propertyDockWidget->close();
+        propertyDockWidget = nullptr;
+
+        mview->enableSourceMode();
+
+        propertyDockWidget = new QDockWidget(tr("Sources"), this);
+        propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+        auto *sourceWidget = new SourceWidget(this, mview, this->dmanager);
+        addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+        propertyDockWidget->setWidget(sourceWidget);
+
     } else
     {
-        sourceDockWidget->close(); //close() has deleted pointer
-        sourceDockWidget = nullptr;
-        delete sourceWidget;
-        sourceWidget = nullptr;
     }
 }
 
@@ -1083,24 +1092,41 @@ void MWindow::editModeButtonClicked()
 
 void MWindow::goalButtionClicked()
 {
-    mview->enableGoalMode();
-
-    // source dochwidget
-    if(goalDockWidget == nullptr && actionGoal->isChecked())
+    if(propertyDockWidget == nullptr)
     {
-        goalDockWidget = new QDockWidget(tr("Sources"), this);
-        goalDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-        goalDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+        //goal widget off, dockwidget off -> open goal widget
+        mview->enableGoalMode();
 
-        goalWidget = new GoalWidget(this, mview, this->dmanager);
-        addDockWidget(Qt::RightDockWidgetArea, goalDockWidget);
-        goalDockWidget->setWidget(goalWidget);
+        propertyDockWidget = new QDockWidget(tr("Goals"), this);
+        propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+        auto *goalWidget = new GoalWidget(this, mview, this->dmanager);
+        addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+        propertyDockWidget->setWidget(goalWidget);
+    } else if (propertyDockWidget != nullptr && propertyDockWidget->windowTitle() == "Goals")
+    {
+        // goal widget on, dockwidget on -> close goal widget
+        mview->disable_drawing();
+        actionSelect_Mode->setChecked(true);
+
+        propertyDockWidget->close(); //close() has deleted pointer
+        propertyDockWidget = nullptr;
+    } else if (propertyDockWidget != nullptr && propertyDockWidget->windowTitle() != "Goals")
+    {
+        // goal widget off, dockwidget on -> close other widget, open goal widget
+        propertyDockWidget->close();
+        propertyDockWidget = nullptr;
+
+        propertyDockWidget = new QDockWidget(tr("Goals"), this);
+        propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+        auto *goalWidget = new GoalWidget(this, mview, this->dmanager);
+        addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+        propertyDockWidget->setWidget(goalWidget);
     } else
     {
-        goalDockWidget->close(); //close() has deleted pointer
-        goalDockWidget = nullptr;
-        delete goalWidget;
-        goalWidget = nullptr;
     }
 }
 

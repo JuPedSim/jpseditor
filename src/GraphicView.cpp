@@ -1160,13 +1160,6 @@ void jpsGraphicsView::select_line(jpsLineItem *mline)
 
 void jpsGraphicsView::disable_drawing()
 {
-/*    statWall=false;
-    statDoor=false;
-    statExit=false;
-    statLandmark=false;
-    _statLineEdit=false;
-    _statHLine=false;*/
-
     _statCopy=0;
 
     drawingMode = Selecting;

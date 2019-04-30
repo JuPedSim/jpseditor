@@ -63,11 +63,7 @@ private:
     widgetLandmark* lwidget;
     InifileWidget * inifileWidget;
 
-    QDockWidget *sourceDockWidget;
-    SourceWidget *sourceWidget;
-
-    QDockWidget *goalDockWidget;
-    GoalWidget *goalWidget;
+    QDockWidget *propertyDockWidget;
 
     SnappingOptions* snappingOptions;
 //    WidgetSettings* _settings;
