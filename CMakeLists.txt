@@ -128,7 +128,6 @@ set( SRCS
     src/XML/goalreader.cpp
     src/XML/sourcereader.cpp
 
-
     dxflib/src/dl_writer_ascii.cpp
     dxflib/src/dl_dxf.cpp
     src/UndoFramework/action.cpp

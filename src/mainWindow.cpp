@@ -108,9 +108,6 @@ MWindow :: MWindow()
     statusBar()->addPermanentWidget(x_edit);
     statusBar()->addPermanentWidget(label_y);
     statusBar()->addPermanentWidget(y_edit);
-//    statusBar()->addPermanentWidget(label1);
-//    statusBar()->addPermanentWidget(length_edit);
-//    statusBar()->addPermanentWidget(label2);
 
     //Timer needed for autosaving function
     // timer will trigger autosave every 5th minute
@@ -150,10 +147,6 @@ MWindow :: MWindow()
     connect(actionRotate_90_deg_clockwise,SIGNAL(triggered(bool)),this,SLOT(rotate()));
     connect(actionShow_Point_of_Origin,SIGNAL(triggered(bool)),this,SLOT(ShowOrigin()));
 
-
-    // Length edit
-//    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(send_length()));
-//    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(ScaleLines()));
     // X Y edit
     connect(x_edit,SIGNAL(returnPressed()),this,SLOT(send_xy()));
     connect(y_edit,SIGNAL(returnPressed()),this,SLOT(send_xy()));
@@ -206,7 +199,6 @@ MWindow :: MWindow()
     drawingActionGroup->addAction(actionEditMode);
     drawingActionGroup->addAction(actionGoal);
 
-
     connect(actionSelect_Mode,SIGNAL(triggered(bool)),this,SLOT(en_selectMode()));
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
     connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(en_disableDoor()));
@@ -217,10 +209,7 @@ MWindow :: MWindow()
     connect(actionEditMode,SIGNAL(triggered(bool)),this,SLOT(editModeButtonClicked()));
     connect(actionGoal,SIGNAL(triggered(bool)),this,SLOT(goalButtionClicked()));
 
-//    connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
-//    connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
-//    connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
-//    connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
+    // right dock widget
     propertyDockWidget = nullptr;
 
     //object snapping
@@ -233,7 +222,6 @@ MWindow :: MWindow()
     objectsnapping.append(Intersections_point);
     objectsnapping.append(Center_point);
     objectsnapping.append(SelectedLine_point);
-
 }
 
 MWindow::~MWindow()
@@ -1013,6 +1001,11 @@ QMap<QString, QString> MWindow::loadSettings()
 void MWindow::on_actionNew_Inifile_triggered()
 {
     inifileWidget = new InifileWidget(this, dmanager);
+
+    // status bar
+    connect(inifileWidget, SIGNAL(inifileLoaded(QString, int)),
+            this, SLOT(showStatusBarMessage(QString, int)));
+
     inifileWidget->show();
     qDebug()<< "MWindow::on_actionNew_Inifile_triggered(): inifile widget is showed!";
 }
@@ -1162,4 +1155,14 @@ void MWindow::openTraffic(QString fileName)
     } else
     {
     }
+}
+
+/*
+    since v0.8.8
+
+    Receive message from other widgets, show on status bar
+ */
+void MWindow::showStatusBarMessage(QString msg, int duration)
+{
+    statusBar()->showMessage(tr(msg.toStdString().data()), duration);
 }

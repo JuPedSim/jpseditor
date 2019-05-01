@@ -42,6 +42,26 @@ public slots:
     void pushButton_TrafficClicked();
     void pushButton_RoutingClicked();
 
+    //Read inifile
+    bool readInifile(QXmlStreamReader *reader);
+    QString errorString(QXmlStreamReader *reader) const;
+    void readJuPedSim(QXmlStreamReader *reader);
+    void readSeed(QXmlStreamReader *reader);
+    void readGeometry(QXmlStreamReader *reader);
+    void readMaxSimTime(QXmlStreamReader *reader);
+    void readTrajectories(QXmlStreamReader *reader);
+    void readTrajectoriesFile(QXmlStreamReader *reader);
+    void readLogfile(QXmlStreamReader *reader);
+    void readTrafficConstraints(QXmlStreamReader *reader);
+    void readTrafficFile(QXmlStreamReader *reader);
+    void readRouting(QXmlStreamReader *reader);
+    void readRoutingFile(QXmlStreamReader *reader);
+    void readAgents(QXmlStreamReader *reader);
+    void readAgentsDistribution(QXmlStreamReader *reader);
+    void readAgentsSources(QXmlStreamReader *reader);
+    void readGroup(QXmlStreamReader *reader);
+    void readSourceFile(QXmlStreamReader *reader);
+
 private:
     Ui::InifileWidget *ui;
 
@@ -83,7 +103,9 @@ private:
     void ReadAgentData(TiXmlElement* JuPedSim);
     void ReadModelData(TiXmlElement* JuPedSim);
     void ReadRouteChoiceData(TiXmlElement* JuPedSim);
-    void readTrafficFile(QFile &file);
+
+signals:
+    void inifileLoaded(QString, int);
 };
 
 #endif // INIFILEWIDGET_H

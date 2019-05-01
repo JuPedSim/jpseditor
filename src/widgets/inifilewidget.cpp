@@ -814,7 +814,6 @@ void InifileWidget::writeHeaderData(QXmlStreamWriter *stream, QFile &file)
     stream->writeCharacters(ui->lineEdit_general_06->text());
     stream->writeEndElement();
 
-
     stream->writeComment("trajectories file and format");
     stream->writeStartElement("trajectories");
     stream->writeAttribute("format",ui->comboBox_general_02->currentText());
@@ -3332,37 +3331,264 @@ void InifileWidget::ReadRouteChoiceData(TiXmlElement* JuPedSim)
     }
 }
 
-
 // Read ini.xml on button push
 void InifileWidget::on_pushButton_read_clicked()
 {
-    QString file_name = QFileDialog::getOpenFileName(this,tr("Read ini"),"",tr("XML-Files (*.xml)"));
-    QFile file(file_name);
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Read ini"),"",tr("XML-Files (*.xml)"));
+
+    if (fileName.isEmpty())
+        return;
+
+    QFile file(fileName);
+    auto reader = new QXmlStreamReader(&file);
 
     if (!file.open(QIODevice::ReadOnly|QIODevice::Text))
     {
+        QMessageBox::warning(this, tr("JPSeditor"),
+                             tr("Cannot read file %1:\n%2.")
+                                     .arg(QDir::toNativeSeparators(fileName),
+                                          file.errorString()));
         return;
     }
 
-    //Load data
-    TiXmlDocument doc;
-    doc.LoadFile(file_name.toStdString());
-    TiXmlElement* JuPedSim = doc.RootElement();
+    if (!readInifile(reader)) {
+        QMessageBox::warning(this, tr("JPSeditor"),
+                             tr("Parse error in file %1:\n\n%2")
+                                     .arg(QDir::toNativeSeparators(fileName),
+                                          errorString(reader)));
+    } else {
+        emit inifileLoaded(tr("inifile loaded"), 2000);
+    }
+}
 
-    //JuPedSim
-    ReadJuPedSimData(JuPedSim);
+bool InifileWidget::readInifile(QXmlStreamReader *reader)
+{
+    if (reader->readNextStartElement())
+    {
+        if (reader->name() == QLatin1String("JuPedSim")
+            && reader->attributes().value("version") == QLatin1String("0.8"))
+        {
+            readJuPedSim(reader);
+        }
+        else {
+            reader->raiseError(QObject::tr("The file is not an JuPedSim version 0.8 file."));
+        }
+    }
 
-    //header
-    ReadHeaderData(JuPedSim);
+    return reader->error();
+}
 
-    //agents information and distribution
-    ReadAgentData(JuPedSim);
+QString InifileWidget::errorString(QXmlStreamReader *reader) const
+{
+    return QObject::tr("%1\nLine %2, column %3")
+            .arg(reader->errorString())
+            .arg(reader->lineNumber())
+            .arg(reader->columnNumber());
+}
 
-    //operational model and agent parameters
-    ReadModelData(JuPedSim);
+void InifileWidget::readJuPedSim(QXmlStreamReader *reader)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("JuPedSim"));
 
-    //route_choice_models
-    ReadRouteChoiceData(JuPedSim);
+    QString project = reader->attributes().value("project").toString();
+    QString version = reader->attributes().value("version").toString();
+
+    ui->lineEdit_general_01->setText(project);
+    ui->lineEdit_general_03->setText(version);
+
+    while (reader->readNextStartElement()) {
+        if (reader->name() == QLatin1String("seed"))
+            readSeed(reader);
+        else if (reader->name() == QLatin1String("geometry"))
+            readGeometry(reader);
+        else if (reader->name() == QLatin1String("max_sim_time"))
+            readMaxSimTime(reader);
+        else if (reader->name() == QLatin1String("trajectories"))
+            readTrajectories(reader);
+        else if (reader->name() == QLatin1String("logfile"))
+            readLogfile(reader);
+        else if (reader->name() == QLatin1String("traffic_constraints"))
+            readTrafficConstraints(reader);
+        else if (reader->name() == QLatin1String("routing"))
+            readRouting(reader);
+        else if (reader->name() == QLatin1String("agents"))
+            readAgents(reader);
+        else
+            reader->skipCurrentElement();
+    }
+}
+
+void InifileWidget::readSeed(QXmlStreamReader *reader)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("seed"));
+
+    QString title = reader->readElementText();
+    ui->lineEdit_general_05->setText(title);
+}
+
+void InifileWidget::readGeometry(QXmlStreamReader *reader)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("geometry"));
+
+    QString title = reader->readElementText();
+    ui->lineEdit_general_07->setText(title);
+}
+
+void InifileWidget::readMaxSimTime(QXmlStreamReader *reader)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("max_sim_time"));
+
+    QString title = reader->readElementText();
+    ui->lineEdit_general_06->setText(title);
+}
+
+void InifileWidget::readTrajectories(QXmlStreamReader *reader)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("trajectories"));
+
+    QString format = reader->attributes().value("format").toString();
+    QString fps = reader->attributes().value("fps").toString();
+    QString color_mode = reader->attributes().value("color_mode").toString();
+
+    ui->comboBox_general_02->setCurrentText(format);
+    ui->lineEdit_general_10->setText(fps);
+    ui->comboBox_general_03->setCurrentText(color_mode);
+
+    while (reader->readNextStartElement()) {
+        if (reader->name() == QLatin1String("file"))
+            readTrajectoriesFile(reader);
+        else
+            reader->skipCurrentElement();
+    }
+}
+
+void InifileWidget::readTrajectoriesFile(QXmlStreamReader *reader)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("file"));
+
+    QString file = reader->attributes().value("location").toString();
+    ui->lineEdit_general_12->setText(file);
+
+    reader->readElementText(); //move current token to end element, so that readNextStartElement can work fine.
+}
+
+void InifileWidget::readLogfile(QXmlStreamReader *reader)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("logfile"));
+
+    QString logtxt = reader->readElementText();
+    ui->lineEdit_general_08->setText(logtxt);
+}
+
+/*
+    <traffic_constraints>
+        <doors>
+            <door trans_id="1" caption="NaN" state="open" />
+        </doors>
+        <file>traffic.xml</file>
+    </traffic_constraints>
+*/
+void InifileWidget::readTrafficConstraints(QXmlStreamReader *reader)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("traffic_constraints"));
+
+    while (reader->readNextStartElement()) {
+        if (reader->name() == QLatin1String("file"))
+            readTrafficFile(reader);
+        else
+            reader->skipCurrentElement();
+    }
+}
+
+void InifileWidget::readTrafficFile(QXmlStreamReader *reader)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("file"));
+
+    QString file = reader->readElementText();
+    ui->lineEdit_TrafficFile->setText(file);
+}
+
+/*
+    <routing>
+        <goals>
+          <goal id="3" final="true" caption="goal3">
+            <polygon>
+              <vertex px="3.2" py="12.0" />
+              <vertex px="3.2" py="13.0" />
+            </polygon>
+          </goal>
+        </goals>
+        <file>goals.xml</file>
+    </routing>
+*/
+
+void InifileWidget::readRouting(QXmlStreamReader *reader)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("routing"));
+
+    while (reader->readNextStartElement()) {
+        if (reader->name() == QLatin1String("file"))
+            readRoutingFile(reader);
+        else
+            reader->skipCurrentElement();
+    }
+}
+
+void InifileWidget::readRoutingFile(QXmlStreamReader *reader)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("file"));
+
+    QString file = reader->readElementText();
+    ui->lineEdit_GoalFile->setText(file);
+}
+
+/*
+  <agents operational_model_id="3">
+    <agents_distribution>
+      <group group_id="5" room_id="0" subroom_id="0" number="10" router_id="1" agent_parameter_id="1" x_min="3" x_max="5" y_min="3" y_max="5" />
+      <group group_id="0" room_id="0" subroom_id="0" number="0" router_id="1" agent_parameter_id="1" />
+    </agents_distribution>
+
+    <agents_sources>
+      <source_ id="10" caption="new-source" time_min="5" time_max="30" frequency="5" N_create="10" agents_max="300"
+      group_id="0"  x_min="0" x_max="3" y_min="0" y_max="3" percent="0.5" rate="2"  greedy="true"/>
+      <file>sources.xml</file>
+    </agents_sources>
+  </agents>
+*/
+
+void InifileWidget::readAgents(QXmlStreamReader *reader)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("agents"));
+
+    while (reader->readNextStartElement()) {
+        if (reader->name() == QLatin1String("agents_distribution"))
+            readAgentsDistribution(reader);
+        else if (reader->name() == QLatin1String("agents_sources"))
+            readAgentsSources(reader);
+        else
+            reader->skipCurrentElement();
+    }
+}
+
+void InifileWidget::readAgentsDistribution(QXmlStreamReader *reader)
+{
+    //TODO: work later from here!
+}
+
+void InifileWidget::readGroup(QXmlStreamReader *reader)
+{
+
+}
+
+void InifileWidget::readAgentsSources(QXmlStreamReader *reader)
+{
+
+}
+
+void InifileWidget::readSourceFile(QXmlStreamReader *reader)
+{
+
 }
 
 /*
@@ -3400,6 +3626,14 @@ void InifileWidget::pushButton_TrafficClicked()
             ,tr("XML-Files (*.xml)"));
 
     ui->lineEdit_TrafficFile->setText(fileName);
+}
+
+void InifileWidget::pushButton_RoutingClicked()
+{
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose Routing"),""
+            ,tr("XML-Files (*.xml)"));
+
+    ui->lineEdit_route_choice_03->setText(fileName);
 }
 
 /*
@@ -3470,17 +3704,4 @@ void InifileWidget::writeTrafficData(QXmlStreamWriter *stream, QFile &file)
     stream->writeEndElement(); //end files
     stream->writeEndElement(); //end doors
     stream->writeEndElement(); //end traffic_constraints
-}
-
-void InifileWidget::pushButton_RoutingClicked()
-{
-    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose Routing"),""
-            ,tr("XML-Files (*.xml)"));
-
-    ui->lineEdit_route_choice_03->setText(fileName);
-}
-
-void InifileWidget::readTrafficFile(QFile &file)
-{
-//TODO: do this in v0.8.9
 }

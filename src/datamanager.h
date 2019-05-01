@@ -128,7 +128,6 @@ public:
     void set_view(jpsGraphicsView* view);
     jpsGraphicsView* get_view();
 
-
     // Auto Assign
 //    void AutoAssignCrossings();
 //    void AutoAssignExits();

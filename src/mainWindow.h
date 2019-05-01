@@ -177,7 +177,7 @@ protected slots:
     //ESCAPE
     void keyPressEvent(QKeyEvent *event);
 
-
+    void showStatusBarMessage(QString msg, int duration);
 
 private slots:
     void on_actionCopy_triggered();
