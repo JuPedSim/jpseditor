@@ -61,6 +61,23 @@ public slots:
     void readAgentsSources(QXmlStreamReader *reader);
     void readGroup(QXmlStreamReader *reader);
     void readSourceFile(QXmlStreamReader *reader);
+    void readModels(QXmlStreamReader *reader);
+    void readModel(QXmlStreamReader *reader);
+    void readModelParameters(QXmlStreamReader *reader, int modelindex);
+    void readSlover(QXmlStreamReader *reader, int modelindex);
+    void readStepsize(QXmlStreamReader *reader, int modelindex);
+    void readExit(QXmlStreamReader *reader, int modelindex);
+    void readLinkedcells(QXmlStreamReader *reader, int modelindex);
+    void readForcePed(QXmlStreamReader *reader, int modelindex);
+    void readForceWall(QXmlStreamReader *reader, int modelindex);
+    void readAgentParamaters(QXmlStreamReader *reader, int modelindex);
+    void readV0(QXmlStreamReader *reader, int modelindex);
+    void readBmax(QXmlStreamReader *reader, int modelindex);
+    void readBmin(QXmlStreamReader *reader, int modelindex);
+    void readAmin(QXmlStreamReader *reader, int modelindex);
+    void readTau(QXmlStreamReader *reader, int modelindex);
+    void readAtou(QXmlStreamReader *reader, int modelindex);
+    void readT(QXmlStreamReader *reader, int modelindex);
 
 private:
     Ui::InifileWidget *ui;

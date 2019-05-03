@@ -35,7 +35,7 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
-    <number>12</number>
+    <number>6</number>
    </property>
    <widget class="QWidget" name="tab_general">
     <attribute name="title">
@@ -121,7 +121,7 @@
           <item>
            <widget class="QLineEdit" name="lineEdit_general_03">
             <property name="text">
-             <string>4</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -131,7 +131,7 @@
              <string/>
             </property>
             <property name="text">
-             <string>project_name</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -220,7 +220,7 @@
           <item>
            <widget class="QLineEdit" name="lineEdit_general_05">
             <property name="text">
-             <string>100</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -530,11 +530,6 @@
        <height>251</height>
       </rect>
      </property>
-     <row>
-      <property name="text">
-       <string>1</string>
-      </property>
-     </row>
      <column>
       <property name="text">
        <string>Group ID</string>
@@ -610,81 +605,6 @@
        <string>Δ Risk. tol.</string>
       </property>
      </column>
-     <item row="0" column="0">
-      <property name="text">
-       <string>0</string>
-      </property>
-     </item>
-     <item row="0" column="1">
-      <property name="text">
-       <string>1</string>
-      </property>
-     </item>
-     <item row="0" column="2">
-      <property name="text">
-       <string>0</string>
-      </property>
-     </item>
-     <item row="0" column="3">
-      <property name="text">
-       <string>0</string>
-      </property>
-     </item>
-     <item row="0" column="4">
-      <property name="text">
-       <string>1</string>
-      </property>
-     </item>
-     <item row="0" column="5">
-      <property name="text">
-       <string>-1</string>
-      </property>
-     </item>
-     <item row="0" column="6">
-      <property name="text">
-       <string>1</string>
-      </property>
-     </item>
-     <item row="0" column="7">
-      <property name="text">
-       <string>0</string>
-      </property>
-     </item>
-     <item row="0" column="8">
-      <property name="text">
-       <string>1</string>
-      </property>
-     </item>
-     <item row="0" column="9">
-      <property name="text">
-       <string>0</string>
-      </property>
-     </item>
-     <item row="0" column="10">
-      <property name="text">
-       <string>1</string>
-      </property>
-     </item>
-     <item row="0" column="11">
-      <property name="text">
-       <string>0</string>
-      </property>
-     </item>
-     <item row="0" column="12">
-      <property name="text">
-       <string>0</string>
-      </property>
-     </item>
-     <item row="0" column="13">
-      <property name="text">
-       <string>0</string>
-      </property>
-     </item>
-     <item row="0" column="14">
-      <property name="text">
-       <string>0</string>
-      </property>
-     </item>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_model_gcfm">

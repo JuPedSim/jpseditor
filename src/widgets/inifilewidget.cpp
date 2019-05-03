@@ -3413,6 +3413,8 @@ void InifileWidget::readJuPedSim(QXmlStreamReader *reader)
             readRouting(reader);
         else if (reader->name() == QLatin1String("agents"))
             readAgents(reader);
+        else if (reader->name() == QLatin1String("operational_models"))
+            readModels(reader);
         else
             reader->skipCurrentElement();
     }
@@ -3573,23 +3575,424 @@ void InifileWidget::readAgents(QXmlStreamReader *reader)
 
 void InifileWidget::readAgentsDistribution(QXmlStreamReader *reader)
 {
-    //TODO: work later from here!
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("agents_distribution"));
+
+    while (reader->readNextStartElement())
+    {
+        if(reader->name() == QLatin1String("group"))
+            readGroup(reader);
+        else
+            reader->skipCurrentElement();
+    }
 }
 
 void InifileWidget::readGroup(QXmlStreamReader *reader)
 {
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("group"));
 
+    int row = ui->tableWidget_groups_1->rowCount();
+    ui->tableWidget_groups_1->setRowCount(row+1);
+
+    QString group_id = reader->attributes().value("group_id").toString();
+    QTableWidgetItem *id = new QTableWidgetItem(tr("%1").arg(group_id));
+    ui->tableWidget_groups_1->setItem(row, 0, id);
+
+    QString agent_parameter_id = reader->attributes().value("agent_parameter_id").toString();
+    QTableWidgetItem *agent_parameter = new QTableWidgetItem(tr("%1").arg(agent_parameter_id));
+    ui->tableWidget_groups_1->setItem(row, 1, agent_parameter);
+
+    QString room_id = reader->attributes().value("room_id").toString();
+    QTableWidgetItem *room = new QTableWidgetItem(tr("%1").arg(room_id));
+    ui->tableWidget_groups_1->setItem(row, 2, room);
+
+    QString subroom_id = reader->attributes().value("subroom_id").toString();
+    QTableWidgetItem *subroom = new QTableWidgetItem(tr("%1").arg(subroom_id));
+    ui->tableWidget_groups_1->setItem(row, 3, subroom);
+
+    QString number = reader->attributes().value("number").toString();
+    QTableWidgetItem *num = new QTableWidgetItem(tr("%1").arg(number));
+    ui->tableWidget_groups_1->setItem(row, 4, num);
+
+    QString router_id = reader->attributes().value("router_id").toString();
+    QTableWidgetItem *router = new QTableWidgetItem(tr("%1").arg(router_id));
+    ui->tableWidget_groups_1->setItem(row, 6, router);
+
+    QString x_min = reader->attributes().value("x_min").toString();
+    QTableWidgetItem *xmin = new QTableWidgetItem(tr("%1").arg(x_min));
+    ui->tableWidget_groups_1->setItem(row, 7, xmin);
+
+    QString x_max = reader->attributes().value("x_max").toString();
+    QTableWidgetItem *xmax = new QTableWidgetItem(tr("%1").arg(x_max));
+    ui->tableWidget_groups_1->setItem(row, 8, xmax);
+
+    QString y_min = reader->attributes().value("y_min").toString();
+    QTableWidgetItem *ymin = new QTableWidgetItem(tr("%1").arg(y_min));
+    ui->tableWidget_groups_1->setItem(row, 9, ymin);
+
+    QString y_max = reader->attributes().value("y_max").toString();
+    QTableWidgetItem *ymax = new QTableWidgetItem(tr("%1").arg(x_max));
+    ui->tableWidget_groups_1->setItem(row, 10, ymax);
+
+    reader->readElementText();
 }
 
 void InifileWidget::readAgentsSources(QXmlStreamReader *reader)
 {
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("agents_sources"));
 
+
+    while (reader->readNextStartElement()) {
+        if (reader->name() == QLatin1String("file"))
+            readSourceFile(reader);
+        else
+            reader->skipCurrentElement();
+    }
 }
 
 void InifileWidget::readSourceFile(QXmlStreamReader *reader)
 {
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("file"));
+    QString file = reader->readElementText();
+    ui->lineEdit_SourceFile->setText(file);
+}
+
+/*
+    <operational_models>
+        <model operational_model_id="3" description="Tordeux2015">
+            <model_parameters>
+                <solver>euler</solver>
+                <stepsize>0.01</stepsize>
+                <exit_crossing_strategy>2</exit_crossing_strategy>
+                <linkedcells enabled="true" cell_size="2.2" />
+                <force_ped a="5" D="0.1" />
+                <force_wall a="5" D="0.02" />
+            </model_parameters>
+            <agent_parameters agent_parameter_id="1">
+                <v0 mu="1.0" sigma="0.001" />
+                <bmax mu="0.15" sigma="0.00000" />
+                <bmin mu="0.15" sigma="0.00000" />
+                <amin mu="0.15" sigma="0.00000" />
+                <tau mu="0.5" sigma="0.001" />
+                <atau mu="0.0" sigma="0.00000" />
+                <T mu="1" sigma="0.001" />
+            </agent_parameters>
+        </model>
+    </operational_models>
+*/
+
+void InifileWidget::readModels(QXmlStreamReader *reader)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("operational_models"));
+
+    while (reader->readNextStartElement()) {
+        if (reader->name() == QLatin1String("model"))
+            readModel(reader);
+        else
+            reader->skipCurrentElement();
+    }
+}
+
+void InifileWidget::readModel(QXmlStreamReader *reader)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("model"));
+
+    int id = reader->attributes().value("operational_model_id").toInt();
+    reader->readNext();//now is attribute element, move to end element
+
+    // change tab widget to current model
+    ui->comboBox_groups_1->setCurrentIndex(id-1);
+    on_comboBox_groups_1_currentIndexChanged(id-1);
+
+    while (reader->readNextStartElement()) {
+        if (reader->name() == QLatin1String("model_parameters"))
+            readModelParameters(reader, id);
+        if (reader->name() == QLatin1String("agent_parameters"))
+            readAgentParamaters(reader, id);
+        else
+            reader->skipCurrentElement();
+    }
+}
+
+void InifileWidget::readModelParameters(QXmlStreamReader *reader, int modelindex)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("model_parameters"));
+
+    while (reader->readNextStartElement()) {
+        if (reader->name() == QLatin1String("solver"))
+            readSlover(reader, modelindex);
+        else if (reader->name() == QLatin1String("stepsize"))
+            readStepsize(reader, modelindex);
+        else if (reader->name() == QLatin1String("exit_crossing_strategy"))
+            readExit(reader, modelindex);
+        else if (reader->name() == QLatin1String("linkedcells"))
+            readLinkedcells(reader, modelindex);
+        else if (reader->name() == QLatin1String("force_ped"))
+            readForcePed(reader, modelindex);
+        else if (reader->name() == QLatin1String("force_wall"))
+            readForceWall(reader, modelindex);
+        else
+            reader->skipCurrentElement();
+    }
+}
+
+void InifileWidget::readSlover(QXmlStreamReader *reader, int modelindex)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("solver"));
+    QString solver = reader->readElementText();
+
+    switch(modelindex)
+    {
+        case 1:
+            ui->lineEdit_model_gcfm_01->setText(solver);
+            break;
+        case 2:
+            ui->lineEdit_model_gompertz_01->setText(solver);
+            break;
+        case 3:
+            ui->lineEdit_model_tordeux_01->setText(solver);
+            break;
+        case 4:
+            ui->lineEdit_model_gradnav_01->setText(solver);
+            break;
+        case 5:
+            ui->lineEdit_model_krausz_01->setText(solver);
+            break;
+        default:
+            break;
+    }
+}
+
+void InifileWidget::readStepsize(QXmlStreamReader *reader, int modelindex)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("stepsize"));
+    QString stepsize = reader->readElementText();
+
+    switch(modelindex)
+    {
+        case 1:
+            ui->lineEdit_model_gcfm_02->setText(stepsize);
+            break;
+        case 2:
+            ui->lineEdit_model_gompertz_02->setText(stepsize);
+            break;
+        case 3:
+            ui->lineEdit_model_tordeux_02->setText(stepsize);
+            break;
+        case 4:
+            ui->lineEdit_model_gradnav_02->setText(stepsize);
+            break;
+        case 5:
+            ui->lineEdit_model_krausz_02->setText(stepsize);
+            break;
+        default:
+            break;
+    }
+}
+
+void InifileWidget::readExit(QXmlStreamReader *reader, int modelindex)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("exit_crossing_strategy"));
+    QString exit = reader->readElementText();
+
+    switch(modelindex)
+    {
+        case 1:
+            ui->lineEdit_model_gcfm_03->setText(exit);
+            break;
+        case 2:
+            ui->lineEdit_model_gompertz_03->setText(exit);
+            break;
+        case 3:
+            ui->lineEdit_model_tordeux_03->setText(exit);
+            break;
+        case 4:
+            ui->lineEdit_model_gradnav_03->setText(exit);
+            break;
+        case 5:
+            ui->lineEdit_model_krausz_03->setText(exit);
+            break;
+        default:
+            break;
+    }
+}
+
+void InifileWidget::readLinkedcells(QXmlStreamReader *reader, int modelindex)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("linkedcells"));
+
+    QString enabled = reader->attributes().value("enabled").toString();
+    QString cell_size = reader->attributes().value("cell_size").toString();
+
+    reader->readNext();
+
+    switch(modelindex)
+    {
+        case 1:
+        {
+            ui->lineEdit_model_gcfm_04->setText(enabled);
+            ui->lineEdit_model_gcfm_05->setText(cell_size);
+            break;
+        }
+        case 2:
+        {
+            ui->lineEdit_model_gompertz_04->setText(enabled);
+            ui->lineEdit_model_gompertz_05->setText(cell_size);
+            break;
+        }
+        case 3:
+        {
+            ui->lineEdit_model_tordeux_04->setText(enabled);
+            ui->lineEdit_model_tordeux_05->setText(cell_size);
+            break;
+        }
+        case 4:
+        {
+            ui->lineEdit_model_gradnav_04->setText(enabled);
+            ui->lineEdit_model_gradnav_05->setText(cell_size);
+            break;
+        }
+        case 5:
+        {
+            ui->lineEdit_model_krausz_04->setText(enabled);
+            ui->lineEdit_model_krausz_05->setText(cell_size);
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+}
+
+void InifileWidget::readForcePed(QXmlStreamReader *reader, int modelindex)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("force_ped"));
+
+    switch(modelindex)
+    {
+        case 1:
+        {
+            //TODO: add parameters for gcmf
+            break;
+        }
+        case 2:
+        {
+            //TODO: add parameters for gompertz
+            break;
+        }
+        case 3:
+        {
+            QString a = reader->attributes().value("a").toString();
+            QString D = reader->attributes().value("D").toString();
+
+            ui->lineEdit_model_tordeux_06->setText(a);
+            ui->lineEdit_model_tordeux_07->setText(D);
+
+            reader->readNext();
+            break;
+        }
+        case 4:
+        {
+            //TODO: add paramters for gradnav
+            break;
+        }
+        case 5:
+        {
+            //TODO: add parameters for krausz
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
 
 }
+
+void InifileWidget::readForceWall(QXmlStreamReader *reader, int modelindex)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("force_wall"));
+
+    switch(modelindex)
+    {
+        case 1:
+        {
+            //TODO: add parameters for gcmf
+            break;
+        }
+        case 2:
+        {
+            //TODO: add parameters for gompertz
+            break;
+        }
+        case 3:
+        {
+            QString a = reader->attributes().value("a").toString();
+            QString D = reader->attributes().value("D").toString();
+
+            ui->lineEdit_model_tordeux_08->setText(a);
+            ui->lineEdit_model_tordeux_09->setText(D);
+
+            reader->readNext();
+            break;
+        }
+        case 4:
+        {
+            //TODO: add paramters for gradnav
+            break;
+        }
+        case 5:
+        {
+            //TODO: add parameters for krausz
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+}
+
+void InifileWidget::readAgentParamaters(QXmlStreamReader *reader, int modelindex)
+{
+
+}
+
+void InifileWidget::readV0(QXmlStreamReader *reader, int modelindex)
+{
+
+}
+
+void InifileWidget::readBmax(QXmlStreamReader *reader, int modelindex)
+{
+
+}
+
+void InifileWidget::readBmin(QXmlStreamReader *reader, int modelindex)
+{
+
+}
+
+void InifileWidget::readAmin(QXmlStreamReader *reader, int modelindex)
+{
+
+}
+
+void InifileWidget::readTau(QXmlStreamReader *reader, int modelindex)
+{
+
+}
+
+void InifileWidget::readAtou(QXmlStreamReader *reader, int modelindex)
+{
+
+}
+
+void InifileWidget::readT(QXmlStreamReader *reader, int modelindex)
+{
+
+}
+
 
 /*
     Since v0.8.8
