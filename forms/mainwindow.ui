@@ -10,6 +10,12 @@
     <height>600</height>
    </rect>
   </property>
+  <property name="maximumSize">
+   <size>
+    <width>3840</width>
+    <height>2160</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>JPSeditor</string>
   </property>
@@ -95,6 +101,8 @@
     <addaction name="actionDoor"/>
     <addaction name="actionHLine"/>
     <addaction name="actionLandmark"/>
+    <addaction name="actionSource"/>
+    <addaction name="actionGoal"/>
    </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuEdit"/>
@@ -114,15 +122,17 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionSelect_Mode"/>
    <addaction name="actionUndo"/>
    <addaction name="actionRedo"/>
    <addaction name="actionDelete_single_line"/>
    <addaction name="actionClear_all_Rooms_and_Doors"/>
    <addaction name="separator"/>
+   <addaction name="actionSelect_Mode"/>
    <addaction name="actionWall"/>
    <addaction name="actionDoor"/>
    <addaction name="actionHLine"/>
+   <addaction name="actionSource"/>
+   <addaction name="actionGoal"/>
    <addaction name="actionLandmark"/>
    <addaction name="separator"/>
    <addaction name="actiongridmode"/>
@@ -326,8 +336,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>:/Exit.png</normaloff>:/Exit.png</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/Exit.png</normaloff>:/inAppIcons/Icons/Exit.png</iconset>
    </property>
    <property name="text">
     <string>Exit</string>
@@ -348,10 +358,10 @@
      <normaloff>:/inAppIcons/Icons/attribute.svg</normaloff>:/inAppIcons/Icons/attribute.svg</iconset>
    </property>
    <property name="text">
-    <string>Define Rooms</string>
+    <string>Define Geometry</string>
    </property>
    <property name="toolTip">
-    <string>Define Room</string>
+    <string>Define Geometry</string>
    </property>
    <property name="shortcut">
     <string>Meta+R</string>
@@ -735,11 +745,6 @@
     <string>Meta+E</string>
    </property>
   </action>
-  <action name="actionLayers">
-   <property name="text">
-    <string>Layers</string>
-   </property>
-  </action>
   <action name="actionBreak_Line">
    <property name="checkable">
     <bool>true</bool>
@@ -750,6 +755,45 @@
    </property>
    <property name="text">
     <string>Break Line</string>
+   </property>
+  </action>
+  <action name="actionSource">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/source.png</normaloff>:/inAppIcons/Icons/source.png</iconset>
+   </property>
+   <property name="text">
+    <string>Source</string>
+   </property>
+  </action>
+  <action name="actionEditMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/edit.png</normaloff>:/inAppIcons/Icons/edit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Edit Mode</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit Mode</string>
+   </property>
+  </action>
+  <action name="actionGoal">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/goal.png</normaloff>:/inAppIcons/Icons/goal.png</iconset>
+   </property>
+   <property name="text">
+    <string>Goal</string>
    </property>
   </action>
  </widget>

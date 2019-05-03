@@ -39,6 +39,7 @@
 #include <QUrl>
 #include <QDebug>
 #include <QSettings>
+#include <QtWidgets>
 
 MWindow :: MWindow()
 {
@@ -46,7 +47,15 @@ MWindow :: MWindow()
     //Signal/Slot
     //VBox= new QVBoxLayout;
 
-    mview = new jpsGraphicsView(this);
+    //Set-up view and scene
+    mview = new jpsGraphicsView;
+    mscene = new QGraphicsScene(this);
+    mview->setScene(mscene);
+    mview->setSceneRect(0, 0, 1920, 1080);
+    setCentralWidget(mview);
+    mview->setMaximumSize(1920,1080);
+    mview->showMaximized();
+
     dmanager = new jpsDatamanager(this,mview);
     mview->SetDatamanager(dmanager);
 
@@ -94,23 +103,16 @@ MWindow :: MWindow()
     //WindowTitle
     this->setWindowTitle("JPSeditor");
 
-    setCentralWidget(mview);
-    //this->setMaximumSize(1920,1080);
-    this->showMaximized();
-
     statusBar()->addPermanentWidget(infoLabel);
     statusBar()->addPermanentWidget(label_x);
     statusBar()->addPermanentWidget(x_edit);
     statusBar()->addPermanentWidget(label_y);
     statusBar()->addPermanentWidget(y_edit);
-//    statusBar()->addPermanentWidget(label1);
-//    statusBar()->addPermanentWidget(length_edit);
-//    statusBar()->addPermanentWidget(label2);
 
     //Timer needed for autosaving function
     // timer will trigger autosave every 5th minute
     timer = new QTimer(this);
-    timer->setInterval(60000);
+    timer->setInterval(600000);
     timer->start();
 
     _cMapTimer = new QTimer(this);
@@ -133,28 +135,18 @@ MWindow :: MWindow()
     // Tab Tools
     connect(actionanglesnap,SIGNAL(triggered(bool)),this,SLOT(anglesnap()));
     connect(actiongridmode,SIGNAL(triggered(bool)),this,SLOT(gridmode()));
-    connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
-    connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(en_disableDoor()));
-    connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(en_disableExit()));
-    connect(actionHLine,SIGNAL(triggered(bool)),this,SLOT(en_disableHLine()));
+
     connect(actionObjectsnap,SIGNAL(triggered(bool)),this,SLOT(objectsnap()));
     connect(actionDelete_lines,SIGNAL(triggered(bool)),this,SLOT(delete_lines()));
     connect(actionDelete_single_line,SIGNAL(triggered(bool)),this,SLOT(delete_marked_lines()));
     connect(actionRoom,SIGNAL(triggered(bool)),this,SLOT(define_room()));
     connect(actionAuto_Definition,SIGNAL(triggered(bool)),this,SLOT(autoDefine_room()));
-    connect(actionSelect_Mode,SIGNAL(triggered(bool)),this,SLOT(en_selectMode()));
-    connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
-    connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
-    connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
+
     connect(actionScale,SIGNAL(triggered(bool)),this,SLOT(enableScale()));
     // Tab View
     connect(actionRotate_90_deg_clockwise,SIGNAL(triggered(bool)),this,SLOT(rotate()));
     connect(actionShow_Point_of_Origin,SIGNAL(triggered(bool)),this,SLOT(ShowOrigin()));
 
-
-    // Length edit
-//    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(send_length()));
-//    connect(length_edit,SIGNAL(returnPressed()),this,SLOT(ScaleLines()));
     // X Y edit
     connect(x_edit,SIGNAL(returnPressed()),this,SLOT(send_xy()));
     connect(y_edit,SIGNAL(returnPressed()),this,SLOT(send_xy()));
@@ -182,9 +174,6 @@ MWindow :: MWindow()
     //connect(mview,SIGNAL(DoubleClick()),this,SLOT(en_selectMode()));
     // Autosave
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
-    //Landmarks
-    connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
-    connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(dis_selectMode()));
     // Landmark specifications
     connect(actionLandmarkWidget,SIGNAL(triggered(bool)),this,SLOT(define_landmark()));
     //CMap
@@ -197,6 +186,42 @@ MWindow :: MWindow()
 
     // room type data gathering
     connect(actionGather_data,SIGNAL(triggered(bool)),this, SLOT(GatherData()));
+
+    // drawing actions group
+    drawingActionGroup = new QActionGroup(this);
+    drawingActionGroup->addAction(actionSelect_Mode);
+    drawingActionGroup->addAction(actionDoor);
+    drawingActionGroup->addAction(actionWall);
+    drawingActionGroup->addAction(actionExit);
+    drawingActionGroup->addAction(actionHLine);
+    drawingActionGroup->addAction(actionLandmark);
+    drawingActionGroup->addAction(actionSource);
+    drawingActionGroup->addAction(actionEditMode);
+    drawingActionGroup->addAction(actionGoal);
+
+    connect(actionSelect_Mode,SIGNAL(triggered(bool)),this,SLOT(en_selectMode()));
+    connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
+    connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(en_disableDoor()));
+    connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(en_disableExit()));
+    connect(actionHLine,SIGNAL(triggered(bool)),this,SLOT(en_disableHLine()));
+    connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
+    connect(actionSource, SIGNAL(triggered(bool)),this,SLOT(sourceButtonClicked()));
+    connect(actionEditMode,SIGNAL(triggered(bool)),this,SLOT(editModeButtonClicked()));
+    connect(actionGoal,SIGNAL(triggered(bool)),this,SLOT(goalButtionClicked()));
+
+    // right dock widget
+    propertyDockWidget = nullptr;
+
+    //object snapping
+    objectsnapping = {};
+    bool endpoint = false;
+    bool Intersections_point = false;
+    bool Center_point = false;
+    bool SelectedLine_point = false;
+    objectsnapping.append(endpoint);
+    objectsnapping.append(Intersections_point);
+    objectsnapping.append(Center_point);
+    objectsnapping.append(SelectedLine_point);
 }
 
 MWindow::~MWindow()
@@ -230,8 +255,17 @@ void MWindow::AutoSave()
         QString fileNameRouting = file.fileName();
         fileNameRouting = fileNameRouting.split(".").first() + "_routing.xml";
         QFile routingFile(fileNameRouting);
+
         if (routingFile.open(QIODevice::WriteOnly | QIODevice::Text))
             dmanager->writeRoutingXML(routingFile);
+
+        //Sources
+        QString fileNameSource = file.fileName();
+        fileNameSource = fileNameSource.split(".").first() + "_sources.xml";
+        QFile sourceFile(fileNameSource);
+
+        if (sourceFile.open(QIODevice::WriteOnly | QIODevice::Text))
+            dmanager->writeSourceXML(routingFile);
     }
 }
 
@@ -334,55 +368,149 @@ void MWindow::openFileDXF(){
     }
 }
 
+/*
+    since 0.8.8
+
+    For "Load XML" menu button
+ */
 void MWindow::openFileXML()
 {
     if(rwidget!=nullptr)
     {
         rwidget->close();
         rwidget=nullptr;
-        actionRoom->setChecked(false);
     }
 
     QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
+
+    openGeometry(fileName);
+
+    openRouting(fileName);
+
+    openGoal(fileName);
+
+    openSource(fileName);
+
+    openTraffic(fileName);
+
+    //AutoZoom to drawing
+    mview->AutoZoom();
+}
+
+void MWindow::openGeometry(QString fileName)
+{
     QFile file(fileName);
+
+    if(fileName.isEmpty())
+        return;
+
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
+        QMessageBox::warning(this, tr("Read Geometry XML"),
+                             tr("Cannot read file %1:\n%2.")
+                                     .arg(QDir::toNativeSeparators(fileName),
+                                          file.errorString()));
         return;
-    }
-
-    //RoutingFile
-    QString fileNameRouting= fileName.split(".").first()+"_routing.xml";
-    QFile fileRouting(fileNameRouting);
-    bool statusFileRouting=true;
-    if (!fileRouting.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        statusFileRouting=false;
-
     }
 
     if (!dmanager->readXML(file))
     {
         QMessageBox::critical(this,
-                              "OpenFileXML",
-                              "Couldn't open xml-file",
+                              "Prase geometry XML",
+                              "Cannot prase XML-file",
                               QMessageBox::Ok);
-        statusBar()->showMessage("XML-File could not be parsed!",10000);
+        statusBar()->showMessage("XML-File could not be loaded!",10000);
     }
-
-
-
     else
     {
-        //optional: load routing file
-        if (statusFileRouting==true)
-            dmanager->readRoutingXML(fileRouting);
-
-        //AutoZoom to drawing
-        mview->AutoZoom();
-        statusBar()->showMessage("XML-File successfully loaded!",10000);
+        statusBar()->showMessage("XML file loaded!", 10000);
     }
-    file.close();
+}
 
+void MWindow::openRouting(QString fileName)
+{
+    QString fileNameRouting= fileName.split(".").first()+"_routing.xml";
+    QFile fileRouting(fileNameRouting);
+
+    if(fileNameRouting.isEmpty())
+        return;
+
+    if (!fileRouting.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, tr("Read Routing XML"),
+                             tr("Cannot read file %1:\n%2.")
+                                     .arg(QDir::toNativeSeparators(fileName),
+                                          fileRouting.errorString()));
+        return;
+    }
+
+    //Start to read routing
+    if (!dmanager->readRoutingXML(fileRouting))
+    {
+        QMessageBox::critical(this,
+                              "Prase routing XML",
+                              "Cannot prase XML-file",
+                              QMessageBox::Ok);
+    }
+    else
+    {
+    }
+}
+
+void MWindow::openSource(QString fileName)
+{
+    QString fileNameSource= fileName.split(".").first()+"_sources.xml";
+    QFile fileSource(fileNameSource);
+
+    if(fileNameSource.isEmpty())
+        return;
+
+    if(!fileSource.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, tr("Read source XML"),
+                             tr("Cannot read file %1:\n%2.")
+                                     .arg(QDir::toNativeSeparators(fileNameSource),
+                                          fileSource.errorString()));
+        return;
+    }
+
+    SourceReader sourceReader(mview);
+
+    if(!sourceReader.read(&fileSource))
+    {
+        QMessageBox::warning(this, tr("Prasse source XML"),
+                             tr("Cannot prase file %1:\n%2.")
+                                     .arg(QDir::toNativeSeparators(fileNameSource),
+                                          fileSource.errorString()));
+    }
+}
+
+void MWindow::openGoal(QString fileName)
+{
+    QString fileNameGoal= fileName.split(".").first()+"_goals.xml";
+    QFile fileGoal(fileNameGoal);
+
+    if(fileNameGoal.isEmpty())
+        return;
+
+    if(!fileGoal.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, tr("Read Goal XML"),
+                             tr("Cannot read file %1:\n%2.")
+                                     .arg(QDir::toNativeSeparators(fileNameGoal),
+                                          fileGoal.errorString()));
+        return;
+    }
+
+    GoalReader goalReader(mview);
+
+    if(!goalReader.read(&fileGoal))
+    {
+        QMessageBox::warning(this, tr("Prasse goal XML"),
+                             tr("Cannot prase file %1:\n%2.")
+                                     .arg(QDir::toNativeSeparators(fileNameGoal),
+                                          fileGoal.errorString()));
+    }
 }
 
 void MWindow::openFileCogMap()
@@ -466,16 +594,38 @@ void MWindow::saveAsXML(){
 //            return;
 //        }
 
+        //Save geometry
         dmanager->writeXML(file);
 
-        //routing (hlines)
+        //Save routing (hlines)
         QString fileNameRouting=fileName.split(".").first()+"_routing.xml";
-
         QFile routingFile(fileNameRouting);
         if (routingFile.open(QIODevice::WriteOnly|QIODevice::Text))
             dmanager->writeRoutingXML(routingFile);
 
+        //Save sources
+        QString fileNameSource=fileName.split(".").first()+"_sources.xml";
+        QFile sourcesFile(fileNameSource);
+        if(sourcesFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeSourceXML(sourcesFile);
 
+        //Save goals
+        QString fileNameGoal=fileName.split(".").first()+"_goals.xml";
+        QFile goalsFile(fileNameGoal);
+        if(goalsFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeGoalXML(goalsFile);
+
+        //Save traffic
+        QString fileNameTraffic = fileName.split(".").first()+"_traffic.xml";
+        QFile trafficFile(fileNameTraffic);
+        if(trafficFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeTrafficXML(trafficFile);
+
+        //Save transitions
+        QString fileNameTransition=fileName.split(".").first()+"_transitions.xml";
+        QFile transitionFile(fileNameTransition);
+        if(transitionFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeTransitionXML(transitionFile);
 
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
@@ -535,38 +685,26 @@ void MWindow::anglesnap()
 
 void MWindow::en_disableWall()
 {
-    this->disableDrawing();
-    actionWall->setChecked(true);
     mview->en_disableWall();
-
 }
 
 void MWindow::en_disableDoor()
 {
-    this->disableDrawing();
-    actionDoor->setChecked(true);
     mview->en_disableDoor();
-
 }
 
 void MWindow::en_disableExit()
 {
-    this->disableDrawing();
-    actionExit->setChecked(true);
     mview->en_disableExit();
 }
 
 void MWindow::en_disableLandmark()
 {
-    this->disableDrawing();
-    actionLandmark->setChecked(true);
     mview->en_disableLandmark();
 }
 
 void MWindow::en_disableHLine()
 {
-    this->disableDrawing();
-    actionHLine->setChecked(true);
     mview->en_disableHLine();
 }
 
@@ -577,8 +715,9 @@ void MWindow::disableDrawing()
     this->actionExit->setChecked(false);
     this->actionLandmark->setChecked(false);
     this->actionHLine->setChecked(false);
-    this->actionCopy->setChecked(false);
+    this->actionCopy->setChecked(false);//TODO: actionCopy should be managed!
 }
+
 
 void MWindow::objectsnap()
 {
@@ -588,6 +727,7 @@ void MWindow::objectsnap()
         snappingOptions = new SnappingOptions(this);
         snappingOptions->setGeometry(QRect(QPoint(5,75), snappingOptions->size()));
         snappingOptions->setAttribute(Qt::WA_DeleteOnClose);
+        snappingOptions->setState(objectsnapping);
         snappingOptions->show();
 
         connect(snappingOptions,SIGNAL(snapStart_endpoint(bool)),mview,SLOT(changeStart_endpoint(bool)));
@@ -597,11 +737,13 @@ void MWindow::objectsnap()
     }
     else
     {
+        objectsnapping.clear();
+        objectsnapping = snappingOptions->getState();
         snappingOptions->close();
         snappingOptions=nullptr;
         actionObjectsnap->setChecked(false);
     }
-    mview->change_objectsnap();
+//    mview->change_objectsnap();
 }
 
 void MWindow::gridmode()
@@ -665,7 +807,6 @@ void MWindow::define_room()
         rwidget->setGeometry(QRect(QPoint(5,75), rwidget->size()));
         rwidget->setAttribute(Qt::WA_DeleteOnClose);
         rwidget->show();
-
     }
     else
     {
@@ -673,6 +814,7 @@ void MWindow::define_room()
         rwidget=nullptr;
         actionRoom->setChecked(false);
     }
+
 }
 
 void MWindow::autoDefine_room()
@@ -716,26 +858,23 @@ void MWindow::define_landmark()
 
 void MWindow::en_selectMode()
 {
-    mview->disable_drawing();
-
     actionSelect_Mode->setChecked(true);
-
-    actionWall->setChecked(false);
-    actionDoor->setChecked(false);
-    actionExit->setChecked(false);
-    actionHLine->setChecked(false);
-    actionLandmark->setChecked(false);
     actionCopy->setChecked(false);
+
+    mview->disable_drawing();
     length_edit->clearFocus();
 }
 
 void MWindow::dis_selectMode()
 {
-    if (actionWall->isChecked()==true || actionDoor->isChecked()==true || actionExit->isChecked()==true
+/*    if (actionWall->isChecked()==true || actionDoor->isChecked()==true || actionExit->isChecked()==true
             || actionLandmark->isChecked()==true)
     {
         actionSelect_Mode->setChecked(false);
-    }
+    }*/
+
+    if(drawingActionGroup->checkedAction() != actionSelect_Mode)
+        actionSelect_Mode->setChecked(false);
 }
 
 void MWindow::lines_deleted()
@@ -839,9 +978,7 @@ void MWindow::saveSettings(QMap<QString, QString> settingsmap)
     settings.beginGroup("backup");
     settings.setValue("backupfolder", settingsmap["backupfolder"]);
     settings.setValue("interval", settingsmap["interval"]);
-
     timer->setInterval(settingsmap["interval"].toInt());
-
     settings.endGroup();
 }
 
@@ -851,7 +988,7 @@ QMap<QString, QString> MWindow::loadSettings()
 
     settings.beginGroup("backup");
     QString value = settings.value("backupfolder", "../").toString();
-    QString interval = settings.value("interval", "60000").toString();
+    QString interval = settings.value("interval", "600000").toString();
     settings.endGroup();
 
     QMap<QString, QString> settingsmap;
@@ -863,7 +1000,12 @@ QMap<QString, QString> MWindow::loadSettings()
 
 void MWindow::on_actionNew_Inifile_triggered()
 {
-    inifileWidget = new InifileWidget(this);
+    inifileWidget = new InifileWidget(this, dmanager);
+
+    // status bar
+    connect(inifileWidget, SIGNAL(inifileLoaded(QString, int)),
+            this, SLOT(showStatusBarMessage(QString, int)));
+
     inifileWidget->show();
     qDebug()<< "MWindow::on_actionNew_Inifile_triggered(): inifile widget is showed!";
 }
@@ -882,4 +1024,145 @@ void MWindow::on_actionZoom_Windows_triggered()
 void MWindow::on_actionZoom_Extents_triggered()
 {
     mview->AutoZoom();
+}
+
+void MWindow::sourceButtonClicked()
+{
+    if(propertyDockWidget == nullptr)
+    {
+        //source widget off, dockwidget off -> open source widget
+        mview->enableSourceMode();
+
+        propertyDockWidget = new QDockWidget(tr("Sources"), this);
+        propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+        auto *sourceWidget = new SourceWidget(this, mview, this->dmanager);
+        addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+        propertyDockWidget->setWidget(sourceWidget);
+    } else if (propertyDockWidget != nullptr && propertyDockWidget->windowTitle() == "Sources")
+    {
+        // goal widget on, dockwidget on -> close goal widget
+        mview->disable_drawing();
+        actionSelect_Mode->setChecked(true);
+
+        propertyDockWidget->close(); //close() has deleted pointer
+        propertyDockWidget = nullptr;
+
+
+    } else if (propertyDockWidget != nullptr && propertyDockWidget->windowTitle() != "Sources")
+    {
+        // goal widget off, dockwidget on -> close other widget, open goal widget
+        propertyDockWidget->close();
+        propertyDockWidget = nullptr;
+
+        mview->enableSourceMode();
+
+        propertyDockWidget = new QDockWidget(tr("Sources"), this);
+        propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+        auto *sourceWidget = new SourceWidget(this, mview, this->dmanager);
+        addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+        propertyDockWidget->setWidget(sourceWidget);
+
+    } else
+    {
+    }
+}
+
+void MWindow::editModeButtonClicked()
+{
+    mview->enableEditMode();
+}
+
+// Goal drawing mode
+/*
+    since 0.8.8
+
+    Build widget for goal if there is no, or destory widget.
+ */
+
+void MWindow::goalButtionClicked()
+{
+    if(propertyDockWidget == nullptr)
+    {
+        //goal widget off, dockwidget off -> open goal widget
+        mview->enableGoalMode();
+
+        propertyDockWidget = new QDockWidget(tr("Goals"), this);
+        propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+        auto *goalWidget = new GoalWidget(this, mview, this->dmanager);
+        addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+        propertyDockWidget->setWidget(goalWidget);
+    } else if (propertyDockWidget != nullptr && propertyDockWidget->windowTitle() == "Goals")
+    {
+        // goal widget on, dockwidget on -> close goal widget
+        mview->disable_drawing();
+        actionSelect_Mode->setChecked(true);
+
+        propertyDockWidget->close(); //close() has deleted pointer
+        propertyDockWidget = nullptr;
+    } else if (propertyDockWidget != nullptr && propertyDockWidget->windowTitle() != "Goals")
+    {
+        // goal widget off, dockwidget on -> close other widget, open goal widget
+        propertyDockWidget->close();
+        propertyDockWidget = nullptr;
+
+        propertyDockWidget = new QDockWidget(tr("Goals"), this);
+        propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+        auto *goalWidget = new GoalWidget(this, mview, this->dmanager);
+        addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+        propertyDockWidget->setWidget(goalWidget);
+    } else
+    {
+    }
+}
+
+/*
+    Since v0.8.8
+
+    Open traffic file
+ */
+
+void MWindow::openTraffic(QString fileName)
+{
+    QString fileNameTraffic = fileName.split(".").first() + "_traffic.xml";
+    QFile fileTraffic(fileNameTraffic);
+
+    if(fileNameTraffic.isEmpty())
+        return;
+
+    if (!fileTraffic.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, tr("Read traffic XML"),
+                             tr("Cannot read file %1:\n%2.")
+                                     .arg(QDir::toNativeSeparators(fileName),
+                                          fileTraffic.errorString()));
+        return;
+    }
+
+    if(!dmanager->readTrafficXML(fileTraffic))
+    {
+        QMessageBox::critical(this,
+                              "Prase traffic XML",
+                              "Cannot prase XML-file",
+                              QMessageBox::Ok);
+    } else
+    {
+    }
+}
+
+/*
+    since v0.8.8
+
+    Receive message from other widgets, show on status bar
+ */
+void MWindow::showStatusBarMessage(QString msg, int duration)
+{
+    statusBar()->showMessage(tr(msg.toStdString().data()), duration);
 }

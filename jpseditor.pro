@@ -40,7 +40,9 @@ FORMS += \
     forms/widgetsettings.ui \
     forms/inifilewidget.ui \
     forms/settingdialog.ui \
-    forms/snappingoptions.ui
+    forms/snappingoptions.ui \
+    forms/sourcewidget.ui \
+    forms/goalwidget.ui \
 
 
 HEADERS += \
@@ -81,9 +83,11 @@ HEADERS += \
     src/tinyxml/tinystr.h \
     src/tinyxml/tinyxml.h \
     src/inifilewidget.h \
-    src/snappingoptions.h
-
-
+    src/snappingoptions.h \
+    src/sourcewidget.h  \
+    src/global.h \
+    src/jpssource.h \
+    src/elementttype.h \
 
 SOURCES += \
     src/mainWindow.cpp \
@@ -115,7 +119,10 @@ SOURCES += \
     src/tinyxml/tinyxmlerror.cpp \
     src/tinyxml/tinyxmlparser.cpp \
     src/inifilewidget.cpp \
-    src/snappingoptions.cpp
+    src/snappingoptions.cpp \
+    src/sourcewidget.cpp \
+    src/jpssource.cpp \
+    src/global.cpp
 
 
 
@@ -129,34 +136,17 @@ RC_FILE = Resources/jpseditor.rc
 ICON = Resources/jpseditor.icns
 #INCLUDEPATH += $$(ROOTSYS)/include
 
-
-CONFIG(debug, debug|release) {
-    DESTDIR = build/debug
-}
-CONFIG(release, debug|release) {
-    DESTDIR = build/release
-}
-
-OBJECTS_DIR = $$DESTDIR/.obj
-MOC_DIR = $$DESTDIR/.moc
-RCC_DIR = $$DESTDIR/.qrc
-UI_DIR = $$DESTDIR/.u
-
-
-demos.path = /usr/local/bin/jpseditor
-demos.files = examples/*
-
-CONFIG(debug, debug|release) {
-    DESTDIR = build/debug
-}
-CONFIG(release, debug|release) {
-    DESTDIR = build/release
-}
-
-OBJECTS_DIR = $$DESTDIR/.obj
-MOC_DIR = $$DESTDIR/.moc
-RCC_DIR = $$DESTDIR/.qrc
-UI_DIR = $$DESTDIR/.u
+#CONFIG(debug, debug|release) {
+#    DESTDIR = build/debug
+#}
+#CONFIG(release, debug|release) {
+#    DESTDIR = build/release
+#}
+#
+#OBJECTS_DIR = $$DESTDIR/.obj
+#MOC_DIR = $$DESTDIR/.moc
+#RCC_DIR = $$DESTDIR/.qrc
+#UI_DIR = $$DESTDIR/.u
 
 demos.path = /usr/local/bin/jpseditor
 demos.files = examples/*

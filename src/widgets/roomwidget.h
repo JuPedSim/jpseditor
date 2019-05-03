@@ -30,13 +30,11 @@
 #define ROOMWIDGET_H
 
 #include <QTabWidget>
-#include "datamanager.h"
-#include "GraphicView.h"
+#include "src/datamanager.h"
+#include "src/GraphicView.h"
 
 class RoomDefinition;
 class RoomIdentification;
-
-
 
 namespace Ui {
 class roomWidget;
@@ -103,6 +101,8 @@ protected slots:
 //    void autoAssignDoors();
 //    void autoAssignExits();
     void ChangeRoomType();
+
+    void applyCrossing();
 
 
 

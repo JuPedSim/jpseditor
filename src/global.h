@@ -1,8 +1,9 @@
 /**
- * \file       widgetsettings.h 
- * \date        Oct-01-2018
- * \version     v0.8.4
- * \copyright   <2009-2018> Forschungszentrum Jülich GmbH. All rights reserved.
+ * \file       global.h
+ * \date        Mar-13-2019
+ * \version     v0.8.8
+ * \author      Tao Zhong
+ * \copyright   <2009-2019> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
  * This file is part of JuPedSim.
@@ -21,33 +22,14 @@
  * along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-     
-#ifndef WIDGETSETTINGS_H
-#define WIDGETSETTINGS_H
-
-#include <QTabWidget>
-#include "GraphicView.h"
-
-namespace Ui {
-class WidgetSettings;
-}
-
-class WidgetSettings : public QTabWidget
-{
-    Q_OBJECT
-
-public:
-    explicit WidgetSettings(QWidget *parent = nullptr, jpsGraphicsView* view = nullptr);
-    ~WidgetSettings();
-
-public slots:
-    void changeGridRadio(bool status);
-
-private:
-    Ui::WidgetSettings *ui;
-    jpsGraphicsView* _view;
+#ifndef JPSEDITOR_GLOBAL_H
+#define JPSEDITOR_GLOBAL_H
 
 
-};
+#include <QGraphicsItem>
 
-#endif // WIDGETSETTINGS_H
+
+bool isDirtyChange(QGraphicsItem::GraphicsItemChange change);
+
+
+#endif //JPSEDITOR_GLOBAL_H
