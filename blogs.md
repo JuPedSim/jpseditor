@@ -13,6 +13,7 @@ date: '2018-10-02'
 * [JPSeditor v0.8.5](/jpseditor/2018-10-29-release_v085.html)
 * [JPSeditor v0.8.6](/jpseditor/2019-01-08-release_v086.html)
 * [JPSeditor v0.8.7](/jpseditor/2019-03-08-release_v087.html)
+* [JPSeditor v0.8.8](/jpseditor/2019-05-03-release_v088.html)
 
 ## Blogs
 
