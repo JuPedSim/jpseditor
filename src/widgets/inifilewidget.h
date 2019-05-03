@@ -78,28 +78,16 @@ public slots:
     void readTau(QXmlStreamReader *reader, int modelindex);
     void readAtou(QXmlStreamReader *reader, int modelindex);
     void readT(QXmlStreamReader *reader, int modelindex);
+    void readRouteChoiceModels(QXmlStreamReader *reader);
+    void readRouter(QXmlStreamReader *reader);
+    void readRouterParameters(QXmlStreamReader *reader);
+    void readNavigationLines(QXmlStreamReader *reader);
+    void readVTK(QXmlStreamReader *reader);
 
 private:
     Ui::InifileWidget *ui;
 
     jpsDatamanager *dataManager;
-
-    bool CheckHeaderData();
-    bool CheckTrafficData();
-    bool CheckRoutingData();
-    bool CheckSourceData();
-    bool CheckAgentData();
-    bool CheckModelGcfmData();
-    bool CheckAgentGcfmData();
-    bool CheckModelGompData();
-    bool CheckAgentGompData();
-    bool CheckModelTordData();
-    bool CheckAgentTordData();
-    bool CheckModelGradData();
-    bool CheckAgentGradData();
-    bool CheckModelKrauData();
-    bool CheckAgentKrauData();
-    bool CheckRouteChoiceData();
 
     void writeHeaderData(QXmlStreamWriter *stream, QFile &file);
     void writeRoutingData(QXmlStreamWriter *stream, QFile &file);
@@ -114,12 +102,6 @@ private:
     void writeModelGradData(QXmlStreamWriter *stream, QFile &file);
     void writeModelKrauData(QXmlStreamWriter *stream, QFile &file);
     void writeRouteChoiceData(QXmlStreamWriter *stream, QFile &file);
-
-    void ReadJuPedSimData(TiXmlElement* JuPedSim);
-    void ReadHeaderData(TiXmlElement* JuPedSim);
-    void ReadAgentData(TiXmlElement* JuPedSim);
-    void ReadModelData(TiXmlElement* JuPedSim);
-    void ReadRouteChoiceData(TiXmlElement* JuPedSim);
 
 signals:
     void inifileLoaded(QString, int);

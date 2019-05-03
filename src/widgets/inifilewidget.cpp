@@ -151,628 +151,6 @@ void InifileWidget::on_comboBox_groups_1_currentIndexChanged(int index)
         ui->tabWidget->insertTab(3, ui->tab_agents_krausz, "Agents Krausz");
     }
 }
-
-bool InifileWidget::CheckHeaderData()
-{
-    if(ui->lineEdit_general_01->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>General incomplete.</font>");
-        return 0;
-    }
-
-    if(ui->lineEdit_general_02->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>General incomplete.</font>");
-        return 0;
-    }
-
-    if(ui->lineEdit_general_03->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>General incomplete.</font>");
-        return 0;
-    }
-
-    if(ui->lineEdit_general_05->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>General incomplete.</font>");
-        return 0;
-    }
-
-    if(ui->lineEdit_general_06->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>General incomplete.</font>");
-        return 0;
-    }
-
-    if(ui->lineEdit_general_07->text() == "")
-    {
-        QMessageBox::critical(this,
-                              "Saving Inifile",
-                              "Please chooses geometry file",
-                              QMessageBox::Ok);
-        return 0;
-    }
-
-    if(ui->lineEdit_general_08->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>General incomplete.</font>");
-        return 0;
-    }
-
-    if(ui->lineEdit_general_10->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>General incomplete.</font>");
-        return 0;
-    }
-
-    if(ui->lineEdit_general_12->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>General incomplete.</font>");
-        return 0;
-    }
-
-    ui->label_warning->setText("");
-    return 1;
-}
-
-bool InifileWidget::CheckTrafficData()
-{
-    if(ui->lineEdit_TrafficFile->text().isEmpty())
-    {
-        QMessageBox::critical(this,
-                              "Save Inifile",
-                              "Please choose traffic file!",
-                              QMessageBox::Ok);
-        return false;
-    }
-    return true;
-}
-
-bool InifileWidget::CheckRoutingData()
-{
-    if(ui->lineEdit_GoalFile->text().isEmpty())
-    {
-        QMessageBox::critical(this,
-                              "Save Inifile",
-                              "Please choose goal file!",
-                              QMessageBox::Ok);
-        return false;
-    }
-    return true;
-}
-
-bool InifileWidget::CheckSourceData()
-{
-    if(ui->lineEdit_SourceFile->text().isEmpty())
-    {
-        QMessageBox::critical(this,
-                              "Save Inifile",
-                              "Please choose source file!",
-                              QMessageBox::Ok);
-        return false;
-    }
-    return true;
-}
-
-bool InifileWidget::CheckAgentData()
-{
-    for(int i = 0; i < ui->spinBox_groups_1->value(); i++)
-    {
-        for(int j = 0; j < 15; j++)
-        {
-            if (!ui->tableWidget_groups_1->item(i,j) || ui->tableWidget_groups_1->item(i,j)->text().isEmpty())
-            {
-                ui->label_warning->setText("<font color='red'>Groups incomplete.</font>");
-                return 0;
-            }
-        }
-    }
-
-    ui->label_warning->setText("");
-    return 1;
-}
-
-bool InifileWidget::CheckModelGcfmData()
-{
-    if(ui->lineEdit_model_gcfm_01->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gcfm incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gcfm_02->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gcfm incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gcfm_03->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gcfm incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gcfm_04->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gcfm incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gcfm_05->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gcfm incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gcfm_06->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gcfm incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gcfm_07->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gcfm incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gcfm_08->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gcfm incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gcfm_09->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gcfm incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gcfm_10->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gcfm incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gcfm_11->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gcfm incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gcfm_12->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gcfm incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gcfm_13->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gcfm incomplete.</font>");
-        return 0;
-    }
-
-    ui->label_warning->setText("");
-    return 1;
-}
-
-bool InifileWidget::CheckAgentGcfmData()
-{
-    for(int i = 0; i < ui->spinBox_agents_gcfm_1->value(); i++)
-    {
-        for(int j = 0; j < 21; j++)
-        {
-            if (!ui->tableWidget_agents_gcfm_1->item(i,j) || ui->tableWidget_agents_gcfm_1->item(i,j)->text().isEmpty())
-            {
-                ui->label_warning->setText("<font color='red'>Agents Gcfm incomplete.</font>");
-                return 0;
-            }
-        }
-    }
-
-    ui->label_warning->setText("");
-    return 1;
-}
-
-bool InifileWidget::CheckModelGompData()
-{
-    if(ui->lineEdit_model_gompertz_01->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gompertz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gompertz_02->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gompertz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gompertz_03->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gompertz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gompertz_04->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gompertz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gompertz_05->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gompertz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gompertz_06->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gompertz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gompertz_07->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gompertz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gompertz_08->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gompertz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gompertz_09->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gompertz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gompertz_10->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gompertz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gompertz_11->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gompertz incomplete.</font>");
-        return 0;
-    }
-
-    ui->label_warning->setText("");
-    return 1;
-}
-
-bool InifileWidget::CheckAgentGompData()
-{
-    for(int i = 0; i < ui->spinBox_agents_gompertz_1->value(); i++)
-    {
-        for(int j = 0; j < 21; j++)
-        {
-            if (!ui->tableWidget_agents_gompertz_1->item(i,j) || ui->tableWidget_agents_gompertz_1->item(i,j)->text().isEmpty())
-            {
-                ui->label_warning->setText("<font color='red'>Agents Gompertz incomplete.</font>");
-                return 0;
-            }
-        }
-    }
-    ui->label_warning->setText("");
-    return 1;
-}
-
-bool InifileWidget::CheckModelTordData()
-{
-    if(ui->lineEdit_model_tordeux_01->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Tordeux incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_tordeux_02->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Tordeux incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_tordeux_03->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Tordeux incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_tordeux_04->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Tordeux incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_tordeux_05->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Tordeux incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_tordeux_06->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Tordeux incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_tordeux_07->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Tordeux incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_tordeux_08->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Tordeux incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_tordeux_09->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Tordeux incomplete.</font>");
-        return 0;
-    }
-
-    ui->label_warning->setText("");
-    return 1;
-}
-
-bool InifileWidget::CheckAgentTordData()
-{
-    for(int i = 0; i < ui->spinBox_agents_tordeux_1->value(); i++)
-    {
-        for(int j = 0; j < 23; j++)
-        {
-            if (!ui->tableWidget_agents_tordeux_1->item(i,j) || ui->tableWidget_agents_tordeux_1->item(i,j)->text().isEmpty())
-            {
-                ui->label_warning->setText("<font color='red'>Agents Tordeux incomplete.</font>");
-                return 0;
-            }
-        }
-    }
-
-    ui->label_warning->setText("");
-    return 1;
-}
-
-bool InifileWidget::CheckModelGradData()
-{
-    if(ui->lineEdit_model_gradnav_01->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gradnav incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gradnav_02->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gradnav incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gradnav_03->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gradnav incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gradnav_04->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gradnav incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gradnav_05->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gradnav incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gradnav_06->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gradnav incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gradnav_07->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gradnav incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gradnav_08->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gradnav incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gradnav_09->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gradnav incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gradnav_10->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gradnav incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gradnav_11->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gradnav incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gradnav_12->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gradnav incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gradnav_13->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gradnav incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gradnav_14->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gradnav incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_gradnav_15->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Gradnav incomplete.</font>");
-        return 0;
-    }
-
-    ui->label_warning->setText("");
-    return 1;
-}
-
-bool InifileWidget::CheckAgentGradData()
-{
-    for(int i = 0; i < ui->spinBox_agents_gradnav_1->value(); i++)
-    {
-        for(int j = 0; j < 21; j++)
-        {
-            if (!ui->tableWidget_agents_gradnav_1->item(i,j) || ui->tableWidget_agents_gradnav_1->item(i,j)->text().isEmpty())
-            {
-                ui->label_warning->setText("<font color='red'>Agents Gradnav incomplete.</font>");
-                return 0;
-            }
-        }
-    }
-
-    ui->label_warning->setText("");
-    return 1;
-}
-
-bool InifileWidget::CheckModelKrauData()
-{
-    if(ui->lineEdit_model_krausz_01->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Krausz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_krausz_02->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Krausz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_krausz_03->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Krausz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_krausz_04->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Krausz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_krausz_05->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Krausz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_krausz_06->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Krausz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_krausz_07->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Krausz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_krausz_08->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Krausz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_krausz_09->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Krausz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_krausz_10->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Krausz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_krausz_11->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Krausz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_krausz_12->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Krausz incomplete.</font>");
-        return 0;
-    }
-    if(ui->lineEdit_model_krausz_13->text() == "")
-    {
-        ui->label_warning->setText("<font color='red'>Model Krausz incomplete.</font>");
-        return 0;
-    }
-
-    ui->label_warning->setText("");
-    return 1;
-}
-
-bool InifileWidget::CheckAgentKrauData()
-{
-    for(int i = 0; i < ui->spinBox_agents_krausz_1->value(); i++)
-    {
-        for(int j = 0; j < 25; j++)
-        {
-            if (!ui->tableWidget_agents_krausz_1->item(i,j) || ui->tableWidget_agents_krausz_1->item(i,j)->text().isEmpty())
-            {
-                ui->label_warning->setText("<font color='red'>Agents Krausz incomplete.</font>");
-                return 0;
-            }
-        }
-    }
-
-    ui->label_warning->setText("");
-    return 1;
-}
-
-bool InifileWidget::CheckRouteChoiceData()
-{
-//    if(ui->lineEdit_route_choice_01->text() == "")
-//    {
-//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-//        return 0;
-//    }
-//    if(ui->lineEdit_route_choice_02->text() == "")
-//    {
-//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-//        return 0;
-//    }
-//    if(ui->lineEdit_route_choice_03->text() == "")
-//    {
-//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-//        return 0;
-//    }
-//    if(ui->lineEdit_route_choice_04->text() == "")
-//    {
-//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-//        return 0;
-//    }
-//    if(ui->lineEdit_route_choice_05->text() == "")
-//    {
-//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-//        return 0;
-//    }
-//    if(ui->lineEdit_route_choice_06->text() == "")
-//    {
-//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-//        return 0;
-//    }
-//    if(ui->lineEdit_route_choice_07->text() == "")
-//    {
-//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-//        return 0;
-//    }
-//    if(ui->lineEdit_route_choice_08->text() == "")
-//    {
-//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-//        return 0;
-//    }
-//    if(ui->lineEdit_route_choice_09->text() == "")
-//    {
-//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-//        return 0;
-//    }
-//    if(ui->lineEdit_route_choice_10->text() == "")
-//    {
-//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-//        return 0;
-//    }
-//    if(ui->lineEdit_route_choice_11->text() == "")
-//    {
-//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-//        return 0;
-//    }
-//    if(ui->lineEdit_route_choice_12->text() == "")
-//    {
-//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-//        return 0;
-//    }
-//    if(ui->lineEdit_route_choice_13->text() == "")
-//    {
-//        ui->label_warning->setText("<font color='red'>Route choice incomplete.</font>");
-//        return 0;
-//    }
-//
-//    ui->label_warning->setText("");
-    return 1;
-}
-
 /*
     <!-- seed used for initialising random generator -->
     <seed>12542</seed>
@@ -1654,1683 +1032,6 @@ void InifileWidget::on_pushButton_write_clicked()
     file.close();
 
 }
-
-void InifileWidget::ReadJuPedSimData(TiXmlElement* JuPedSim)
-{
-    //JuPedSim
-    if (JuPedSim->Attribute("project"))
-    {
-        QString value = JuPedSim->Attribute("project");
-        ui->lineEdit_general_01->setText(value);
-    }
-
-    if (JuPedSim->Attribute("version"))
-    {
-        QString value = JuPedSim->Attribute("version");
-        ui->lineEdit_general_02->setText(value);
-    }
-}
-
-void InifileWidget::ReadHeaderData(TiXmlElement *JuPedSim)
-{
-    if (JuPedSim->FirstChild("num_threads") && !JuPedSim->FirstChild("num_threads")->NoChildren())
-    {
-        QString value = JuPedSim->FirstChild("num_threads")->FirstChild()->Value();
-        ui->lineEdit_general_03->setText(value);
-    }
-
-    if (JuPedSim->FirstChild("seed") && !JuPedSim->FirstChild("seed")->NoChildren())
-    {
-        QString value = JuPedSim->FirstChild("seed")->FirstChild()->Value();
-        ui->lineEdit_general_05->setText(value);
-    }
-
-    if (JuPedSim->FirstChild("max_sim_time") && !JuPedSim->FirstChild("max_sim_time")->NoChildren())
-    {
-        QString value = JuPedSim->FirstChild("max_sim_time")->FirstChild()->Value();
-        ui->lineEdit_general_06->setText(value);
-    }
-
-    if (JuPedSim->FirstChild("geometry") && !JuPedSim->FirstChild("geometry")->NoChildren())
-    {
-
-        QString value = JuPedSim->FirstChild("geometry")->FirstChild()->Value();
-        ui->lineEdit_general_07->setText(value);
-    }
-
-    if (JuPedSim->FirstChildElement("trajectories"))
-    {
-        if (JuPedSim->FirstChildElement("trajectories")->Attribute("format"))
-        {
-            QString value = JuPedSim->FirstChildElement("trajectories")->Attribute("format");
-            if (value == "xml-plain")
-            {
-                ui->comboBox_general_02->setCurrentIndex(0);
-            }
-            if (value == "plain")
-            {
-                ui->comboBox_general_02->setCurrentIndex(1);
-            }
-        }
-
-        if (JuPedSim->FirstChildElement("trajectories")->Attribute("fps"))
-        {
-            QString value = JuPedSim->FirstChildElement("trajectories")->Attribute("fps");
-            ui->lineEdit_general_10->setText(value);
-        }
-
-        if (JuPedSim->FirstChildElement("trajectories")->Attribute("color_mode"))
-        {
-            QString value = JuPedSim->FirstChildElement("trajectories")->Attribute("color_mode");
-            if (value == "velocity")
-            {
-                ui->comboBox_general_03->setCurrentIndex(0);
-            }
-            if (value == "spotlight")
-            {
-                ui->comboBox_general_03->setCurrentIndex(1);
-            }
-            if (value == "group")
-            {
-                ui->comboBox_general_03->setCurrentIndex(2);
-            }
-            if (value == "knowledge")
-            {
-                ui->comboBox_general_03->setCurrentIndex(3);
-            }
-            if (value == "router")
-            {
-                ui->comboBox_general_03->setCurrentIndex(4);
-            }
-            if (value == "final_goal")
-            {
-                ui->comboBox_general_03->setCurrentIndex(5);
-            }
-            if (value == "intermediate_goal")
-            {
-                ui->comboBox_general_03->setCurrentIndex(6);
-            }
-        }
-
-        if (JuPedSim->FirstChild("trajectories")->FirstChildElement("file"))
-        {
-            if (JuPedSim->FirstChild("trajectories")->FirstChildElement("file")->Attribute("location"))
-            {
-                QString value = JuPedSim->FirstChild("trajectories")->FirstChildElement("file")->Attribute("location");
-                ui->lineEdit_general_12->setText(value);
-            }
-        }
-    }
-
-    if (JuPedSim->FirstChild("logfile") && !JuPedSim->FirstChild("logfile")->NoChildren())
-    {
-        QString value = JuPedSim->FirstChild("logfile")->FirstChild()->Value();
-        ui->lineEdit_general_08->setText(value);
-    }
-
-    if (JuPedSim->FirstChild("show_statistics"))
-    {
-        QString value = JuPedSim->FirstChild("show_statistics")->FirstChild()->Value();
-        if (value == "false")
-        {
-            ui->comboBox_general_01->setCurrentIndex(0);
-        }
-        if (value == "true")
-        {
-            ui->comboBox_general_01->setCurrentIndex(1);
-        }
-    }
-}
-
-
-void InifileWidget::ReadAgentData(TiXmlElement *JuPedSim)
-{
-    //agents information and distribution
-    if (JuPedSim->FirstChildElement("agents"))
-    {
-        if (JuPedSim->FirstChildElement("agents")->Attribute("operational_model_id"))
-        {
-            QString value = JuPedSim->FirstChildElement("agents")->Attribute("operational_model_id");
-            ui->comboBox_groups_1->setCurrentIndex(value.toInt()-1);
-        }
-
-        if (JuPedSim->FirstChild("agents")->FirstChild("agents_distribution"))
-        {
-            if (JuPedSim->FirstChild("agents")->FirstChild("agents_distribution")->FirstChildElement("group"))
-            {
-                int counter = 0;
-                for (TiXmlElement* group = JuPedSim->FirstChild("agents")->FirstChild("agents_distribution")->FirstChildElement("group");
-                     group; group = group->NextSiblingElement("group"))
-                {
-                    ui->spinBox_groups_1->setValue(counter+1);
-
-                    QString count = QString::number(counter);
-                    //default_values
-                    ui->tableWidget_groups_1->setItem(counter, 0, new QTableWidgetItem(count));
-                    ui->tableWidget_groups_1->setItem(counter, 1, new QTableWidgetItem("1"));
-                    ui->tableWidget_groups_1->setItem(counter, 2, new QTableWidgetItem("0"));
-                    ui->tableWidget_groups_1->setItem(counter, 3, new QTableWidgetItem("0"));
-                    ui->tableWidget_groups_1->setItem(counter, 4, new QTableWidgetItem("1"));
-                    ui->tableWidget_groups_1->setItem(counter, 5, new QTableWidgetItem("-1"));
-                    ui->tableWidget_groups_1->setItem(counter, 6, new QTableWidgetItem("1"));
-                    ui->tableWidget_groups_1->setItem(counter, 7, new QTableWidgetItem("0"));
-                    ui->tableWidget_groups_1->setItem(counter, 8, new QTableWidgetItem("1"));
-                    ui->tableWidget_groups_1->setItem(counter, 9, new QTableWidgetItem("0"));
-                    ui->tableWidget_groups_1->setItem(counter, 10, new QTableWidgetItem("1"));
-                    ui->tableWidget_groups_1->setItem(counter, 11, new QTableWidgetItem("0"));
-                    ui->tableWidget_groups_1->setItem(counter, 12, new QTableWidgetItem("0"));
-                    ui->tableWidget_groups_1->setItem(counter, 13, new QTableWidgetItem("0"));
-                    ui->tableWidget_groups_1->setItem(counter, 14, new QTableWidgetItem("0"));
-
-
-                    if (group->Attribute("group_id"))
-                    {
-                        QString value = group->Attribute("group_id");
-                        ui->tableWidget_groups_1->setItem(counter, 0, new QTableWidgetItem(value));
-                    }
-                    if (group->Attribute("agent_parameter_id"))
-                    {
-                        QString value = group->Attribute("agent_parameter_id");
-                        ui->tableWidget_groups_1->setItem(counter, 1, new QTableWidgetItem(value));
-                    }
-                    if (group->Attribute("room_id"))
-                    {
-                        QString value = group->Attribute("room_id");
-                        ui->tableWidget_groups_1->setItem(counter, 2, new QTableWidgetItem(value));
-                    }
-                    if (group->Attribute("subroom_id"))
-                    {
-                        QString value = group->Attribute("subroom_id");
-                        ui->tableWidget_groups_1->setItem(counter, 3, new QTableWidgetItem(value));
-                    }
-                    if (group->Attribute("number"))
-                    {
-                        QString value = group->Attribute("number");
-                        ui->tableWidget_groups_1->setItem(counter, 4, new QTableWidgetItem(value));
-                    }
-                    if (group->Attribute("goal_id"))
-                    {
-                        QString value = group->Attribute("goal_id");
-                        ui->tableWidget_groups_1->setItem(counter, 5, new QTableWidgetItem(value));
-                    }
-                    if (group->Attribute("router_id"))
-                    {
-                        QString value = group->Attribute("router_id");
-                        ui->tableWidget_groups_1->setItem(counter, 6, new QTableWidgetItem(value));
-                    }
-                    if (group->Attribute("x_min"))
-                    {
-                        QString value = group->Attribute("x_min");
-                        ui->tableWidget_groups_1->setItem(counter, 7, new QTableWidgetItem(value));
-                    }
-                    if (group->Attribute("x_max"))
-                    {
-                        QString value = group->Attribute("x_max");
-                        ui->tableWidget_groups_1->setItem(counter, 8, new QTableWidgetItem(value));
-                    }
-                    if (group->Attribute("y_min"))
-                    {
-                        QString value = group->Attribute("y_min");
-                        ui->tableWidget_groups_1->setItem(counter, 9, new QTableWidgetItem(value));
-                    }
-                    if (group->Attribute("y_max"))
-                    {
-                        QString value = group->Attribute("y_max");
-                        ui->tableWidget_groups_1->setItem(counter, 10, new QTableWidgetItem(value));
-                    }
-                    if (group->Attribute("pre_movement_mean"))
-                    {
-                        QString value = group->Attribute("pre_movement_mean");
-                        ui->tableWidget_groups_1->setItem(counter, 11, new QTableWidgetItem(value));
-                    }
-                    if (group->Attribute("pre_movement_sigma"))
-                    {
-                        QString value = group->Attribute("pre_movement_sigma");
-                        ui->tableWidget_groups_1->setItem(counter, 12, new QTableWidgetItem(value));
-                    }
-                    if (group->Attribute("risk_tolerance_mean"))
-                    {
-                        QString value = group->Attribute("risk_tolerance_mean");
-                        ui->tableWidget_groups_1->setItem(counter, 13, new QTableWidgetItem(value));
-                    }
-                    if (group->Attribute("risk_tolerance_sigma"))
-                    {
-                        QString value = group->Attribute("risk_tolerance_sigma");
-                        ui->tableWidget_groups_1->setItem(counter, 14, new QTableWidgetItem(value));
-                    }
-                    counter = counter + 1;
-                }
-            }
-        }
-    }
-}
-
-void InifileWidget::ReadModelData(TiXmlElement *JuPedSim)
-{
-    //operational model and agent parameters
-    if (JuPedSim->FirstChild("operational_models"))
-    {
-        if (JuPedSim->FirstChild("operational_models")->FirstChildElement("model"))
-        {
-            for (TiXmlElement* model = JuPedSim->FirstChild("operational_models")->FirstChildElement("model");
-                 model; model = model->NextSiblingElement("model"))
-            {
-                QString desc = model->Attribute("description");
-                if (desc == "gcfm")
-                {
-                    int index = 0;
-                    on_comboBox_groups_1_currentIndexChanged(index);
-
-                    if (model->FirstChild("model_parameters"))
-                    {
-                        if (model->FirstChild("model_parameters")->FirstChild("solver"))
-                        {
-                            QString value = model->FirstChild("model_parameters")->FirstChild("solver")->FirstChild()->Value();
-                            ui->lineEdit_model_gcfm_01->setText(value);
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChild("stepsize"))
-                        {
-                            QString value = model->FirstChild("model_parameters")->FirstChild("stepsize")->FirstChild()->Value();
-                            ui->lineEdit_model_gcfm_02->setText(value);
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChild("exit_crossing_strategy"))
-                        {
-                            QString value = model->FirstChild("model_parameters")->FirstChild("exit_crossing_strategy")->FirstChild()->Value();
-                            ui->lineEdit_model_gcfm_03->setText(value);
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChildElement("linkedcells"))
-                        {
-                            if (model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("enabled"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("enabled");
-                                ui->lineEdit_model_gcfm_04->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("cell_size"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("cell_size");
-                                ui->lineEdit_model_gcfm_05->setText(value);
-                            }
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChildElement("force_ped"))
-                        {
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("nu"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("nu");
-                                ui->lineEdit_model_gcfm_06->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("dist_max"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("dist_max");
-                                ui->lineEdit_model_gcfm_07->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("desteff_max"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("desteff_max");
-                                ui->lineEdit_model_gcfm_08->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("interpolation_width"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("interpolation_width");
-                                ui->lineEdit_model_gcfm_09->setText(value);
-                            }
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChildElement("force_wall"))
-                        {
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("nu"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("nu");
-                                ui->lineEdit_model_gcfm_10->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("dist_max"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("dist_max");
-                                ui->lineEdit_model_gcfm_11->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("desteff_max"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("desteff_max");
-                                ui->lineEdit_model_gcfm_12->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("interpolation_width"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("interpolation_width");
-                                ui->lineEdit_model_gcfm_13->setText(value);
-                            }
-                        }
-
-                        if (model->FirstChildElement("agent_parameters"))
-                        {
-                            int counter = 0;
-                            for (TiXmlElement* agent = model->FirstChildElement("agent_parameters");
-                                 agent; agent = agent->NextSiblingElement("agent_parameters"))
-                            {
-                                ui->spinBox_agents_gcfm_1->setValue(counter+1);
-
-                                QString count = QString::number(counter+1);
-                                //default_values
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 0, new QTableWidgetItem(count));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 1, new QTableWidgetItem("1.33"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 2, new QTableWidgetItem("0.0"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 3, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 4, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 5, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 6, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 7, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 8, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 9, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 10, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 11, new QTableWidgetItem("0.25"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 12, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 13, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 14, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 15, new QTableWidgetItem("0.18"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 16, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 17, new QTableWidgetItem("0.5"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 18, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 19, new QTableWidgetItem("0.5"));
-                                ui->tableWidget_agents_gcfm_1->setItem(counter, 20, new QTableWidgetItem("0.001"));
-
-                                if (agent->Attribute("agent_parameter_id"))
-                                {
-                                    QString value = agent->Attribute("agent_parameter_id");
-                                    ui->tableWidget_agents_gcfm_1->setItem(counter, 0, new QTableWidgetItem(value));
-                                }
-                                if (agent->FirstChildElement("v0"))
-                                {
-                                    if (agent->FirstChildElement("v0")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0")->Attribute("mu");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 1, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0")->Attribute("sigma");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 2, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_upstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_upstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_upstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 3, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_upstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_upstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 4, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_downstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_downstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_downstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 5, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_downstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_downstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 6, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_idle_escalator_upstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 7, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 8, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_idle_escalator_downstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 9, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 10, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("bmax"))
-                                {
-                                    if (agent->FirstChildElement("bmax")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmax")->Attribute("mu");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 11, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("bmax")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmax")->Attribute("sigma");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 12, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("bmin"))
-                                {
-                                    if (agent->FirstChildElement("bmin")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmin")->Attribute("mu");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 13, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("bmin")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmin")->Attribute("sigma");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 14, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("amin"))
-                                {
-                                    if (agent->FirstChildElement("amin")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("amin")->Attribute("mu");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 15, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("amin")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("amin")->Attribute("sigma");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 16, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("tau"))
-                                {
-                                    if (agent->FirstChildElement("tau")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("tau")->Attribute("mu");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 17, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("tau")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("tau")->Attribute("sigma");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 18, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("atau"))
-                                {
-                                    if (agent->FirstChildElement("atau")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("atau")->Attribute("mu");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 19, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("atau")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("atau")->Attribute("sigma");
-                                        ui->tableWidget_agents_gcfm_1->setItem(counter, 20, new QTableWidgetItem(value));
-                                    }
-                                }
-                                counter = counter + 1;
-                            }
-                        }
-                    }
-                }
-
-                if (desc == "gompertz")
-                {
-                    int index = 1;
-                    on_comboBox_groups_1_currentIndexChanged(index);
-                    if (model->FirstChild("model_parameters"))
-                    {
-                        if (model->FirstChild("model_parameters")->FirstChild("solver"))
-                        {
-                            QString value = model->FirstChild("model_parameters")->FirstChild("solver")->FirstChild()->Value();
-                            ui->lineEdit_model_gompertz_01->setText(value);
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChild("stepsize"))
-                        {
-                            QString value = model->FirstChild("model_parameters")->FirstChild("stepsize")->FirstChild()->Value();
-                            ui->lineEdit_model_gompertz_02->setText(value);
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChild("exit_crossing_strategy"))
-                        {
-                            QString value = model->FirstChild("model_parameters")->FirstChild("exit_crossing_strategy")->FirstChild()->Value();
-                            ui->lineEdit_model_gompertz_03->setText(value);
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChildElement("linkedcells"))
-                        {
-                            if (model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("enabled"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("enabled");
-                                ui->lineEdit_model_gompertz_04->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("cell_size"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("cell_size");
-                                ui->lineEdit_model_gompertz_05->setText(value);
-                            }
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChildElement("force_ped"))
-                        {
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("nu"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("nu");
-                                ui->lineEdit_model_gompertz_06->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("b"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("b");
-                                ui->lineEdit_model_gompertz_07->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("c"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("c");
-                                ui->lineEdit_model_gompertz_08->setText(value);
-                            }
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChildElement("force_wall"))
-                        {
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("nu"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("nu");
-                                ui->lineEdit_model_gompertz_09->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("b"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("b");
-                                ui->lineEdit_model_gompertz_10->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("c"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("c");
-                                ui->lineEdit_model_gompertz_11->setText(value);
-                            }
-                        }
-
-                        if (model->FirstChildElement("agent_parameters"))
-                        {
-                            int counter = 0;
-                            for (TiXmlElement* agent = model->FirstChildElement("agent_parameters");
-                                 agent; agent = agent->NextSiblingElement("agent_parameters"))
-                            {
-                                ui->spinBox_agents_gompertz_1->setValue(counter+1);
-
-                                QString count = QString::number(counter+1);
-                                //default_values
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 0, new QTableWidgetItem(count));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 1, new QTableWidgetItem("1.33"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 2, new QTableWidgetItem("0.0"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 3, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 4, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 5, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 6, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 7, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 8, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 9, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 10, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 11, new QTableWidgetItem("0.25"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 12, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 13, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 14, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 15, new QTableWidgetItem("0.18"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 16, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 17, new QTableWidgetItem("0.5"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 18, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 19, new QTableWidgetItem("0.5"));
-                                ui->tableWidget_agents_gompertz_1->setItem(counter, 20, new QTableWidgetItem("0.001"));
-
-                                if (agent->Attribute("agent_parameter_id"))
-                                {
-                                    QString value = agent->Attribute("agent_parameter_id");
-                                    ui->tableWidget_agents_gompertz_1->setItem(counter, 0, new QTableWidgetItem(value));
-                                }
-                                if (agent->FirstChildElement("v0"))
-                                {
-                                    if (agent->FirstChildElement("v0")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0")->Attribute("mu");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 1, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0")->Attribute("sigma");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 2, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_upstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_upstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_upstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 3, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_upstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_upstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 4, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_downstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_downstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_downstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 5, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_downstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_downstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 6, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_idle_escalator_upstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 7, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 8, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_idle_escalator_downstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 9, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 10, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("bmax"))
-                                {
-                                    if (agent->FirstChildElement("bmax")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmax")->Attribute("mu");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 11, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("bmax")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmax")->Attribute("sigma");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 12, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("bmin"))
-                                {
-                                    if (agent->FirstChildElement("bmin")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmin")->Attribute("mu");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 13, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("bmin")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmin")->Attribute("sigma");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 14, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("amin"))
-                                {
-                                    if (agent->FirstChildElement("amin")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("amin")->Attribute("mu");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 15, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("amin")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("amin")->Attribute("sigma");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 16, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("tau"))
-                                {
-                                    if (agent->FirstChildElement("tau")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("tau")->Attribute("mu");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 17, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("tau")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("tau")->Attribute("sigma");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 18, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("atau"))
-                                {
-                                    if (agent->FirstChildElement("atau")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("atau")->Attribute("mu");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 19, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("atau")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("atau")->Attribute("sigma");
-                                        ui->tableWidget_agents_gompertz_1->setItem(counter, 20, new QTableWidgetItem(value));
-                                    }
-                                }
-                                counter = counter + 1;
-                            }
-                        }
-                    }
-                }
-
-                if (desc == "Tordeux2015")
-                {
-                    int index = 2;
-                    on_comboBox_groups_1_currentIndexChanged(index);
-                    if (model->FirstChild("model_parameters"))
-                    {
-                        if (model->FirstChild("model_parameters")->FirstChild("solver"))
-                        {
-                            QString value = model->FirstChild("model_parameters")->FirstChild("solver")->FirstChild()->Value();
-                            ui->lineEdit_model_tordeux_01->setText(value);
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChild("stepsize"))
-                        {
-                            QString value = model->FirstChild("model_parameters")->FirstChild("stepsize")->FirstChild()->Value();
-                            ui->lineEdit_model_tordeux_02->setText(value);
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChild("exit_crossing_strategy"))
-                        {
-                            QString value = model->FirstChild("model_parameters")->FirstChild("exit_crossing_strategy")->FirstChild()->Value();
-                            ui->lineEdit_model_tordeux_03->setText(value);
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChildElement("linkedcells"))
-                        {
-                            if (model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("enabled"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("enabled");
-                                ui->lineEdit_model_tordeux_04->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("cell_size"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("cell_size");
-                                ui->lineEdit_model_tordeux_05->setText(value);
-                            }
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChildElement("force_ped"))
-                        {
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("a"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("a");
-                                ui->lineEdit_model_tordeux_06->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("D"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("D");
-                                ui->lineEdit_model_tordeux_07->setText(value);
-                            }
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChildElement("force_wall"))
-                        {
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("a"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("a");
-                                ui->lineEdit_model_tordeux_08->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("D"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("D");
-                                ui->lineEdit_model_tordeux_09->setText(value);
-                            }
-                        }
-
-                        if (model->FirstChildElement("agent_parameters"))
-                        {
-                            int counter = 0;
-                            for (TiXmlElement* agent = model->FirstChildElement("agent_parameters");
-                                 agent; agent = agent->NextSiblingElement("agent_parameters"))
-                            {
-                                ui->spinBox_agents_tordeux_1->setValue(counter+1);
-
-                                QString count = QString::number(counter+1);
-                                //default_values
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 0, new QTableWidgetItem(count));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 1, new QTableWidgetItem("1.33"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 2, new QTableWidgetItem("0.0"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 3, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 4, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 5, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 6, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 7, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 8, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 9, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 10, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 11, new QTableWidgetItem("0.15"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 12, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 13, new QTableWidgetItem("0.15"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 14, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 15, new QTableWidgetItem("0.15"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 16, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 17, new QTableWidgetItem("0.5"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 18, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 19, new QTableWidgetItem("0.0"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 20, new QTableWidgetItem("0.0"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 21, new QTableWidgetItem("1.0"));
-                                ui->tableWidget_agents_tordeux_1->setItem(counter, 22, new QTableWidgetItem("0.001"));
-
-                                if (agent->Attribute("agent_parameter_id"))
-                                {
-                                    QString value = agent->Attribute("agent_parameter_id");
-                                    ui->tableWidget_agents_tordeux_1->setItem(counter, 0, new QTableWidgetItem(value));
-                                }
-                                if (agent->FirstChildElement("v0"))
-                                {
-                                    if (agent->FirstChildElement("v0")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0")->Attribute("mu");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 1, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0")->Attribute("sigma");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 2, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_upstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_upstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_upstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 3, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_upstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_upstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 4, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_downstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_downstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_downstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 5, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_downstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_downstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 6, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_idle_escalator_upstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 7, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 8, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_idle_escalator_downstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 9, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 10, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("bmax"))
-                                {
-                                    if (agent->FirstChildElement("bmax")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmax")->Attribute("mu");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 11, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("bmax")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmax")->Attribute("sigma");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 12, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("bmin"))
-                                {
-                                    if (agent->FirstChildElement("bmin")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmin")->Attribute("mu");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 13, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("bmin")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmin")->Attribute("sigma");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 14, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("amin"))
-                                {
-                                    if (agent->FirstChildElement("amin")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("amin")->Attribute("mu");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 15, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("amin")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("amin")->Attribute("sigma");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 16, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("tau"))
-                                {
-                                    if (agent->FirstChildElement("tau")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("tau")->Attribute("mu");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 17, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("tau")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("tau")->Attribute("sigma");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 18, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("atau"))
-                                {
-                                    if (agent->FirstChildElement("atau")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("atau")->Attribute("mu");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 19, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("atau")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("atau")->Attribute("sigma");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 20, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("T"))
-                                {
-                                    if (agent->FirstChildElement("T")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("T")->Attribute("mu");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 21, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("T")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("T")->Attribute("sigma");
-                                        ui->tableWidget_agents_tordeux_1->setItem(counter, 22, new QTableWidgetItem(value));
-                                    }
-                                }
-                                counter = counter + 1;
-                            }
-                        }
-                    }
-                }
-
-                if (desc == "gradnav")
-                {
-                    int index = 3;
-                    on_comboBox_groups_1_currentIndexChanged(index);
-                    if (model->FirstChild("model_parameters"))
-                    {
-                        if (model->FirstChild("model_parameters")->FirstChild("solver"))
-                        {
-                            QString value = model->FirstChild("model_parameters")->FirstChild("solver")->FirstChild()->Value();
-                            ui->lineEdit_model_gradnav_01->setText(value);
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChild("stepsize"))
-                        {
-                            QString value = model->FirstChild("model_parameters")->FirstChild("stepsize")->FirstChild()->Value();
-                            ui->lineEdit_model_gradnav_02->setText(value);
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChild("exit_crossing_strategy"))
-                        {
-                            QString value = model->FirstChild("model_parameters")->FirstChild("exit_crossing_strategy")->FirstChild()->Value();
-                            ui->lineEdit_model_gradnav_03->setText(value);
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChildElement("linkedcells"))
-                        {
-                            if (model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("enabled"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("enabled");
-                                ui->lineEdit_model_gradnav_04->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("cell_size"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("cell_size");
-                                ui->lineEdit_model_gradnav_05->setText(value);
-                            }
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChildElement("floorfield"))
-                        {
-                            if (model->FirstChild("model_parameters")->FirstChildElement("floorfield")->Attribute("delta_h"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("floorfield")->Attribute("delta_h");
-                                ui->lineEdit_model_gradnav_06->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("floorfield")->Attribute("wall_avoid_distance"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("floorfield")->Attribute("wall_avoid_distance");
-                                ui->lineEdit_model_gradnav_07->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("floorfield")->Attribute("use_wall_avoidance"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("floorfield")->Attribute("use_wall_avoidance");
-                                ui->lineEdit_model_gradnav_08->setText(value);
-                            }
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChildElement("anti_clipping"))
-                        {
-                            if (model->FirstChild("model_parameters")->FirstChildElement("anti_clipping")->Attribute("slow_down_distance"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("anti_clipping")->Attribute("slow_down_distance");
-                                ui->lineEdit_model_gradnav_09->setText(value);
-                            }
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChildElement("force_ped"))
-                        {
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("nu"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("nu");
-                                ui->lineEdit_model_gradnav_10->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("b"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("b");
-                                ui->lineEdit_model_gradnav_11->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("c"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("c");
-                                ui->lineEdit_model_gradnav_12->setText(value);
-                            }
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChildElement("force_wall"))
-                        {
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("nu"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("nu");
-                                ui->lineEdit_model_gradnav_13->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("b"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("b");
-                                ui->lineEdit_model_gradnav_14->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("c"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("c");
-                                ui->lineEdit_model_gradnav_15->setText(value);
-                            }
-                        }
-
-                        if (model->FirstChildElement("agent_parameters"))
-                        {
-                            int counter = 0;
-                            for (TiXmlElement* agent = model->FirstChildElement("agent_parameters");
-                                 agent; agent = agent->NextSiblingElement("agent_parameters"))
-                            {
-                                ui->spinBox_agents_gradnav_1->setValue(counter+1);
-
-                                QString count = QString::number(counter+1);
-                                //default_values
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 0, new QTableWidgetItem(count));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 1, new QTableWidgetItem("1.33"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 2, new QTableWidgetItem("0.0"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 3, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 4, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 5, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 6, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 7, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 8, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 9, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 10, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 11, new QTableWidgetItem("0.25"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 12, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 13, new QTableWidgetItem("0.20"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 14, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 15, new QTableWidgetItem("0.18"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 16, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 17, new QTableWidgetItem("0.5"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 18, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 19, new QTableWidgetItem("0.5"));
-                                ui->tableWidget_agents_gradnav_1->setItem(counter, 20, new QTableWidgetItem("0.001"));
-
-                                if (agent->Attribute("agent_parameter_id"))
-                                {
-                                    QString value = agent->Attribute("agent_parameter_id");
-                                    ui->tableWidget_agents_gradnav_1->setItem(counter, 0, new QTableWidgetItem(value));
-                                }
-                                if (agent->FirstChildElement("v0"))
-                                {
-                                    if (agent->FirstChildElement("v0")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0")->Attribute("mu");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 1, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0")->Attribute("sigma");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 2, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_upstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_upstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_upstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 3, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_upstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_upstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 4, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_downstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_downstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_downstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 5, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_downstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_downstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 6, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_idle_escalator_upstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 7, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 8, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_idle_escalator_downstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 9, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 10, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("bmax"))
-                                {
-                                    if (agent->FirstChildElement("bmax")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmax")->Attribute("mu");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 11, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("bmax")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmax")->Attribute("sigma");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 12, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("bmin"))
-                                {
-                                    if (agent->FirstChildElement("bmin")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmin")->Attribute("mu");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 13, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("bmin")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmin")->Attribute("sigma");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 14, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("amin"))
-                                {
-                                    if (agent->FirstChildElement("amin")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("amin")->Attribute("mu");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 15, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("amin")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("amin")->Attribute("sigma");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 16, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("tau"))
-                                {
-                                    if (agent->FirstChildElement("tau")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("tau")->Attribute("mu");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 17, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("tau")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("tau")->Attribute("sigma");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 18, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("atau"))
-                                {
-                                    if (agent->FirstChildElement("atau")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("atau")->Attribute("mu");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 19, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("atau")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("atau")->Attribute("sigma");
-                                        ui->tableWidget_agents_gradnav_1->setItem(counter, 20, new QTableWidgetItem(value));
-                                    }
-                                }
-                                counter = counter + 1;
-                            }
-                        }
-                    }
-                }
-
-                if (desc == "krausz")
-                {
-                    int index = 4;
-                    ui->comboBox_groups_1->setCurrentIndex(index);
-                    on_comboBox_groups_1_currentIndexChanged(index);
-                    if (model->FirstChild("model_parameters"))
-                    {
-                        if (model->FirstChild("model_parameters")->FirstChild("solver"))
-                        {
-                            QString value = model->FirstChild("model_parameters")->FirstChild("solver")->FirstChild()->Value();
-                            ui->lineEdit_model_krausz_01->setText(value);
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChild("stepsize"))
-                        {
-                            QString value = model->FirstChild("model_parameters")->FirstChild("stepsize")->FirstChild()->Value();
-                            ui->lineEdit_model_krausz_02->setText(value);
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChild("exit_crossing_strategy"))
-                        {
-                            QString value = model->FirstChild("model_parameters")->FirstChild("exit_crossing_strategy")->FirstChild()->Value();
-                            ui->lineEdit_model_krausz_03->setText(value);
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChildElement("linkedcells"))
-                        {
-                            if (model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("enabled"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("enabled");
-                                ui->lineEdit_model_krausz_04->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("cell_size"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("linkedcells")->Attribute("cell_size");
-                                ui->lineEdit_model_krausz_05->setText(value);
-                            }
-
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChildElement("force_ped"))
-                        {
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("nu"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("nu");
-                                ui->lineEdit_model_krausz_06->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("dist_max"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("dist_max");
-                                ui->lineEdit_model_krausz_07->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("desteff_max"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("desteff_max");
-                                ui->lineEdit_model_krausz_08->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("interpolation_width"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_ped")->Attribute("interpolation_width");
-                                ui->lineEdit_model_krausz_09->setText(value);
-                            }
-                        }
-                        if (model->FirstChild("model_parameters")->FirstChildElement("force_wall"))
-                        {
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("nu"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("nu");
-                                ui->lineEdit_model_krausz_10->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("dist_max"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("dist_max");
-                                ui->lineEdit_model_krausz_11->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("desteff_max"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("desteff_max");
-                                ui->lineEdit_model_krausz_12->setText(value);
-                            }
-                            if (model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("interpolation_width"))
-                            {
-                                QString value = model->FirstChild("model_parameters")->FirstChildElement("force_wall")->Attribute("interpolation_width");
-                                ui->lineEdit_model_krausz_13->setText(value);
-                            }
-                        }
-
-                        if (model->FirstChildElement("agent_parameters"))
-                        {
-                            int counter = 0;
-                            for (TiXmlElement* agent = model->FirstChildElement("agent_parameters");
-                                 agent; agent = agent->NextSiblingElement("agent_parameters"))
-                            {
-                                ui->spinBox_agents_krausz_1->setValue(counter+1);
-
-                                QString count = QString::number(counter+1);
-                                //default_values
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 0, new QTableWidgetItem(count));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 1, new QTableWidgetItem("1.33"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 2, new QTableWidgetItem("0.0"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 3, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 4, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 5, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 6, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 7, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 8, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 9, new QTableWidgetItem("0.6"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 10, new QTableWidgetItem("0.2"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 11, new QTableWidgetItem("0.0"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 12, new QTableWidgetItem("0.0"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 13, new QTableWidgetItem("0.20"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 14, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 15, new QTableWidgetItem("0.18"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 16, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 17, new QTableWidgetItem("0.5"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 18, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 19, new QTableWidgetItem("0.5"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 20, new QTableWidgetItem("0.001"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 21, new QTableWidgetItem("-0.14"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 22, new QTableWidgetItem("0.21"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 23, new QTableWidgetItem("0.44"));
-                                ui->tableWidget_agents_krausz_1->setItem(counter, 24, new QTableWidgetItem("0.25"));
-
-                                if (agent->Attribute("agent_parameter_id"))
-                                {
-                                    QString value = agent->Attribute("agent_parameter_id");
-                                    ui->tableWidget_agents_krausz_1->setItem(counter, 0, new QTableWidgetItem(value));
-                                }
-                                if (agent->FirstChildElement("v0"))
-                                {
-                                    if (agent->FirstChildElement("v0")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0")->Attribute("mu");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 1, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0")->Attribute("sigma");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 2, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_upstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_upstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_upstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 3, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_upstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_upstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 4, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_downstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_downstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_downstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 5, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_downstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_downstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 6, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_idle_escalator_upstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 7, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_upstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 8, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("v0_idle_escalator_downstairs"))
-                                {
-                                    if (agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("mu");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 9, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("v0_idle_escalator_downstairs")->Attribute("sigma");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 10, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("bmax"))
-                                {
-                                    if (agent->FirstChildElement("bmax")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmax")->Attribute("mu");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 11, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("bmax")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmax")->Attribute("sigma");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 12, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("bmin"))
-                                {
-                                    if (agent->FirstChildElement("bmin")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmin")->Attribute("mu");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 13, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("bmin")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("bmin")->Attribute("sigma");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 14, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("amin"))
-                                {
-                                    if (agent->FirstChildElement("amin")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("amin")->Attribute("mu");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 15, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("amin")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("amin")->Attribute("sigma");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 16, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("tau"))
-                                {
-                                    if (agent->FirstChildElement("tau")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("tau")->Attribute("mu");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 17, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("tau")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("tau")->Attribute("sigma");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 18, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("atau"))
-                                {
-                                    if (agent->FirstChildElement("atau")->Attribute("mu"))
-                                    {
-                                        QString value = agent->FirstChildElement("atau")->Attribute("mu");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 19, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("atau")->Attribute("sigma"))
-                                    {
-                                        QString value = agent->FirstChildElement("atau")->Attribute("sigma");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 20, new QTableWidgetItem(value));
-                                    }
-                                }
-                                if (agent->FirstChildElement("sway"))
-                                {
-                                    if (agent->FirstChildElement("sway")->Attribute("ampA"))
-                                    {
-                                        QString value = agent->FirstChildElement("sway")->Attribute("ampA");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 21, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("sway")->Attribute("ampB"))
-                                    {
-                                        QString value = agent->FirstChildElement("sway")->Attribute("ampB");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 22, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("sway")->Attribute("freqA"))
-                                    {
-                                        QString value = agent->FirstChildElement("sway")->Attribute("freqA");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 23, new QTableWidgetItem(value));
-                                    }
-                                    if (agent->FirstChildElement("sway")->Attribute("freqB"))
-                                    {
-                                        QString value = agent->FirstChildElement("sway")->Attribute("freqB");
-                                        ui->tableWidget_agents_krausz_1->setItem(counter, 24, new QTableWidgetItem(value));
-                                    }
-                                }
-                                counter = counter + 1;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-void InifileWidget::ReadRouteChoiceData(TiXmlElement* JuPedSim)
-{
-    //route_choice_models
-    if (JuPedSim->FirstChild("route_choice_models"))
-    {
-        if (JuPedSim->FirstChild("route_choice_models")->FirstChildElement("router"))
-        {
-            for (TiXmlElement* rout = JuPedSim->FirstChild("route_choice_models")->FirstChildElement("router");
-                 rout; rout = rout->NextSiblingElement("router"))
-            {
-                QString desc = rout->Attribute("description");
-
-                if (desc == "ff_global_shortest")
-                {
-                    if (rout->Attribute("router_id"))
-                    {
-                        QString value = rout->Attribute("router_id");
-//                        ui->lineEdit_route_choice_01->setText(value);
-                    }
-                }
-                if (desc == "global_shortest")
-                {
-                    if (rout->Attribute("router_id"))
-                    {
-                        QString value = rout->Attribute("router_id");
-//                        ui->lineEdit_route_choice_02->setText(value);
-                    }
-                    if (rout->FirstChild("parameters"))
-                    {
-                        if (rout->FirstChild("parameters")->FirstChildElement("navigation_lines"))
-                        {
-                            if (rout->FirstChild("parameters")->FirstChildElement("navigation_lines")->Attribute("file"))
-                            {
-                                QString value = rout->FirstChild("parameters")->FirstChildElement("navigation_lines")->Attribute("file");
-                                ui->lineEdit_route_choice_03->setText(value);
-                            }
-                        }
-                    }
-                }
-                if (desc == "cognitive_map")
-                {
-                    QString value = rout->Attribute("router_id");
-//                    ui->lineEdit_route_choice_04->setText(value);
-
-                    int counter = 0;
-                    for (TiXmlElement* sens = rout->FirstChild("sensors")->FirstChildElement("sensor");
-                         sens; sens = sens->NextSiblingElement("sensor"))
-                    {
-                        if (counter == 0)
-                        {
-                            if (sens->Attribute("sensor_id"))
-                            {
-                                QString sensor = sens->Attribute("sensor_id");
-                                ui->lineEdit_route_choice_05->setText(sensor);
-                            }
-                            if (sens->Attribute("description"))
-                            {
-                                QString value = sens->Attribute("description");
-                                ui->lineEdit_route_choice_06->setText(value);
-                            }
-                        }
-                        if (counter == 1)
-                        {
-                            if (sens->Attribute("sensor_id"))
-                            {
-                                QString sensor = sens->Attribute("sensor_id");
-                                ui->lineEdit_route_choice_07->setText(sensor);
-                            }
-                            if (sens->Attribute("description"))
-                            {
-                                QString value = sens->Attribute("description");
-                                ui->lineEdit_route_choice_08->setText(value);
-                            }
-                            if (sens->Attribute("p_field_path"))
-                            {
-                                QString value = sens->Attribute("p_field_path");
-                                ui->lineEdit_route_choice_09->setText(value);
-                            }
-                            if (sens->Attribute("update_time"))
-                            {
-                                QString value = sens->Attribute("update_time");
-                                ui->lineEdit_route_choice_10->setText(value);
-                            }
-                            if (sens->Attribute("final_time"))
-                            {
-                                QString value = sens->Attribute("final_time");
-                                ui->lineEdit_route_choice_11->setText(value);
-                            }
-                        }
-                        if (counter == 2)
-                        {
-                            if (sens->Attribute("sensor_id"))
-                            {
-                                QString sensor = sens->Attribute("sensor_id");
-                                ui->lineEdit_route_choice_12->setText(sensor);
-                            }
-                            if (sens->Attribute("description"))
-                            {
-                                QString value = sens->Attribute("description");
-                                ui->lineEdit_route_choice_13->setText(value);
-                            }
-                        }
-                        counter = counter + 1;
-                    }
-                }
-            }
-        }
-    }
-}
-
 // Read ini.xml on button push
 void InifileWidget::on_pushButton_read_clicked()
 {
@@ -3371,11 +1072,13 @@ bool InifileWidget::readInifile(QXmlStreamReader *reader)
             readJuPedSim(reader);
         }
         else {
-            reader->raiseError(QObject::tr("The file is not an JuPedSim version 0.8 file."));
+            return false;
+//            reader->raiseError(QObject::tr("The file is not an JuPedSim version 0.8 file."));
         }
     }
 
-    return reader->error();
+    return true;
+//    return reader->error();
 }
 
 QString InifileWidget::errorString(QXmlStreamReader *reader) const
@@ -3415,6 +1118,8 @@ void InifileWidget::readJuPedSim(QXmlStreamReader *reader)
             readAgents(reader);
         else if (reader->name() == QLatin1String("operational_models"))
             readModels(reader);
+        else if (reader->name() == QLatin1String("route_choice_models"))
+            readRouteChoiceModels(reader);
         else
             reader->skipCurrentElement();
     }
@@ -3706,7 +1411,7 @@ void InifileWidget::readModel(QXmlStreamReader *reader)
     while (reader->readNextStartElement()) {
         if (reader->name() == QLatin1String("model_parameters"))
             readModelParameters(reader, id);
-        if (reader->name() == QLatin1String("agent_parameters"))
+        else if (reader->name() == QLatin1String("agent_parameters"))
             readAgentParamaters(reader, id);
         else
             reader->skipCurrentElement();
@@ -3955,44 +1660,392 @@ void InifileWidget::readForceWall(QXmlStreamReader *reader, int modelindex)
 
 void InifileWidget::readAgentParamaters(QXmlStreamReader *reader, int modelindex)
 {
+    //TODO: just one or more?
 
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("agent_parameters"));
+
+    QString id = reader->attributes().value("agent_parameter_id").toString();
+
+    switch(modelindex)
+    {
+        case 1:
+        {
+            //TODO: add parameters for gcmf
+            break;
+        }
+        case 2:
+        {
+            //TODO: add parameters for gompertz
+            break;
+        }
+        case 3:
+        {
+            QTableWidgetItem *agentid = new QTableWidgetItem(tr("%1").arg(id));
+            ui->tableWidget_agents_tordeux_1->setItem(0,0,agentid);
+
+            reader->readNext();
+            break;
+        }
+        case 4:
+        {
+            //TODO: add paramters for gradnav
+            break;
+        }
+        case 5:
+        {
+            //TODO: add parameters for krausz
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    while (reader->readNextStartElement()) {
+        if (reader->name() == QLatin1String("v0"))
+            readV0(reader, modelindex);
+        else if (reader->name() == QLatin1String("bmax"))
+            readBmax(reader, modelindex);
+        else if (reader->name() == QLatin1String("bmin"))
+            readBmin(reader, modelindex);
+        else if (reader->name() == QLatin1String("amin"))
+            readAmin(reader, modelindex);
+        else if (reader->name() == QLatin1String("tau"))
+            readTau(reader, modelindex);
+        else if (reader->name() == QLatin1String("atau"))
+            readAtou(reader, modelindex);
+        else if (reader->name() == QLatin1String("T"))
+            readT(reader, modelindex);
+        else
+            reader->skipCurrentElement();
+    }
 }
 
 void InifileWidget::readV0(QXmlStreamReader *reader, int modelindex)
 {
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("v0"));
 
+    QString mu = reader->attributes().value("mu").toString();
+    QString sigma = reader->attributes().value("sigma").toString();
+
+    switch(modelindex)
+    {
+        case 1:
+        {
+            //TODO: add parameters for gcmf
+            break;
+        }
+        case 2:
+        {
+            //TODO: add parameters for gompertz
+            break;
+        }
+        case 3:
+        {
+            QTableWidgetItem *v0_mu = new QTableWidgetItem(tr("%1").arg(mu));
+            QTableWidgetItem *v0_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
+            ui->tableWidget_agents_tordeux_1->setItem(0,1, v0_mu);
+            ui->tableWidget_agents_tordeux_1->setItem(0,2, v0_sigma);
+
+            reader->readNext();
+            break;
+        }
+        case 4:
+        {
+            //TODO: add paramters for gradnav
+            break;
+        }
+        case 5:
+        {
+            //TODO: add parameters for krausz
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
 }
 
 void InifileWidget::readBmax(QXmlStreamReader *reader, int modelindex)
 {
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("bmax"));
 
+    QString mu = reader->attributes().value("mu").toString();
+    QString sigma = reader->attributes().value("sigma").toString();
+
+    switch(modelindex) {
+        case 1: {
+            //TODO: add parameters for gcmf
+            break;
+        }
+        case 2: {
+            //TODO: add parameters for gompertz
+            break;
+        }
+        case 3: {
+            QTableWidgetItem *bmax_mu = new QTableWidgetItem(tr("%1").arg(mu));
+            QTableWidgetItem *bmax_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
+            ui->tableWidget_agents_tordeux_1->setItem(0, 11, bmax_mu);
+            ui->tableWidget_agents_tordeux_1->setItem(0, 12, bmax_sigma);
+
+            reader->readNext();
+            break;
+        }
+        case 4: {
+            //TODO: add paramters for gradnav
+            break;
+        }
+        case 5: {
+            //TODO: add parameters for krausz
+            break;
+        }
+        default: {
+            break;
+        }
+    }
 }
 
 void InifileWidget::readBmin(QXmlStreamReader *reader, int modelindex)
 {
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("bmin"));
 
+    QString mu = reader->attributes().value("mu").toString();
+    QString sigma = reader->attributes().value("sigma").toString();
+
+    switch(modelindex) {
+        case 1: {
+            //TODO: add parameters for gcmf
+            break;
+        }
+        case 2: {
+            //TODO: add parameters for gompertz
+            break;
+        }
+        case 3: {
+            QTableWidgetItem *bmin_mu = new QTableWidgetItem(tr("%1").arg(mu));
+            QTableWidgetItem *bmin_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
+            ui->tableWidget_agents_tordeux_1->setItem(0, 13, bmin_mu);
+            ui->tableWidget_agents_tordeux_1->setItem(0, 14, bmin_sigma);
+
+            reader->readNext();
+            break;
+        }
+        case 4: {
+            //TODO: add paramters for gradnav
+            break;
+        }
+        case 5: {
+            //TODO: add parameters for krausz
+            break;
+        }
+        default: {
+            break;
+        }
+    }
 }
 
 void InifileWidget::readAmin(QXmlStreamReader *reader, int modelindex)
 {
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("amin"));
 
+    QString mu = reader->attributes().value("mu").toString();
+    QString sigma = reader->attributes().value("sigma").toString();
+
+    switch(modelindex) {
+        case 1: {
+            //TODO: add parameters for gcmf
+            break;
+        }
+        case 2: {
+            //TODO: add parameters for gompertz
+            break;
+        }
+        case 3: {
+            QTableWidgetItem *amin_mu = new QTableWidgetItem(tr("%1").arg(mu));
+            QTableWidgetItem *amin_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
+            ui->tableWidget_agents_tordeux_1->setItem(0, 15, amin_mu);
+            ui->tableWidget_agents_tordeux_1->setItem(0, 16, amin_sigma);
+
+            reader->readNext();
+            break;
+        }
+        case 4: {
+            //TODO: add paramters for gradnav
+            break;
+        }
+        case 5: {
+            //TODO: add parameters for krausz
+            break;
+        }
+        default: {
+            break;
+        }
+    }
 }
 
 void InifileWidget::readTau(QXmlStreamReader *reader, int modelindex)
 {
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("tau"));
 
+    QString mu = reader->attributes().value("mu").toString();
+    QString sigma = reader->attributes().value("sigma").toString();
+
+    switch(modelindex) {
+        case 1: {
+            //TODO: add parameters for gcmf
+            break;
+        }
+        case 2: {
+            //TODO: add parameters for gompertz
+            break;
+        }
+        case 3: {
+            QTableWidgetItem *tau_mu = new QTableWidgetItem(tr("%1").arg(mu));
+            QTableWidgetItem *tau_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
+            ui->tableWidget_agents_tordeux_1->setItem(0, 17, tau_mu);
+            ui->tableWidget_agents_tordeux_1->setItem(0, 18, tau_sigma);
+
+            reader->readNext();
+            break;
+        }
+        case 4: {
+            //TODO: add paramters for gradnav
+            break;
+        }
+        case 5: {
+            //TODO: add parameters for krausz
+            break;
+        }
+        default: {
+            break;
+        }
+    }
 }
 
 void InifileWidget::readAtou(QXmlStreamReader *reader, int modelindex)
 {
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("atau"));
 
+    QString mu = reader->attributes().value("mu").toString();
+    QString sigma = reader->attributes().value("sigma").toString();
+
+    switch(modelindex) {
+        case 1: {
+            //TODO: add parameters for gcmf
+            break;
+        }
+        case 2: {
+            //TODO: add parameters for gompertz
+            break;
+        }
+        case 3: {
+            QTableWidgetItem *atau_mu = new QTableWidgetItem(tr("%1").arg(mu));
+            QTableWidgetItem *atau_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
+            ui->tableWidget_agents_tordeux_1->setItem(0, 19, atau_mu);
+            ui->tableWidget_agents_tordeux_1->setItem(0, 20, atau_sigma);
+
+            reader->readNext();
+            break;
+        }
+        case 4: {
+            //TODO: add paramters for gradnav
+            break;
+        }
+        case 5: {
+            //TODO: add parameters for krausz
+            break;
+        }
+        default: {
+            break;
+        }
+    }
 }
 
 void InifileWidget::readT(QXmlStreamReader *reader, int modelindex)
 {
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("T"));
+
+    QString mu = reader->attributes().value("mu").toString();
+    QString sigma = reader->attributes().value("sigma").toString();
+
+    switch(modelindex) {
+        case 1: {
+            //TODO: add parameters for gcmf
+            break;
+        }
+        case 2: {
+            //TODO: add parameters for gompertz
+            break;
+        }
+        case 3: {
+            QTableWidgetItem *t_mu = new QTableWidgetItem(tr("%1").arg(mu));
+            QTableWidgetItem *t_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
+            ui->tableWidget_agents_tordeux_1->setItem(0, 21, t_mu);
+            ui->tableWidget_agents_tordeux_1->setItem(0, 22, t_sigma);
+
+            reader->readNext();
+            break;
+        }
+        case 4: {
+            //TODO: add paramters for gradnav
+            break;
+        }
+        case 5: {
+            //TODO: add parameters for krausz
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+}
+
+void InifileWidget::readRouteChoiceModels(QXmlStreamReader *reader)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("route_choice_models"));
+
+    while (reader->readNextStartElement()) {
+        if (reader->name() == QLatin1String("router"))
+            readRouter(reader);
+        else
+            reader->skipCurrentElement();
+    }
+}
+
+void InifileWidget::readRouter(QXmlStreamReader *reader)
+{
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("router"));
+
+    QString router_id = reader->attributes().value("router_id").toString();
+    QString description = reader->attributes().value("description").toString();
+
+    ui->lineEdit_ID->setText(router_id);
+    //TODO: set router description
+
+    while (reader->readNextStartElement()) {
+        if (reader->name() == QLatin1String("parameters"))
+            readRouterParameters(reader);
+        else
+            reader->skipCurrentElement();
+    }
+}
+
+void InifileWidget::readRouterParameters(QXmlStreamReader *reader)
+{
+    reader->readElementText();
+}
+
+void InifileWidget::readNavigationLines(QXmlStreamReader *reader)
+{
 
 }
 
+void InifileWidget::readVTK(QXmlStreamReader *reader)
+{
+
+}
 
 /*
     Since v0.8.8
