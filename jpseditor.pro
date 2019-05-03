@@ -136,6 +136,7 @@ RC_FILE = Resources/jpseditor.rc
 ICON = Resources/jpseditor.icns
 #INCLUDEPATH += $$(ROOTSYS)/include
 
+
 #CONFIG(debug, debug|release) {
 #    DESTDIR = build/debug
 #}
@@ -147,6 +148,7 @@ ICON = Resources/jpseditor.icns
 #MOC_DIR = $$DESTDIR/.moc
 #RCC_DIR = $$DESTDIR/.qrc
 #UI_DIR = $$DESTDIR/.u
+
 
 demos.path = /usr/local/bin/jpseditor
 demos.files = examples/*
