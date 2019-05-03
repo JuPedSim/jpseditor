@@ -15,6 +15,10 @@ public:
     explicit SnappingOptions(QWidget *parent = nullptr);
     ~SnappingOptions();
 
+public:
+    void setState(QList<bool> &snapping);
+    QList<bool> getState();
+
 protected slots:
     void sendState();
 

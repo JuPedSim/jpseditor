@@ -30,8 +30,6 @@
 #include "jpslandmark.h"
 
 
-
-
 class jpsConnection
 {
 

@@ -31,6 +31,7 @@
 jpsLineItem::jpsLineItem(QGraphicsLineItem *line)
 {
     mLine=line;
+    lineType = undefined;
 }
 
 jpsLineItem::~jpsLineItem()
@@ -60,14 +61,18 @@ QString jpsLineItem::get_name()
 
 QString jpsLineItem::GetType()
 {
-    if (is_Door())
-        return "Door";
-    else if (is_Wall())
-        return "Wall";
-    else if (IsHLine())
-        return "HLine";
-    else
-        return "NOT_KNOWN";
+    switch (lineType){
+        case wall:
+            return "Wall";
+        case door:
+            return "Door";
+        case exit:
+            return "Exit";
+        case hline:
+            return "HLine";
+        case undefined:
+            return "NOT_KNOWN";
+    }
 }
 
 void jpsLineItem::set_id(int id)
@@ -80,58 +85,47 @@ void jpsLineItem::set_name(QString name)
     mName=name;
 }
 
-void jpsLineItem::set_type(bool wall, bool door, bool exit, bool hline)
-{
-    if (wall==true)
-    {
-        set_Wall();
+void jpsLineItem::setType(LineType type) {
+    switch (type){
+        case wall:
+            setWall();
+            break;
+        case door:
+            setDoor();
+            break;
+        case exit:
+            setExit();
+            break;
+        case hline:
+            setHLine();
+            break;
+        default:
+            break;
     }
-    else if (door==true)
-    {
-        set_Door();
-    }
-    else if (exit==true)
-    {
-        set_Exit();
-    }
-    else
-        SetHLine();
 }
 
-void jpsLineItem::set_Wall()
+void jpsLineItem::setWall()
 {
-    wall=true;
-    door=false;
-    exit=false;
-    _hLine=false;
+    lineType = wall;
     defaultColor="black";
 }
 
-void jpsLineItem::set_Door()
+void jpsLineItem::setDoor()
 {
-    door=true;
-    wall=false;
-    exit=false;
-    _hLine=false;
+    lineType = door;
     defaultColor="blue";
 }
 
-void jpsLineItem::set_Exit()
+void jpsLineItem::setExit()
 {
-    exit=true;
-    wall=false;
-    door=false;
-    _hLine=false;
+    lineType = exit;
     defaultColor="darkMagenta";
 
 }
 
-void jpsLineItem::SetHLine()
+void jpsLineItem::setHLine()
 {
-    exit=false;
-    wall=false;
-    door=false;
-    _hLine=true;
+    lineType = hline;
     defaultColor="darkCyan";
 
 }
@@ -143,22 +137,47 @@ void jpsLineItem::set_defaultColor(QString color)
 
 bool jpsLineItem::is_Wall()
 {
-    return wall;
+    if(lineType == wall)
+    {
+        return true;
+    } else
+    {
+        return false;
+    }
+
 }
 
 bool jpsLineItem::is_Door()
 {
-    return door;
+    if(lineType == door)
+    {
+        return true;
+    } else
+    {
+        return false;
+    }
 }
 
 bool jpsLineItem::is_Exit()
 {
-    return exit;
+    if(lineType == exit)
+    {
+        return true;
+    } else
+    {
+        return false;
+    }
 }
 
 bool jpsLineItem::IsHLine()
 {
-    return _hLine;
+    if(lineType == hline)
+    {
+        return true;
+    } else
+    {
+        return false;
+    }
 }
 
 void jpsLineItem::add_intersectionPoint(QPointF *point)

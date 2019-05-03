@@ -34,6 +34,9 @@ class jpsCrossing
 {
 public:
     jpsCrossing(jpsLineItem *line);
+
+    jpsCrossing(jpsLineItem *cLine, bool isExit, float elevation);
+
     ~jpsCrossing(){}
     QList<jpsRoom *> get_roomList();
     QString get_name();
@@ -49,6 +52,18 @@ public:
     float get_elevation();
     void set_elevation(float elevation);
 
+    QString getMaxAgents() const;
+
+    void setMaxAgents(QString maxAgents);
+
+    QString getOutflow() const;
+
+    void setOutflow(QString outflow);
+
+    bool isState() const;
+
+    void setState(bool state);
+
 
 private:
     QList<jpsRoom *> roomList;
@@ -57,6 +72,9 @@ private:
     int cId;
     bool _isExit;
     float _elevation;
+    bool state;
+    QString max_agents;
+    QString outflow;
 };
 
 #endif // JPSCROSSING_H

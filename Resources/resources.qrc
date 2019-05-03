@@ -60,5 +60,8 @@
         <file>Icons/moved_hand.svg</file>
         <file>Icons/attribute.svg</file>
         <file>Icons/breaking.png</file>
+        <file>Icons/source.png</file>
+        <file>Icons/goal.png</file>
+        <file>Icons/edit.png</file>
     </qresource>
 </RCC>

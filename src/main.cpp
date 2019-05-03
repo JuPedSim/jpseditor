@@ -46,6 +46,7 @@ int main(int argc, char* argv[]){
 
     QApplication app(argc,argv);
     MWindow mywindow;
+    mywindow.setGeometry(100, 100, 800, 500);
     mywindow.show();
     return app.exec();
 }
