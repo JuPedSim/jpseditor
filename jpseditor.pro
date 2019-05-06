@@ -46,9 +46,11 @@ FORMS += \
 
 
 HEADERS += \
+    src/dtrace.h \
     src/mainWindow.h \
     src/GraphicView.h \
-    src/roomwidget.h \
+    src/graphicscene.h \
+    src/widgets/roomwidget.h \
     src/rooms.h \
     src/datamanager.h \
     src/jpscrossing.h \
@@ -56,6 +58,25 @@ HEADERS += \
     src/jpsexit.h \
     src/jpsobstacle.h \
     src/jpslandmark.h \
+    src/widgets/widgetlandmark.h \
+    src/widgets/widgetsettings.h \
+    src/jpsconnection.h \
+    src/jpsregion.h \
+    src/dtrace.h \
+    src/widgets/settingdialog.h \
+    src/widgets/inifilewidget.h \
+    src/widgets/snappingoptions.h \
+        src/jpssource.h \
+    src/widgets/sourcewidget.h \
+    src/widgets/goalwidget.h \
+    src/elementtype.h \
+    src/global.h \
+    src/models/jpselementlistmodel.h \
+    src/models/jpssourcelistmodel.h \
+    src/jpsgoal.h \
+    src/models/jpsgoallistmodel.h \
+    src/XML/goalreader.h \
+    src/XML/sourcereader.h \
     dxflib/src/dl_writer_ascii.h \
     dxflib/src/dl_writer.h \
     dxflib/src/dl_global.h \
@@ -67,33 +88,20 @@ HEADERS += \
     dxflib/src/dl_creationadapter.h \
     dxflib/src/dl_codes.h \
     dxflib/src/dl_attributes.h \
-    src/widgetlandmark.h \
-    src/graphicscene.h \
-    src/widgetsettings.h \
-    src/jpsconnection.h \
-    src/UndoFramework/actionstack.h \
     src/UndoFramework/action.h \
+    src/UndoFramework/actionstack.h \
     src/UndoFramework/lineaction.h \
-    src/jpsregion.h \
-    src/AutomaticRoomIdentification/roomID.h\
+    src/AutomaticRoomIdentification/roomID.h \
     src/AutomaticRoomIdentification/roomdefinition.h \
     src/AutomaticRoomIdentification/roomidentification.h \
-    src/dtrace.h \
-    src/settingdialog.h \
     src/tinyxml/tinystr.h \
-    src/tinyxml/tinyxml.h \
-    src/inifilewidget.h \
-    src/snappingoptions.h \
-    src/sourcewidget.h  \
-    src/global.h \
-    src/jpssource.h \
-    src/elementttype.h \
-
+    src/tinyxml/tinyxml.h
 SOURCES += \
     src/mainWindow.cpp \
     src/main.cpp \
     src/GraphicView.cpp \
-    src/roomwidget.cpp \
+    src/graphicscene.cpp \
+    src/widgets/roomwidget.cpp \
     src/rooms.cpp \
     src/datamanager.cpp \
     src/jpscrossing.cpp \
@@ -101,33 +109,35 @@ SOURCES += \
     src/jpsexit.cpp \
     src/jpsobstacle.cpp \
     src/jpslandmark.cpp \
+    src/widgets/widgetlandmark.cpp \
+    src/widgets/widgetsettings.cpp \
+    src/jpsconnection.cpp \
+    src/jpsregion.cpp \
+    src/widgets/settingdialog.cpp \
+    src/widgets/inifilewidget.cpp \
+    src/widgets/snappingoptions.cpp \
+        src/jpssource.cpp \
+    src/widgets/sourcewidget.cpp \
+    src/jpsgoal.cpp \
+    src/widgets/goalwidget.cpp \
+    src/global.cpp \
+    src/models/jpselementlistmodel.cpp \
+    src/models/jpssourcelistmodel.cpp \
+    src/models/jpsgoallistmodel.cpp \
+    src/XML/goalreader.cpp \
+    src/XML/sourcereader.cpp \
     dxflib/src/dl_writer_ascii.cpp \
     dxflib/src/dl_dxf.cpp \
-    src/widgetlandmark.cpp \
-    src/graphicscene.cpp \
-    src/widgetsettings.cpp \
-    src/jpsconnection.cpp \
-    src/UndoFramework/actionstack.cpp \
     src/UndoFramework/action.cpp \
+    src/UndoFramework/actionstack.cpp \
     src/UndoFramework/lineaction.cpp \
-    src/jpsregion.cpp \
     src/AutomaticRoomIdentification/roomdefinition.cpp \
     src/AutomaticRoomIdentification/roomidentification.cpp \
-    src/settingdialog.cpp \
     src/tinyxml/tinystr.cpp \
     src/tinyxml/tinyxml.cpp \
     src/tinyxml/tinyxmlerror.cpp \
     src/tinyxml/tinyxmlparser.cpp \
-    src/inifilewidget.cpp \
-    src/snappingoptions.cpp \
-    src/sourcewidget.cpp \
-    src/jpssource.cpp \
-    src/global.cpp
-
-
-
 #INCLUDEPATH += D:/boost_1_59_0/boost_1_59_0
-
 RESOURCES += \
     Resources/resources.qrc
 

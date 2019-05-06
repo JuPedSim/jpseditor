@@ -45,9 +45,12 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "")
 endif()
 
 message( STATUS "Generating  ................................... ${PROJECT_NAME} (${JPSEDITOR_VERSION}) -- ${CMAKE_BUILD_TYPE}")
+
 if(APPLE )
   set (CMAKE_INSTALL_PREFIX "/Applications")
   set (CMAKE_PREFIX_PATH "/Applications/Qt/5.12.0/clang_64")
+elseif(WIN32)
+  set (CMAKE_PREFIX_PATH "C:/Users/Tao/Application/Qt/5.12.3/mingw73_64")
 endif()
 message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
 
