@@ -91,9 +91,10 @@ private:
 
     void writeHeaderData(QXmlStreamWriter *stream, QFile &file);
     void writeRoutingData(QXmlStreamWriter *stream, QFile &file);
-    void writeFFGlobalShortestModel(QXmlStreamWriter *stream, QFile &file);
-    void writeGlobalShortestModel(QXmlStreamWriter *stream, QFile &file);
+    void writeFFGlobalShortestRoute(QXmlStreamWriter *stream, QFile &file);
+    void writeGlobalShortestRoute(QXmlStreamWriter *stream, QFile &file);
     void writeCognitiveMap(QXmlStreamWriter *stream, QFile &file);
+    void writeTripsRoute(QXmlStreamWriter *stream, QFile &file);
     void writeTrafficData(QXmlStreamWriter *stream, QFile &file);
     void writeAgentData(QXmlStreamWriter *stream, QFile &file);
     void writeModelGcfmData(QXmlStreamWriter *stream, QFile &file);

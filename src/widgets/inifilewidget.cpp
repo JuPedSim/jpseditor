@@ -231,21 +231,55 @@ void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
     for(int i = 0; i < ui->spinBox_groups_1->value(); i++)
     {
         stream->writeStartElement("group");
-        stream->writeAttribute("group_id", ui->tableWidget_groups_1->item(i,0)->text());
-        stream->writeAttribute("agent_parameter_id", ui->tableWidget_groups_1->item(i,1)->text());
-        stream->writeAttribute("room_id",ui->tableWidget_groups_1->item(i,2)->text());
-        stream->writeAttribute("subroom_id",ui->tableWidget_groups_1->item(i,3)->text());
-        stream->writeAttribute("number",ui->tableWidget_groups_1->item(i,4)->text());
-        stream->writeAttribute("goal_id",ui->tableWidget_groups_1->item(i,5)->text());
-        stream->writeAttribute("router_id",ui->tableWidget_groups_1->item(i,6)->text());
-        stream->writeAttribute("x_min",ui->tableWidget_groups_1->item(i,7)->text());
-        stream->writeAttribute("x_max",ui->tableWidget_groups_1->item(i,8)->text());
-        stream->writeAttribute("y_min",ui->tableWidget_groups_1->item(i,9)->text());
-        stream->writeAttribute("y_max",ui->tableWidget_groups_1->item(i,10)->text());
-        stream->writeAttribute("pre_movement_mean",ui->tableWidget_groups_1->item(i,11)->text());
-        stream->writeAttribute("pre_movement_sigma",ui->tableWidget_groups_1->item(i,12)->text());
-        stream->writeAttribute("risk_tolerance_mean",ui->tableWidget_groups_1->item(i,13)->text());
-        stream->writeAttribute("risk_tolerance_sigma",ui->tableWidget_groups_1->item(i,14)->text());
+
+        // item(0,0) isn't a nullptr ever！
+        if(!ui->tableWidget_groups_1->item(i,0)->text().isEmpty())
+        {
+            stream->writeAttribute("group_id", ui->tableWidget_groups_1->item(i,0)->text());
+        }
+
+        if(ui->tableWidget_groups_1->item(i,1) != nullptr)
+            stream->writeAttribute("agent_parameter_id", ui->tableWidget_groups_1->item(i,1)->text());
+
+        if(ui->tableWidget_groups_1->item(i,2) != nullptr)
+            stream->writeAttribute("room_id", ui->tableWidget_groups_1->item(i,2)->text());
+
+        if(ui->tableWidget_groups_1->item(i,3) != nullptr)
+            stream->writeAttribute("subroom_id",ui->tableWidget_groups_1->item(i,3)->text());
+
+        if(ui->tableWidget_groups_1->item(i,4) != nullptr)
+            stream->writeAttribute("number",ui->tableWidget_groups_1->item(i,4)->text());
+
+        if(ui->tableWidget_groups_1->item(i,5) != nullptr)
+            stream->writeAttribute("goal_id",ui->tableWidget_groups_1->item(i,5)->text());
+
+        if(ui->tableWidget_groups_1->item(i,6) != nullptr)
+            stream->writeAttribute("router_id",ui->tableWidget_groups_1->item(i,6)->text());
+
+        if(ui->tableWidget_groups_1->item(i,7) != nullptr)
+            stream->writeAttribute("x_min",ui->tableWidget_groups_1->item(i,7)->text());
+
+        if(ui->tableWidget_groups_1->item(i,8) != nullptr)
+            stream->writeAttribute("x_max",ui->tableWidget_groups_1->item(i,8)->text());
+
+        if(ui->tableWidget_groups_1->item(i,9) != nullptr)
+            stream->writeAttribute("y_min",ui->tableWidget_groups_1->item(i,9)->text());
+
+        if(ui->tableWidget_groups_1->item(i,10) != nullptr)
+            stream->writeAttribute("y_max",ui->tableWidget_groups_1->item(i,10)->text());
+
+        if(ui->tableWidget_groups_1->item(i,11) != nullptr)
+            stream->writeAttribute("pre_movement_mean",ui->tableWidget_groups_1->item(i,11)->text());
+
+        if(ui->tableWidget_groups_1->item(i,12) != nullptr)
+            stream->writeAttribute("pre_movement_sigma",ui->tableWidget_groups_1->item(i,12)->text());
+
+        if(ui->tableWidget_groups_1->item(i,13) != nullptr)
+            stream->writeAttribute("risk_tolerance_mean",ui->tableWidget_groups_1->item(i,13)->text());
+
+        if(ui->tableWidget_groups_1->item(i,14) != nullptr)
+            stream->writeAttribute("risk_tolerance_sigma",ui->tableWidget_groups_1->item(i,14)->text());
+
         stream->writeEndElement(); //end group
     }
 
@@ -256,12 +290,26 @@ void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
     stream->writeStartElement("agents_sources");
 
     QList<JPSSource *> sources = dataManager->getSourcelist();
-    dataManager->writeSources(stream, sources);
+    if(!sources.isEmpty())
+    {
+        dataManager->writeSources(stream, sources);
+    }
+    else
+    {
+        stream->writeCharacters("");
+        stream->writeEmptyElement("source");
+        stream->writeEmptyElement("file");
+    }
 
-    auto source_FileName = ui->lineEdit_SourceFile->text().split("/").last();
-    stream->writeStartElement("file");
-    stream->writeCharacters(source_FileName);
-    stream->writeEndElement(); //end files
+
+    if(!ui->lineEdit_SourceFile->text().isEmpty())
+    {
+        auto source_FileName = ui->lineEdit_SourceFile->text().split("/").last();
+        stream->writeStartElement("file");
+        stream->writeCharacters(source_FileName);
+        stream->writeEndElement(); //end files
+    }
+
     stream->writeEndElement(); //end agents_sources
     stream->writeEndElement(); //end agents
 
@@ -786,22 +834,22 @@ void InifileWidget::writeRouteChoiceData(QXmlStreamWriter *stream, QFile &file)
 {
 
     stream->writeComment("route chice model");
+
     stream->writeStartElement("route_choice_models");
 
-    int router = ui->comboBox_Router->currentIndex();
+    if(ui->checkBox_ff->isChecked())
+    {
+        writeFFGlobalShortestRoute(stream, file);
+    }
 
-    switch(router){
-        case 0:
-            writeFFGlobalShortestModel(stream, file);
-            break;
-        case 1:
-            writeGlobalShortestModel(stream, file);
-            break;
-        case 2:
-            writeCognitiveMap(stream, file);
-            break;
-        default:
-            break;
+    if(ui->checkBox_global->isChecked())
+    {
+        writeGlobalShortestRoute(stream, file);
+    }
+
+    if(ui->checkBox_trips->isChecked())
+    {
+        writeTripsRoute(stream, file);
     }
 
     stream->writeEndElement();
@@ -809,13 +857,13 @@ void InifileWidget::writeRouteChoiceData(QXmlStreamWriter *stream, QFile &file)
     return ;
 }
 
-void InifileWidget::writeFFGlobalShortestModel(QXmlStreamWriter *stream, QFile &file)
+void InifileWidget::writeFFGlobalShortestRoute(QXmlStreamWriter *stream, QFile &file)
 {
     stream->writeStartElement("router");
-    stream->writeAttribute("router_id", ui->lineEdit_ID->text());
+    stream->writeAttribute("router_id", ui->lineEdit_ff_global_ID->text());
     stream->writeAttribute("description","ff_global_shortest");
 
-    if(ui->radioButton_VTK->isChecked())
+    if(ui->comboBox_ff_global->currentText() == "True")
         stream->writeTextElement("write_VTK_files", "true");
     else
         stream->writeTextElement("write_VTK_files", "false");
@@ -823,15 +871,15 @@ void InifileWidget::writeFFGlobalShortestModel(QXmlStreamWriter *stream, QFile &
     stream->writeEndElement();
 }
 
-void InifileWidget::writeGlobalShortestModel(QXmlStreamWriter *stream, QFile &file)
+void InifileWidget::writeGlobalShortestRoute(QXmlStreamWriter *stream, QFile &file)
 {
     stream->writeStartElement("router");
-    stream->writeAttribute("router_id", ui->lineEdit_ID->text());
+    stream->writeAttribute("router_id", ui->lineEdit_global_ID->text());
     stream->writeAttribute("description","global_shortest");
 
     stream->writeStartElement("parameters");
     stream->writeStartElement("navigation_lines");
-    stream->writeAttribute("file", ui->lineEdit_route_choice_03->text());
+    stream->writeAttribute("file", ui->lineEdit_global_navi->text());
     stream->writeEndElement(); //end navigation lines
     stream->writeEndElement(); //end patameters
     stream->writeEndElement(); //end router
@@ -839,17 +887,24 @@ void InifileWidget::writeGlobalShortestModel(QXmlStreamWriter *stream, QFile &fi
 
 void InifileWidget::writeCognitiveMap(QXmlStreamWriter *stream, QFile &file)
 {
-    stream->writeStartElement("router");
-    stream->writeAttribute("router_id", ui->lineEdit_ID->text());
-    stream->writeAttribute("description","cognitive_map");
-    stream->writeStartElement("sensors");
-    //TODO: finish sensors
-    stream->writeEndElement();//end sensors
+//    stream->writeStartElement("router");
+//    stream->writeAttribute("router_id", ui->lineEdit_ID->text());
+//    stream->writeAttribute("description","cognitive_map");
+//    stream->writeStartElement("sensors");
+//    stream->writeEndElement();//end sensors
+//
+//    stream->writeStartElement("cognitive_map");
+//    stream->writeAttribute("status", "complete");
+//    stream->writeEndElement(); //end cognitive map
+//    stream->writeEndElement(); //router
+}
 
-    stream->writeStartElement("cognitive_map");
-    stream->writeAttribute("status", "complete");
-    stream->writeEndElement(); //end cognitive map
-    stream->writeEndElement(); //router
+void InifileWidget::writeTripsRoute(QXmlStreamWriter *stream, QFile &file)
+{
+    stream->writeStartElement("router");
+    stream->writeAttribute("router_id", ui->lineEdit_trips_ID->text());
+    stream->writeAttribute("description","ff_global_shortest_trips");
+    stream->writeEndElement(); //end router
 }
 
 // Create ini.xml on button push
@@ -2021,7 +2076,7 @@ void InifileWidget::readRouter(QXmlStreamReader *reader)
     QString router_id = reader->attributes().value("router_id").toString();
     QString description = reader->attributes().value("description").toString();
 
-    ui->lineEdit_ID->setText(router_id);
+    //TODO: set router ID
     //TODO: set router description
 
     while (reader->readNextStartElement()) {
@@ -2089,7 +2144,7 @@ void InifileWidget::pushButton_RoutingClicked()
     QString fileName=QFileDialog::getOpenFileName(this,tr("Choose Routing"),""
             ,tr("XML-Files (*.xml)"));
 
-    ui->lineEdit_route_choice_03->setText(fileName);
+    ui->lineEdit_global_navi->setText(fileName);
 }
 
 /*
