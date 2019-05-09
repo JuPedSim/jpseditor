@@ -25,7 +25,7 @@
      <x>20</x>
      <y>80</y>
      <width>1200</width>
-     <height>371</height>
+     <height>401</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -35,7 +35,7 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
-    <number>12</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_general">
     <attribute name="title">
@@ -71,7 +71,7 @@
           <item>
            <widget class="QLabel" name="label_general_03">
             <property name="text">
-             <string>Coreusage</string>
+             <string>Core usage</string>
             </property>
             <property name="buddy">
              <cstring>lineEdit_general_01</cstring>
@@ -155,7 +155,7 @@
              <string/>
             </property>
             <property name="text">
-             <string>0.8</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -168,8 +168,8 @@
     <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
-       <x>270</x>
-       <y>180</y>
+       <x>350</x>
+       <y>200</y>
        <width>191</width>
        <height>113</height>
       </rect>
@@ -227,14 +227,14 @@
           <item>
            <widget class="QLineEdit" name="lineEdit_general_06">
             <property name="text">
-             <string>1000</string>
+             <string/>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QLineEdit" name="lineEdit_general_08">
             <property name="text">
-             <string>log.txt</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -248,7 +248,7 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>180</y>
+       <y>200</y>
        <width>241</width>
        <height>157</height>
       </rect>
@@ -300,7 +300,7 @@
           <item>
            <widget class="QLineEdit" name="lineEdit_general_12">
             <property name="text">
-             <string>trajectories.xml</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -321,7 +321,7 @@
           <item>
            <widget class="QLineEdit" name="lineEdit_general_10">
             <property name="text">
-             <string>8</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -373,7 +373,7 @@
     <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
-       <x>270</x>
+       <x>350</x>
        <y>20</y>
        <width>451</width>
        <height>162</height>
@@ -477,6 +477,32 @@
       </item>
      </layout>
     </widget>
+    <widget class="Line" name="line_4">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>180</y>
+       <width>1200</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="Line" name="line_5">
+     <property name="geometry">
+      <rect>
+       <x>293</x>
+       <y>10</y>
+       <width>20</width>
+       <height>361</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="tab_groups">
     <attribute name="title">
@@ -530,6 +556,11 @@
        <height>251</height>
       </rect>
      </property>
+     <row>
+      <property name="text">
+       <string>1</string>
+      </property>
+     </row>
      <column>
       <property name="text">
        <string>Group ID</string>
@@ -605,6 +636,11 @@
        <string>Δ Risk. tol.</string>
       </property>
      </column>
+     <item row="0" column="0">
+      <property name="text">
+       <string/>
+      </property>
+     </item>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_model_gcfm">
@@ -647,7 +683,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>euler</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_02">
@@ -673,7 +709,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.01</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_03">
@@ -699,7 +735,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>4</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_04">
@@ -725,7 +761,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>true</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_05">
@@ -751,7 +787,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>2.2</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_06">
@@ -777,7 +813,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.2</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_07">
@@ -803,7 +839,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>3.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_08">
@@ -829,7 +865,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>2.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_09">
@@ -837,7 +873,7 @@
       <rect>
        <x>740</x>
        <y>180</y>
-       <width>101</width>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
@@ -848,27 +884,27 @@
     <widget class="QLineEdit" name="lineEdit_model_gcfm_09">
      <property name="geometry">
       <rect>
-       <x>850</x>
+       <x>870</x>
        <y>180</y>
        <width>111</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>0.1</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gcfm_13">
      <property name="geometry">
       <rect>
-       <x>850</x>
+       <x>870</x>
        <y>270</y>
        <width>111</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>0.1</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_11">
@@ -894,7 +930,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>3.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_12">
@@ -920,7 +956,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.2</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_13">
@@ -928,7 +964,7 @@
       <rect>
        <x>740</x>
        <y>270</y>
-       <width>101</width>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
@@ -946,7 +982,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>2.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_10">
@@ -1125,111 +1161,6 @@
        <string>Δ aTau</string>
       </property>
      </column>
-     <item row="0" column="0">
-      <property name="text">
-       <string>1</string>
-      </property>
-     </item>
-     <item row="0" column="1">
-      <property name="text">
-       <string>1.33</string>
-      </property>
-     </item>
-     <item row="0" column="2">
-      <property name="text">
-       <string>0.0</string>
-      </property>
-     </item>
-     <item row="0" column="3">
-      <property name="text">
-       <string>0.6</string>
-      </property>
-     </item>
-     <item row="0" column="4">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="5">
-      <property name="text">
-       <string>0.6</string>
-      </property>
-     </item>
-     <item row="0" column="6">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="7">
-      <property name="text">
-       <string>0.6</string>
-      </property>
-     </item>
-     <item row="0" column="8">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="9">
-      <property name="text">
-       <string>0.6</string>
-      </property>
-     </item>
-     <item row="0" column="10">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="11">
-      <property name="text">
-       <string>0.25</string>
-      </property>
-     </item>
-     <item row="0" column="12">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
-     <item row="0" column="13">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="14">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
-     <item row="0" column="15">
-      <property name="text">
-       <string>0.18</string>
-      </property>
-     </item>
-     <item row="0" column="16">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
-     <item row="0" column="17">
-      <property name="text">
-       <string>0.5</string>
-      </property>
-     </item>
-     <item row="0" column="18">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
-     <item row="0" column="19">
-      <property name="text">
-       <string>0.5</string>
-      </property>
-     </item>
-     <item row="0" column="20">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
     </widget>
     <widget class="QLabel" name="label_agents_gcfm_1">
      <property name="geometry">
@@ -1272,7 +1203,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.25</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gompertz_01">
@@ -1298,7 +1229,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>3.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gompertz_10">
@@ -1402,7 +1333,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>true</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gompertz_09">
@@ -1415,7 +1346,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>2.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gompertz_04">
@@ -1441,7 +1372,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.01</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gompertz_06">
@@ -1454,7 +1385,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>2.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gompertz_03">
@@ -1480,7 +1411,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>2.2</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gompertz_08">
@@ -1506,7 +1437,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>3.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gompertz_a">
@@ -1532,7 +1463,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.70</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gompertz_03">
@@ -1545,7 +1476,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>3</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gompertz_09">
@@ -1584,7 +1515,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>euler</string>
+      <string/>
      </property>
     </widget>
    </widget>
@@ -1750,111 +1681,6 @@
        <string>Δ aTau</string>
       </property>
      </column>
-     <item row="0" column="0">
-      <property name="text">
-       <string>1</string>
-      </property>
-     </item>
-     <item row="0" column="1">
-      <property name="text">
-       <string>1.33</string>
-      </property>
-     </item>
-     <item row="0" column="2">
-      <property name="text">
-       <string>0.0</string>
-      </property>
-     </item>
-     <item row="0" column="3">
-      <property name="text">
-       <string>0.6</string>
-      </property>
-     </item>
-     <item row="0" column="4">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="5">
-      <property name="text">
-       <string>0.6</string>
-      </property>
-     </item>
-     <item row="0" column="6">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="7">
-      <property name="text">
-       <string>0.6</string>
-      </property>
-     </item>
-     <item row="0" column="8">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="9">
-      <property name="text">
-       <string>0.6</string>
-      </property>
-     </item>
-     <item row="0" column="10">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="11">
-      <property name="text">
-       <string>0.25</string>
-      </property>
-     </item>
-     <item row="0" column="12">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
-     <item row="0" column="13">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="14">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
-     <item row="0" column="15">
-      <property name="text">
-       <string>0.18</string>
-      </property>
-     </item>
-     <item row="0" column="16">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
-     <item row="0" column="17">
-      <property name="text">
-       <string>0.5</string>
-      </property>
-     </item>
-     <item row="0" column="18">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
-     <item row="0" column="19">
-      <property name="text">
-       <string>0.5</string>
-      </property>
-     </item>
-     <item row="0" column="20">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_model_tordeux">
@@ -1871,7 +1697,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>euler</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_tordeux_08">
@@ -1884,7 +1710,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>5.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_tordeux_06">
@@ -1897,7 +1723,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>5.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_tordeux_07">
@@ -1936,7 +1762,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>3</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_tordeux_07">
@@ -1949,7 +1775,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.20</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_tordeux_04">
@@ -1962,7 +1788,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>true</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_tordeux_08">
@@ -1988,7 +1814,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.02</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_tordeux_02">
@@ -2001,7 +1827,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.001</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_tordeux_05">
@@ -2014,7 +1840,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>2.2</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_tordeux_c">
@@ -2323,7 +2149,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>3.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_14">
@@ -2362,7 +2188,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>true</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_c">
@@ -2414,7 +2240,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>9</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gradnav_15">
@@ -2427,7 +2253,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>3.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_11">
@@ -2466,7 +2292,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>1.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_03">
@@ -2492,7 +2318,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.01</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gradnav_14">
@@ -2505,7 +2331,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.7</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gradnav_12">
@@ -2518,7 +2344,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>3.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gradnav_13">
@@ -2531,7 +2357,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>1.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_13">
@@ -2570,7 +2396,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>4.2</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_02">
@@ -2622,7 +2448,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>euler</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_a">
@@ -2661,7 +2487,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.4</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gradnav_08">
@@ -2674,7 +2500,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>true</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_08">
@@ -2713,7 +2539,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.0625</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_16">
@@ -2739,7 +2565,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.2</string>
+      <string/>
      </property>
     </widget>
    </widget>
@@ -2905,111 +2731,6 @@
        <string>Δ aTau</string>
       </property>
      </column>
-     <item row="0" column="0">
-      <property name="text">
-       <string>1</string>
-      </property>
-     </item>
-     <item row="0" column="1">
-      <property name="text">
-       <string>1.33</string>
-      </property>
-     </item>
-     <item row="0" column="2">
-      <property name="text">
-       <string>0.0</string>
-      </property>
-     </item>
-     <item row="0" column="3">
-      <property name="text">
-       <string>0.6</string>
-      </property>
-     </item>
-     <item row="0" column="4">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="5">
-      <property name="text">
-       <string>0.6</string>
-      </property>
-     </item>
-     <item row="0" column="6">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="7">
-      <property name="text">
-       <string>0.6</string>
-      </property>
-     </item>
-     <item row="0" column="8">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="9">
-      <property name="text">
-       <string>0.6</string>
-      </property>
-     </item>
-     <item row="0" column="10">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="11">
-      <property name="text">
-       <string>0.25</string>
-      </property>
-     </item>
-     <item row="0" column="12">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
-     <item row="0" column="13">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="14">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
-     <item row="0" column="15">
-      <property name="text">
-       <string>0.18</string>
-      </property>
-     </item>
-     <item row="0" column="16">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
-     <item row="0" column="17">
-      <property name="text">
-       <string>0.5</string>
-      </property>
-     </item>
-     <item row="0" column="18">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
-     <item row="0" column="19">
-      <property name="text">
-       <string>0.5</string>
-      </property>
-     </item>
-     <item row="0" column="20">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_model_krausz">
@@ -3039,7 +2760,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.01</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_krausz_01">
@@ -3052,7 +2773,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>euler</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_krausz_12">
@@ -3065,7 +2786,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>2.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_krausz_b">
@@ -3091,7 +2812,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.2</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_krausz_03">
@@ -3104,7 +2825,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>4</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_krausz_02">
@@ -3169,7 +2890,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.1</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_krausz_06">
@@ -3195,7 +2916,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.1</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_krausz_09">
@@ -3221,7 +2942,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>3.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_krausz_04">
@@ -3234,7 +2955,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>true</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_krausz_05">
@@ -3247,7 +2968,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>2.2</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_krausz_11">
@@ -3273,7 +2994,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0.2</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_krausz_a">
@@ -3299,7 +3020,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>2.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_krausz_c">
@@ -3377,7 +3098,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>3.0</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_krausz_13">
@@ -3537,131 +3258,6 @@
        <string>Freq. B</string>
       </property>
      </column>
-     <item row="0" column="0">
-      <property name="text">
-       <string>1</string>
-      </property>
-     </item>
-     <item row="0" column="1">
-      <property name="text">
-       <string>1.33</string>
-      </property>
-     </item>
-     <item row="0" column="2">
-      <property name="text">
-       <string>0.0</string>
-      </property>
-     </item>
-     <item row="0" column="3">
-      <property name="text">
-       <string>0.6</string>
-      </property>
-     </item>
-     <item row="0" column="4">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="5">
-      <property name="text">
-       <string>0.6</string>
-      </property>
-     </item>
-     <item row="0" column="6">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="7">
-      <property name="text">
-       <string>0.6</string>
-      </property>
-     </item>
-     <item row="0" column="8">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="9">
-      <property name="text">
-       <string>0.6</string>
-      </property>
-     </item>
-     <item row="0" column="10">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="11">
-      <property name="text">
-       <string>0.0</string>
-      </property>
-     </item>
-     <item row="0" column="12">
-      <property name="text">
-       <string>0.0</string>
-      </property>
-     </item>
-     <item row="0" column="13">
-      <property name="text">
-       <string>0.2</string>
-      </property>
-     </item>
-     <item row="0" column="14">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
-     <item row="0" column="15">
-      <property name="text">
-       <string>0.18</string>
-      </property>
-     </item>
-     <item row="0" column="16">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
-     <item row="0" column="17">
-      <property name="text">
-       <string>0.5</string>
-      </property>
-     </item>
-     <item row="0" column="18">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
-     <item row="0" column="19">
-      <property name="text">
-       <string>0.5</string>
-      </property>
-     </item>
-     <item row="0" column="20">
-      <property name="text">
-       <string>0.001</string>
-      </property>
-     </item>
-     <item row="0" column="21">
-      <property name="text">
-       <string>-0.14</string>
-      </property>
-     </item>
-     <item row="0" column="22">
-      <property name="text">
-       <string>0.21</string>
-      </property>
-     </item>
-     <item row="0" column="23">
-      <property name="text">
-       <string>0.44</string>
-      </property>
-     </item>
-     <item row="0" column="24">
-      <property name="text">
-       <string>0.25</string>
-      </property>
-     </item>
     </widget>
     <widget class="QLabel" name="label_agents_krausz_a">
      <property name="geometry">
@@ -3705,298 +3301,13 @@
    </widget>
    <widget class="QWidget" name="tab_route_choice">
     <attribute name="title">
-     <string>Route choice</string>
+     <string>Route / Fire</string>
     </attribute>
-    <widget class="QLineEdit" name="lineEdit_route_choice_03">
-     <property name="geometry">
-      <rect>
-       <x>340</x>
-       <y>50</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_route_choice_03">
-     <property name="geometry">
-      <rect>
-       <x>240</x>
-       <y>50</y>
-       <width>97</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Navigation lines</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_route_choice_05">
-     <property name="geometry">
-      <rect>
-       <x>340</x>
-       <y>90</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_route_choice_05">
-     <property name="geometry">
-      <rect>
-       <x>240</x>
-       <y>90</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Sensor ID</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_route_choice_06">
-     <property name="geometry">
-      <rect>
-       <x>580</x>
-       <y>90</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_route_choice_06">
-     <property name="geometry">
-      <rect>
-       <x>480</x>
-       <y>90</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Description</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_route_choice_08">
-     <property name="geometry">
-      <rect>
-       <x>580</x>
-       <y>130</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_route_choice_07">
-     <property name="geometry">
-      <rect>
-       <x>340</x>
-       <y>130</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_route_choice_08">
-     <property name="geometry">
-      <rect>
-       <x>480</x>
-       <y>130</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Description</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_route_choice_07">
-     <property name="geometry">
-      <rect>
-       <x>240</x>
-       <y>130</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Sensor ID</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_route_choice_13">
-     <property name="geometry">
-      <rect>
-       <x>480</x>
-       <y>210</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Description</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_route_choice_12">
-     <property name="geometry">
-      <rect>
-       <x>340</x>
-       <y>210</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_route_choice_12">
-     <property name="geometry">
-      <rect>
-       <x>240</x>
-       <y>210</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Sensor ID</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_route_choice_13">
-     <property name="geometry">
-      <rect>
-       <x>580</x>
-       <y>210</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_route_choice_09">
-     <property name="geometry">
-      <rect>
-       <x>720</x>
-       <y>130</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>P-Field path</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_route_choice_09">
-     <property name="geometry">
-      <rect>
-       <x>820</x>
-       <y>130</y>
-       <width>291</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_route_choice_10">
-     <property name="geometry">
-      <rect>
-       <x>480</x>
-       <y>170</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Update time</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_route_choice_10">
-     <property name="geometry">
-      <rect>
-       <x>580</x>
-       <y>170</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_route_choice_11">
-     <property name="geometry">
-      <rect>
-       <x>720</x>
-       <y>170</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Final time</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_route_choice_11">
-     <property name="geometry">
-      <rect>
-       <x>820</x>
-       <y>170</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="comboBox_Router">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>15</y>
-       <width>201</width>
-       <height>32</height>
-      </rect>
-     </property>
-     <item>
-      <property name="text">
-       <string>ff Global shortest Model</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Global shortest Model</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>cognitive Map</string>
-      </property>
-     </item>
-    </widget>
     <widget class="QPushButton" name="pushButton_Routing">
      <property name="geometry">
       <rect>
-       <x>460</x>
-       <y>45</y>
+       <x>270</x>
+       <y>230</y>
        <width>114</width>
        <height>32</height>
       </rect>
@@ -4005,12 +3316,25 @@
       <string>Choose</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_5">
+    <widget class="Line" name="line">
      <property name="geometry">
       <rect>
-       <x>240</x>
-       <y>20</y>
-       <width>59</width>
+       <x>10</x>
+       <y>160</y>
+       <width>1200</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_10">
+     <property name="geometry">
+      <rect>
+       <x>471</x>
+       <y>40</y>
+       <width>16</width>
        <height>16</height>
       </rect>
      </property>
@@ -4018,49 +3342,386 @@
       <string>ID</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_ID">
+    <widget class="QLineEdit" name="lineEdit_trips_ID">
      <property name="geometry">
       <rect>
-       <x>340</x>
-       <y>20</y>
-       <width>111</width>
-       <height>21</height>
+       <x>600</x>
+       <y>40</y>
+       <width>125</width>
+       <height>19</height>
       </rect>
      </property>
     </widget>
-    <widget class="QRadioButton" name="radioButton_VTK">
+    <widget class="Line" name="line_2">
      <property name="geometry">
       <rect>
-       <x>470</x>
+       <x>400</x>
        <y>20</y>
+       <width>20</width>
+       <height>321</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+    <widget class="Line" name="line_3">
+     <property name="geometry">
+      <rect>
+       <x>800</x>
+       <y>20</y>
+       <width>20</width>
+       <height>321</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_ff">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>10</y>
+       <width>141</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>ff global shortest</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_global">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>180</y>
        <width>121</width>
        <height>20</height>
       </rect>
      </property>
      <property name="text">
-      <string>Write VTK files</string>
+      <string>global shortest</string>
      </property>
     </widget>
+    <widget class="QCheckBox" name="checkBox_trips">
+     <property name="geometry">
+      <rect>
+       <x>450</x>
+       <y>10</y>
+       <width>181</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>ff global shortest trips</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_A">
+     <property name="geometry">
+      <rect>
+       <x>450</x>
+       <y>180</y>
+       <width>131</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>A smoke sensor</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_B">
+     <property name="geometry">
+      <rect>
+       <x>850</x>
+       <y>10</y>
+       <width>131</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>B walking speed</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>980</x>
+       <y>40</y>
+       <width>127</width>
+       <height>85</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_21">
+      <item>
+       <widget class="QLineEdit" name="lineEdit_B_grids"/>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_B_update"/>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_B_final"/>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_3">
+     <property name="geometry">
+      <rect>
+       <x>850</x>
+       <y>40</y>
+       <width>131</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_22">
+      <item>
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>Smoke factor grids</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>Update time</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_14">
+        <property name="text">
+         <string>Final time</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_C">
+     <property name="geometry">
+      <rect>
+       <x>840</x>
+       <y>180</y>
+       <width>141</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>C toxicity analysis</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_4">
+     <property name="geometry">
+      <rect>
+       <x>850</x>
+       <y>210</y>
+       <width>131</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_23">
+      <item>
+       <widget class="QLabel" name="label_15">
+        <property name="text">
+         <string>Smoke factor grids</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_16">
+        <property name="text">
+         <string>Update time</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_17">
+        <property name="text">
+         <string>Final time</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_5">
+     <property name="geometry">
+      <rect>
+       <x>980</x>
+       <y>210</y>
+       <width>127</width>
+       <height>85</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_24">
+      <item>
+       <widget class="QLineEdit" name="lineEdit_C_grids"/>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_C_update"/>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_C_final"/>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>40</y>
+       <width>86</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_15">
+      <item>
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>ID</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Write VTK file</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>40</y>
+       <width>131</width>
+       <height>62</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_16">
+      <item>
+       <widget class="QLineEdit" name="lineEdit_ff_global_ID"/>
+      </item>
+      <item>
+       <widget class="QComboBox" name="comboBox_ff_global">
+        <item>
+         <property name="text">
+          <string>True</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>False</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>210</y>
+       <width>99</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_17">
+      <item>
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>ID</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_route_choice_03">
+        <property name="text">
+         <string>Navigation lines</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>146</x>
+       <y>210</y>
+       <width>121</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_18">
+      <item>
+       <widget class="QLineEdit" name="lineEdit_global_ID"/>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_global_navi">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>470</x>
+       <y>210</y>
+       <width>131</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_19">
+      <item>
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Smoke factor grids</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Update time</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Final time</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>600</x>
+       <y>210</y>
+       <width>127</width>
+       <height>85</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_20">
+      <item>
+       <widget class="QLineEdit" name="lineEdit_A_grids"/>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_A_update"/>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_A_final"/>
+      </item>
+     </layout>
+    </widget>
    </widget>
-  </widget>
-  <widget class="QLabel" name="label_warning">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>450</y>
-     <width>571</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
   </widget>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
@@ -4238,16 +3899,7 @@
   <tabstop>lineEdit_model_krausz_13</tabstop>
   <tabstop>spinBox_agents_krausz_1</tabstop>
   <tabstop>tableWidget_agents_krausz_1</tabstop>
-  <tabstop>lineEdit_route_choice_03</tabstop>
-  <tabstop>lineEdit_route_choice_05</tabstop>
-  <tabstop>lineEdit_route_choice_06</tabstop>
-  <tabstop>lineEdit_route_choice_07</tabstop>
-  <tabstop>lineEdit_route_choice_08</tabstop>
-  <tabstop>lineEdit_route_choice_09</tabstop>
-  <tabstop>lineEdit_route_choice_10</tabstop>
-  <tabstop>lineEdit_route_choice_11</tabstop>
-  <tabstop>lineEdit_route_choice_12</tabstop>
-  <tabstop>lineEdit_route_choice_13</tabstop>
+  <tabstop>lineEdit_global_navi</tabstop>
  </tabstops>
  <resources/>
  <connections/>
