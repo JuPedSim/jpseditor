@@ -108,7 +108,7 @@ public:
     void writeSourceXML(QFile &file);
     void writeSourceHeader(QXmlStreamWriter *stream);
     void writeSources(QXmlStreamWriter *stream, QList<JPSSource *>& sourcelist);
-    const QList<JPSSource *> &getSourcelist() const;
+    const QList<JPSSource *> &getSourcelist();
 
 
     //Goals TODO: write goals by a writer class
