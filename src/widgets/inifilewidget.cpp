@@ -274,6 +274,7 @@ void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
     stream->writeComment("persons information and distribution");
     stream->writeStartElement("agents");
     stream->writeAttribute("operational_model_id", QString::number(ui->comboBox_groups_1->currentIndex() + 1));
+
     stream->writeStartElement("agents_distribution");
 
     for(int i = 0; i < ui->spinBox_groups_1->value(); i++)
@@ -338,25 +339,14 @@ void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
     stream->writeStartElement("agents_sources");
 
     QList<JPSSource *> sources = dataManager->getSourcelist();
-    if(!sources.isEmpty())
-    {
-        dataManager->writeSources(stream, sources);
-    }
-    else
-    {
-        stream->writeCharacters("");
-        stream->writeEmptyElement("source");
-        stream->writeEmptyElement("file");
-    }
 
+    dataManager->writeSources(stream, sources);
 
-    if(!ui->lineEdit_SourceFile->text().isEmpty())
-    {
-        auto source_FileName = ui->lineEdit_SourceFile->text().split("/").last();
-        stream->writeStartElement("file");
+    auto source_FileName = ui->lineEdit_SourceFile->text().split("/").last();
+    stream->writeStartElement("file");
+    if(!source_FileName.isEmpty())
         stream->writeCharacters(source_FileName);
-        stream->writeEndElement(); //end files
-    }
+    stream->writeEndElement(); //end files
 
     stream->writeEndElement(); //end agents_sources
     stream->writeEndElement(); //end agents
@@ -375,27 +365,40 @@ void InifileWidget::writeModelGcfmData(QXmlStreamWriter *stream, QFile &file)
     stream->writeAttribute("description", "gcfm");
 
     stream->writeStartElement("model_parameters");
-    stream->writeTextElement("solver", ui->lineEdit_model_gcfm_01->text());
-    stream->writeTextElement("stepsize", ui->lineEdit_model_gcfm_02->text());
-    stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_gcfm_03->text());
+    if(!ui->lineEdit_model_gcfm_01->text().isEmpty())
+        stream->writeTextElement("solver", ui->lineEdit_model_gcfm_01->text());
+    if(!ui->lineEdit_model_gcfm_02->text().isEmpty())
+        stream->writeTextElement("stepsize", ui->lineEdit_model_gcfm_02->text());
+    if(!ui->lineEdit_model_gcfm_03->text().isEmpty())
+        stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_gcfm_03->text());
 
     stream->writeStartElement("linkedcells");
-    stream->writeAttribute("enabled", ui->lineEdit_model_gcfm_04->text());
-    stream->writeAttribute("cell_size", ui->lineEdit_model_gcfm_05->text());
+    if(!ui->lineEdit_model_gcfm_04->text().isEmpty())
+        stream->writeAttribute("enabled", ui->lineEdit_model_gcfm_04->text());
+    if(!ui->lineEdit_model_gcfm_05->text().isEmpty())
+        stream->writeAttribute("cell_size", ui->lineEdit_model_gcfm_05->text());
     stream->writeEndElement(); //end linkedcells
 
     stream->writeStartElement("force_ped");
-    stream->writeAttribute("nu", ui->lineEdit_model_gcfm_06->text());
-    stream->writeAttribute("dist_max", ui->lineEdit_model_gcfm_07->text());
-    stream->writeAttribute("desteff_max", ui->lineEdit_model_gcfm_08->text());
-    stream->writeAttribute("interpolation_width", ui->lineEdit_model_gcfm_09->text());
+    if(!ui->lineEdit_model_gcfm_06->text().isEmpty())
+        stream->writeAttribute("nu", ui->lineEdit_model_gcfm_06->text());
+    if(!ui->lineEdit_model_gcfm_07->text().isEmpty())
+        stream->writeAttribute("dist_max", ui->lineEdit_model_gcfm_07->text());
+    if(!ui->lineEdit_model_gcfm_08->text().isEmpty())
+        stream->writeAttribute("desteff_max", ui->lineEdit_model_gcfm_08->text());
+    if(!ui->lineEdit_model_gcfm_09->text().isEmpty())
+        stream->writeAttribute("interpolation_width", ui->lineEdit_model_gcfm_09->text());
     stream->writeEndElement(); //end force_ped
 
     stream->writeStartElement("force_wall");
-    stream->writeAttribute("nu",ui->lineEdit_model_gcfm_10->text());
-    stream->writeAttribute("dist_max", ui->lineEdit_model_gcfm_11->text());
-    stream->writeAttribute("desteff_max", ui->lineEdit_model_gcfm_12->text());
-    stream->writeAttribute("interpolation_width", ui->lineEdit_model_gcfm_13->text());
+    if(!ui->lineEdit_model_gcfm_10->text().isEmpty())
+        stream->writeAttribute("nu",ui->lineEdit_model_gcfm_10->text());
+    if(!ui->lineEdit_model_gcfm_11->text().isEmpty())
+        stream->writeAttribute("dist_max", ui->lineEdit_model_gcfm_11->text());
+    if(!ui->lineEdit_model_gcfm_12->text().isEmpty())
+        stream->writeAttribute("desteff_max", ui->lineEdit_model_gcfm_12->text());
+    if(!ui->lineEdit_model_gcfm_13->text().isEmpty())
+        stream->writeAttribute("interpolation_width", ui->lineEdit_model_gcfm_13->text());
     stream->writeEndElement(); //end force_wall
 
     stream->writeEndElement(); // end model_parameters
@@ -2158,8 +2161,11 @@ void InifileWidget::writeRoutingData(QXmlStreamWriter *stream, QFile &file)
     dataManager->writeGoals(stream, goallist);
 
     auto goal_FileName = ui->lineEdit_GoalFile->text().split("/").last();
+
     stream->writeStartElement("file");
-    stream->writeCharacters(goal_FileName);
+    if(!goal_FileName.isEmpty())
+        stream->writeCharacters(goal_FileName);
+
     stream->writeEndElement(); //end files
     stream->writeEndElement(); //end goals
     stream->writeEndElement(); //end routing
@@ -2195,7 +2201,9 @@ void InifileWidget::writeTrafficData(QXmlStreamWriter *stream, QFile &file)
 
     auto traffic_FileName = ui->lineEdit_TrafficFile->text().split("/").last();
     stream->writeStartElement("file");
-    stream->writeCharacters(traffic_FileName);
+    if(!traffic_FileName.isEmpty())
+        stream->writeCharacters(traffic_FileName);
+
     stream->writeEndElement(); //end files
     stream->writeEndElement(); //end doors
     stream->writeEndElement(); //end traffic_constraints

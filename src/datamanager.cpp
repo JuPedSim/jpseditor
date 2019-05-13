@@ -2847,9 +2847,6 @@ bool LineIsEqual(const QLineF& line1, const QLineF& line2, double eps)
 */
 
 void jpsDatamanager::writeSources(QXmlStreamWriter *stream, QList<JPSSource *> &sourcelist) {
-    sourcelist.clear();
-    sourcelist = _mView->getSources();
-
     for(JPSSource* source:sourcelist)
     {
         if(source->isBeSaved())
@@ -2900,7 +2897,7 @@ void jpsDatamanager::writeSources(QXmlStreamWriter *stream, QList<JPSSource *> &
             stream->writeAttribute("x_max",QString::number(source->getX_max()));
             stream->writeAttribute("y_min",QString::number(source->getY_min()));
             stream->writeAttribute("y_max",QString::number(source->getY_max()));
-            stream->writeEndElement();
+            stream->writeEndElement(); //end source
         }
     }
 }
@@ -2912,7 +2909,7 @@ void jpsDatamanager::writeSourceXML(QFile &file) {
 
     stream->writeStartElement("agents_sources");
     sourcelist.clear();
-    sourcelist = _mView->getSources();
+    sourcelist = getSourcelist();
     writeSources(stream, sourcelist);
     stream->writeEndElement(); //end sources
 
@@ -2968,6 +2965,8 @@ void jpsDatamanager::writeGoalXML(QFile &file)
     stream->writeAttribute("version", "0.8");
 
     stream->writeStartElement("goals");
+    goallist.clear();
+    goallist = getGoallist();
     writeGoals(stream, goallist);
     stream->writeEndElement(); //end goals
 
@@ -2979,9 +2978,6 @@ void jpsDatamanager::writeGoalXML(QFile &file)
 
 void jpsDatamanager::writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *> &goallist)
 {
-    goallist.clear();
-    goallist = _mView->getGoals();
-
     for(JPSGoal* goal:goallist)
     {
         if(goal->getBeSaved() == "true")
@@ -3133,8 +3129,10 @@ void jpsDatamanager::writeTraffics(QXmlStreamWriter *stream, QList<jpsCrossing *
     for(jpsCrossing* door:doorlist)
     {
         stream->writeStartElement("door");
+
         stream->writeAttribute("trans_id", QString::number(door->get_id()));
         stream->writeAttribute("caption", "NaN");
+
         if(door->isState())
             stream->writeAttribute("state", "open");
         else
@@ -3205,7 +3203,11 @@ void jpsDatamanager::readDoor(QXmlStreamReader &xmlReader)
     }
 }
 
-const QList<JPSSource *> &jpsDatamanager::getSourcelist() const {
+const QList<JPSSource *> &jpsDatamanager::getSourcelist()
+{
+    sourcelist.clear();
+    sourcelist = _mView->getSources();
+
     return sourcelist;
 }
 
