@@ -151,6 +151,7 @@ void InifileWidget::on_comboBox_groups_1_currentIndexChanged(int index)
         ui->tabWidget->insertTab(3, ui->tab_agents_krausz, "Agents Krausz");
     }
 }
+
 /*
     <!-- seed used for initialising random generator -->
     <seed>12542</seed>
@@ -174,51 +175,98 @@ void InifileWidget::writeHeaderData(QXmlStreamWriter *stream, QFile &file)
 {
     stream->writeComment("number of cores used");
     stream->writeStartElement("num_threads");
-    stream->writeCharacters(ui->lineEdit_general_03->text());
+    if(!ui->lineEdit_general_03->text().isEmpty())
+        stream->writeCharacters(ui->lineEdit_general_03->text());
     stream->writeEndElement();
 
     stream->writeComment("seed used for initialising random generator");
     stream->writeStartElement("seed");
-    stream->writeCharacters(ui->lineEdit_general_05->text());
+    if(!ui->lineEdit_general_05->text().isEmpty())
+        stream->writeCharacters(ui->lineEdit_general_05->text());
     stream->writeEndElement();
 
     stream->writeComment("geometry file");
     stream->writeStartElement("geometry");
-    stream->writeCharacters(ui->lineEdit_general_07->text().split("/").last());
+    if(!ui->lineEdit_general_07->text().isEmpty())
+        stream->writeCharacters(ui->lineEdit_general_07->text().split("/").last());
     stream->writeEndElement();
 
     stream->writeComment("simulationtime");
     stream->writeStartElement("max_sim_time");
-    stream->writeCharacters(ui->lineEdit_general_06->text());
+    if(!ui->lineEdit_general_06->text().isEmpty())
+        stream->writeCharacters(ui->lineEdit_general_06->text());
     stream->writeEndElement();
 
     stream->writeComment("trajectories file and format");
     stream->writeStartElement("trajectories");
-    stream->writeAttribute("format",ui->comboBox_general_02->currentText());
-    stream->writeAttribute("fps", ui->lineEdit_general_10->text());
-    stream->writeAttribute("color_mode",ui->comboBox_general_03->currentText());
+    if(!ui->comboBox_general_02->currentText().isEmpty())
+        stream->writeAttribute("format",ui->comboBox_general_02->currentText());
+    if(!ui->lineEdit_general_10->text().isEmpty())
+        stream->writeAttribute("fps", ui->lineEdit_general_10->text());
+    if(!ui->comboBox_general_03->currentText().isEmpty())
+        stream->writeAttribute("color_mode",ui->comboBox_general_03->currentText());
     stream->writeStartElement("file");
-    stream->writeAttribute("location", ui->lineEdit_general_12->text());
+    if(!ui->lineEdit_general_12->text().isEmpty())
+        stream->writeAttribute("location", ui->lineEdit_general_12->text());
     stream->writeEndElement(); //end file
     stream->writeEndElement(); //end trajectories
 
     stream->writeComment("where to store the logs");
     stream->writeStartElement("logfile");
-    stream->writeCharacters(ui->lineEdit_general_08->text());
+    if(!ui->lineEdit_general_08->text().isEmpty())
+        stream->writeCharacters(ui->lineEdit_general_08->text());
     stream->writeEndElement();
-
-    QString head_line_19 = "\t<!-- statistics -->\n";
-
-    QString head_line_20 = "\t<show_statistics>" +
-            ui->comboBox_general_01->currentText() +
-            "</show_statistics>\n";
 
     stream->writeComment("statistics");
     stream->writeStartElement("show_statistics");
-    stream->writeCharacters(ui->comboBox_general_01->currentText());
+    if(!ui->comboBox_general_01->currentText().isEmpty())
+        stream->writeCharacters(ui->comboBox_general_01->currentText());
     stream->writeEndElement();
 
     return;
+}
+
+void InifileWidget::writeFire(QXmlStreamWriter *stream, QFile &file)
+{
+    stream->writeStartElement("JPSfire");
+
+    if(ui->checkBox_A->isChecked())
+    {
+        stream->writeStartElement("A_smoke_sensor");
+        if(!ui->lineEdit_A_grids->text().isEmpty())
+            stream->writeAttribute("smoke_factor_grids", ui->lineEdit_A_grids->text());
+        if(!ui->lineEdit_A_update->text().isEmpty())
+            stream->writeAttribute("update_time", ui->lineEdit_A_update->text());
+        if(!ui->lineEdit_A_final->text().isEmpty())
+            stream->writeAttribute("final_time", ui->lineEdit_A_final->text());
+        stream->writeEndElement(); //end smoke
+    }
+
+    if(ui->checkBox_B->isChecked())
+    {
+        stream->writeStartElement("B_walking_speed");
+        if(!ui->lineEdit_B_grids->text().isEmpty())
+            stream->writeAttribute("smoke_factor_grids", ui->lineEdit_B_grids->text());
+        if(!ui->lineEdit_B_update->text().isEmpty())
+            stream->writeAttribute("update_time", ui->lineEdit_B_update->text());
+        if(!ui->lineEdit_B_final->text().isEmpty())
+            stream->writeAttribute("final_time", ui->lineEdit_B_final->text());
+        stream->writeEndElement(); //end walking
+    }
+
+    if(ui->checkBox_C->isChecked())
+    {
+        stream->writeStartElement("C_toxicity_analysis");
+        if(!ui->lineEdit_C_grids->text().isEmpty())
+            stream->writeAttribute("smoke_factor_grids", ui->lineEdit_C_grids->text());
+        if(!ui->lineEdit_C_update->text().isEmpty())
+            stream->writeAttribute("update_time", ui->lineEdit_C_update->text());
+        if(!ui->lineEdit_C_final->text().isEmpty())
+            stream->writeAttribute("final_time", ui->lineEdit_C_final->text());
+        stream->writeEndElement(); //end toxicity
+    }
+    stream->writeEndElement(); //end JPSfire
+
 }
 
 void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
@@ -355,57 +403,105 @@ void InifileWidget::writeModelGcfmData(QXmlStreamWriter *stream, QFile &file)
     for(int i = 0; i < ui->spinBox_agents_gcfm_1->value(); i++)
     {
         stream->writeStartElement("agent_parameters");
-        stream->writeAttribute("agent_parameter_id", ui->tableWidget_agents_gcfm_1->item(i,0)->text());
+        if(ui->tableWidget_agents_gcfm_1->item(i,0) != nullptr)
+            stream->writeAttribute("agent_parameter_id", ui->tableWidget_agents_gcfm_1->item(i,0)->text());
 
         stream->writeStartElement("v0");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,1)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,2)->text());
+        if(ui->tableWidget_agents_gcfm_1->item(i,1) != nullptr)
+            stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,1)->text());
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,2) != nullptr)
+            stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,2)->text());
         stream->writeEndElement();
 
         stream->writeStartElement("v0_upstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,3)->text());
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,3) != nullptr)
+            stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,3)->text());
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,4) != nullptr)
         stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,4)->text());
+
         stream->writeEndElement();
 
         stream->writeStartElement("v0_downstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,5)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,6)->text());
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,5) != nullptr)
+            stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,5)->text());
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,6) != nullptr)
+            stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,6)->text());
+
         stream->writeEndElement();
 
         stream->writeStartElement("v0_idle_escalator_upstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,7)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,8)->text());
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,7) != nullptr)
+            stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,7)->text());
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,8) != nullptr)
+            stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,8)->text());
+
         stream->writeEndElement();
 
         stream->writeStartElement("v0_idle_escalator_downstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,9)->text());
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,9) != nullptr)
+            stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,9)->text());
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,10) != nullptr)
         stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,10)->text());
+
         stream->writeEndElement();
 
         stream->writeStartElement("bmax");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,11)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,12)->text());
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,11) != nullptr)
+            stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,11)->text());
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,12) != nullptr)
+            stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,12)->text());
+
         stream->writeEndElement();
 
         stream->writeStartElement("bmin");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,13)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,14)->text());
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,11) != nullptr)
+            stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,13)->text());
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,11) != nullptr)
+            stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,14)->text());
+
         stream->writeEndElement();
 
         stream->writeStartElement("amin");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,15)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,16)->text());
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,15) != nullptr)
+            stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,15)->text());
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,16) != nullptr)
+            stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,16)->text());
+
         stream->writeEndElement();
 
         stream->writeStartElement("tau");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,17)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,18)->text());
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,17) != nullptr)
+            stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,17)->text());
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,17) != nullptr)
+            stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,18)->text());
         stream->writeEndElement();
 
         stream->writeStartElement("atau");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,19)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,20)->text());
-        stream->writeEndElement();
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,19) != nullptr)
+            stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,19)->text());
+
+        if(ui->tableWidget_agents_gcfm_1->item(i,20) != nullptr)
+            stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,20)->text());
+
+        stream->writeEndElement(); // end atau
 
         stream->writeEndElement(); // end agent_parameters
 
@@ -910,120 +1006,6 @@ void InifileWidget::writeTripsRoute(QXmlStreamWriter *stream, QFile &file)
 // Create ini.xml on button push
 void InifileWidget::on_pushButton_write_clicked()
 {
-//    //check header (geometry)
-//    if (CheckHeaderData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //goal
-//    if (!CheckRoutingData())
-//        return;
-//
-//    //source
-//    if (!CheckSourceData())
-//        return;
-//
-//    //traffic(door)
-//    if (!CheckTrafficData())
-//        return;
-//
-//    //check agents information and distribution
-//    if (CheckAgentData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check operational model - gcfm
-//    if (CheckModelGcfmData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check agent parameters - gcfm
-//    if (CheckAgentGcfmData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check operational model - gompertz
-//    if (CheckModelGompData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check agent parameters - gompertz
-//    if (CheckAgentGompData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check operational model - tordeux
-//    if (CheckModelTordData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check agent parameters - tordeux
-//    if (CheckAgentTordData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check operational model - gradnav
-//    if (CheckModelGradData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check agent parameters - gradnav
-//    if (CheckAgentGradData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check operational model - krausz
-//    if (CheckModelKrauData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check agent parameters - krausz
-//    if (CheckAgentKrauData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check route_choice_models
-//    if (CheckRouteChoiceData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //header
-//    QString head_lines = writeHeaderData();
-//
-//    //agents information and distribution
-//    QString agen_lines = writeAgentData();
-//
-//    //operational model and agent parameters - gcfm
-//    QString gcfm_lines = writeModelGcfmData();
-//
-//    //operational model and agent parameters - gompertz
-//    QString gomp_lines = writeModelGompData();
-//
-//    //operational model and agent parameters - tordeux
-//    QString tord_lines = writeModelTordData();
-//
-//    //operational model and agent parameters - gradnav
-//    QString grad_lines = writeModelGradData();
-//
-//    //operational model and agent parameters - krausz
-//    QString krau_lines = writeModelKrauData();
-//
-//    //route_choice_models
-//    QString choi_lines = writeRouteChoiceData();
-//
     //save to file
     QString file_name = QFileDialog::getSaveFileName(this,
             tr("Create ini"),
@@ -1047,6 +1029,8 @@ void InifileWidget::on_pushButton_write_clicked()
         stream->writeAttribute("xsi:noNamespaceSchemaLocation","http://xsd.jupedsim.org/0.6/jps_ini_core.xsd");
 
         writeHeaderData(stream, file);
+
+        writeFire(stream, file);
 
         writeTrafficData(stream, file);
 
