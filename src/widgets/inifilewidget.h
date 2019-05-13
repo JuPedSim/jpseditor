@@ -103,6 +103,7 @@ private:
     void writeModelGradData(QXmlStreamWriter *stream, QFile &file);
     void writeModelKrauData(QXmlStreamWriter *stream, QFile &file);
     void writeRouteChoiceData(QXmlStreamWriter *stream, QFile &file);
+    void writeFire(QXmlStreamWriter *stream, QFile &file);
 
 signals:
     void inifileLoaded(QString, int);
