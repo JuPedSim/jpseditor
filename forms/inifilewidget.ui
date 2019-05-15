@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1233</width>
-    <height>500</height>
+    <width>1200</width>
+    <height>576</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
     <rect>
      <x>20</x>
      <y>80</y>
-     <width>1200</width>
+     <width>1160</width>
      <height>401</height>
     </rect>
    </property>
@@ -247,132 +247,6 @@
     <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>200</y>
-       <width>241</width>
-       <height>157</height>
-      </rect>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_10">
-      <item>
-       <widget class="QLabel" name="label_general_c">
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Output&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_8">
-          <item>
-           <widget class="QLabel" name="label_general_12">
-            <property name="text">
-             <string>Output file</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_general_09">
-            <property name="text">
-             <string>Format</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_general_10">
-            <property name="text">
-             <string>Fps</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_general_11">
-            <property name="text">
-             <string>Color mode</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_9">
-          <item>
-           <widget class="QLineEdit" name="lineEdit_general_12">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="comboBox_general_02">
-            <item>
-             <property name="text">
-              <string>xml-plain</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>plain</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_general_10">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="comboBox_general_03">
-            <item>
-             <property name="text">
-              <string>velocity</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>spotlight</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>group</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>knowledge</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>router</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>final_goal</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>intermediate_goal</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </widget>
-    <widget class="QWidget" name="layoutWidget">
-     <property name="geometry">
-      <rect>
        <x>350</x>
        <y>20</y>
        <width>451</width>
@@ -502,6 +376,150 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
+    </widget>
+    <widget class="QLabel" name="label_general_c">
+     <property name="geometry">
+      <rect>
+       <x>21</x>
+       <y>201</y>
+       <width>46</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Output&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>230</y>
+       <width>73</width>
+       <height>121</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_8">
+      <item>
+       <widget class="QLabel" name="label_general_12">
+        <property name="text">
+         <string>Output file</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_general_09">
+        <property name="text">
+         <string>Format</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_general_10">
+        <property name="text">
+         <string>Fps</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_general_11">
+        <property name="text">
+         <string>Color mode</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_general_12">
+     <property name="geometry">
+      <rect>
+       <x>108</x>
+       <y>227</y>
+       <width>125</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_general_02">
+     <property name="geometry">
+      <rect>
+       <x>105</x>
+       <y>256</y>
+       <width>98</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>xml-plain</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>plain</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_general_10">
+     <property name="geometry">
+      <rect>
+       <x>108</x>
+       <y>294</y>
+       <width>125</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_general_03">
+     <property name="geometry">
+      <rect>
+       <x>105</x>
+       <y>323</y>
+       <width>149</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>velocity</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>spotlight</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>group</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>knowledge</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>router</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>final_goal</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>intermediate_goal</string>
+      </property>
+     </item>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_groups">
@@ -1024,168 +1042,27 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Wall&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
-   </widget>
-   <widget class="QWidget" name="tab_agents_gcfm">
-    <attribute name="title">
-     <string>Agents Gcfm</string>
-    </attribute>
-    <widget class="QLabel" name="label_agents_gcfm_a">
+    <widget class="QLabel" name="label_model_gcfm_14">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>211</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Gcfm agent parameters&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QTableWidget" name="tableWidget_agents_gcfm_1">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
+       <x>500</x>
        <y>90</y>
-       <width>1121</width>
-       <height>251</height>
-      </rect>
-     </property>
-     <row>
-      <property name="text">
-       <string>1</string>
-      </property>
-     </row>
-     <column>
-      <property name="text">
-       <string>ID</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel.</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel.</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel. stair up</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel. stair up</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel. stair down</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel. stair down</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel. esca. up</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel. esca. up</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel. esca. down</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel. esca. down</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Max. b</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Max. b</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Min. b</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Min. b</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Min. a</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Min. a</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Tau</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Tau</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>aTau</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ aTau</string>
-      </property>
-     </column>
-    </widget>
-    <widget class="QLabel" name="label_agents_gcfm_1">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>101</width>
-       <height>21</height>
+       <width>59</width>
+       <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>Parameter sets</string>
+      <string>Periodic</string>
      </property>
     </widget>
-    <widget class="QSpinBox" name="spinBox_agents_gcfm_1">
+    <widget class="QLineEdit" name="lineEdit_model_gcfm_14">
      <property name="geometry">
       <rect>
-       <x>120</x>
-       <y>50</y>
-       <width>111</width>
+       <x>600</x>
+       <y>90</y>
+       <width>113</width>
        <height>21</height>
       </rect>
-     </property>
-     <property name="minimum">
-      <number>1</number>
      </property>
     </widget>
    </widget>
@@ -1518,169 +1395,28 @@
       <string/>
      </property>
     </widget>
-   </widget>
-   <widget class="QWidget" name="tab_agents_gompertz">
-    <attribute name="title">
-     <string>Agents Gompertz</string>
-    </attribute>
-    <widget class="QLabel" name="label_agents_gompertz_a">
+    <widget class="QLineEdit" name="lineEdit_model_gompertz_12">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>211</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Gompertz agent parameters&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBox_agents_gompertz_1">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>50</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <number>1</number>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_agents_gompertz_1">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Parameter sets</string>
-     </property>
-    </widget>
-    <widget class="QTableWidget" name="tableWidget_agents_gompertz_1">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
+       <x>600</x>
        <y>90</y>
-       <width>1121</width>
-       <height>251</height>
+       <width>113</width>
+       <height>21</height>
       </rect>
      </property>
-     <row>
-      <property name="text">
-       <string>1</string>
-      </property>
-     </row>
-     <column>
-      <property name="text">
-       <string>ID</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel.</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel.</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel. stair up</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel. stair up</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel. stair down</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel. stair down</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel. esca. up</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel. esca. up</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel. esca. down</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel. esca. down</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Max. b</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Max. b</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Min. b</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Min. b</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Min. a</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Min. a</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Tau</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Tau</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>aTau</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ aTau</string>
-      </property>
-     </column>
+    </widget>
+    <widget class="QLabel" name="label_model_gompertz_12">
+     <property name="geometry">
+      <rect>
+       <x>500</x>
+       <y>90</y>
+       <width>59</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Periodic</string>
+     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_model_tordeux">
@@ -1960,179 +1696,28 @@
       <string>Cellsize</string>
      </property>
     </widget>
-   </widget>
-   <widget class="QWidget" name="tab_agents_tordeux">
-    <attribute name="title">
-     <string>Agents Tordeux</string>
-    </attribute>
-    <widget class="QLabel" name="label_agents_tordeux_a">
+    <widget class="QLineEdit" name="lineEdit_model_tordeux_10">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>211</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Tordeux agent parameters&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_agents_tordeux_1">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Parameter sets</string>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBox_agents_tordeux_1">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>50</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <number>1</number>
-     </property>
-    </widget>
-    <widget class="QTableWidget" name="tableWidget_agents_tordeux_1">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
+       <x>600</x>
        <y>90</y>
-       <width>1121</width>
-       <height>251</height>
+       <width>113</width>
+       <height>21</height>
       </rect>
      </property>
-     <row>
-      <property name="text">
-       <string>1</string>
-      </property>
-     </row>
-     <column>
-      <property name="text">
-       <string>ID</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel.</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel.</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel. stair up</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel. stair up</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel. stair down</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel. stair down</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel. esca. up</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel. esca. up</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel. esca. down</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel. esca. down</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Max. b</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Max. b</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Min. b</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Min. b</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Min. a</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Min. a</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Tau</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Tau</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>aTau</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ aTau</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>T</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ T</string>
-      </property>
-     </column>
+    </widget>
+    <widget class="QLabel" name="label_model_tordeux_10">
+     <property name="geometry">
+      <rect>
+       <x>500</x>
+       <y>90</y>
+       <width>59</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Periodic</string>
+     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_model_gradnav">
@@ -2542,7 +2127,7 @@
       <string/>
      </property>
     </widget>
-    <widget class="QLabel" name="label_model_gradnav_16">
+    <widget class="QLabel" name="label_model_gradnav_09">
      <property name="geometry">
       <rect>
        <x>740</x>
@@ -2568,169 +2153,28 @@
       <string/>
      </property>
     </widget>
-   </widget>
-   <widget class="QWidget" name="tab_agents_gradnav">
-    <attribute name="title">
-     <string>Agents Gradnav</string>
-    </attribute>
-    <widget class="QLabel" name="label_agents_gradnav_a">
+    <widget class="QLineEdit" name="lineEdit_model_gradnav_16">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>211</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Gradnav agent parameters&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBox_agents_gradnav_1">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>50</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <number>1</number>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_agents_gradnav_1">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Parameter sets</string>
-     </property>
-    </widget>
-    <widget class="QTableWidget" name="tableWidget_agents_gradnav_1">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
+       <x>600</x>
        <y>90</y>
-       <width>1121</width>
-       <height>251</height>
+       <width>113</width>
+       <height>21</height>
       </rect>
      </property>
-     <row>
-      <property name="text">
-       <string>1</string>
-      </property>
-     </row>
-     <column>
-      <property name="text">
-       <string>ID</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel.</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel.</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel. stair up</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel. stair up</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel. stair down</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel. stair down</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel. esca. up</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel. esca. up</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Vel. esca. down</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Vel. esca. down</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Max. b</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Max. b</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Min. b</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Min. b</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Min. a</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Min. a</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Tau</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ Tau</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>aTau</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Δ aTau</string>
-      </property>
-     </column>
+    </widget>
+    <widget class="QLabel" name="label_model_gradnav_16">
+     <property name="geometry">
+      <rect>
+       <x>500</x>
+       <y>90</y>
+       <width>59</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Periodic</string>
+     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_model_krausz">
@@ -2776,45 +2220,6 @@
       <string/>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_model_krausz_12">
-     <property name="geometry">
-      <rect>
-       <x>600</x>
-       <y>270</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_model_krausz_b">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>140</y>
-       <width>141</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Pedestrian&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_model_krausz_06">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>180</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="lineEdit_model_krausz_03">
      <property name="geometry">
       <rect>
@@ -2841,32 +2246,6 @@
       <string>Stepsize</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_model_krausz_12">
-     <property name="geometry">
-      <rect>
-       <x>500</x>
-       <y>270</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Eff. distance</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_model_krausz_08">
-     <property name="geometry">
-      <rect>
-       <x>500</x>
-       <y>180</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Eff. distance</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_model_krausz_04">
      <property name="geometry">
       <rect>
@@ -2878,71 +2257,6 @@
      </property>
      <property name="text">
       <string>Linked cells</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_model_krausz_13">
-     <property name="geometry">
-      <rect>
-       <x>850</x>
-       <y>270</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_model_krausz_06">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>180</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Force</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_model_krausz_09">
-     <property name="geometry">
-      <rect>
-       <x>850</x>
-       <y>180</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_model_krausz_09">
-     <property name="geometry">
-      <rect>
-       <x>740</x>
-       <y>180</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Interpolation width</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_model_krausz_11">
-     <property name="geometry">
-      <rect>
-       <x>360</x>
-       <y>270</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_krausz_04">
@@ -2971,32 +2285,6 @@
       <string/>
      </property>
     </widget>
-    <widget class="QLabel" name="label_model_krausz_11">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>270</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Max. distance</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_model_krausz_10">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>270</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_model_krausz_a">
      <property name="geometry">
       <rect>
@@ -3008,32 +2296,6 @@
      </property>
      <property name="text">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Krausz model parameters&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_model_krausz_08">
-     <property name="geometry">
-      <rect>
-       <x>600</x>
-       <y>180</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_model_krausz_c">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>230</y>
-       <width>141</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Wall&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_krausz_05">
@@ -3049,19 +2311,6 @@
       <string>Cellsize</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_model_krausz_07">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>180</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Max. distance</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_model_krausz_01">
      <property name="geometry">
       <rect>
@@ -3075,51 +2324,35 @@
       <string>Solver</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_model_krausz_10">
+    <widget class="QLineEdit" name="lineEdit_model_krausz_06">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>270</y>
-       <width>91</width>
+       <x>600</x>
+       <y>90</y>
+       <width>113</width>
        <height>21</height>
       </rect>
-     </property>
-     <property name="text">
-      <string>Force</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_model_krausz_07">
+    <widget class="QLabel" name="label_model_krausz_06">
      <property name="geometry">
       <rect>
-       <x>360</x>
-       <y>180</y>
-       <width>111</width>
-       <height>21</height>
+       <x>500</x>
+       <y>90</y>
+       <width>59</width>
+       <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_model_krausz_13">
-     <property name="geometry">
-      <rect>
-       <x>740</x>
-       <y>270</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Interpolation width</string>
+      <string>Periodic</string>
      </property>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_agents_krausz">
     <attribute name="title">
-     <string>Agents Krausz</string>
+     <string>Agents</string>
     </attribute>
-    <widget class="QTableWidget" name="tableWidget_agents_krausz_1">
+    <widget class="QTableWidget" name="tableWidget_agents">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -3240,6 +2473,16 @@
      </column>
      <column>
       <property name="text">
+       <string>T</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Δ T</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string>Amp. A</string>
       </property>
      </column>
@@ -3269,10 +2512,10 @@
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Krausz agent parameters&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Agent parameters&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_agents_krausz_1">
+    <widget class="QLabel" name="label_agents">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -3285,7 +2528,7 @@
       <string>Parameter sets</string>
      </property>
     </widget>
-    <widget class="QSpinBox" name="spinBox_agents_krausz_1">
+    <widget class="QSpinBox" name="spinBox_agents">
      <property name="geometry">
       <rect>
        <x>120</x>
@@ -3307,7 +2550,7 @@
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>230</y>
+       <y>240</y>
        <width>114</width>
        <height>32</height>
       </rect>
@@ -3564,7 +2807,7 @@
       </item>
      </layout>
     </widget>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -3590,7 +2833,7 @@
       </item>
      </layout>
     </widget>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>140</x>
@@ -3619,13 +2862,13 @@
       </item>
      </layout>
     </widget>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>40</x>
        <y>210</y>
        <width>99</width>
-       <height>41</height>
+       <height>51</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -3645,13 +2888,13 @@
       </item>
      </layout>
     </widget>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>146</x>
        <y>210</y>
        <width>121</width>
-       <height>41</height>
+       <height>54</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -3667,7 +2910,7 @@
       </item>
      </layout>
     </widget>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>470</x>
@@ -3700,7 +2943,7 @@
       </item>
      </layout>
     </widget>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>600</x>
@@ -3841,8 +3084,6 @@
   <tabstop>lineEdit_model_gcfm_11</tabstop>
   <tabstop>lineEdit_model_gcfm_12</tabstop>
   <tabstop>lineEdit_model_gcfm_13</tabstop>
-  <tabstop>spinBox_agents_gcfm_1</tabstop>
-  <tabstop>tableWidget_agents_gcfm_1</tabstop>
   <tabstop>lineEdit_model_gompertz_01</tabstop>
   <tabstop>lineEdit_model_gompertz_02</tabstop>
   <tabstop>lineEdit_model_gompertz_03</tabstop>
@@ -3854,8 +3095,6 @@
   <tabstop>lineEdit_model_gompertz_09</tabstop>
   <tabstop>lineEdit_model_gompertz_10</tabstop>
   <tabstop>lineEdit_model_gompertz_11</tabstop>
-  <tabstop>spinBox_agents_gompertz_1</tabstop>
-  <tabstop>tableWidget_agents_gompertz_1</tabstop>
   <tabstop>lineEdit_model_tordeux_01</tabstop>
   <tabstop>lineEdit_model_tordeux_02</tabstop>
   <tabstop>lineEdit_model_tordeux_03</tabstop>
@@ -3865,8 +3104,6 @@
   <tabstop>lineEdit_model_tordeux_07</tabstop>
   <tabstop>lineEdit_model_tordeux_08</tabstop>
   <tabstop>lineEdit_model_tordeux_09</tabstop>
-  <tabstop>spinBox_agents_tordeux_1</tabstop>
-  <tabstop>tableWidget_agents_tordeux_1</tabstop>
   <tabstop>lineEdit_model_gradnav_01</tabstop>
   <tabstop>lineEdit_model_gradnav_02</tabstop>
   <tabstop>lineEdit_model_gradnav_03</tabstop>
@@ -3882,23 +3119,13 @@
   <tabstop>lineEdit_model_gradnav_13</tabstop>
   <tabstop>lineEdit_model_gradnav_14</tabstop>
   <tabstop>lineEdit_model_gradnav_15</tabstop>
-  <tabstop>spinBox_agents_gradnav_1</tabstop>
-  <tabstop>tableWidget_agents_gradnav_1</tabstop>
   <tabstop>lineEdit_model_krausz_01</tabstop>
   <tabstop>lineEdit_model_krausz_02</tabstop>
   <tabstop>lineEdit_model_krausz_03</tabstop>
   <tabstop>lineEdit_model_krausz_04</tabstop>
   <tabstop>lineEdit_model_krausz_05</tabstop>
-  <tabstop>lineEdit_model_krausz_06</tabstop>
-  <tabstop>lineEdit_model_krausz_07</tabstop>
-  <tabstop>lineEdit_model_krausz_08</tabstop>
-  <tabstop>lineEdit_model_krausz_09</tabstop>
-  <tabstop>lineEdit_model_krausz_10</tabstop>
-  <tabstop>lineEdit_model_krausz_11</tabstop>
-  <tabstop>lineEdit_model_krausz_12</tabstop>
-  <tabstop>lineEdit_model_krausz_13</tabstop>
-  <tabstop>spinBox_agents_krausz_1</tabstop>
-  <tabstop>tableWidget_agents_krausz_1</tabstop>
+  <tabstop>spinBox_agents</tabstop>
+  <tabstop>tableWidget_agents</tabstop>
   <tabstop>lineEdit_global_navi</tabstop>
  </tabstops>
  <resources/>
