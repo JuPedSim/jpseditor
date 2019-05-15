@@ -29,11 +29,7 @@ public slots:
     void on_comboBox_groups_1_currentIndexChanged(int index);
 
     //Inside Tab Agents
-    void on_spinBox_agents_gcfm_1_valueChanged(int);
-    void on_spinBox_agents_gompertz_1_valueChanged(int);
-    void on_spinBox_agents_tordeux_1_valueChanged(int);
-    void on_spinBox_agents_gradnav_1_valueChanged(int);
-    void on_spinBox_agents_krausz_1_valueChanged(int);
+    void on_spinBox_agents_valueChanged(int);
 
     //External file
     void pushButton_GeomeryClicked();
@@ -47,11 +43,16 @@ public slots:
     QString errorString(QXmlStreamReader *reader) const;
     void readJuPedSim(QXmlStreamReader *reader);
     void readSeed(QXmlStreamReader *reader);
+    void readThread(QXmlStreamReader *reader);
     void readGeometry(QXmlStreamReader *reader);
     void readMaxSimTime(QXmlStreamReader *reader);
     void readTrajectories(QXmlStreamReader *reader);
     void readTrajectoriesFile(QXmlStreamReader *reader);
     void readLogfile(QXmlStreamReader *reader);
+    void readFire(QXmlStreamReader *reader);
+    void readSmoke(QXmlStreamReader *reader);
+    void readWalking(QXmlStreamReader *reader);
+    void readToxicity(QXmlStreamReader *reader);
     void readTrafficConstraints(QXmlStreamReader *reader);
     void readTrafficFile(QXmlStreamReader *reader);
     void readRouting(QXmlStreamReader *reader);
@@ -68,21 +69,31 @@ public slots:
     void readStepsize(QXmlStreamReader *reader, int modelindex);
     void readExit(QXmlStreamReader *reader, int modelindex);
     void readLinkedcells(QXmlStreamReader *reader, int modelindex);
+    void readPeriodic(QXmlStreamReader *reader, int modelindex);
     void readForcePed(QXmlStreamReader *reader, int modelindex);
     void readForceWall(QXmlStreamReader *reader, int modelindex);
+    void readAntiClipping(QXmlStreamReader *reader);
+    void readFloorfield(QXmlStreamReader *reader);
     void readAgentParamaters(QXmlStreamReader *reader, int modelindex);
     void readV0(QXmlStreamReader *reader, int modelindex);
+    void readV0Upstairs(QXmlStreamReader *reader, int modelindex);
+    void readV0Downstars(QXmlStreamReader *reader, int modelindex);
+    void readV0IdleUpstairs(QXmlStreamReader *reader, int modelindex);
+    void readV0Idledownstairs(QXmlStreamReader *reader, int modelindex);
     void readBmax(QXmlStreamReader *reader, int modelindex);
     void readBmin(QXmlStreamReader *reader, int modelindex);
     void readAmin(QXmlStreamReader *reader, int modelindex);
     void readTau(QXmlStreamReader *reader, int modelindex);
     void readAtou(QXmlStreamReader *reader, int modelindex);
     void readT(QXmlStreamReader *reader, int modelindex);
+    void readSway(QXmlStreamReader *reader);
+
     void readRouteChoiceModels(QXmlStreamReader *reader);
     void readRouter(QXmlStreamReader *reader);
     void readRouterParameters(QXmlStreamReader *reader);
     void readNavigationLines(QXmlStreamReader *reader);
     void readVTK(QXmlStreamReader *reader);
+
 
 private:
     Ui::InifileWidget *ui;
@@ -102,6 +113,7 @@ private:
     void writeModelTordData(QXmlStreamWriter *stream, QFile &file);
     void writeModelGradData(QXmlStreamWriter *stream, QFile &file);
     void writeModelKrauData(QXmlStreamWriter *stream, QFile &file);
+    void writeAgentParameters(QXmlStreamWriter *stream, QFile &file);
     void writeRouteChoiceData(QXmlStreamWriter *stream, QFile &file);
     void writeFire(QXmlStreamWriter *stream, QFile &file);
 
