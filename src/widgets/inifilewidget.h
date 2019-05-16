@@ -24,12 +24,7 @@ public slots:
 
     //Inside Tab General
 
-    //Inside Tab Groups
-    void on_spinBox_groups_1_valueChanged(int);
     void on_comboBox_groups_1_currentIndexChanged(int index);
-
-    //Inside Tab Agents
-    void on_spinBox_agents_valueChanged(int);
 
     //External file
     void pushButton_GeomeryClicked();
@@ -37,6 +32,10 @@ public slots:
     void pushButton_SourceClicked();
     void pushButton_TrafficClicked();
     void pushButton_RoutingClicked();
+    void pushButton_addGroupRowClicked();
+    void pushButton_deleteGrouprowClicked();
+    void pushButton_addAgentRowClicked();
+    void pushButton_deleteAgentRowClicked();
 
     //Read inifile
     bool readInifile(QXmlStreamReader *reader);
@@ -74,18 +73,18 @@ public slots:
     void readForceWall(QXmlStreamReader *reader, int modelindex);
     void readAntiClipping(QXmlStreamReader *reader);
     void readFloorfield(QXmlStreamReader *reader);
-    void readAgentParamaters(QXmlStreamReader *reader, int modelindex);
-    void readV0(QXmlStreamReader *reader, int modelindex);
-    void readV0Upstairs(QXmlStreamReader *reader, int modelindex);
-    void readV0Downstars(QXmlStreamReader *reader, int modelindex);
-    void readV0IdleUpstairs(QXmlStreamReader *reader, int modelindex);
-    void readV0Idledownstairs(QXmlStreamReader *reader, int modelindex);
-    void readBmax(QXmlStreamReader *reader, int modelindex);
-    void readBmin(QXmlStreamReader *reader, int modelindex);
-    void readAmin(QXmlStreamReader *reader, int modelindex);
-    void readTau(QXmlStreamReader *reader, int modelindex);
-    void readAtou(QXmlStreamReader *reader, int modelindex);
-    void readT(QXmlStreamReader *reader, int modelindex);
+    void readAgentParamaters(QXmlStreamReader *reader);
+    void readV0(QXmlStreamReader *reader);
+    void readV0Upstairs(QXmlStreamReader *reader);
+    void readV0Downstars(QXmlStreamReader *reader);
+    void readV0IdleUpstairs(QXmlStreamReader *reader);
+    void readV0Idledownstairs(QXmlStreamReader *reader);
+    void readBmax(QXmlStreamReader *reader);
+    void readBmin(QXmlStreamReader *reader);
+    void readAmin(QXmlStreamReader *reader);
+    void readTau(QXmlStreamReader *reader);
+    void readAtou(QXmlStreamReader *reader);
+    void readT(QXmlStreamReader *reader);
     void readSway(QXmlStreamReader *reader);
 
     void readRouteChoiceModels(QXmlStreamReader *reader);
