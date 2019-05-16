@@ -1,3 +1,32 @@
+/***************************************************************
+ *
+ * \file inifilewidget.cpp
+ * \date 2019-05-02
+ * \version v0.8.9
+ * \author Tao Zhong
+ * \copyright <2009-2019> Forschungszentrum Jülich GmbH. All rights reserved.
+ *
+ * \section Lincense
+ * This file is part of JuPedSim.
+ *
+ * JuPedSim is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * JuPedSim is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * \section Description
+ * This class define a widget for inifile
+ *
+****************************************************************/
+
 #include <QDebug>
 #include <QFile>
 #include <QtWidgets>
@@ -41,23 +70,16 @@ InifileWidget::InifileWidget(QWidget *parent, jpsDatamanager *dmanager) :
     connect(ui->pushButton_Source, SIGNAL(clicked(bool)), this, SLOT(pushButton_SourceClicked()));
     connect(ui->pushButton_Traffic, SIGNAL(clicked(bool)), this, SLOT(pushButton_TrafficClicked()));
     connect(ui->pushButton_Routing, SIGNAL(clicked(bool)), this, SLOT(pushButton_RoutingClicked()));
+
+    connect(ui->pushButton_addGroupRow, SIGNAL(clicked(bool)), this, SLOT(pushButton_addGroupRowClicked()));
+    connect(ui->pushButton_deleteGroupRow, SIGNAL(clicked(bool)), this, SLOT(pushButton_deleteGrouprowClicked()));
+    connect(ui->pushButton_addAgentRow, SIGNAL(clicked(bool)), this, SLOT(pushButton_addAgentRowClicked()));
+    connect(ui->pushButton_deleteAgentRow, SIGNAL(clicked(bool)), this, SLOT(pushButton_deleteAgentRowClicked()));
 }
 
 InifileWidget::~InifileWidget()
 {
     delete ui;
-}
-
-
-void InifileWidget::on_spinBox_groups_1_valueChanged(int)
-{
-    ui->tableWidget_groups_1->setRowCount(ui->spinBox_groups_1->value());
-}
-
-// Add rows to tablewidgets by inserting a number into a spinbox
-void InifileWidget::on_spinBox_agents_valueChanged(int)
-{
-    ui->tableWidget_agents->setRowCount(ui->spinBox_agents->value());
 }
 
 // Set models and agents visible or invisible
@@ -97,6 +119,99 @@ void InifileWidget::on_comboBox_groups_1_currentIndexChanged(int index)
         ui->tabWidget->removeTab(2);
         ui->tabWidget->insertTab(2, ui->tab_model_krausz, "Model Krausz");
     }
+}
+
+
+// Create ini.xml on button push
+void InifileWidget::on_pushButton_write_clicked()
+{
+    //save to file
+    QString file_name = QFileDialog::getSaveFileName(this,
+                                                     tr("Create ini"),
+                                                     "",
+                                                     tr("XML-Files (*.xml)"));
+    QFile file(file_name);
+
+
+    if (file.open(QIODevice::WriteOnly|QIODevice::Text))
+    {
+        auto *stream = new QXmlStreamWriter(&file);
+        stream->setAutoFormatting(true);
+
+        stream->writeStartDocument("1.0");
+        stream->setCodec("UTF-8");
+
+        stream->writeStartElement("JuPedSim");
+        stream->writeAttribute("project","JPS-Project");
+        stream->writeAttribute("version", "0.8");
+        stream->writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        stream->writeAttribute("xsi:noNamespaceSchemaLocation","http://xsd.jupedsim.org/0.6/jps_ini_core.xsd");
+
+        writeHeaderData(stream, file);
+
+        writeFire(stream, file);
+
+        writeTrafficData(stream, file);
+
+        writeRoutingData(stream, file);
+
+        writeAgentData(stream, file);
+
+        int model = ui->comboBox_groups_1->currentIndex();
+
+        switch(model)
+        {
+            case 0:
+                writeModelGcfmData(stream, file);
+                break;
+            case 1:
+                writeModelGompData(stream, file);
+                break;
+            case 2:
+                writeModelTordData(stream, file);
+                break;
+            case 3:
+                writeModelGradData(stream, file);
+                break;
+            case 4:
+                writeModelKrauData(stream, file);
+                break;
+            default:
+                break;
+        }
+
+        writeRouteChoiceData(stream, file);
+
+        stream->writeEndElement(); //end JuPedSim
+        stream->writeEndDocument();
+        delete stream;
+        stream = nullptr;
+    }
+    file.close();
+}
+
+void InifileWidget::pushButton_addGroupRowClicked()
+{
+    int row = ui->tableWidget_groups_1->rowCount();
+    ui->tableWidget_groups_1->setRowCount(row+1);
+}
+
+void InifileWidget::pushButton_deleteGrouprowClicked()
+{
+    int current_row = ui->tableWidget_groups_1->currentRow();
+    ui->tableWidget_groups_1->removeRow(current_row);
+}
+
+void InifileWidget::pushButton_addAgentRowClicked()
+{
+    int row = ui->tableWidget_agents->rowCount();
+    ui->tableWidget_agents->setRowCount(row+1);
+}
+
+void InifileWidget::pushButton_deleteAgentRowClicked()
+{
+    int current_row = ui->tableWidget_agents->currentRow();
+    ui->tableWidget_agents->removeRow(current_row);
 }
 
 /*
@@ -169,8 +284,6 @@ void InifileWidget::writeHeaderData(QXmlStreamWriter *stream, QFile &file)
     if(!ui->comboBox_general_01->currentText().isEmpty())
         stream->writeCharacters(ui->comboBox_general_01->currentText());
     stream->writeEndElement();
-
-    return;
 }
 
 void InifileWidget::writeFire(QXmlStreamWriter *stream, QFile &file)
@@ -216,6 +329,83 @@ void InifileWidget::writeFire(QXmlStreamWriter *stream, QFile &file)
 
 }
 
+
+
+/*
+<routing>
+    <goals>
+        <goal id="0" final="false" caption="goal 1">
+            <polygon>
+                <vertex px="-5.0" py="-5.0" />
+                <vertex px="-5.0" py="-2.0" />
+                <vertex px="-3.0" py="-2.0" />
+                <vertex px="-3.0" py="-5.0" />
+                <vertex px="-5.0" py="-5.0" />
+            </polygon>
+        </goal>
+        <file>goals.xml</file>
+    </goals>
+</routing>
+*/
+
+void InifileWidget::writeRoutingData(QXmlStreamWriter *stream, QFile &file)
+{
+    stream->writeComment("routing");
+    stream->writeStartElement("routing");
+
+    stream->writeStartElement("goals");
+    QList<JPSGoal *> goallist = dataManager->getGoallist();
+    dataManager->writeGoals(stream, goallist);
+
+    auto goal_FileName = ui->lineEdit_GoalFile->text().split("/").last();
+
+    stream->writeStartElement("file");
+    if(!goal_FileName.isEmpty())
+        stream->writeCharacters(goal_FileName);
+
+    stream->writeEndElement(); //end files
+    stream->writeEndElement(); //end goals
+    stream->writeEndElement(); //end routing
+}
+
+/*
+    since v0.8.8
+
+    <traffic_constraints>
+        <doors>
+          <door trans_id="1" caption="NaN" state="open" />
+        </doors>
+        <file>traffic.xml</file>
+    </traffic_constraints>
+*/
+
+void InifileWidget::writeTrafficData(QXmlStreamWriter *stream, QFile &file)
+{
+    stream->writeComment("traffic information: e.g closed doors or smoked rooms");
+    stream->writeStartElement("traffic_constraints");
+
+    stream->writeStartElement("doors");
+    QList<jpsCrossing *> crossings = dataManager->get_crossingList();
+    QList<jpsCrossing *> doorlist;
+
+    for(jpsCrossing *crossing:crossings)
+    {
+        if(crossing->IsExit())
+            doorlist.append(crossing);
+    }
+
+    dataManager->writeTraffics(stream, doorlist);
+
+    auto traffic_FileName = ui->lineEdit_TrafficFile->text().split("/").last();
+    stream->writeStartElement("file");
+    if(!traffic_FileName.isEmpty())
+        stream->writeCharacters(traffic_FileName);
+
+    stream->writeEndElement(); //end files
+    stream->writeEndElement(); //end doors
+    stream->writeEndElement(); //end traffic_constraints
+}
+
 void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
 {
     stream->writeComment("persons information and distribution");
@@ -224,7 +414,7 @@ void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
 
     stream->writeStartElement("agents_distribution");
 
-    for(int i = 0; i < ui->spinBox_groups_1->value(); i++)
+    for(int i = 0; i < ui->tableWidget_groups_1->rowCount()-1; i++)
     {
         stream->writeStartElement("group");
 
@@ -298,7 +488,6 @@ void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
     stream->writeEndElement(); //end agents_sources
     stream->writeEndElement(); //end agents
 
-    return;
 }
 
 void InifileWidget::writeModelGcfmData(QXmlStreamWriter *stream, QFile &file)
@@ -357,8 +546,6 @@ void InifileWidget::writeModelGcfmData(QXmlStreamWriter *stream, QFile &file)
 
     stream->writeEndElement(); //end model
     stream->writeEndElement(); //end operational model
-
-    return ;
 }
 
 void InifileWidget::writeModelGompData(QXmlStreamWriter *stream, QFile &file)
@@ -412,8 +599,6 @@ void InifileWidget::writeModelGompData(QXmlStreamWriter *stream, QFile &file)
 
     stream->writeEndElement(); //end model
     stream->writeEndElement(); //end operational model
-
-    return ;
 }
 
 void InifileWidget::writeModelTordData(QXmlStreamWriter *stream, QFile &file)
@@ -430,7 +615,7 @@ void InifileWidget::writeModelTordData(QXmlStreamWriter *stream, QFile &file)
     if(!ui->lineEdit_model_tordeux_01->text().isEmpty())
         stream->writeTextElement("solver", ui->lineEdit_model_tordeux_01->text());
     if(!ui->lineEdit_model_tordeux_02->text().isEmpty())
-    stream->writeTextElement("stepsize", ui->lineEdit_model_tordeux_02->text());
+        stream->writeTextElement("stepsize", ui->lineEdit_model_tordeux_02->text());
     if(!ui->lineEdit_model_tordeux_03->text().isEmpty())
         stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_tordeux_03->text());
     if(!ui->lineEdit_model_tordeux_10->text().isEmpty())
@@ -464,8 +649,6 @@ void InifileWidget::writeModelTordData(QXmlStreamWriter *stream, QFile &file)
     stream->writeEndElement(); //end model
 
     stream->writeEndElement(); //end operational model
-
-    return ;
 }
 
 void InifileWidget::writeModelGradData(QXmlStreamWriter *stream, QFile &file)
@@ -534,8 +717,6 @@ void InifileWidget::writeModelGradData(QXmlStreamWriter *stream, QFile &file)
     stream->writeEndElement(); //end model
 
     stream->writeEndElement(); //end operational model
-
-    return ;
 }
 
 void InifileWidget::writeModelKrauData(QXmlStreamWriter *stream, QFile &file)
@@ -570,13 +751,11 @@ void InifileWidget::writeModelKrauData(QXmlStreamWriter *stream, QFile &file)
     stream->writeEndElement(); //end model
 
     stream->writeEndElement(); //end operational model
-
-    return ;
 }
 
 void InifileWidget::writeAgentParameters(QXmlStreamWriter *stream, QFile &file)
 {
-    for(int i = 0; i < ui->spinBox_agents->value(); i++) // // start agent_parameters
+    for(int i = 0; i < ui->tableWidget_agents->rowCount()-1; i++) // // start agent_parameters
     {
         stream->writeStartElement("agent_parameters");
         if(ui->tableWidget_agents->item(i,0) != nullptr)
@@ -734,7 +913,6 @@ void InifileWidget::writeRouteChoiceData(QXmlStreamWriter *stream, QFile &file)
 
     stream->writeEndElement();
 
-    return ;
 }
 
 void InifileWidget::writeFFGlobalShortestRoute(QXmlStreamWriter *stream, QFile &file)
@@ -787,74 +965,6 @@ void InifileWidget::writeTripsRoute(QXmlStreamWriter *stream, QFile &file)
     stream->writeEndElement(); //end router
 }
 
-// Create ini.xml on button push
-void InifileWidget::on_pushButton_write_clicked()
-{
-    //save to file
-    QString file_name = QFileDialog::getSaveFileName(this,
-            tr("Create ini"),
-            "",
-            tr("XML-Files (*.xml)"));
-    QFile file(file_name);
-
-
-    if (file.open(QIODevice::WriteOnly|QIODevice::Text))
-    {
-        auto *stream = new QXmlStreamWriter(&file);
-        stream->setAutoFormatting(true);
-
-        stream->writeStartDocument("1.0");
-        stream->setCodec("UTF-8");
-
-        stream->writeStartElement("JuPedSim");
-        stream->writeAttribute("project","JPS-Project");
-        stream->writeAttribute("version", "0.8");
-        stream->writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-        stream->writeAttribute("xsi:noNamespaceSchemaLocation","http://xsd.jupedsim.org/0.6/jps_ini_core.xsd");
-
-        writeHeaderData(stream, file);
-
-        writeFire(stream, file);
-
-        writeTrafficData(stream, file);
-
-        writeRoutingData(stream, file);
-
-        writeAgentData(stream, file);
-
-        int model = ui->comboBox_groups_1->currentIndex();
-
-        switch(model)
-        {
-            case 0:
-                writeModelGcfmData(stream, file);
-                break;
-            case 1:
-                writeModelGompData(stream, file);
-                break;
-            case 2:
-                writeModelTordData(stream, file);
-                break;
-            case 3:
-                writeModelGradData(stream, file);
-                break;
-            case 4:
-                writeModelKrauData(stream, file);
-                break;
-            default:
-                break;
-        }
-
-        writeRouteChoiceData(stream, file);
-
-        stream->writeEndElement(); //end JuPedSim
-        stream->writeEndDocument();
-        delete stream;
-        stream = nullptr;
-    }
-    file.close();
-
-}
 // Read ini.xml on button push
 void InifileWidget::on_pushButton_read_clicked()
 {
@@ -1323,7 +1433,7 @@ void InifileWidget::readModel(QXmlStreamReader *reader)
         if (reader->name() == QLatin1String("model_parameters"))
             readModelParameters(reader, id);
         else if (reader->name() == QLatin1String("agent_parameters"))
-            readAgentParamaters(reader, id);
+            readAgentParamaters(reader);
         else
             reader->skipCurrentElement();
     }
@@ -1672,7 +1782,7 @@ void InifileWidget::readFloorfield(QXmlStreamReader *reader)
     reader->readNext();
 }
 
-void InifileWidget::readAgentParamaters(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readAgentParamaters(QXmlStreamReader *reader)
 {
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("agent_parameters"));
 
@@ -1686,27 +1796,27 @@ void InifileWidget::readAgentParamaters(QXmlStreamReader *reader, int modelindex
 
     while (reader->readNextStartElement()) {
         if (reader->name() == QLatin1String("v0"))
-            readV0(reader, modelindex); // for all models
+            readV0(reader); // for all models
         else if (reader->name() == QLatin1String("v0_upstairs"))
-            readV0Upstairs(reader, modelindex); // for all models
+            readV0Upstairs(reader); // for all models
         else if (reader->name() == QLatin1String("v0_downstairs"))
-            readV0Downstars(reader, modelindex); // for all models
+            readV0Downstars(reader); // for all models
         else if (reader->name() == QLatin1String("v0_idle_escalator_upstairs"))
-            readV0IdleUpstairs(reader, modelindex); // for all models
+            readV0IdleUpstairs(reader); // for all models
         else if (reader->name() == QLatin1String("v0_idle_escalator_downstairs"))
-            readV0Idledownstairs(reader, modelindex); // for all models
+            readV0Idledownstairs(reader); // for all models
         else if (reader->name() == QLatin1String("bmax"))
-            readBmax(reader, modelindex); // for all models
+            readBmax(reader); // for all models
         else if (reader->name() == QLatin1String("bmin"))
-            readBmin(reader, modelindex); // for all models
+            readBmin(reader); // for all models
         else if (reader->name() == QLatin1String("amin"))
-            readAmin(reader, modelindex); // for all models
+            readAmin(reader); // for all models
         else if (reader->name() == QLatin1String("tau"))
-            readTau(reader, modelindex);  // for all models
+            readTau(reader);  // for all models
         else if (reader->name() == QLatin1String("atau"))
-            readAtou(reader, modelindex); // for all models
+            readAtou(reader); // for all models
         else if (reader->name() == QLatin1String("T"))
-            readT(reader, modelindex); // for all models
+            readT(reader); // for all models
         else if (reader->name() == QLatin1String("sway"))
             readSway(reader); // for krausz
         else
@@ -1719,7 +1829,7 @@ void InifileWidget::readAgentParamaters(QXmlStreamReader *reader, int modelindex
     reader->readNext();
 }
 
-void InifileWidget::readV0(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readV0(QXmlStreamReader *reader)
 {
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("v0"));
 
@@ -1737,7 +1847,7 @@ void InifileWidget::readV0(QXmlStreamReader *reader, int modelindex)
     reader->readNext();
 }
 
-void InifileWidget::readV0Upstairs(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readV0Upstairs(QXmlStreamReader *reader)
 {
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("v0_upstairs"));
 
@@ -1755,7 +1865,7 @@ void InifileWidget::readV0Upstairs(QXmlStreamReader *reader, int modelindex)
     reader->readNext();
 }
 
-void InifileWidget::readV0Downstars(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readV0Downstars(QXmlStreamReader *reader)
 {
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("v0_downstairs"));
 
@@ -1773,7 +1883,7 @@ void InifileWidget::readV0Downstars(QXmlStreamReader *reader, int modelindex)
     reader->readNext();
 }
 
-void InifileWidget::readV0IdleUpstairs(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readV0IdleUpstairs(QXmlStreamReader *reader)
 {
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("v0_idle_escalator_upstairs"));
 
@@ -1791,7 +1901,7 @@ void InifileWidget::readV0IdleUpstairs(QXmlStreamReader *reader, int modelindex)
     reader->readNext();
 }
 
-void InifileWidget::readV0Idledownstairs(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readV0Idledownstairs(QXmlStreamReader *reader)
 {
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("v0_idle_escalator_downstairs"));
 
@@ -1809,7 +1919,7 @@ void InifileWidget::readV0Idledownstairs(QXmlStreamReader *reader, int modelinde
     reader->readNext();
 }
 
-void InifileWidget::readBmax(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readBmax(QXmlStreamReader *reader)
 {
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("bmax"));
 
@@ -1827,7 +1937,7 @@ void InifileWidget::readBmax(QXmlStreamReader *reader, int modelindex)
     reader->readNext();
 }
 
-void InifileWidget::readBmin(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readBmin(QXmlStreamReader *reader)
 {
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("bmin"));
 
@@ -1846,7 +1956,7 @@ void InifileWidget::readBmin(QXmlStreamReader *reader, int modelindex)
 
 }
 
-void InifileWidget::readAmin(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readAmin(QXmlStreamReader *reader)
 {
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("amin"));
 
@@ -1865,7 +1975,7 @@ void InifileWidget::readAmin(QXmlStreamReader *reader, int modelindex)
 
 }
 
-void InifileWidget::readTau(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readTau(QXmlStreamReader *reader)
 {
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("tau"));
 
@@ -1884,7 +1994,7 @@ void InifileWidget::readTau(QXmlStreamReader *reader, int modelindex)
 
 }
 
-void InifileWidget::readAtou(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readAtou(QXmlStreamReader *reader)
 {
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("atau"));
 
@@ -1904,7 +2014,7 @@ void InifileWidget::readAtou(QXmlStreamReader *reader, int modelindex)
 
 }
 
-void InifileWidget::readT(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readT(QXmlStreamReader *reader)
 {
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("T"));
 
@@ -2071,79 +2181,4 @@ void InifileWidget::pushButton_RoutingClicked()
             ,tr("XML-Files (*.xml)"));
 
     ui->lineEdit_global_navi->setText(fileName);
-}
-
-/*
-<routing>
-    <goals>
-        <goal id="0" final="false" caption="goal 1">
-            <polygon>
-                <vertex px="-5.0" py="-5.0" />
-                <vertex px="-5.0" py="-2.0" />
-                <vertex px="-3.0" py="-2.0" />
-                <vertex px="-3.0" py="-5.0" />
-                <vertex px="-5.0" py="-5.0" />
-            </polygon>
-        </goal>
-        <file>goals.xml</file>
-    </goals>
-</routing>
-*/
-
-void InifileWidget::writeRoutingData(QXmlStreamWriter *stream, QFile &file)
-{
-    stream->writeComment("routing");
-    stream->writeStartElement("routing");
-
-    stream->writeStartElement("goals");
-    QList<JPSGoal *> goallist = dataManager->getGoallist();
-    dataManager->writeGoals(stream, goallist);
-
-    auto goal_FileName = ui->lineEdit_GoalFile->text().split("/").last();
-
-    stream->writeStartElement("file");
-    if(!goal_FileName.isEmpty())
-        stream->writeCharacters(goal_FileName);
-
-    stream->writeEndElement(); //end files
-    stream->writeEndElement(); //end goals
-    stream->writeEndElement(); //end routing
-}
-
-/*
-    since v0.8.8
-
-    <traffic_constraints>
-        <doors>
-          <door trans_id="1" caption="NaN" state="open" />
-        </doors>
-        <file>traffic.xml</file>
-    </traffic_constraints>
-*/
-
-void InifileWidget::writeTrafficData(QXmlStreamWriter *stream, QFile &file)
-{
-    stream->writeComment("traffic information: e.g closed doors or smoked rooms");
-    stream->writeStartElement("traffic_constraints");
-
-    stream->writeStartElement("doors");
-    QList<jpsCrossing *> crossings = dataManager->get_crossingList();
-    QList<jpsCrossing *> doorlist;
-
-    for(jpsCrossing *crossing:crossings)
-    {
-        if(crossing->IsExit())
-            doorlist.append(crossing);
-    }
-
-    dataManager->writeTraffics(stream, doorlist);
-
-    auto traffic_FileName = ui->lineEdit_TrafficFile->text().split("/").last();
-    stream->writeStartElement("file");
-    if(!traffic_FileName.isEmpty())
-        stream->writeCharacters(traffic_FileName);
-
-    stream->writeEndElement(); //end files
-    stream->writeEndElement(); //end doors
-    stream->writeEndElement(); //end traffic_constraints
 }

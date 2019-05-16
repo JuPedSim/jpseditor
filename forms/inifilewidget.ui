@@ -35,7 +35,7 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab_general">
     <attribute name="title">
@@ -539,37 +539,11 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Groups of pedestrian&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_groups_1">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>121</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Number of groups</string>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBox_groups_1">
-     <property name="geometry">
-      <rect>
-       <x>130</x>
-       <y>50</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <number>1</number>
-     </property>
-    </widget>
     <widget class="QTableWidget" name="tableWidget_groups_1">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>90</y>
+       <y>50</y>
        <width>1121</width>
        <height>251</height>
       </rect>
@@ -659,6 +633,32 @@
        <string/>
       </property>
      </item>
+    </widget>
+    <widget class="QPushButton" name="pushButton_addGroupRow">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>320</y>
+       <width>114</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Add row</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_deleteGroupRow">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>320</y>
+       <width>114</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Delete row</string>
+     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_model_gcfm">
@@ -2356,7 +2356,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>90</y>
+       <y>50</y>
        <width>1121</width>
        <height>251</height>
       </rect>
@@ -2515,30 +2515,30 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Agent parameters&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_agents">
+    <widget class="QPushButton" name="pushButton_addAgentRow">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>101</width>
-       <height>21</height>
+       <x>20</x>
+       <y>320</y>
+       <width>114</width>
+       <height>32</height>
       </rect>
      </property>
      <property name="text">
-      <string>Parameter sets</string>
+      <string>Add row</string>
      </property>
     </widget>
-    <widget class="QSpinBox" name="spinBox_agents">
+    <widget class="QPushButton" name="pushButton_deleteAgentRow">
      <property name="geometry">
       <rect>
-       <x>120</x>
-       <y>50</y>
-       <width>111</width>
-       <height>21</height>
+       <x>150</x>
+       <y>320</y>
+       <width>114</width>
+       <height>32</height>
       </rect>
      </property>
-     <property name="minimum">
-      <number>1</number>
+     <property name="text">
+      <string>Delete row</string>
      </property>
     </widget>
    </widget>
@@ -3068,7 +3068,6 @@
   <tabstop>lineEdit_general_10</tabstop>
   <tabstop>comboBox_general_03</tabstop>
   <tabstop>lineEdit_general_12</tabstop>
-  <tabstop>spinBox_groups_1</tabstop>
   <tabstop>comboBox_groups_1</tabstop>
   <tabstop>tableWidget_groups_1</tabstop>
   <tabstop>lineEdit_model_gcfm_01</tabstop>
@@ -3124,7 +3123,6 @@
   <tabstop>lineEdit_model_krausz_03</tabstop>
   <tabstop>lineEdit_model_krausz_04</tabstop>
   <tabstop>lineEdit_model_krausz_05</tabstop>
-  <tabstop>spinBox_agents</tabstop>
   <tabstop>tableWidget_agents</tabstop>
   <tabstop>lineEdit_global_navi</tabstop>
  </tabstops>
