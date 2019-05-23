@@ -25,7 +25,10 @@ cmake_minimum_required(VERSION 3.2)
 #   cmake_policy(SET CMP0025 NEW) #fixes error No known features for CXX compiler (on mac)
 # ENDIF (POLICY CMP0025)
 
+# REMINDER: there is no CMAKE_PREFIX_PATH any more, make sure Qt is already in System PATH before building
+
 project(JPSeditor LANGUAGES CXX)
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -36,7 +39,7 @@ set(README_FILE "${CMAKE_SOURCE_DIR}/README.md")
 set(CMAKE_COLOR_MAKEFILE ON)
 set(JPSEDITOR_MAJOR_VERSION 0)
 set(JPSEDITOR_MINOR_VERSION 8)
-set(JPSEDITOR_PATCH_VERSION 7)
+set(JPSEDITOR_PATCH_VERSION 8)
 set(JPSEDITOR_VERSION
         ${JPSEDITOR_MAJOR_VERSION}.${JPSEDITOR_MINOR_VERSION}.${JPSEDITOR_PATCH_VERSION})
 
@@ -45,12 +48,7 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "")
 endif()
 
 message( STATUS "Generating  ................................... ${PROJECT_NAME} (${JPSEDITOR_VERSION}) -- ${CMAKE_BUILD_TYPE}")
-if(APPLE )
-  set (CMAKE_INSTALL_PREFIX "/Applications")
-  set (CMAKE_PREFIX_PATH "/Applications/Qt/5.12.0/clang_64")
-endif()
-message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
-
+#message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
 
 # ------------------------- Begin Generic CMake Variable Logging ------------------
 # the compiler used for C files
@@ -58,19 +56,18 @@ message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
 
 # the compiler used for C++ files
 # message( STATUS "CMAKE_CXX_COMPILER: " ${CMAKE_CXX_COMPILER} )
+
 # ------------------------- End of Generic CMake Variable Logging ------------------
-
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
-
-# put in cmake cmake scripts if any
-# message(STATUS "CMAKE_MODULE_PATH" ${CMAKE_MODULE_PATH})
-
+# put in cmake cmake scripts if any; not necessary now
+#set(CMAKE_MODULE_PATH  ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+#message(STATUS "CMAKE_MODULE_PATH" ${CMAKE_MODULE_PATH})
 
 #------------------ set important directories --------------------
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/bin")
 # Debug messages
 message( STATUS "CMAKE_BINARY_DIR .............................. " ${CMAKE_BINARY_DIR} )
+message( STATUS "CMAKE_CURRENT_BINARY_DIR ...................... " ${CMAKE_CURRENT_BINARY_DIR} )
 message( STATUS "CMAKE_SOURCE_DIR .............................. " ${CMAKE_SOURCE_DIR} )
 message( STATUS "CMAKE_CURRENT_SOURCE_DIR ...................... " ${CMAKE_CURRENT_SOURCE_DIR} )
 message( STATUS "CMAKE_RUNTIME_OUTPUT_DIRECTORY ................ " ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} )
@@ -102,43 +99,52 @@ set( SRCS
     src/main.cpp
     src/GraphicView.cpp
     src/graphicscene.cpp
-    src/widgets/roomwidget.cpp
     src/rooms.cpp
     src/datamanager.cpp
+    src/global.cpp
+
+    # JPSelement
     src/jpscrossing.cpp
     src/jpsLineItem.cpp
     src/jpsexit.cpp
     src/jpsobstacle.cpp
     src/jpslandmark.cpp
-    src/widgets/widgetlandmark.cpp
-    src/widgets/widgetsettings.cpp
     src/jpsconnection.cpp
     src/jpsregion.cpp
-    src/widgets/settingdialog.cpp
-    src/widgets/inifilewidget.cpp
-    src/widgets/snappingoptions.cpp
-        src/jpssource.cpp
-    src/widgets/sourcewidget.cpp
+    src/jpssource.cpp
     src/jpsgoal.cpp
-    src/widgets/goalwidget.cpp
-    src/global.cpp
+
+    # JPSmodel
     src/models/jpselementlistmodel.cpp
     src/models/jpssourcelistmodel.cpp
     src/models/jpsgoallistmodel.cpp
+
+    # reader for xml
     src/XML/goalreader.cpp
     src/XML/sourcereader.cpp
 
+    # for widgets
+    src/widgets/roomwidget.cpp
+    src/widgets/goalwidget.cpp
+    src/widgets/settingdialog.cpp
+    src/widgets/inifilewidget.cpp
+    src/widgets/snappingoptions.cpp
+    src/widgets/widgetlandmark.cpp
+    src/widgets/widgetsettings.cpp
+    src/widgets/sourcewidget.cpp
+
+    # for datamanager
     dxflib/src/dl_writer_ascii.cpp
     dxflib/src/dl_dxf.cpp
+
+    # for undo feature
     src/UndoFramework/action.cpp
     src/UndoFramework/actionstack.cpp
     src/UndoFramework/lineaction.cpp
+
+    # for roomdefinition feature
     src/AutomaticRoomIdentification/roomdefinition.cpp
     src/AutomaticRoomIdentification/roomidentification.cpp
-    src/tinyxml/tinystr.cpp
-    src/tinyxml/tinyxml.cpp
-    src/tinyxml/tinyxmlerror.cpp
-    src/tinyxml/tinyxmlparser.cpp
   )
 # all header files that should be treated with moc
 set( HDR
@@ -146,33 +152,36 @@ set( HDR
     src/mainWindow.h
     src/GraphicView.h
     src/graphicscene.h
-    src/widgets/roomwidget.h
+    src/elementtype.h
+    src/global.h
     src/rooms.h
     src/datamanager.h
+
     src/jpscrossing.h
     src/jpsLineItem.h
     src/jpsexit.h
     src/jpsobstacle.h
     src/jpslandmark.h
-    src/widgets/widgetlandmark.h
-    src/widgets/widgetsettings.h
     src/jpsconnection.h
     src/jpsregion.h
-    src/dtrace.h
+    src/jpssource.h
+    src/jpsgoal.h
+
+    src/XML/goalreader.h
+    src/XML/sourcereader.h
+
+    src/models/jpsgoallistmodel.h
+    src/models/jpselementlistmodel.h
+    src/models/jpssourcelistmodel.h
+
+    src/widgets/widgetlandmark.h
+    src/widgets/widgetsettings.h
     src/widgets/settingdialog.h
     src/widgets/inifilewidget.h
     src/widgets/snappingoptions.h
-        src/jpssource.h
     src/widgets/sourcewidget.h
     src/widgets/goalwidget.h
-    src/elementtype.h
-    src/global.h
-    src/models/jpselementlistmodel.h
-    src/models/jpssourcelistmodel.h
-    src/jpsgoal.h
-    src/models/jpsgoallistmodel.h
-    src/XML/goalreader.h
-    src/XML/sourcereader.h
+    src/widgets/roomwidget.h
 
     dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h
@@ -189,11 +198,10 @@ set( HDR
     src/UndoFramework/action.h
     src/UndoFramework/actionstack.h
     src/UndoFramework/lineaction.h
+
     src/AutomaticRoomIdentification/roomID.h
     src/AutomaticRoomIdentification/roomdefinition.h
     src/AutomaticRoomIdentification/roomidentification.h
-    src/tinyxml/tinystr.h
-    src/tinyxml/tinyxml.h
   )
 
 # *.ui files
@@ -214,7 +222,7 @@ set( RCS
         Resources/resources.qrc
   )
 
-
+# Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Instruct CMake to run moc automatically when needed.
@@ -234,12 +242,7 @@ endif()
 message(STATUS "Searching for Qt version ...................... " ${DESIRED_QT_VERSION})
 # find packages according to qt version
 if("${DESIRED_QT_VERSION}" STREQUAL "5")
-  FIND_PACKAGE(Qt5Widgets REQUIRED)
-  # - these find_packages are not necessary? -----------
-  FIND_PACKAGE(Qt5Core REQUIRED)
-  FIND_PACKAGE(Qt5Gui REQUIRED)
-  FIND_PACKAGE(Qt5Network REQUIRED)
-  FIND_PACKAGE(Qt5Xml REQUIRED)
+  find_package(Qt5Widgets REQUIRED)
   #-----------------------------------------------------
   set(QT5_INSTALLED TRUE)
   set(QTVERSION 5)
@@ -256,7 +259,6 @@ execute_process(COMMAND ${QT_QMAKE_EXECUTABLE} -query QT_VERSION OUTPUT_VARIABLE
 if( ${QTVERSION} VERSION_GREATER 6 OR ${QTVERSION} VERSION_LESS 3)
   message(FATAL_ERROR "QT version " ${QTVERSION} " not supported. Try 4 or 5")
 endif()
-
 
 # if(QT5_INSTALLED)
 #   message(STATUS "QT5_INSTALLED: " ${QT5_INSTALLED})
@@ -296,28 +298,27 @@ elseif( ${QT5_INSTALLED})
   message(STATUS "Working with Qt5")
   # http://www.kdab.com/using-cmake-with-qt-5/
   set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}" )
-
   qt5_wrap_ui( UI_HDRS ${UIS} )
   qt5_add_resources( RCS ${RCS} )
-  #qt5_use_package(JPSeditor Widgets)
 
-  ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE WIN32
+  add_executable( ${PROJECT_NAME} MACOSX_BUNDLE WIN32
   ${SRCS}
   ${MOC_HDRS}
   ${UI_HDRS}
   ${RCS}
   )
- qt5_use_modules(${PROJECT_NAME} Widgets)
- target_link_libraries(${PROJECT_NAME} ${Qt5Widgets_LIBRARIES})
+
+  target_link_libraries(${PROJECT_NAME} ${Qt5Widgets_LIBRARIES})
 else()
   message(FATAL_ERROR "QT NOT FOUND - ABORT")
 endif()
 
+# add icon file into bundle
 IF(APPLE)
-  SET(MACOSX_BUNDLE_ICON_FILE jupedsim.icns)
-  SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/icons/jupedsim.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+  SET(MACOSX_BUNDLE_ICON_FILE jpseditor.icns)
+  SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/Resources/jpseditor.icns PROPERTIES MACOSX_PACKAGE_LOCATION
+          Resources)
 ENDIF(APPLE)
-
 
 SET_TARGET_PROPERTIES( ${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE TRUE)
 #----------------------------------------------------------------------
@@ -333,8 +334,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   #    set(CMAKE_CXX_FLAGS_RELEASE        "${CMAKE_CXX_FLAGS_RELEASE} -O3 -DNDEBUG")
 endif()
 
-
-
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     message(STATUS "Using compiler ................................ Clang (${CMAKE_CXX_COMPILER_VERSION})")
 endif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -343,7 +342,6 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
-
   set(CMAKE_CXX_LDFLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
   set(CMAKE_CXX_FLAGS_DEBUG          "${CMAKE_CXX_FLAGS_DEBUG} -DTRACE_LOGGING")
   message(STATUS "Debug flags: "  ${CMAKE_CXX_FLAGS} " " ${CMAKE_CXX_FLAGS_DEBUG} )
@@ -400,7 +398,6 @@ endif()
 
 IF(APPLE)
   # set how it shows up in the Info.plist file
-  SET(MACOSX_EDIT_ICON jupedsim.icns)
   SET(MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2015-2019 Forschungszentrum Juelich. All rights reserved.")
   SET(MACOSX_BUNDLE_BUNDLE_NAME "${PROJECT_NAME}")
   SET(MACOSX_BUNDLE_BUNDLE_VERSION "${JPSEDITOR_VERSION}")
