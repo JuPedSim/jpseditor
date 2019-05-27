@@ -45,10 +45,7 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "")
 endif()
 
 message( STATUS "Generating  ................................... ${PROJECT_NAME} (${JPSEDITOR_VERSION}) -- ${CMAKE_BUILD_TYPE}")
-if(APPLE )
-  set (CMAKE_INSTALL_PREFIX "/Applications")
-  set (CMAKE_PREFIX_PATH "/Applications/Qt/5.12.0/clang_64")
-endif()
+set(CMAKE_INSTALL_PREFIX /tmp)
 message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
 
 
