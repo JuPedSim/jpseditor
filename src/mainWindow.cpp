@@ -31,6 +31,7 @@
 
 #include "mainWindow.h"
 #include "GraphicView.h"
+
 #include <iostream>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -222,6 +223,7 @@ MWindow :: MWindow()
     objectsnapping.append(Intersections_point);
     objectsnapping.append(Center_point);
     objectsnapping.append(SelectedLine_point);
+
 }
 
 MWindow::~MWindow()
@@ -664,18 +666,33 @@ void MWindow::SaveCogMapXML()
 }
 
 
-void MWindow::info(){
-    /*
-     * JPSeditor version information
-     * */
-    QString info = "\
-    JPSeditor (version 0.8.4) is a tool\n\
-    to create and process geometries for\n\
-    JuPedSim.\n\
-    2018. All rights reserved.";
+void MWindow::info()
+{
+    QString gittext = QMessageBox::tr(
+            "<h1><p style=\"line-height:0.7\">JPSeditor</p></h1><p style=\"line-height:1.4\" style=\"color:Gray;"
+            "\"><small><i>Version %1</i></small></p>"
+            "<p style=\"line-height:0.4\" style=\"color:Gray;\"><i>Commit Hash</i> %2</p>"
+            "<p  style=\"line-height:0.4\" style=\"color:Gray;\"><i>Commmit Date</i> %3</p>"
+            "<p  style=\"line-height:0.4\" style=\"color:Gray;\"><i>Branch</i> %4</p><hr>"
+    ).arg(JPSEDITOR_VERSION).arg(GIT_COMMIT_HASH).arg(GIT_COMMIT_DATE);
 
-    QMessageBox messageBox;
-    messageBox.information(nullptr,tr("About..."),info);
+    QString text = QMessageBox::tr(
+            "<p style=\"color:Gray;\"><small><i> &copy; 2009-2019  FZ Jülich <br><a href=\"http://jupedsim"
+            ".org\">jupedsim"
+            ".org</a></i></small></p>"
+    );
+
+    QMessageBox msg(QMessageBox::Information,"About JPSeditor", gittext+text, QMessageBox::Ok);
+    msg.setIconPixmap(QPixmap(":/inAppIcons/jpseditor.icns"));
+
+    //Change font
+    QFont font( "Tokyo" );
+    font.setPointSize( 10 );
+// font.setWeight( QFont::Bold );
+//font.setItalic( TRUE );
+    msg.setFont(font);
+//msg.setStandardButtons(0);
+    msg.exec();
 }
 
 void MWindow::anglesnap()

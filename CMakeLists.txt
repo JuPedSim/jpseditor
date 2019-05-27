@@ -25,10 +25,7 @@ cmake_minimum_required(VERSION 3.2)
 #   cmake_policy(SET CMP0025 NEW) #fixes error No known features for CXX compiler (on mac)
 # ENDIF (POLICY CMP0025)
 
-# REMINDER: there is no CMAKE_PREFIX_PATH any more, make sure Qt is already in System PATH before building
-
 project(JPSeditor LANGUAGES CXX)
-
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -43,12 +40,54 @@ set(JPSEDITOR_PATCH_VERSION 8)
 set(JPSEDITOR_VERSION
         ${JPSEDITOR_MAJOR_VERSION}.${JPSEDITOR_MINOR_VERSION}.${JPSEDITOR_PATCH_VERSION})
 
+find_package(Git REQUIRED) # no need for this msg. It comes from cmake.findgit()
+
+find_program(GIT_SCM git DOC "Git version control")
+mark_as_advanced(GIT_SCM)
+find_file(GITDIR NAMES .git PATHS ${CMAKE_SOURCE_DIR} NO_DEFAULT_PATH)
+if (GIT_SCM AND GITDIR)
+  # the commit's SHA1, and whether the building workspace was dirty or not
+  # describe --match=NeVeRmAtCh --always --tags --abbrev=40 --dirty
+  execute_process(COMMAND
+          "${GIT_EXECUTABLE}" --no-pager describe --tags --always --dirty
+          WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+          OUTPUT_VARIABLE GIT_SHA1
+          ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+  # branch
+  execute_process(
+          COMMAND "${GIT_EXECUTABLE}" rev-parse --abbrev-ref HEAD
+          WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+          OUTPUT_VARIABLE GIT_BRANCH
+          OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+
+  # the date of the commit
+  execute_process(COMMAND
+          "${GIT_EXECUTABLE}" log -1 --format=%ad --date=local
+          WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+          OUTPUT_VARIABLE GIT_DATE
+          ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+  add_definitions("-DGIT_COMMIT_HASH=\"${GIT_SHA1}\"")
+  add_definitions("-DGIT_COMMIT_DATE=\"${GIT_DATE}\"")
+  add_definitions("-DGIT_BRANCH=\"${GIT_BRANCH}\"")
+  add_definitions("-DJPSEDITOR_VERSION=\"${JPSEDITOR_VERSION}\"")
+else()
+  message(STATUS "Not in a git repo")
+endif()
+
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
 message( STATUS "Generating  ................................... ${PROJECT_NAME} (${JPSEDITOR_VERSION}) -- ${CMAKE_BUILD_TYPE}")
-#message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
+if(APPLE )
+  set (CMAKE_INSTALL_PREFIX "/Applications")
+  set (CMAKE_PREFIX_PATH "/Applications/Qt/5.12.0/clang_64")
+endif()
+message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
+
 
 # ------------------------- Begin Generic CMake Variable Logging ------------------
 # the compiler used for C files
@@ -145,6 +184,12 @@ set( SRCS
     # for roomdefinition feature
     src/AutomaticRoomIdentification/roomdefinition.cpp
     src/AutomaticRoomIdentification/roomidentification.cpp
+    src/tinyxml/tinystr.cpp
+    src/tinyxml/tinyxml.cpp
+    src/tinyxml/tinyxmlerror.cpp
+    src/tinyxml/tinyxmlparser.cpp
+
+        )
   )
 # all header files that should be treated with moc
 set( HDR
