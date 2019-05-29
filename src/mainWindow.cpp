@@ -385,133 +385,157 @@ void MWindow::openFileXML()
 
     QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
 
-    openGeometry(fileName);
+    QString error_geometry = openGeometry(fileName);
 
-    openRouting(fileName);
+    // if load geometry file failed, stop read others files
+    if(!error_geometry.isEmpty())
+    {
+        QMessageBox::critical(this,
+                              "Open XML",
+                              error_geometry,
+                              QMessageBox::Ok);
+        return;
+    }
 
-    openGoal(fileName);
+    QString error_routing = openRouting(fileName);
 
-    openSource(fileName);
+    QString error_goal = openGoal(fileName);
 
-    openTraffic(fileName);
+    QString error_source = openSource(fileName);
 
-    //AutoZoom to drawing
-    mview->AutoZoom();
+    QString error_traffic = openTraffic(fileName);
+
+    if(!error_goal.isEmpty() or !error_routing.isEmpty() or !error_source.isEmpty() or !error_traffic.isEmpty())
+    {
+        QString error = "";
+        QMessageBox msgBox;
+        msgBox.setText("Geometry is loaded, but some files aren't loaded.");
+
+        if(!error_routing.isEmpty())
+            error += error_routing + "\n";
+
+        if(!error_goal.isEmpty())
+            error += error_goal + "\n";
+
+        if(!error_source.isEmpty())
+            error += error_source + "\n";
+
+        if(!error_traffic.isEmpty())
+            error += error_traffic + "\n";
+
+        msgBox.setDetailedText(error);
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.exec();
+
+        return;
+    } else
+    {
+        statusBar()->showMessage(tr("Files successfully loaded!"),10000);
+        //AutoZoom to drawing
+        mview->AutoZoom();
+    }
+
 }
 
-void MWindow::openGeometry(QString fileName)
+QString MWindow::openGeometry(QString fileName)
 {
     QFile file(fileName);
 
     if(fileName.isEmpty())
-        return;
+    {
+        QString error = "Geometry file isn't found!";
+        return error;
+    }
+
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        QMessageBox::warning(this, tr("Read Geometry XML"),
-                             tr("Cannot read file %1:\n%2.")
-                                     .arg(QDir::toNativeSeparators(fileName),
-                                          file.errorString()));
-        return;
+        QString error = "Format error, open geometry file failed!";
+        return error;
     }
 
     if (!dmanager->readXML(file))
     {
-        QMessageBox::critical(this,
-                              "Prase geometry XML",
-                              "Cannot prase XML-file",
-                              QMessageBox::Ok);
-        statusBar()->showMessage("XML-File could not be loaded!",10000);
+        QString error = "Content error, read geometry file failed";
+        return error;
     }
     else
     {
-        statusBar()->showMessage("XML file loaded!", 10000);
+        QString error = ""; // file is loaded successful!
+        return error;
     }
 }
 
-void MWindow::openRouting(QString fileName)
+QString MWindow::openRouting(QString fileName)
 {
     QString fileNameRouting= fileName.split(".").first()+"_routing.xml";
     QFile fileRouting(fileNameRouting);
 
-    if(fileNameRouting.isEmpty())
-        return;
 
     if (!fileRouting.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        QMessageBox::warning(this, tr("Read Routing XML"),
-                             tr("Cannot read file %1:\n%2.")
-                                     .arg(QDir::toNativeSeparators(fileName),
-                                          fileRouting.errorString()));
-        return;
+        QString error = "Routing file isn't found!";
+        return error;
     }
 
     //Start to read routing
     if (!dmanager->readRoutingXML(fileRouting))
     {
-        QMessageBox::critical(this,
-                              "Prase routing XML",
-                              "Cannot prase XML-file",
-                              QMessageBox::Ok);
+        QString error = "Content error, read routing file failed!";
+        return error;
     }
     else
     {
+        QString error = ""; // file is loaded successful!
+        return error;
     }
 }
 
-void MWindow::openSource(QString fileName)
+QString MWindow::openSource(QString fileName)
 {
     QString fileNameSource= fileName.split(".").first()+"_sources.xml";
     QFile fileSource(fileNameSource);
 
-    if(fileNameSource.isEmpty())
-        return;
-
     if(!fileSource.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        QMessageBox::warning(this, tr("Read source XML"),
-                             tr("Cannot read file %1:\n%2.")
-                                     .arg(QDir::toNativeSeparators(fileNameSource),
-                                          fileSource.errorString()));
-        return;
+        QString error = "Source file isn't found!";
+        return error;
     }
 
     SourceReader sourceReader(mview);
 
     if(!sourceReader.read(&fileSource))
     {
-        QMessageBox::warning(this, tr("Prasse source XML"),
-                             tr("Cannot prase file %1:\n%2.")
-                                     .arg(QDir::toNativeSeparators(fileNameSource),
-                                          fileSource.errorString()));
+        QString error = "Content error, read source file failed";
+        return error;
+    } else
+    {
+        QString error = ""; // file is loaded successful!
+        return error;
     }
 }
 
-void MWindow::openGoal(QString fileName)
+QString MWindow::openGoal(QString fileName)
 {
     QString fileNameGoal= fileName.split(".").first()+"_goals.xml";
     QFile fileGoal(fileNameGoal);
 
-    if(fileNameGoal.isEmpty())
-        return;
-
     if(!fileGoal.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        QMessageBox::warning(this, tr("Read Goal XML"),
-                             tr("Cannot read file %1:\n%2.")
-                                     .arg(QDir::toNativeSeparators(fileNameGoal),
-                                          fileGoal.errorString()));
-        return;
+        QString error = "Goal file isn't found!";
+        return error;
     }
 
     GoalReader goalReader(mview);
 
     if(!goalReader.read(&fileGoal))
     {
-        QMessageBox::warning(this, tr("Prasse goal XML"),
-                             tr("Cannot prase file %1:\n%2.")
-                                     .arg(QDir::toNativeSeparators(fileNameGoal),
-                                          fileGoal.errorString()));
+        QString error = "Content error, read source file failed";
+        return error;
+    } else
+    {
+        QString error = ""; // file is loaded successful!
+        return error;
     }
 }
 
@@ -519,6 +543,7 @@ void MWindow::openFileCogMap()
 {
     QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
     QFile file(fileName);
+
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QMessageBox::critical(this,
@@ -672,8 +697,8 @@ void MWindow::info()
             "<h1><p style=\"line-height:0.7\">JPSeditor</p></h1><p style=\"line-height:1.4\" style=\"color:Gray;"
             "\"><small><i>Version %1</i></small></p>"
             "<p style=\"line-height:0.4\" style=\"color:Gray;\"><i>Commit Hash</i> %2</p>"
-            "<p  style=\"line-height:0.4\" style=\"color:Gray;\"><i>Commmit Date</i> %3</p>"
-            "<p  style=\"line-height:0.4\" style=\"color:Gray;\"><i>Branch</i> %4</p><hr>"
+            "<p style=\"line-height:0.4\" style=\"color:Gray;\"><i>Commmit Date</i> %3</p>"
+            "<p style=\"line-height:0.4\" style=\"color:Gray;\"><i>Branch</i> %4</p><hr>"
     ).arg(JPSEDITOR_VERSION).arg(GIT_COMMIT_HASH).arg(GIT_COMMIT_DATE);
 
     QString text = QMessageBox::tr(
@@ -1146,31 +1171,25 @@ void MWindow::goalButtionClicked()
     Open traffic file
  */
 
-void MWindow::openTraffic(QString fileName)
+QString MWindow::openTraffic(QString fileName)
 {
     QString fileNameTraffic = fileName.split(".").first() + "_traffic.xml";
     QFile fileTraffic(fileNameTraffic);
 
-    if(fileNameTraffic.isEmpty())
-        return;
-
     if (!fileTraffic.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        QMessageBox::warning(this, tr("Read traffic XML"),
-                             tr("Cannot read file %1:\n%2.")
-                                     .arg(QDir::toNativeSeparators(fileName),
-                                          fileTraffic.errorString()));
-        return;
+        QString error = "Traffic file isn't found!";
+        return error;
     }
 
     if(!dmanager->readTrafficXML(fileTraffic))
     {
-        QMessageBox::critical(this,
-                              "Prase traffic XML",
-                              "Cannot prase XML-file",
-                              QMessageBox::Ok);
+        QString error = "Content error, read traffic file failed";
+        return error;
     } else
     {
+        QString error = ""; // file is loaded successful!
+        return error;
     }
 }
 

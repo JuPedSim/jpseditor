@@ -102,11 +102,11 @@ protected slots:
 
     //For "Load XML" menu button
     void openFileXML();
-    void openGeometry(QString fileName);
-    void openRouting(QString fileName);
-    void openSource(QString fileName);
-    void openGoal(QString fileName);
-    void openTraffic(QString fileName);
+    QString openGeometry(QString fileName);
+    QString openRouting(QString fileName);
+    QString openSource(QString fileName);
+    QString openGoal(QString fileName);
+    QString openTraffic(QString fileName);
 
     void openFileCogMap();
     void OpenLineFile();
