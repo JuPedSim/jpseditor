@@ -1,6 +1,19 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## v0.8.8 [03.05.2019]
+### Added
+- Add Goal/Source element for drawing #109
+- New dock widget as inspector #131
+- Export external xml files #126
+
+### Changed
+- Rewrite inifile reader and writer #134
+- Combine data in inifile widget with mainwindow #127
+
+### Bugs fixed
+- Fix backup for undefined lines;
+
 ## v0.8.7 [08.03.2019]
 ### Added
 - Add line snapping options #102

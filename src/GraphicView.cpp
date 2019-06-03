@@ -81,11 +81,6 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     linepoint_snap=false;
     _gridmode=false;
     drawingMode = Selecting;
-//    statWall=false;
-//    statDoor=false;
-//    statExit=false;
-//    _statHLine=false;
-//    statLandmark=false;
     statzoomwindows=false;
     currentPen.setColor(Qt::black);
     currentPen.setCosmetic(true);
@@ -123,8 +118,6 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
 
     //Goal
     currentGoal = nullptr;
-
-
 }
 
 jpsGraphicsView::~jpsGraphicsView()
@@ -314,6 +307,9 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                 break;
             case Goal:
                 drawGoal();
+                break;
+            case Measure:
+                drawMeasureLengthLine();
                 break;
             case Selecting:
                 if (_statDefConnections==1)
@@ -2149,20 +2145,6 @@ void jpsGraphicsView::change_gridmode()
 
 void jpsGraphicsView::en_disableWall()
 {
-/*    statWall=!statWall;
-    statDoor=false;
-    statExit=false;
-    _statHLine=false;
-    statLandmark=false;
-    if (statWall==false)
-    {
-        emit no_drawing();
-    }
-    else
-    {
-        currentPen.setColor(Qt::black);
-    }*/
-
     drawingMode = Wall;
 
     if(drawingMode != Wall)
@@ -2196,20 +2178,6 @@ bool jpsGraphicsView::get_stat_anglesnap()
 
 void jpsGraphicsView::en_disableDoor()
 {
-/*    statDoor=!statDoor;
-    statExit=false;
-    statWall=false;
-    statLandmark=false;
-    _statHLine=false;
-    if (statDoor==false)
-    {
-        emit no_drawing();
-    }
-    else
-    {
-        currentPen.setColor(Qt::blue);
-    }*/
-
     drawingMode = Door;
 
     if(drawingMode != Door)
@@ -2309,15 +2277,6 @@ bool jpsGraphicsView::statusLandmark()
 
 void jpsGraphicsView::en_disableLandmark()
 {
-/*    statLandmark=!statLandmark;
-    statDoor=false;
-    statWall=false;
-    statExit=false;
-
-    if (statLandmark==false)
-    {
-        emit no_drawing();
-    }*/
     _statCopy=0;
     drawingMode = Landmark;
 
@@ -2734,4 +2693,39 @@ void jpsGraphicsView::seleteGoal(const QModelIndex &index)
     }
 
     this->scene()->update();
+}
+
+void jpsGraphicsView::drawMeasureLengthLine()
+{
+    if (current_line==nullptr) // if the mouse was pressed first of two times
+    {
+        //Determining first point of line
+        current_line = this->scene()->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),currentPen);
+        current_line->setVisible(false);
+    }
+    else // if the mouse was pressed secondly of two times
+    {
+        QString length = QString::number(current_line->line().length());
+        QString Msg = "Length: " + length;
+        emit sendMsgToStatusBar(Msg);
+
+        //reset pointer
+        delete current_line;
+        current_line = nullptr;
+
+
+    }
+}
+
+void jpsGraphicsView::enableMeasureLengthMode()
+{
+    setDrawingMode(Measure);
+
+    if(drawingMode != Measure)
+    {
+        emit no_drawing();
+    } else
+    {
+        currentPen.setColor(Qt::green);
+    }
 }
