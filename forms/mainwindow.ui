@@ -128,6 +128,7 @@
    <addaction name="actionClear_all_Rooms_and_Doors"/>
    <addaction name="separator"/>
    <addaction name="actionSelect_Mode"/>
+   <addaction name="actionMeasureLength"/>
    <addaction name="actionWall"/>
    <addaction name="actionDoor"/>
    <addaction name="actionHLine"/>
@@ -794,6 +795,18 @@
    </property>
    <property name="text">
     <string>Goal</string>
+   </property>
+  </action>
+  <action name="actionMeasureLength">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/ruler.png</normaloff>:/inAppIcons/Icons/ruler.png</iconset>
+   </property>
+   <property name="text">
+    <string>Measure length</string>
    </property>
   </action>
  </widget>

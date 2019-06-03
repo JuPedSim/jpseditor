@@ -179,6 +179,10 @@ protected slots:
 
     void showStatusBarMessage(QString msg, int duration);
 
+    //Measure
+    void measureLengthButtonClicked();
+    void msgReceived(QString Msg);
+
 private slots:
     void on_actionCopy_triggered();
     void on_actionOnline_Help_triggered();

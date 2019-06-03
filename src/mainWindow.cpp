@@ -160,6 +160,8 @@ MWindow :: MWindow()
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
     connect(mview,SIGNAL(LineLengthChanged()),this,SLOT(ShowLineLength()));
 
+
+
 //    QAction *str_escape = new QAction(this);
 //    str_escape->setShortcut(Qt::Key_Escape);
 //    connect(str_escape, SIGNAL(triggered(bool)), mview, SLOT(disableDrawing()));
@@ -199,6 +201,7 @@ MWindow :: MWindow()
     drawingActionGroup->addAction(actionSource);
     drawingActionGroup->addAction(actionEditMode);
     drawingActionGroup->addAction(actionGoal);
+    drawingActionGroup->addAction(actionMeasureLength);
 
     connect(actionSelect_Mode,SIGNAL(triggered(bool)),this,SLOT(en_selectMode()));
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
@@ -209,6 +212,7 @@ MWindow :: MWindow()
     connect(actionSource, SIGNAL(triggered(bool)),this,SLOT(sourceButtonClicked()));
     connect(actionEditMode,SIGNAL(triggered(bool)),this,SLOT(editModeButtonClicked()));
     connect(actionGoal,SIGNAL(triggered(bool)),this,SLOT(goalButtionClicked()));
+    connect(actionMeasureLength, SIGNAL(triggered(bool)), this, SLOT(measureLengthButtonClicked()));
 
     // right dock widget
     propertyDockWidget = nullptr;
@@ -763,7 +767,6 @@ void MWindow::disableDrawing()
 
 void MWindow::objectsnap()
 {
-
     if(snappingOptions==nullptr)
     {
         snappingOptions = new SnappingOptions(this);
@@ -1201,4 +1204,31 @@ QString MWindow::openTraffic(QString fileName)
 void MWindow::showStatusBarMessage(QString msg, int duration)
 {
     statusBar()->showMessage(tr(msg.toStdString().data()), duration);
+}
+
+/*
+    since v0.8.9
+
+    measure Length of walls
+ */
+
+void MWindow::measureLengthButtonClicked()
+{
+    connect(mview, SIGNAL(sendMsgToStatusBar(QString)), this, SLOT(msgReceived(QString)));
+    // open snapping widget
+    if(snappingOptions==nullptr)
+        this->objectsnap();
+
+    mview->enableMeasureLengthMode();
+}
+
+/*
+    since v0.8.9
+
+    receive msg from others widgets
+ */
+
+void MWindow::msgReceived(QString Msg)
+{
+    statusBar()->showMessage(Msg, 10000);
 }

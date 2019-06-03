@@ -67,7 +67,7 @@ public:
     void SetDatamanager(jpsDatamanager* datamanager);
 
     //Change modes
-    enum DrawingMode {Selecting, Editing, Wall, Door, Exit, HLine, Landmark, Source, Goal};
+    enum DrawingMode {Selecting, Editing, Wall, Door, Exit, HLine, Landmark, Source, Goal, Measure};
     void setDrawingMode(DrawingMode mode);
 
     void change_stat_anglesnap();
@@ -179,6 +179,10 @@ public:
     void SetGrid(QString grid);
     void ChangeGridSize(const qreal& factor);
 
+    // Measure
+    void drawMeasureLengthLine();
+    void enableMeasureLengthMode();
+
 public slots:
     //Landmarks/Regions
     void StatPositionDef();
@@ -244,11 +248,6 @@ private:
 
     // Drawing Mode
     DrawingMode drawingMode;
-//    bool statWall;
-//    bool statDoor;
-//    bool statExit;
-//    bool statLandmark;
-//    bool _statHLine;
 
     bool stat_break_;
     int _statCopy;
@@ -329,6 +328,7 @@ signals:
     void RegionDefCompleted();
     void sourcesChanged();
     void goalsChanged();
+    void sendMsgToStatusBar(QString Msg);
     //void DoubleClick();
 
 };

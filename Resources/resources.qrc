@@ -64,5 +64,6 @@
         <file>Icons/source.png</file>
         <file>Icons/goal.png</file>
         <file>Icons/edit.png</file>
+        <file>Icons/ruler.png</file>
     </qresource>
 </RCC>
