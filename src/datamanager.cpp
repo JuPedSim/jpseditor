@@ -441,17 +441,17 @@ void jpsDatamanager::writeXML(QFile &file)
 
     writeHeader(stream);
 
-    //write room
+    if(check_printAbility().isEmpty())
+    {
+        //write room
+        stream->writeStartElement("rooms");
+        writeRooms(stream,lines);
+        stream->writeEndElement();
 
-    stream->writeStartElement("rooms");
-    writeRooms(stream,lines);
-    stream->writeEndElement();
-
-    stream->writeStartElement("transitions");
-    writeTransitions(stream,lines);
-//    exitList.clear();
-    stream->writeEndElement();//transitions
-
+        stream->writeStartElement("transitions");
+        writeTransitions(stream,lines);
+        stream->writeEndElement();//transitions
+    }
     stream->writeStartElement("Undefine");
     writeNotAssignedDoors(stream,lines);
     writeNotAssignedExits(stream,lines);
@@ -2529,7 +2529,7 @@ void jpsDatamanager::writeDXFObjects(DL_Dxf *dxf, DL_WriterA *dw)
 
 QString jpsDatamanager::check_printAbility()
 {
-     qDebug("Enter jpsDatamanager::check_printAbility");
+    qDebug("Enter jpsDatamanager::check_printAbility");
     if (roomlist.size()<1)
     {
         QString string = "No rooms defined! Save XML-file not possible!";
