@@ -119,7 +119,6 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
 //    connect(ui->auto_assign_obstacle,SIGNAL(clicked(bool)),this,SLOT(autoAssigneObstacles()));
     //lines in graphview deleted
     connect(graphview,SIGNAL(lines_deleted()),this,SLOT(show_all()));
-
 }
 
 roomWidget::~roomWidget()
@@ -480,14 +479,14 @@ void roomWidget::add_rooms_to_crossing()
                    ui->roomBox_from->currentText().toStdString().c_str()
                  );
 
-            if (ui->roomBox_to->currentText()=="OUTSIDE")
+            if (ui->roomBox_to->currentText()=="OUTSIDE") // This door is a exit
             {
                 datamanager->get_crossingList()[cCrossingRow]->add_rooms(datamanager->get_roomlist()[cRoomRow1]);
                 datamanager->get_crossingList()[cCrossingRow]->SetStatExit(true);
                 datamanager->get_crossingList()[cCrossingRow]->get_cLine()->setExit();
             }
 
-            else
+            else // This door is a crossing
             {
                 datamanager->get_crossingList()[cCrossingRow]->add_rooms(datamanager->get_roomlist()[cRoomRow1],
                                                                  datamanager->get_roomlist()[cRoomRow2]);

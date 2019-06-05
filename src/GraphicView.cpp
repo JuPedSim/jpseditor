@@ -293,7 +293,6 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
 void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
 {
-
     if (mouseEvent->button() == Qt::LeftButton)
     {
         switch (drawingMode){
@@ -1095,7 +1094,6 @@ void jpsGraphicsView::drawLine()
             }
         }
 
-//        jpsline->set_type(statWall,statDoor,statExit,_statHLine);
         switch (drawingMode){
             case Wall:
                 lineItem->setWall();

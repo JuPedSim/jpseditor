@@ -41,7 +41,6 @@ QList<jpsRoom *> jpsCrossing::get_roomList()
     return roomList;
 }
 
-
 QString jpsCrossing::get_name()
 {
     return cName;
