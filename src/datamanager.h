@@ -234,6 +234,7 @@ private:
 
     int room_id_counter;
     int obs_id_counter;
+    int _crossingIdCounter;
     QWidget* parent_widget;
     jpsGraphicsView* _mView;
 

@@ -42,6 +42,7 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
     _mView=view;
     room_id_counter=1;
     obs_id_counter=0;
+    _crossingIdCounter=1;
     //_frameRate=0;
     _landmarkCounter=0;
     _regionCounter=0;
@@ -206,10 +207,21 @@ void jpsDatamanager::new_crossing(QList <jpsLineItem *> newCrossings)
     qDebug("Enter jpsDatamanager::new_crossing QList");
     for (int i=0; i<newCrossings.size(); i++)
     {
-        if (newCrossings[i]->is_Door())
+        if (newCrossings[i]->is_Door())// only door can be crossing
         {
-             jpsCrossing* newCrossing = new jpsCrossing(newCrossings[i]);
-             crossingList.push_back(newCrossing);
+            // avoid double crossing
+            for (jpsCrossing* crossing:crossingList)
+            {
+                if (crossing->get_cLine()==newCrossings[i])
+                    break;
+            }
+
+            auto newCrossing = new jpsCrossing(newCrossings[i]);
+
+            newCrossing->set_id(_crossingIdCounter);
+            _crossingIdCounter += 1;
+
+            crossingList.push_back(newCrossing);
         }
     }
     qDebug("Leave jpsDatamanager::new_crossing QList");
@@ -220,6 +232,7 @@ void jpsDatamanager::new_crossing(jpsLineItem *newCrossing)
      qDebug("Enter jpsDatamanager::new_crossing");
     if (newCrossing->is_Door())
     {
+        // avoid double crossing
         for (jpsCrossing* crossing:crossingList)
         {
             if (crossing->get_cLine()==newCrossing)
@@ -227,6 +240,8 @@ void jpsDatamanager::new_crossing(jpsLineItem *newCrossing)
         }
 
         jpsCrossing* newCros = new jpsCrossing(newCrossing);
+        newCros->set_id(_crossingIdCounter);
+        _crossingIdCounter += 1;
         crossingList.push_back(newCros);
     }
     qDebug("Leave jpsDatamanager::new_crossing");
@@ -439,22 +454,25 @@ void jpsDatamanager::writeXML(QFile &file)
     auto *stream = new QXmlStreamWriter(&file);
     QList<jpsLineItem* > lines = _mView->get_line_vector();
 
+    stream->setAutoFormatting(true);
+    stream->writeStartDocument("1.0",true);
+
+    // Header for geometry
     writeHeader(stream);
 
-    if(check_printAbility().isEmpty())
+    if(check_printAbility().isEmpty()) // crossing, transitions, obstacles will be checked.
     {
-        //write room
+        //write rooms and crossings
         stream->writeStartElement("rooms");
         writeRooms(stream,lines);
-        stream->writeEndElement();
+        stream->writeEndElement(); // End rooms
 
         stream->writeStartElement("transitions");
         writeTransitions(stream,lines);
-        stream->writeEndElement();//transitions
+        stream->writeEndElement();// End transitions
     }
     stream->writeStartElement("Undefine");
     writeNotAssignedDoors(stream,lines);
-    writeNotAssignedExits(stream,lines);
     writeNotAssignedWalls(stream,lines);
     stream->writeEndElement();
 
@@ -644,8 +662,6 @@ void jpsDatamanager::AutoSaveXML(QFile &file)
 
     stream->writeStartElement("transitions");
     writeTransitions(stream,lines);
-    writeNotAssignedExits(stream,lines);
-    exitList.clear();
     stream->writeEndElement();//transitions
 
 //    stream->writeStartElement("landmarks");
@@ -662,8 +678,6 @@ void jpsDatamanager::AutoSaveXML(QFile &file)
 void jpsDatamanager::writeHeader(QXmlStreamWriter *stream)
 {
     qDebug("Enter jpsDatamanager::writeHeader");
-    stream->setAutoFormatting(true);
-    stream->writeStartDocument("1.0",true);
 
     stream->writeStartElement("geometry");
     stream->writeAttribute("version", "0.8");
@@ -767,26 +781,30 @@ QString jpsDatamanager::RoomIDHLine(jpsLineItem *lineItem)
 
 void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
+    qDebug(" Enter jpsDatamanager::writeRooms");
 
-     qDebug(" Enter jpsDatamanager::writeRooms");
-    // stairs
+    // write stair at first
     for (jpsRoom* room:roomlist)
     {
-        if (room->get_type()=="Stair")
+        if (room->get_type()=="Stair") // rooms as stairs
         {
             stream->writeStartElement("room");
-            stream->writeAttribute("id",QString::number(room->get_id()));
+            stream->writeAttribute("id", QString::number(room->get_id()));
             stream->writeAttribute("caption","stair");
+
             writeSubRoom(stream,room,lines);
+
+            // A stair hasn't stairs
             stream->writeStartElement("crossings");
-            stream->writeEndElement();//crossings
-            stream->writeEndElement();//room
+            stream->writeEndElement(); //crossings
+
+            stream->writeEndElement(); //room
         }
     }
 
-    //rooms
+    // write all subrooms in a room with ID 0
     stream->writeStartElement("room");
-    stream->writeAttribute("id","0");
+    stream->writeAttribute("id", "0");
     stream->writeAttribute("caption","floor");
 
     for (int i=0; i<roomlist.size(); i++)
@@ -795,15 +813,12 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
         {
             writeSubRoom(stream,roomlist[i],lines);
         }
-    }// for i
-
-
+    }
     //Crossings
     writeCrossings(stream,lines);
 
-    stream->writeEndElement();//crossings
-
     stream->writeEndElement();//room
+
     qDebug(" Leave jpsDatamanager::writeRooms");
 }
 
@@ -817,6 +832,7 @@ void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, jpsRoom *room, QList
     stream->writeAttribute("A_x",QString::number(room->get_ax()));
     stream->writeAttribute("B_y",QString::number(room->get_by()));
     stream->writeAttribute("C_z",QString::number(room->get_cz()));
+
     //walls
     QList<jpsLineItem* > wallList=room->get_listWalls();
     for (int j=0; j<wallList.size(); ++j)
@@ -841,7 +857,6 @@ void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, jpsRoom *room, QList
 
     }
 
-
     for (int k=0; k<obstaclelist.size(); k++)
     {
         if (room==obstaclelist[k]->get_room())
@@ -849,6 +864,7 @@ void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, jpsRoom *room, QList
             writeObstacles(stream ,obstaclelist[k],lines);
         }
     }
+
     // if stair write up and down
     if (room->get_type() == "Stair"){
          // <up>
@@ -933,6 +949,8 @@ void jpsDatamanager::AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem *
 
     //Crossings
     writeCrossings(stream,lines);
+
+    // Not assigned doors
     writeNotAssignedDoors(stream,lines);
     stream->writeEndElement();//crossings
 
@@ -944,102 +962,116 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
 {
     qDebug("Enter jpsDatamanager::writeCrossings");
     stream->writeStartElement("crossings");
+
     for (int i=0; i<crossingList.size(); i++)
     {
-        if (!crossingList[i]->IsExit() && crossingList[i]->get_roomList()[0]->get_type()!="Stair" &&
-        crossingList[i]->get_roomList()[1]->get_type()!="Stair")
+        if (!crossingList[i]->IsExit()
+        && crossingList[i]->get_roomList().size() == 2 // A crossing must between two subrooms
+        && crossingList[i]->get_roomList()[0]->get_type()!="Stair"
+        && crossingList[i]->get_roomList()[1]->get_type()!="Stair") // This door is crossing between rooms,
         {
             stream->writeStartElement("crossing");
             stream->writeAttribute("id",QString::number(i));
-            auto roomList = crossingList[i]->get_roomList();
-            if(roomList.size()){
-                 stream->writeAttribute("subroom1_id",QString::number(crossingList[i]->get_roomList()[0]->get_id()));
-                 stream->writeAttribute("subroom2_id",QString::number(crossingList[i]->get_roomList()[1]->get_id()));
-            }
-            else{
-                 stream->writeAttribute("subroom1_id", "-2"); //dummy values
-                 stream->writeAttribute("subroom2_id", "-2");                                  
-            }
+
+            stream->writeAttribute("subroom1_id",QString::number(crossingList[i]->get_roomList()[0]->get_id()));
+            stream->writeAttribute("subroom2_id",QString::number(crossingList[i]->get_roomList()[1]->get_id()));
+
             stream->writeStartElement("vertex");
             stream->writeAttribute("px",QString::number(crossingList[i]->get_cLine()->get_line()->line().x1()));
             stream->writeAttribute("py",QString::number(crossingList[i]->get_cLine()->get_line()->line().y1()));
             stream->writeEndElement(); //vertex
+
             stream->writeStartElement("vertex");
             stream->writeAttribute("px",QString::number(crossingList[i]->get_cLine()->get_line()->line().x2()));
             stream->writeAttribute("py",QString::number(crossingList[i]->get_cLine()->get_line()->line().y2()));
-            stream->writeEndElement();//vertex
-            stream->writeEndElement();//crossing
+            stream->writeEndElement(); //vertex
+
+            stream->writeEndElement(); //crossing
 
             lines.removeOne(crossingList[i]->get_cLine());
         }
         else
         {
-            this->new_exit(crossingList[i]->get_cLine());
-            if (crossingList[i]->get_roomList().size()>1)
-            {
-                // mention stair id first
-                if (crossingList[i]->get_roomList()[0]->get_type()=="Stair")
-                    exitList.back()->set_rooms(crossingList[i]->get_roomList()[0], crossingList[i]->get_roomList()[1]);
-                else
-                    exitList.back()->set_rooms(crossingList[i]->get_roomList()[1], crossingList[i]->get_roomList()[0]);
-            }
-            else
-                exitList.back()->set_rooms(crossingList[i]->get_roomList()[0]);
+            //TODO: Exception handling, error return to event log
+//            this->new_exit(crossingList[i]->get_cLine());
+//            if (crossingList[i]->get_roomList().size()>1)
+//            {
+//                // mention stair id first
+//                if (crossingList[i]->get_roomList()[0]->get_type()=="Stair")
+//                    exitList.back()->set_rooms(crossingList[i]->get_roomList()[0], crossingList[i]->get_roomList()[1]);
+//                else
+//                    exitList.back()->set_rooms(crossingList[i]->get_roomList()[1], crossingList[i]->get_roomList()[0]);
+//            }
+//            else
+//                exitList.back()->set_rooms(crossingList[i]->get_roomList()[0]);
         }
 
     }
+
+    stream->writeEndElement();//crossings
     qDebug("Leave jpsDatamanager::writeCrossings");
 }
 
 void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
     qDebug("Enter jpsDatamanager::writeTransitions");
-    for (int i=0; i<exitList.size(); ++i)
+
+    stream->writeStartElement("transition");
+
+    for (jpsCrossing* crossing:crossingList)
     {
-        stream->writeStartElement("transition");
+        if(crossing->IsExit()) // Only transitions will be wrote here!
+        {
+            stream->writeAttribute("id",QString::number(crossing->get_id()));
+            stream->writeAttribute("caption","exit");
+            stream->writeAttribute("type","emergency");
 
-        stream->writeAttribute("id",QString::number(i));
-        stream->writeAttribute("caption","exit");
-        stream->writeAttribute("type","emergency");
-        // transition to stair
-        if (exitList[i]->get_roomList().size()==1 && exitList[i]->get_roomList()[0]->get_type()=="Stair")
-        {
-            //stair id
-            stream->writeAttribute("room1_id",QString::number(exitList[i]->get_roomList()[0]->get_id()));
-            stream->writeAttribute("subroom1_id",QString::number(exitList[i]->get_roomList()[0]->get_id()));
-            //floor id
-            stream->writeAttribute("room2_id","-1");
-            stream->writeAttribute("subroom2_id","-1");
-        }
-        else if (exitList[i]->get_roomList().size()==2)
-        {
-            //stair id
-            stream->writeAttribute("room1_id",QString::number(exitList[i]->get_roomList()[0]->get_id()));
-            stream->writeAttribute("subroom1_id",QString::number(exitList[i]->get_roomList()[0]->get_id()));
-            //floor id
-            stream->writeAttribute("room2_id","0");
-            stream->writeAttribute("subroom2_id",QString::number(exitList[i]->get_roomList()[1]->get_id()));
-        }
-        else
-        {
-            //floor id
-            stream->writeAttribute("room1_id","0");
-            stream->writeAttribute("subroom1_id",QString::number(exitList[i]->get_roomList()[0]->get_id()));
-            //outside
-            stream->writeAttribute("room2_id","-1");
-            stream->writeAttribute("subroom2_id","-1");
-        }
-        stream->writeStartElement("vertex");
-        stream->writeAttribute("px",QString::number(exitList[i]->get_cLine()->get_line()->line().x1()));
-        stream->writeAttribute("py",QString::number(exitList[i]->get_cLine()->get_line()->line().y1()));
-        stream->writeEndElement(); //vertex
-        stream->writeStartElement("vertex");
-        stream->writeAttribute("px",QString::number(exitList[i]->get_cLine()->get_line()->line().x2()));
-        stream->writeAttribute("py",QString::number(exitList[i]->get_cLine()->get_line()->line().y2()));
-        stream->writeEndElement();//vertex
+            if (crossing->get_roomList().size()==1
+            && crossing->get_roomList()[0]->get_type()=="Stair") // stair - outside
+            {
+                //stair id
+                stream->writeAttribute("room1_id",QString::number(crossing->get_roomList()[0]->get_id()));
+                stream->writeAttribute("subroom1_id",QString::number(crossing->get_roomList()[0]->get_id()));
+                //floor id
+                stream->writeAttribute("room2_id","-1");
+                stream->writeAttribute("subroom2_id","-1");
+            }
+            else if(crossing->get_roomList().size()==1
+            && crossing->get_roomList()[0]->get_type()!="Stair")// room - outside
+            {
+                //room id
+                stream->writeAttribute("room1_id","0");
+                stream->writeAttribute("subroom1_id",QString::number(crossing->get_roomList()[0]->get_id()));
+                //outside
+                stream->writeAttribute("room2_id","-1");
+                stream->writeAttribute("subroom2_id","-1");
+            }
+            else if (crossing->get_roomList().size()==2)  // stair - room or room - stair
+            {
+                //stair id
+                stream->writeAttribute("room1_id",QString::number(crossing->get_roomList()[0]->get_id()));
+                stream->writeAttribute("subroom1_id",QString::number(crossing->get_roomList()[0]->get_id()));
+                //room2 id
+                stream->writeAttribute("room2_id","0");
+                stream->writeAttribute("subroom2_id",QString::number(crossing->get_roomList()[1]->get_id()));
+            } else
+            {
+                //TODO: Exception handling, error report to event log
+            }
 
-        stream->writeEndElement();//transition
-        lines.removeOne(exitList[i]->get_cLine());
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px",QString::number(crossing->get_cLine()->get_line()->line().x1()));
+            stream->writeAttribute("py",QString::number(crossing->get_cLine()->get_line()->line().y1()));
+            stream->writeEndElement(); //vertex
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px",QString::number(crossing->get_cLine()->get_line()->line().x2()));
+            stream->writeAttribute("py",QString::number(crossing->get_cLine()->get_line()->line().y2()));
+            stream->writeEndElement(); //vertex
+
+            stream->writeEndElement(); //transition
+            lines.removeOne(crossing->get_cLine());
+        }
     }
     qDebug("Leave jpsDatamanager::writeTransitions");
 }
@@ -1082,6 +1114,7 @@ void jpsDatamanager::writeObstacles(QXmlStreamWriter *stream, jpsObstacle* obs, 
 void jpsDatamanager::writeNotAssignedWalls(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
      qDebug("Enter jpsDatamanager::writeNotAssignedWalls");
+
     /// save lines which are not assigned to a room yet
     QList<jpsLineItem *> walls;
 
@@ -1179,8 +1212,6 @@ void jpsDatamanager::writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLi
 
         stream->writeEndElement();//transition
     }
-
-
 
 }
 
@@ -2535,31 +2566,35 @@ QString jpsDatamanager::check_printAbility()
         QString string = "No rooms defined! Save XML-file not possible!";
         return string;
     }
+
+    // check crossing
     for (int i=0; i<crossingList.size(); i++)
     {
-        if (crossingList[i]->get_roomList().size() < 2 && !crossingList[i]->IsExit())
+        if (!crossingList[i]->IsExit() && crossingList[i]->get_roomList().size() < 2) //crossing
         {
             QString string = "There are crossings which are not assigned to a room! Save XML-file not possible!";
             return string;
         }
     }
-    for (int i=0; i<exitList.size(); i++)
+
+    // check transitions
+    for (int i=0; i<crossingList.size(); i++)
     {
-        if (exitList[i]->get_roomList().size() < 1)
+        if (crossingList[i]->IsExit() && crossingList[i]->get_roomList().size() < 1) //transitions
         {
             QString string = "There are exits which are not assigned to a room! Save XML-file not possible!";
             return string;
         }
-
     }
+
+    // check obstacles
     for (int i=0; i<obstaclelist.size(); i++)
     {
-        if (obstaclelist[i]->get_room()==0L)
+        if (obstaclelist[i]->get_room()==nullptr)
         {
             QString string = "There are obstacles which are not assigned to a room! Save XML-file not possible!";
             return string;
         }
-
     }
 
     qDebug("Leave jpsDatamanager::check_printAbility");
