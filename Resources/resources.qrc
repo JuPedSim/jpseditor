@@ -8,8 +8,7 @@
         <file>Icons/DeleteC.png</file>
         <file>Icons/Door.png</file>
         <file>Icons/DoorC.png</file>
-        <file>Icons/Exit.png</file>
-        <file>Icons/ExitC.png</file>
+        <file>Icons/exit.png</file>
         <file>Icons/filesave.png</file>
         <file>Icons/filesaveas.png</file>
         <file>Icons/jupedsim.png</file>
@@ -65,5 +64,6 @@
         <file>Icons/goal.png</file>
         <file>Icons/edit.png</file>
         <file>Icons/ruler.png</file>
+        <file>Icons/draw.png</file>
     </qresource>
 </RCC>

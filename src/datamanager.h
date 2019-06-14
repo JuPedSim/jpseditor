@@ -104,14 +104,13 @@ public:
     //Layers
     QList<QString> getElevationList();
 
-    //Sources TODO: write sources by a writer class
+    //Sources
     void writeSourceXML(QFile &file);
     void writeSourceHeader(QXmlStreamWriter *stream);
     void writeSources(QXmlStreamWriter *stream, QList<JPSSource *>& sourcelist);
     const QList<JPSSource *> &getSourcelist();
 
-
-    //Goals TODO: write goals by a writer class
+    //Goals
     void writeGoalXML(QFile &file);
     void writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *>& goallist);
     const QList<JPSGoal *> &getGoallist();
@@ -249,6 +248,8 @@ private:
     QString _currentCogMapFileName;
 
     std::default_random_engine _generator;
+
+    bool isInCrossingList(jpsLineItem *markedLine);
 
 };
 

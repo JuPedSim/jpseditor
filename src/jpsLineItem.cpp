@@ -66,6 +66,8 @@ QString jpsLineItem::GetType()
             return "Wall";
         case door:
             return "Door";
+        case crossing:
+            return "Crossing";
         case exit:
             return "Exit";
         case hline:
@@ -120,7 +122,6 @@ void jpsLineItem::setExit()
 {
     lineType = exit;
     defaultColor="darkMagenta";
-
 }
 
 void jpsLineItem::setHLine()

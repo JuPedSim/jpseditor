@@ -47,7 +47,7 @@ public:
     void set_name(QString name);
 //    void set_type(bool wall, bool door, bool exit, bool hline=false);
 
-    enum LineType{wall, door, exit, hline, undefined};
+    enum LineType{wall, door, crossing, exit, hline, undefined};
     void setType(LineType type);
 
     void setWall();

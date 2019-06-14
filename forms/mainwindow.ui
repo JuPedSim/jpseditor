@@ -64,6 +64,7 @@
     <addaction name="actionGather_data"/>
     <addaction name="actionLandmarkWidget"/>
     <addaction name="actionNew_Inifile"/>
+    <addaction name="actionBackground"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -128,13 +129,8 @@
    <addaction name="actionClear_all_Rooms_and_Doors"/>
    <addaction name="separator"/>
    <addaction name="actionSelect_Mode"/>
+   <addaction name="actionDraw"/>
    <addaction name="actionMeasureLength"/>
-   <addaction name="actionWall"/>
-   <addaction name="actionDoor"/>
-   <addaction name="actionHLine"/>
-   <addaction name="actionSource"/>
-   <addaction name="actionGoal"/>
-   <addaction name="actionLandmark"/>
    <addaction name="separator"/>
    <addaction name="actiongridmode"/>
    <addaction name="actionObjectsnap"/>
@@ -330,12 +326,15 @@
    </property>
   </action>
   <action name="actionExit">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="enabled">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../Resources/resources.qrc">
-     <normaloff>:/inAppIcons/Icons/Exit.png</normaloff>:/inAppIcons/Icons/Exit.png</iconset>
+     <normaloff>:/inAppIcons/Icons/exit.png</normaloff>:/inAppIcons/Icons/exit.png</iconset>
    </property>
    <property name="text">
     <string>Exit</string>
@@ -804,6 +803,23 @@
    </property>
    <property name="text">
     <string>Measure length</string>
+   </property>
+  </action>
+  <action name="actionDraw">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/draw.png</normaloff>:/inAppIcons/Icons/draw.png</iconset>
+   </property>
+   <property name="text">
+    <string>Draw</string>
+   </property>
+  </action>
+  <action name="actionBackground">
+   <property name="text">
+    <string>Import Backgroud</string>
    </property>
   </action>
  </widget>

@@ -40,7 +40,6 @@ QList<jpsRoom *> jpsExit::get_roomList()
     return roomList;
 }
 
-
 QString jpsExit::get_name()
 {
     return cName;
