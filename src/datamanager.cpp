@@ -53,7 +53,6 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 
     _generator=std::default_random_engine(seed);
 
-
     roomlist= QList<jpsRoom *> ();
     sourcelist = _mView->getSources();
     goallist = _mView->getGoals();
@@ -78,16 +77,13 @@ void jpsDatamanager::new_room()
 
 void jpsDatamanager::remove_room(jpsRoom *room)
 {
-
+    qDebug("Enter jpsDatamanager::remove_room. room_id_counter = %d", room_id_counter);
     //set room to nullptr in doors
     for (jpsCrossing* crossing: get_crossingList())
     {
         // will only be removed if room is in crossings roomlist
         crossing->RemoveRoom(room);
     }
-
-
-     qDebug("Enter jpsDatamanager::remove_room. room_id_counter = %d", room_id_counter);
 
     //if (roomlist.size()>0)
     //{
@@ -153,7 +149,7 @@ QList<QString> jpsDatamanager::getElevationList()
 
 void jpsDatamanager::new_obstacle()
 {
-     qDebug("Enter: jpsDatamanager::new_obstacle. obs_id_counter = %d", obs_id_counter);
+    qDebug("Enter: jpsDatamanager::new_obstacle. obs_id_counter = %d", obs_id_counter);
     jpsObstacle* new_obs = new jpsObstacle(this->obs_id_counter);
     obstaclelist.push_back(new_obs);
     obs_id_counter+=1;
@@ -207,15 +203,9 @@ void jpsDatamanager::new_crossing(QList <jpsLineItem *> newCrossings)
     qDebug("Enter jpsDatamanager::new_crossing QList");
     for (int i=0; i<newCrossings.size(); i++)
     {
-        if (newCrossings[i]->is_Door())// only door can be crossing
+        if ((newCrossings[i]->is_Door() || newCrossings[i]->is_Exit())
+        && !isInCrossingList(newCrossings[i]))// only door can be crossing
         {
-            // avoid double crossing
-            for (jpsCrossing* crossing:crossingList)
-            {
-                if (crossing->get_cLine()==newCrossings[i])
-                    break;
-            }
-
             auto newCrossing = new jpsCrossing(newCrossings[i]);
 
             newCrossing->set_id(_crossingIdCounter);
@@ -229,22 +219,29 @@ void jpsDatamanager::new_crossing(QList <jpsLineItem *> newCrossings)
 
 void jpsDatamanager::new_crossing(jpsLineItem *newCrossing)
 {
-     qDebug("Enter jpsDatamanager::new_crossing");
-    if (newCrossing->is_Door())
+    qDebug("Enter jpsDatamanager::new_crossing");
+    if (newCrossing->is_Door() && !isInCrossingList(newCrossing))
     {
-        // avoid double crossing
-        for (jpsCrossing* crossing:crossingList)
-        {
-            if (crossing->get_cLine()==newCrossing)
-                return;
-        }
-
         jpsCrossing* newCros = new jpsCrossing(newCrossing);
         newCros->set_id(_crossingIdCounter);
         _crossingIdCounter += 1;
         crossingList.push_back(newCros);
     }
     qDebug("Leave jpsDatamanager::new_crossing");
+}
+
+bool jpsDatamanager::isInCrossingList(jpsLineItem *markedLine)
+{
+    qDebug("Enter jpsDatamanager::isInCrossingList");
+    for (jpsCrossing* crossing:crossingList)
+    {
+        if (crossing->get_cLine()==markedLine)
+        {
+            return true;
+        }
+    }
+    return false;
+    qDebug("Leave jpsDatamanager::isInCrossingList");
 }
 
 void jpsDatamanager::remove_crossing(jpsCrossing *crossing)
@@ -802,7 +799,7 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
         }
     }
 
-    // write all subrooms in a room with ID 0
+    // write all subrooms in a room which ID is 0
     stream->writeStartElement("room");
     stream->writeAttribute("id", "0");
     stream->writeAttribute("caption","floor");
@@ -1151,9 +1148,7 @@ void jpsDatamanager::writeNotAssignedWalls(QXmlStreamWriter *stream, QList<jpsLi
         stream->writeEndElement(); //polygon
 
         lines.removeOne(line);
-
     }
-
     stream->writeEndElement();//subroom
     qDebug("Leave jpsDatamanager::writeNotAssignedWalls");
 }
@@ -1163,7 +1158,7 @@ void jpsDatamanager::writeNotAssignedDoors(QXmlStreamWriter *stream, QList<jpsLi
      qDebug("Enter jpsDatamanager::writeNotAssignedDoors");
     for (jpsLineItem* line:lines)
     {
-        if (line->is_Door())
+        if (line->is_Door() && !isInCrossingList(line))
         {
             stream->writeStartElement("crossing");
 

@@ -64,6 +64,7 @@ private:
     InifileWidget * inifileWidget;
 
     QDockWidget *propertyDockWidget;
+    QToolBar *drawing_toolbar_;
 
     SnappingOptions* snappingOptions;
 //    WidgetSettings* _settings;
@@ -124,15 +125,11 @@ protected slots:
     void anglesnap();
     void en_disableWall();
     void en_disableDoor();
-    void en_disableExit();
     void en_disableLandmark();
     void en_disableHLine();
-    void disableDrawing();
     void objectsnap();
     void sourceButtonClicked();
-    void editModeButtonClicked();
     void goalButtionClicked();
-
 
     //Line operations
     void show_coords();
@@ -183,6 +180,9 @@ protected slots:
     void measureLengthButtonClicked();
     void msgReceived(QString Msg);
 
+    //Background
+    void importBackground();
+
 private slots:
     void on_actionCopy_triggered();
     void on_actionOnline_Help_triggered();
@@ -195,6 +195,9 @@ private slots:
     void on_actionBack_to_Origin_triggered();
     void on_actionZoom_Windows_triggered();
     void on_actionZoom_Extents_triggered();
+
+    //Drawing ToolBar
+    void setupDrawingToolBar();
 };
 
 #endif // MAINWINDOW_H

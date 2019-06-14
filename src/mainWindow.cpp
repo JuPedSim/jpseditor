@@ -45,8 +45,9 @@
 MWindow :: MWindow()
 {
     setupUi(this);
-    //Signal/Slot
-    //VBox= new QVBoxLayout;
+
+    //WindowTitle
+    this->setWindowTitle("JPSeditor");
 
     //Set-up view and scene
     mview = new jpsGraphicsView;
@@ -54,11 +55,15 @@ MWindow :: MWindow()
     mview->setScene(mscene);
     mview->setSceneRect(0, 0, 1920, 1080);
     setCentralWidget(mview);
-    mview->setMaximumSize(1920,1080);
     mview->showMaximized();
 
     dmanager = new jpsDatamanager(this,mview);
     mview->SetDatamanager(dmanager);
+
+    //Setup ToolBar
+    this->toolBar->setWindowTitle("Main ToolBar");
+    this->toolBar->setMovable(false);
+    drawing_toolbar_ = nullptr;
 
     //Roomwidget
     rwidget=nullptr;
@@ -100,9 +105,6 @@ MWindow :: MWindow()
 
     //filename of saved project
     _filename="";
-
-    //WindowTitle
-    this->setWindowTitle("JPSeditor");
 
     statusBar()->addPermanentWidget(infoLabel);
     statusBar()->addPermanentWidget(label_x);
@@ -160,8 +162,6 @@ MWindow :: MWindow()
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
     connect(mview,SIGNAL(LineLengthChanged()),this,SLOT(ShowLineLength()));
 
-
-
 //    QAction *str_escape = new QAction(this);
 //    str_escape->setShortcut(Qt::Key_Escape);
 //    connect(str_escape, SIGNAL(triggered(bool)), mview, SLOT(disableDrawing()));
@@ -190,30 +190,6 @@ MWindow :: MWindow()
     // room type data gathering
     connect(actionGather_data,SIGNAL(triggered(bool)),this, SLOT(GatherData()));
 
-    // drawing actions group
-    drawingActionGroup = new QActionGroup(this);
-    drawingActionGroup->addAction(actionSelect_Mode);
-    drawingActionGroup->addAction(actionDoor);
-    drawingActionGroup->addAction(actionWall);
-    drawingActionGroup->addAction(actionExit);
-    drawingActionGroup->addAction(actionHLine);
-    drawingActionGroup->addAction(actionLandmark);
-    drawingActionGroup->addAction(actionSource);
-    drawingActionGroup->addAction(actionEditMode);
-    drawingActionGroup->addAction(actionGoal);
-    drawingActionGroup->addAction(actionMeasureLength);
-
-    connect(actionSelect_Mode,SIGNAL(triggered(bool)),this,SLOT(en_selectMode()));
-    connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
-    connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(en_disableDoor()));
-    connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(en_disableExit()));
-    connect(actionHLine,SIGNAL(triggered(bool)),this,SLOT(en_disableHLine()));
-    connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
-    connect(actionSource, SIGNAL(triggered(bool)),this,SLOT(sourceButtonClicked()));
-    connect(actionEditMode,SIGNAL(triggered(bool)),this,SLOT(editModeButtonClicked()));
-    connect(actionGoal,SIGNAL(triggered(bool)),this,SLOT(goalButtionClicked()));
-    connect(actionMeasureLength, SIGNAL(triggered(bool)), this, SLOT(measureLengthButtonClicked()));
-
     // right dock widget
     propertyDockWidget = nullptr;
 
@@ -228,6 +204,18 @@ MWindow :: MWindow()
     objectsnapping.append(Center_point);
     objectsnapping.append(SelectedLine_point);
 
+    //main toolbar action group
+    auto main_toolbar_action_group = new QActionGroup(this);
+    main_toolbar_action_group->addAction(actionSelect_Mode); // select mode
+    main_toolbar_action_group->addAction(actionMeasureLength); // measure mode
+    main_toolbar_action_group->addAction(actionDraw); // draw mode
+
+    connect(actionMeasureLength, SIGNAL(triggered(bool)), this, SLOT(measureLengthButtonClicked()));
+    connect(actionSelect_Mode,SIGNAL(triggered(bool)),this,SLOT(en_selectMode()));
+    connect(actionDraw, SIGNAL(triggered(bool)),this,SLOT(setupDrawingToolBar()));
+
+    //set background
+    connect(actionBackground, SIGNAL(triggered(bool)),this,SLOT(importBackground()));
 }
 
 MWindow::~MWindow()
@@ -240,6 +228,44 @@ MWindow::~MWindow()
     delete infoLabel;
     delete timer;
     delete _cMapTimer;
+}
+
+void MWindow::setupDrawingToolBar()
+{
+    if(drawing_toolbar_ == nullptr)
+    {
+        drawing_toolbar_ = new QToolBar("Drawing ToolBar", this);
+        addToolBar(Qt::LeftToolBarArea, drawing_toolbar_);
+        drawing_toolbar_->setMovable(false);
+        drawing_toolbar_->setBackgroundRole(QPalette::HighlightedText);
+
+        // drawing actions group
+        drawing_toolbar_->addAction(actionWall);
+        drawing_toolbar_->addAction(actionDoor);
+        drawing_toolbar_->addAction(actionHLine);
+        drawing_toolbar_->addAction(actionLandmark);
+        drawing_toolbar_->addAction(actionSource);
+        drawing_toolbar_->addAction(actionGoal);
+
+        drawingActionGroup = new QActionGroup(this);
+        drawingActionGroup->addAction(actionDoor);
+        drawingActionGroup->addAction(actionWall);
+        drawingActionGroup->addAction(actionHLine);
+        drawingActionGroup->addAction(actionLandmark);
+        drawingActionGroup->addAction(actionSource);
+        drawingActionGroup->addAction(actionGoal);
+
+        connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
+        connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(en_disableDoor()));
+        connect(actionHLine,SIGNAL(triggered(bool)),this,SLOT(en_disableHLine()));
+        connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
+        connect(actionSource, SIGNAL(triggered(bool)),this,SLOT(sourceButtonClicked()));
+        connect(actionGoal,SIGNAL(triggered(bool)),this,SLOT(goalButtionClicked()));
+    } else
+    {
+        drawing_toolbar_->close();
+        drawing_toolbar_ = nullptr;
+    }
 }
 
 void MWindow::AutoSave()
@@ -739,11 +765,6 @@ void MWindow::en_disableDoor()
     mview->en_disableDoor();
 }
 
-void MWindow::en_disableExit()
-{
-    mview->en_disableExit();
-}
-
 void MWindow::en_disableLandmark()
 {
     mview->en_disableLandmark();
@@ -754,23 +775,12 @@ void MWindow::en_disableHLine()
     mview->en_disableHLine();
 }
 
-void MWindow::disableDrawing()
-{
-    this->actionWall->setChecked(false);
-    this->actionDoor->setChecked(false);
-    this->actionExit->setChecked(false);
-    this->actionLandmark->setChecked(false);
-    this->actionHLine->setChecked(false);
-    this->actionCopy->setChecked(false);//TODO: actionCopy should be managed!
-}
-
-
 void MWindow::objectsnap()
 {
     if(snappingOptions==nullptr)
     {
         snappingOptions = new SnappingOptions(this);
-        snappingOptions->setGeometry(QRect(QPoint(5,75), snappingOptions->size()));
+        snappingOptions->setGeometry(QRect(QPoint(75,75), snappingOptions->size()));
         snappingOptions->setAttribute(Qt::WA_DeleteOnClose);
         snappingOptions->setState(objectsnapping);
         snappingOptions->show();
@@ -788,7 +798,6 @@ void MWindow::objectsnap()
         snappingOptions=nullptr;
         actionObjectsnap->setChecked(false);
     }
-//    mview->change_objectsnap();
 }
 
 void MWindow::gridmode()
@@ -849,7 +858,7 @@ void MWindow::define_room()
     if (rwidget==nullptr)
     {
         rwidget = new roomWidget(this,this->dmanager,this->mview);
-        rwidget->setGeometry(QRect(QPoint(5,75), rwidget->size()));
+        rwidget->setGeometry(QRect(QPoint(75,75), rwidget->size()));
         rwidget->setAttribute(Qt::WA_DeleteOnClose);
         rwidget->show();
     }
@@ -903,11 +912,19 @@ void MWindow::define_landmark()
 
 void MWindow::en_selectMode()
 {
-    actionSelect_Mode->setChecked(true);
-    actionCopy->setChecked(false);
+//    actionSelect_Mode->setChecked(true);
+//    actionCopy->setChecked(false);
 
     mview->disable_drawing();
     length_edit->clearFocus();
+
+    if(drawing_toolbar_ != nullptr)
+    {
+        drawing_toolbar_->close();
+        drawing_toolbar_ = nullptr;
+
+
+    }
 }
 
 void MWindow::dis_selectMode()
@@ -1087,9 +1104,9 @@ void MWindow::sourceButtonClicked()
         propertyDockWidget->setWidget(sourceWidget);
     } else if (propertyDockWidget != nullptr && propertyDockWidget->windowTitle() == "Sources")
     {
-        // goal widget on, dockwidget on -> close goal widget
+        // source widget on, dockwidget on -> close source widget
         mview->disable_drawing();
-        actionSelect_Mode->setChecked(true);
+        actionSource->setChecked(false);
 
         propertyDockWidget->close(); //close() has deleted pointer
         propertyDockWidget = nullptr;
@@ -1097,7 +1114,7 @@ void MWindow::sourceButtonClicked()
 
     } else if (propertyDockWidget != nullptr && propertyDockWidget->windowTitle() != "Sources")
     {
-        // goal widget off, dockwidget on -> close other widget, open goal widget
+        // goal widget off, dockwidget on -> close other widget, open source widget
         propertyDockWidget->close();
         propertyDockWidget = nullptr;
 
@@ -1114,11 +1131,6 @@ void MWindow::sourceButtonClicked()
     } else
     {
     }
-}
-
-void MWindow::editModeButtonClicked()
-{
-    mview->enableEditMode();
 }
 
 // Goal drawing mode
@@ -1146,7 +1158,7 @@ void MWindow::goalButtionClicked()
     {
         // goal widget on, dockwidget on -> close goal widget
         mview->disable_drawing();
-        actionSelect_Mode->setChecked(true);
+        actionGoal->setChecked(false);
 
         propertyDockWidget->close(); //close() has deleted pointer
         propertyDockWidget = nullptr;
@@ -1231,4 +1243,23 @@ void MWindow::measureLengthButtonClicked()
 void MWindow::msgReceived(QString Msg)
 {
     statusBar()->showMessage(Msg, 10000);
+}
+
+
+/*
+    since v0.8.9
+
+    Import a image (JPG or PNG) as Background
+ */
+
+void MWindow::importBackground()
+{
+    auto image = new QImage();
+    QString fileName = QFileDialog::getOpenFileName(
+            this, "open image file",
+            ".",
+            "Image files (*.bmp *.jpg *.pbm *.pgm *.png *.ppm *.xbm *.xpm);;All files (*.*)");
+    image->load(fileName);
+    QPixmap bkgnd(QPixmap::fromImage(*image));
+    mscene->addPixmap(bkgnd);
 }

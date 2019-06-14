@@ -103,7 +103,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     setResizeAnchor(QGraphicsView::AnchorUnderMouse);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    this->setCursor(Qt::CrossCursor);
+    setCursor(Qt::CrossCursor);
 
     //Grid Mode
     _translationX=0.0;
@@ -1100,9 +1100,6 @@ void jpsGraphicsView::drawLine()
                 break;
             case Door:
                 lineItem->setDoor();
-                break;
-            case Exit:
-                lineItem->setExit();
                 break;
             case HLine:
                 lineItem->setHLine();

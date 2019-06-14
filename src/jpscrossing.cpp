@@ -34,6 +34,7 @@ jpsCrossing::jpsCrossing(jpsLineItem *line)
 {
     cLine=line;
     _isExit=false;
+
 }
 
 QList<jpsRoom *> jpsCrossing::get_roomList()
