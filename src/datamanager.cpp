@@ -21,12 +21,8 @@
  * along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
  *
  * \section Description
- * The class is responsible for handling and organisation of all elements and zones. Further more
+ * The class is responsible for handling and organisation of rooms, walls and doors. Further more
  * it handles the reading and writing of dxf and xml files.
- *
- * The class should control all opreations for editing data. Editing data outside only by setter!
- *
- * \section Structure of JPSElement
  *
  **/
 
@@ -44,7 +40,7 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 {
     parent_widget=parent;
     _mView=view;
-
+    room_id_counter=1;
     obs_id_counter=0;
     _crossingIdCounter=1;
     //_frameRate=0;
@@ -57,13 +53,7 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 
     _generator=std::default_random_engine(seed);
 
-    roomlist = QList<JPSZone *> ();
-
-    roomslist = QList<JPSZone *>();
-    room_id_counter=1;
-
-    platform_id_counter = 1;
-
+    roomlist= QList<jpsRoom *> ();
     sourcelist = _mView->getSources();
     goallist = _mView->getGoals();
 }
@@ -76,36 +66,20 @@ jpsDatamanager::~jpsDatamanager()
     qDebug("Leave jpsDatamanager::~jpsDatamanager");
 }
 
-/*
-    since v0.8.9
-    
-    Create new Room;
- */
-void jpsDatamanager::addRoom()
+void jpsDatamanager::new_room()
 {
-    qDebug("Enter jpsDatamanager::addRoom. now room_id_counter = %d", room_id_counter);
-    JPSZone* new_room = new JPSZone(this->room_id_counter, nullptr, Room);
-    new_room->setType(Room);
-    roomslist.push_back(new_room);
+    qDebug("Enter jpsDatamanager::new_room. room_id_counter = %d", room_id_counter);
+    jpsRoom* new_room = new jpsRoom(this->room_id_counter);
+    roomlist.push_back(new_room);
     room_id_counter+=1;
-    qDebug("Leave jpsDatamanager::addRoom. now room_id_counter = %d", room_id_counter);
+    qDebug("Leave jpsDatamanager::new_room. room_id_counter = %d", room_id_counter);
 }
 
-void jpsDatamanager::addPlatform(JPSZone *father_room)
-{
-    qDebug("Enter jpsDatamanager::addPlatform");
-    JPSZone *new_Platform = new JPSZone(platform_id_counter, father_room, Platform);
-    father_room->addZoneInList(new_Platform); // Platform belongs to the father room and saving in father room,
-    // rather than datamanger;
-    platform_id_counter += 1;
-    qDebug("Leave jpsDatamanager::addPlatform");
-}
-
-void jpsDatamanager::remove_room(JPSZone *room)
+void jpsDatamanager::remove_room(jpsRoom *room)
 {
     qDebug("Enter jpsDatamanager::remove_room. room_id_counter = %d", room_id_counter);
     //set room to nullptr in doors
-    for (jpsCrossing* crossing : get_crossingList())
+    for (jpsCrossing* crossing: get_crossingList())
     {
         // will only be removed if room is in crossings roomlist
         crossing->RemoveRoom(room);
@@ -118,7 +92,7 @@ void jpsDatamanager::remove_room(JPSZone *room)
     delete room;
     room = nullptr;
     //change IDs of other room with ID greater than roomID
-    for (JPSZone* otherroom:roomlist)
+    for (jpsRoom* otherroom:roomlist)
         if (otherroom->get_id()>roomID)
             otherroom->set_id(otherroom->get_id()-1);
 
@@ -128,7 +102,7 @@ void jpsDatamanager::remove_room(JPSZone *room)
     qDebug("Leave jpsDatamanager::remove_room. room_id_counter = %d", room_id_counter);
 }
 
-void jpsDatamanager::change_roomName(JPSZone* room, QString name)
+void jpsDatamanager::change_roomName(jpsRoom* room, QString name)
 {
      qDebug("Enter jpsDatamanager::change_roomName with name=<%s>", name.toStdString().c_str());
     room->change_name(name);
@@ -147,7 +121,7 @@ void jpsDatamanager::remove_all_rooms()
     qDebug("Leave jpsDatamanager::remove_all_rooms");
 }
 
-QList<JPSZone *> jpsDatamanager::get_roomlist()
+QList<jpsRoom *> jpsDatamanager::get_roomlist()
 {
     qDebug("Enter/return jpsDatamanager::get_roomlist");
     return this->roomlist;
@@ -156,14 +130,14 @@ QList<JPSZone *> jpsDatamanager::get_roomlist()
 QList<QString> jpsDatamanager::getElevationList()
 {
     QList<QString> elevationlist;
-    QList<JPSZone *> roomlist = get_roomlist();
+    QList<jpsRoom *> roomlist = get_roomlist();
 
-    QListIterator<JPSZone *> i(roomlist);
+    QListIterator<jpsRoom *> i(roomlist);
     while (i.hasNext())
     {
         float elevation = i.next()->get_elevation();
         if (!elevationlist.contains(QString::number(elevation)) &&
-                i.peekPrevious()->getType() != Stair)
+                i.peekPrevious()->get_type() != "Stair")
         {
             elevationlist.append(QString::number(elevation));
         }
@@ -229,7 +203,7 @@ void jpsDatamanager::new_crossing(QList <jpsLineItem *> newCrossings)
     qDebug("Enter jpsDatamanager::new_crossing QList");
     for (int i=0; i<newCrossings.size(); i++)
     {
-        if ((newCrossings[i]->is_Crossing() || newCrossings[i]->is_Transition())
+        if ((newCrossings[i]->is_Door() || newCrossings[i]->is_Exit())
         && !isInCrossingList(newCrossings[i]))// only door can be crossing
         {
             auto newCrossing = new jpsCrossing(newCrossings[i]);
@@ -246,7 +220,7 @@ void jpsDatamanager::new_crossing(QList <jpsLineItem *> newCrossings)
 void jpsDatamanager::new_crossing(jpsLineItem *newCrossing)
 {
     qDebug("Enter jpsDatamanager::new_crossing");
-    if (newCrossing->is_Crossing() && !isInCrossingList(newCrossing))
+    if (newCrossing->is_Door() && !isInCrossingList(newCrossing))
     {
         jpsCrossing* newCros = new jpsCrossing(newCrossing);
         newCros->set_id(_crossingIdCounter);
@@ -275,9 +249,9 @@ void jpsDatamanager::remove_crossing(jpsCrossing *crossing)
      qDebug("Enter jpsDatamanager::remove_crossing. crossingList.size() = %d", crossingList.size());
     if (crossingList.size()>0)
     {
-        for (JPSZone * room:roomlist)
+        for (jpsRoom * room:roomlist)
         {
-            // door will only be removed if belongs to room (see method removeDoor of JPSZone)
+            // door will only be removed if belongs to room (see method removeDoor of jpsRoom)
             room->removeDoor(crossing);
         }
         crossingList.removeOne(crossing);
@@ -306,40 +280,40 @@ void jpsDatamanager::remove_all_crossings()
 }
 
 
-QList<jpsTransition *> jpsDatamanager::getTransitionList()
+QList<jpsExit *> jpsDatamanager::get_exitList()
 {
-     qDebug("Enter/Return jpsDatamanager::getTransitionList");
-    return transition_list;
+     qDebug("Enter/Return jpsDatamanager::get_exitList");
+    return exitList;
 }
 
 void jpsDatamanager::new_exit(QList <jpsLineItem *> newExits)
 {
-    qDebug("Enter jpsDatamanager::newTransition QList");
+    qDebug("Enter jpsDatamanager::new_exit QList");
     for (int i=0; i<newExits.size(); i++)
     {
-        //if (newExits[i]->is_Transition())
+        //if (newExits[i]->is_Exit())
         //{
-        jpsTransition* newExit = new jpsTransition(newExits[i]);
-        transition_list.push_back(newExit);
+        jpsExit* newExit = new jpsExit(newExits[i]);
+        exitList.push_back(newExit);
         //}
     }
-    qDebug("Leave jpsDatamanager::newTransition QList");
+    qDebug("Leave jpsDatamanager::new_exit QList");
 }
 
-void jpsDatamanager::newTransition(jpsLineItem *transition)
+void jpsDatamanager::new_exit(jpsLineItem *newExit)
 {
-    qDebug("Enter jpsDatamanager::newTransition");
-    auto *newTr = new jpsTransition(transition);
-    transition_list.push_back(newTr);
-    qDebug("Leave jpsDatamanager::newTransition");
+    qDebug("Enter jpsDatamanager::new_exit");
+    jpsExit* newEx = new jpsExit(newExit);
+    exitList.push_back(newEx);
+    qDebug("Leave jpsDatamanager::new_exit");
 }
 
-void jpsDatamanager::remove_exit(jpsTransition *exit)
+void jpsDatamanager::remove_exit(jpsExit *exit)
 {
      qDebug("Enter jpsDatamanager::remove_exit");
-    if (transition_list.size()>0)
+    if (exitList.size()>0)
     {
-        transition_list.removeOne(exit);
+        exitList.removeOne(exit);
         delete exit;
     }
     qDebug("Leave jpsDatamanager::remove_exit");
@@ -348,11 +322,11 @@ void jpsDatamanager::remove_exit(jpsTransition *exit)
 void jpsDatamanager::remove_all_exits()
 {
      qDebug("Enter jpsDatamanager::remove_all_exits");
-    for (int i=0; i<transition_list.size(); i++)
+    for (int i=0; i<exitList.size(); i++)
     {
-        delete transition_list[i];
+        delete exitList[i];
     }
-    transition_list.clear();
+    exitList.clear();
     qDebug("Leave jpsDatamanager::remove_all_exits");
 }
 
@@ -475,7 +449,7 @@ void jpsDatamanager::writeXML(QFile &file)
 {
     qDebug(">> Enter jpsDatamanager::writeXML");
     auto *stream = new QXmlStreamWriter(&file);
-    QList<jpsLineItem* > lines = _mView->get_line_vector();
+    QList<jpsLineItem* > lines = _mView->get_line_vector(); //lines are all unassign jpsLineItem
 
     stream->setAutoFormatting(true);
     stream->writeStartDocument("1.0",true);
@@ -485,7 +459,7 @@ void jpsDatamanager::writeXML(QFile &file)
 
     if(check_printAbility().isEmpty()) // crossing, transitions, obstacles will be checked.
     {
-        //write rooms and crossings
+        //write rooms and transitions
         stream->writeStartElement("rooms");
         writeRooms(stream,lines);
         stream->writeEndElement(); // End rooms
@@ -494,10 +468,10 @@ void jpsDatamanager::writeXML(QFile &file)
         writeTransitions(stream,lines);
         stream->writeEndElement();// End transitions
     }
+    /// write unassignd lines
     stream->writeStartElement("Undefine");
-    writeNotAssignedDoors(stream,lines);
-    writeNotAssignedWalls(stream,lines);
-    stream->writeEndElement();
+    writeNotAssignedLines(stream, lines);
+    stream->writeEndElement(); // Undefine
 
     stream->writeEndElement();//geometry
 
@@ -522,7 +496,6 @@ void jpsDatamanager::writeRoutingXML(QFile &file) // Construction side
             hLines.push_back(line);
         }
     }
-
 
     writeRoutingHeader(stream);
 
@@ -672,32 +645,6 @@ void jpsDatamanager::WriteRegions(QXmlStreamWriter *stream, int k, double m, dou
     }
 }
 
-void jpsDatamanager::AutoSaveXML(QFile &file)
-{
-    qDebug("Enter jpsDatamanager::AutoSaveXML");
-    QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
-    QList<jpsLineItem* > lines = _mView->get_line_vector();
-
-    writeHeader(stream);
-    stream->writeStartElement("rooms");
-    AutoSaveRooms(stream,lines);
-    stream->writeEndElement();//rooms
-
-    stream->writeStartElement("transitions");
-    writeTransitions(stream,lines);
-    stream->writeEndElement();//transitions
-
-//    stream->writeStartElement("landmarks");
-//    writeLandmarks(stream,landmarks);
-//    stream->writeEndElement();//landmarks
-
-    stream->writeEndElement();//geometry
-
-    stream->writeEndDocument();
-    qDebug("Leave jpsDatamanager::AutoSaveXML");
-    delete stream;
-}
-
 void jpsDatamanager::writeHeader(QXmlStreamWriter *stream)
 {
     qDebug("Enter jpsDatamanager::writeHeader");
@@ -774,7 +721,7 @@ void jpsDatamanager::writeHLines(QXmlStreamWriter *stream, QList<jpsLineItem *> 
 QString jpsDatamanager::RoomIDHLine(jpsLineItem *lineItem)
 {
 
-    for (JPSZone* room:roomlist)
+    for (jpsRoom* room:roomlist)
     {
         room->IdentifyInnerOuter();
         QPolygonF rPolygon = room->RoomAsSortedPolygon(room->GetOuterPolygon());
@@ -807,9 +754,9 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
     qDebug(" Enter jpsDatamanager::writeRooms");
 
     // write stair at first
-    for (JPSZone* room:roomlist)
+    for (jpsRoom* room:roomlist)
     {
-        if (room->getType()==Stair) // rooms as stairs
+        if (room->get_type()=="Stair") // rooms as stairs
         {
             stream->writeStartElement("room");
             stream->writeAttribute("id", QString::number(room->get_id()));
@@ -832,7 +779,7 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
 
     for (int i=0; i<roomlist.size(); i++)
     {
-        if (roomlist[i]->getType()!=Stair)
+        if (roomlist[i]->get_type()!="Stair")
         {
             writeSubRoom(stream,roomlist[i],lines);
         }
@@ -845,12 +792,12 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
     qDebug(" Leave jpsDatamanager::writeRooms");
 }
 
-void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, JPSZone *room, QList<jpsLineItem *> &lines)
+void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, jpsRoom *room, QList<jpsLineItem *> &lines)
 {
     stream->writeStartElement("subroom");
     stream->writeAttribute("id",QString::number(room->get_id()));
     stream->writeAttribute("caption",room->get_name());
-    stream->writeAttribute("class", QString(room->getType()));
+    stream->writeAttribute("class",room->get_type());
     room->correctPlaneCoefficients();
     stream->writeAttribute("A_x",QString::number(room->get_ax()));
     stream->writeAttribute("B_y",QString::number(room->get_by()));
@@ -889,7 +836,7 @@ void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, JPSZone *room, QList
     }
 
     // if stair write up and down
-    if (room->getType() == Stair){
+    if (room->get_type() == "Stair"){
          // <up>
          stream->writeStartElement("up");
          stream->writeAttribute("px",QString::number( room->get_up().x()  ));
@@ -906,81 +853,6 @@ void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, JPSZone *room, QList
     stream->writeEndElement();//subroom
 }
 
-void jpsDatamanager::AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
-{
-     qDebug("Enter jpsDatamanager::AutoSaveRooms");
-    ///rooms
-    stream->writeStartElement("room");
-    stream->writeAttribute("id","0");
-    stream->writeAttribute("caption","hall");
-
-    for (int i=0; i<roomlist.size(); i++)
-    {
-        stream->writeStartElement("subroom");
-        stream->writeAttribute("id",QString::number(roomlist[i]->get_id()));
-        stream->writeAttribute("caption",roomlist[i]->get_name());
-        stream->writeAttribute("class","subroom");
-
-        //walls
-        QList<jpsLineItem* > wallList=roomlist[i]->get_listWalls();
-        for (int j=0; j<wallList.size(); j++)
-        {
-            stream->writeStartElement("polygon");
-            stream->writeAttribute("caption","wall");
-
-            stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x1()));
-            stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y1()));
-            stream->writeEndElement(); //vertex
-
-            stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x2()));
-            stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y2()));
-            stream->writeEndElement(); //vertex
-
-            stream->writeEndElement(); //polygon
-
-            ///remove wall from lines
-            lines.removeOne(wallList[j]);
-        }
-
-        //polygonzug
-        /*
-        QList<QPointF> vertices = roomlist[i]->get_vertices();
-
-        for (int j=0; j<vertices.size(); j++)
-        {
-
-            stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(vertices[j].x()));
-            stream->writeAttribute("py",QString::number(vertices[j].y()));
-            stream->writeEndElement(); //vertex
-        }*/
-
-        for (int k=0; k<obstaclelist.size(); k++)
-        {
-            if (roomlist[i]==obstaclelist[k]->get_room())
-            {
-                writeObstacles(stream ,obstaclelist[k],lines);
-            }
-        }
-
-        stream->writeEndElement();//subroom
-    }
-    // Not assigned lines
-    writeNotAssignedWalls(stream,lines);
-
-    //Crossings
-    writeCrossings(stream,lines);
-
-    // Not assigned doors
-    writeNotAssignedDoors(stream,lines);
-    stream->writeEndElement();//crossings
-
-    stream->writeEndElement();//room
-    qDebug("Leave jpsDatamanager::AutoSaveRooms");
-}
-
 void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
     qDebug("Enter jpsDatamanager::writeCrossings");
@@ -990,8 +862,8 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
     {
         if (!crossingList[i]->IsExit()
         && crossingList[i]->get_roomList().size() == 2 // A crossing must between two subrooms or romm and stair
-        && !(crossingList[i]->get_roomList()[0]->getType()==Stair
-        && crossingList[i]->get_roomList()[1]->getType()==Stair)) // both sides can't be stair at the same time
+        && !(crossingList[i]->get_roomList()[0]->get_type()=="Stair"
+        && crossingList[i]->get_roomList()[1]->get_type()=="Stair")) // both sides can't be stair at the same time
         {
             stream->writeStartElement("crossing");
             stream->writeAttribute("id",QString::number(i));
@@ -1013,22 +885,6 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
 
             lines.removeOne(crossingList[i]->get_cLine());
         }
-        else
-        {
-            //TODO: Exception handling, error return to event log
-//            this->newTransition(crossingList[i]->get_cLine());
-//            if (crossingList[i]->get_roomList().size()>1)
-//            {
-//                // mention stair id first
-//                if (crossingList[i]->get_roomList()[0]->getType()=="Stair")
-//                    exitList.back()->set_rooms(crossingList[i]->get_roomList()[0], crossingList[i]->get_roomList()[1]);
-//                else
-//                    exitList.back()->set_rooms(crossingList[i]->get_roomList()[1], crossingList[i]->get_roomList()[0]);
-//            }
-//            else
-//                exitList.back()->set_rooms(crossingList[i]->get_roomList()[0]);
-        }
-
     }
 
     stream->writeEndElement();//crossings
@@ -1050,7 +906,7 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineIte
             stream->writeAttribute("type","emergency");
 
             if (crossing->get_roomList().size()==1
-            && crossing->get_roomList()[0]->getType()==Stair) // stair - outside
+            && crossing->get_roomList()[0]->get_type()=="Stair") // stair - outside
             {
                 //stair id
                 stream->writeAttribute("room1_id",QString::number(crossing->get_roomList()[0]->get_id()));
@@ -1060,7 +916,7 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineIte
                 stream->writeAttribute("subroom2_id","-1");
             }
             else if(crossing->get_roomList().size()==1
-            && crossing->get_roomList()[0]->getType()!=Stair)// room - outside
+            && crossing->get_roomList()[0]->get_type()!="Stair")// room - outside
             {
                 //room id
                 stream->writeAttribute("room1_id","0");
@@ -1134,14 +990,14 @@ void jpsDatamanager::writeObstacles(QXmlStreamWriter *stream, jpsObstacle* obs, 
 
 }
 
-void jpsDatamanager::writeNotAssignedWalls(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
+void jpsDatamanager::writeNotAssignedLines(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
-     qDebug("Enter jpsDatamanager::writeNotAssignedWalls");
+     qDebug("Enter jpsDatamanager::writeNotAssignedLines");
 
     /// save lines which are not assigned to a room yet
     QList<jpsLineItem *> walls;
 
-    for (jpsLineItem* line:lines)
+    for (jpsLineItem* line:lines) //lines
     {
         if (line->is_Wall())
         {
@@ -1152,6 +1008,7 @@ void jpsDatamanager::writeNotAssignedWalls(QXmlStreamWriter *stream, QList<jpsLi
         return;
 
     stream->writeStartElement("subroom");
+
     stream->writeAttribute("id",QString::number(-1));
     stream->writeAttribute("caption","not assigned lines");
     stream->writeAttribute("class","container");
@@ -1176,66 +1033,8 @@ void jpsDatamanager::writeNotAssignedWalls(QXmlStreamWriter *stream, QList<jpsLi
         lines.removeOne(line);
     }
     stream->writeEndElement();//subroom
-    qDebug("Leave jpsDatamanager::writeNotAssignedWalls");
+    qDebug("Leave jpsDatamanager::writeNotAssignedLines");
 }
-
-void jpsDatamanager::writeNotAssignedDoors(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
-{
-     qDebug("Enter jpsDatamanager::writeNotAssignedDoors");
-    for (jpsLineItem* line:lines)
-    {
-        if (line->is_Crossing() && !isInCrossingList(line))
-        {
-            stream->writeStartElement("crossing");
-
-            stream->writeAttribute("id",QString::number(-2));
-            stream->writeAttribute("subroom1_id","-2");
-            stream->writeAttribute("subroom2_id","-2");
-            stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(line->get_line()->line().x1()));
-            stream->writeAttribute("py",QString::number(line->get_line()->line().y1()));
-            stream->writeEndElement(); //vertex
-            stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(line->get_line()->line().x2()));
-            stream->writeAttribute("py",QString::number(line->get_line()->line().y2()));
-            stream->writeEndElement();//vertex
-
-            stream->writeEndElement();//crossing
-
-            lines.removeOne(line);
-        }
-    }
-    qDebug("Leave jpsDatamanager::writeNotAssignedDoors");
-}
-
-void jpsDatamanager::writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
-{
-
-    for (jpsLineItem* line:lines)
-    {
-        stream->writeStartElement("transition");
-
-        stream->writeAttribute("id",QString::number(-2));
-        stream->writeAttribute("caption","main exit");
-        stream->writeAttribute("type","emergency");
-        stream->writeAttribute("room1_id","0");
-        stream->writeAttribute("subroom1_id","-2");
-        stream->writeAttribute("room2_id","-1");
-        stream->writeAttribute("subroom2_id","-2");
-        stream->writeStartElement("vertex");
-        stream->writeAttribute("px",QString::number(line->get_line()->line().x1()));
-        stream->writeAttribute("py",QString::number(line->get_line()->line().y1()));
-        stream->writeEndElement(); //vertex
-        stream->writeStartElement("vertex");
-        stream->writeAttribute("px",QString::number(line->get_line()->line().x2()));
-        stream->writeAttribute("py",QString::number(line->get_line()->line().y2()));
-        stream->writeEndElement();//vertex
-
-        stream->writeEndElement();//transition
-    }
-
-}
-
 
 void jpsDatamanager::WriteLandmarks(jpsRegion* cRegion, QXmlStreamWriter *stream, bool fuzzy)
 {
@@ -1427,7 +1226,7 @@ void jpsDatamanager::CutOutLandmarks(int k, double m, double p0)
     for (jpsLandmark* landmark:cLandmarks)
     {
 //        // at least one main target will be kept
-//        if (landmark->GetType()=="main" || landmark->getType()=="Main Target")
+//        if (landmark->GetType()=="main" || landmark->GetType()=="Main Target")
 //        {
 //            if (numberMainTargets==1)
 //                continue;
@@ -1671,9 +1470,8 @@ void jpsDatamanager::remove_all()
     remove_all_landmarks();
     RemoveAllConnections();
     RemoveAllRegions();
-    room_id_counter=0;
+    room_id_counter=1;
     obs_id_counter=0;
-    platform_id_counter=0;
     qDebug("Leave jpsDatamanager::remove_all");
 }
 
@@ -1681,7 +1479,7 @@ void jpsDatamanager::remove_marked_lines()
 {
     QList<jpsLineItem* > marked_lines = _mView->get_markedLines();
     QList<jpsObstacle*> obstacle_list = this->get_obstaclelist();
-    QList<JPSZone* > cList= this->get_roomlist();
+    QList<jpsRoom* > cList= this->get_roomlist();
 
     for (int i=0; i<marked_lines.size(); i++)
     {
@@ -1725,7 +1523,7 @@ void jpsDatamanager::remove_marked_lines()
             qDebug()<< "jpsDatamanager::remove_marked_lines: marked line is removed" ;
         }
 
-        else if (marked_lines[i]->is_Crossing() || marked_lines[i]->is_Transition())
+        else if (marked_lines[i]->is_Door() || marked_lines[i]->is_Exit())
         {
             QList<jpsCrossing* > cList= this->get_crossingList();
             for (int j=0; j<cList.size(); j++)
@@ -1736,7 +1534,7 @@ void jpsDatamanager::remove_marked_lines()
                     break;
                 }
             }
-            qDebug()<< "jpsDatamanager::remove_marked_lines(): Crossing line is deleted!";
+            qDebug()<< "jpsDatamanager::remove_marked_lines(): Door line is deleted!";
         }
         else
         {
@@ -1763,7 +1561,7 @@ jpsGraphicsView * jpsDatamanager::get_view()
 //    for (jpsCrossing *crossing: crossings)
 //    {
 //        int roomCounter=0;
-//        for (JPSZone *room : roomlist)
+//        for (jpsRoom *room : roomlist)
 //        {
 //            if (room->ContainsDoor(crossing->get_cLine()) && roomCounter==0)
 //            {
@@ -1786,7 +1584,7 @@ jpsGraphicsView * jpsDatamanager::get_view()
 //    {
 //        int roomCounter =0;
 
-//        for (JPSZone *room: roomlist)
+//        for (jpsRoom *room: roomlist)
 //        {
 //            QList<jpsLineItem* > walls = room->get_listWalls();
 
@@ -1826,9 +1624,9 @@ jpsGraphicsView * jpsDatamanager::get_view()
 
 //void jpsDatamanager::AutoAssignExits()
 //{
-//    for (jpsTransition *exit: exitList)
+//    for (jpsExit *exit: exitList)
 //    {
-//        for (JPSZone *room: roomlist)
+//        for (jpsRoom *room: roomlist)
 //        {
 //            QList<jpsLineItem* > walls = room->get_listWalls();
 
@@ -2018,7 +1816,7 @@ void jpsDatamanager::parseHline(QXmlStreamReader &xmlReader)
 void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
 {
     // new subroom
-    this->addRoom();
+    this->new_room();
     /* Let's get the attributes for subroom */
     QXmlStreamAttributes attributes = xmlReader.attributes();
     /* Let's check that subroom has id attribute. */
@@ -2041,9 +1839,9 @@ void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
     if(attributes.hasAttribute("class"))
     {
         if (attributes.value("class").toString()=="subroom")
-            roomlist.last()->setType(Corridor);
+            roomlist.last()->set_type("Not specified");
         else
-            roomlist.last()->setType(convertToZoneType(attributes.value("class").toString()));
+            roomlist.last()->set_type(attributes.value("class").toString());
     }
     this->parseWalls(xmlReader,roomlist.last());
     this->parseObstacles(xmlReader,roomlist.last());
@@ -2056,7 +1854,7 @@ void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
     }
 }
 
-void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, JPSZone *room)
+void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, jpsRoom *room)
 {
 
     while(!(xmlReader.tokenType() == QXmlStreamReader::EndElement &&
@@ -2173,15 +1971,15 @@ void jpsDatamanager::parseCrossings(QXmlStreamReader &xmlReader)
     qreal x2=xmlReader.attributes().value("px").toString().toFloat();
     qreal y2=xmlReader.attributes().value("py").toString().toFloat();
     qDebug("\t x1 = %.2f, y1 = %.2f, x2 = %.2f y2 = %.2f", x1, y1, x2, y2);
-    jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"Crossing");
+    jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"Door");
 
     if (id!=-2)
     {
         jpsCrossing* crossing = new jpsCrossing(lineItem);
         crossing->set_id(id);
 
-        JPSZone* room1 = nullptr;
-        JPSZone* room2 = nullptr;
+        jpsRoom* room1 = nullptr;
+        jpsRoom* room2 = nullptr;
 
         ///find rooms which belong to crossing
         for (int i=0; i<roomlist.size(); i++)
@@ -2260,8 +2058,9 @@ void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
         jpsCrossing *exit = new jpsCrossing(lineItem);
         exit->set_id(id);
         exit->change_name(caption);
-        JPSZone* room1 = nullptr;
-        JPSZone* room2 = nullptr;
+        //exit->set_type(type);
+        jpsRoom* room1 = nullptr;
+        jpsRoom* room2 = nullptr;
         ///find rooms which belong to transition
         for (int i=0; i<roomlist.size(); i++)
         {
@@ -2296,7 +2095,7 @@ void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
     qDebug("Leave jpsDatamanager::parseTransitions");
 }
 
-void jpsDatamanager::parseObstacles(QXmlStreamReader &xmlReader, JPSZone *room)
+void jpsDatamanager::parseObstacles(QXmlStreamReader &xmlReader, jpsRoom *room)
 {
 
     while(!(xmlReader.tokenType() == QXmlStreamReader::EndElement &&
@@ -2351,7 +2150,7 @@ void jpsDatamanager::addLine(const DL_LineData &d)
     if (layername=="wall")
         _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"Wall");
     else if (layername=="door")
-        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"Crossing");
+        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"Door");
     else
         _mView->addLineItem(d.x1,d.y1,d.x2,d.y2);
 }
@@ -2716,7 +2515,7 @@ void jpsDatamanager::ParseLandmark(jpsRegion *actRegion, QXmlStreamReader &xmlRe
     _landmarks.back()->SetCaption(caption);
     _landmarks.back()->SetType(type);
 
-    for (JPSZone* room:roomlist)
+    for (jpsRoom* room:roomlist)
     {
         if (room->get_id()==subroomId)
         {
@@ -2791,7 +2590,7 @@ bool jpsDatamanager::ReadLineFile(QFile &file)
         QString Qline = in.readLine();
         if (Qline.startsWith("Room"))
         {
-            this->addRoom();
+            this->new_room();
         }
         else
         {
@@ -2809,7 +2608,7 @@ bool jpsDatamanager::ReadLineFile(QFile &file)
                 {
                   if (lineItem->is_Wall())
                     this->roomlist.back()->addWall(lineItem);
-                  else if (lineItem->is_Crossing())
+                  else if (lineItem->is_Door())
                   {
                       this->new_crossing(lineItem);
 
@@ -2824,7 +2623,7 @@ bool jpsDatamanager::ReadLineFile(QFile &file)
         }
     }
 
-    //for (JPSZone* room:this->roomlist)
+    //for (jpsRoom* room:this->roomlist)
     //{
     //    _mView->show_hide_roomCaption(room->get_name(),room->get_center().x(),room->get_center().y());
     //}
@@ -3115,7 +2914,7 @@ void jpsDatamanager::writeTransitionXML(QFile &file)
     stream->writeStartElement("JPScore");
     stream->writeStartElement("transitions");
     writeTransitions(stream,lines);
-    transition_list.clear();
+    exitList.clear();
     stream->writeEndElement();//transitions
 
     stream->writeEndDocument();
@@ -3267,81 +3066,3 @@ const QList<JPSSource *> &jpsDatamanager::getSourcelist()
     return sourcelist;
 }
 
-ZoneType jpsDatamanager::convertToZoneType(const QString string)
-{
-    if(string == "Room")
-    {
-        return Room;
-    }
-    else if(string == "Corridor")
-    {
-        return Corridor;
-    }
-    else if(string == "Office")
-    {
-        return Office;
-    }
-    else if(string == "Lobby")
-    {
-        return Lobby;
-    }
-    else if(string == "Entrance")
-    {
-        return Entrance;
-    }
-    else if(string == "Stair")
-    {
-        return Stair;
-    }
-    else if(string == "Obstacle")
-    {
-        return Obstacle;
-    }
-    else if(string == "Platform")
-    {
-        return Platform;
-    }
-    else
-    {
-        return NotAssigned;
-    }
-}
-
-const QList<JPSZone *> &jpsDatamanager::getRoomslist() const
-{
-    qDebug("Enter jpsDatamanager::getRoomslist()");
-    return roomslist;
-    qDebug("Leave jpsDatamanager::getRoomslist()");
-}
-
-/*
-    Purpose: Remove selected room from roomslist
-
-    Note: Assemable elements will be deleted, but drawing elements will be kept in datamanager
-*/
-void jpsDatamanager::removeRoom(JPSZone *room)
-{
-    qDebug("Enter jpsDatamanager::removeRoom");
-    if(room == nullptr)
-        return;
-
-    roomslist.removeOne(room); //removed from roomslist
-
-    delete room;
-    room = nullptr; //removed from memory
-    qDebug("Leave jpsDatamanager::removeRoom");
-}
-
-
-void jpsDatamanager::removeZone(JPSZone *room, JPSZone *zone)
-{
-    qDebug("Enter jpsDatamanager::removeZone");
-    if(zone == nullptr)
-    {
-        return;
-    } else
-    {
-        room->removeZoneFromList(zone);
-    }
-    qDebug("Leave jpsDatamanager::removeZone");
-}

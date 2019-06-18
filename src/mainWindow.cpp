@@ -112,7 +112,7 @@ MWindow :: MWindow()
     statusBar()->addPermanentWidget(label_y);
     statusBar()->addPermanentWidget(y_edit);
 
-    // Timer needed for autosaving function
+    //Timer needed for autosaving function
     // timer will trigger autosave every 5th minute
     timer = new QTimer(this);
     timer->setInterval(600000);
@@ -123,7 +123,7 @@ MWindow :: MWindow()
 
     _statScale=false;
 
-    // Signals and Slots
+    //Signals and Slots
     // Tab File
     connect(actionBeenden, SIGNAL(triggered(bool)),this,SLOT(close()));
     connect(action_ffnen,SIGNAL(triggered(bool)),this,SLOT(openFileDXF()));
@@ -154,7 +154,7 @@ MWindow :: MWindow()
     connect(x_edit,SIGNAL(returnPressed()),this,SLOT(send_xy()));
     connect(y_edit,SIGNAL(returnPressed()),this,SLOT(send_xy()));
 
-    // Mview
+    // mview
     connect(mview,SIGNAL(no_drawing()),this,SLOT(en_selectMode()));
     connect(mview,SIGNAL(remove_marked_lines()),this,SLOT(lines_deleted()));
     connect(mview,SIGNAL(remove_all()),this,SLOT(remove_all_lines()));
@@ -179,21 +179,21 @@ MWindow :: MWindow()
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
     // Landmark specifications
     connect(actionLandmarkWidget,SIGNAL(triggered(bool)),this,SLOT(define_landmark()));
-    // CMap
+    //CMap
 //    connect(actionRun_visualisation,SIGNAL(triggered(bool)),this,SLOT(RunCMap()));
 //    connect(_cMapTimer,SIGNAL(timeout()),this,SLOT(UpdateCMap()));
 //    connect(actionSpeichern_cogmap,SIGNAL(triggered()),this,SLOT(SaveCogMapXML()));
-    // Undo Redo
+    //Undo Redo
     connect(actionUndo,SIGNAL(triggered(bool)),mview,SLOT(Undo()));
     connect(actionRedo,SIGNAL(triggered(bool)),mview,SLOT(Redo()));
 
-    // Room type data gathering
+    ///  room type data gathering
     connect(actionGather_data,SIGNAL(triggered(bool)),this, SLOT(GatherData()));
 
-    // Right dock widget
+    ///  right dock widget
     propertyDockWidget = nullptr;
 
-    // Object snapping
+    /// object snapping
     objectsnapping = {};
     bool endpoint = false;
     bool Intersections_point = false;
@@ -204,54 +204,35 @@ MWindow :: MWindow()
     objectsnapping.append(Center_point);
     objectsnapping.append(SelectedLine_point);
 
-    // Main toolbar action group
-    auto main_toolbar_actionGroup = new QActionGroup(this);
-    main_toolbar_actionGroup->addAction(actionSelect_Mode); // select mode
-    main_toolbar_actionGroup->addAction(actionDraw); // draw mode
-    main_toolbar_actionGroup->addAction(actionZone); // assemble zone
-    main_toolbar_actionGroup->addAction(actionMeasureLength); // measure mode
+    /// main toolbar action group
+    auto main_toolbar_action_group = new QActionGroup(this);
+    main_toolbar_action_group->addAction(actionSelect_Mode); // select mode
+    main_toolbar_action_group->addAction(actionMeasureLength); // measure mode
+    main_toolbar_action_group->addAction(actionDraw); // draw mode
 
     connect(actionMeasureLength, SIGNAL(triggered(bool)), this, SLOT(measureLengthButtonClicked()));
     connect(actionSelect_Mode,SIGNAL(triggered(bool)),this,SLOT(en_selectMode()));
     connect(actionDraw, SIGNAL(triggered(bool)),this,SLOT(setupDrawingToolBar()));
-    connect(actionZone, SIGNAL(triggered(bool)),this,SLOT(setupZoneToolBar()));
 
-    // Drawing toolbar
-    connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
-    connect(actionCrossing,SIGNAL(triggered(bool)),this,SLOT(en_disableCrossing()));
-    connect(actionHLine,SIGNAL(triggered(bool)),this,SLOT(en_disableHLine()));
-    connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
-    connect(actionSource, SIGNAL(triggered(bool)),this,SLOT(sourceButtonClicked()));
-    connect(actionGoal,SIGNAL(triggered(bool)),this,SLOT(goalButtionClicked()));
-    connect(actionTransition,SIGNAL(triggered(bool)),this,SLOT(transitionButtonClicked()));
-    connect(actionTrack,SIGNAL(triggered(bool)),this,SLOT(trackButtonClicked()));
-
+    /// Drawing action group
     drawingActionGroup = new QActionGroup(this);
     drawingActionGroup->addAction(actionWall);
-    drawingActionGroup->addAction(actionCrossing);
-    drawingActionGroup->addAction(actionTransition);
+    drawingActionGroup->addAction(actionDoor);
     drawingActionGroup->addAction(actionHLine);
     drawingActionGroup->addAction(actionLandmark);
     drawingActionGroup->addAction(actionSource);
     drawingActionGroup->addAction(actionGoal);
-    drawingActionGroup->addAction(actionTrack);
 
-    // Zone toolbar
-    connect(actionCorridor, SIGNAL(triggered(bool)),this, SLOT(corridorButtonClicked()));
-    connect(actionPlatform, SIGNAL(triggered(bool)),this, SLOT(platformButtonclicked()));
+    connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
+    connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(en_disableDoor()));
+    connect(actionHLine,SIGNAL(triggered(bool)),this,SLOT(en_disableHLine()));
+    connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
+    connect(actionSource, SIGNAL(triggered(bool)),this,SLOT(sourceButtonClicked()));
+    connect(actionGoal,SIGNAL(triggered(bool)),this,SLOT(goalButtionClicked()));
 
-    // Assemble actions group
-    zoneActionGroup = new QActionGroup(this);
-    zoneActionGroup->addAction(actionCorridor);
-    zoneActionGroup->addAction(actionLobby);
-    zoneActionGroup->addAction(actionOffice);
-    zoneActionGroup->addAction(actionEntrance);
-    zoneActionGroup->addAction(actionStairs);
-    zoneActionGroup->addAction(actionPlatform);
-
-    // Set background
+    /// Set background
     connect(actionBackground, SIGNAL(triggered(bool)),this,SLOT(importBackground()));
-
+    connect(mview, SIGNAL(sendMsgToStatusBar(QString)), this, SLOT(msgReceived(QString))); /// Get length from mview
 }
 
 MWindow::~MWindow()
@@ -264,55 +245,28 @@ MWindow::~MWindow()
     delete infoLabel;
     delete timer;
     delete _cMapTimer;
-    delete drawing_toolbar_;
 }
 
 void MWindow::setupDrawingToolBar()
 {
-    closeLeftToolBarArea(); // close running toolbar at first
-    closeListDockWidget();
-    closePropertyDockWidget();
-
-    drawing_toolbar_ = new QToolBar("Drawing ToolBar", this);
-    addToolBar(Qt::LeftToolBarArea, drawing_toolbar_);
-    drawing_toolbar_->setMovable(false);
-    drawing_toolbar_->setBackgroundRole(QPalette::HighlightedText);
-    drawing_toolbar_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-
-    // drawing actions group
-    drawing_toolbar_->addActions(drawingActionGroup->actions());
-}
-
-void MWindow::setupZoneToolBar()
-{
-    closeLeftToolBarArea();
-    closeListDockWidget();
-    closePropertyDockWidget();
-
-    zone_toolbar_ = new QToolBar("Zone ToolBar", this);
-
-    addToolBar(Qt::LeftToolBarArea, zone_toolbar_);
-    zone_toolbar_->setMovable(false);
-    zone_toolbar_->setBackgroundRole(QPalette::HighlightedText);
-    zone_toolbar_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-
-    zone_toolbar_->addActions(zoneActionGroup->actions());
-
-}
-
-void MWindow::closeLeftToolBarArea()
-{
-    if(drawing_toolbar_ != nullptr)
+    qDebug("Enter MWindow::setupDrawingToolBar");
+    if(drawing_toolbar_ == nullptr)
     {
+        drawing_toolbar_ = new QToolBar("Drawing ToolBar", this);
+        addToolBar(Qt::LeftToolBarArea, drawing_toolbar_);
+        drawing_toolbar_->setMovable(false);
+        drawing_toolbar_->setBackgroundRole(QPalette::HighlightedText);
+
+        // drawing actions group
+        drawing_toolbar_->addActions(drawingActionGroup->actions());
+    } else
+    {
+        actionDraw->setChecked(false);
+
         drawing_toolbar_->close();
         drawing_toolbar_ = nullptr;
     }
-
-    if(zone_toolbar_ != nullptr)
-    {
-        zone_toolbar_->close();
-        zone_toolbar_ = nullptr;
-    }
+    qDebug("Enter MWindow::setupDrawingToolBar");
 }
 
 void MWindow::AutoSave()
@@ -323,28 +277,42 @@ void MWindow::AutoSave()
     QString filename = backupfolder + "/backup_untitled.xml";
     QFile file(filename);
 
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        //QString coord_string=mview->build_coordString();
-
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        //Save geometry
         dmanager->writeXML(file);
-        //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
-        statusBar()->showMessage(tr("Backup file generated!"), 10000);
 
-        //routing (hlines)
-        QString fileNameRouting = file.fileName();
-        fileNameRouting = fileNameRouting.split(".").first() + "_routing.xml";
+        //Save routing (hlines)
+        QString fileNameRouting=filename.split(".").first()+"_routing.xml";
         QFile routingFile(fileNameRouting);
-
-        if (routingFile.open(QIODevice::WriteOnly | QIODevice::Text))
+        if (routingFile.open(QIODevice::WriteOnly|QIODevice::Text))
             dmanager->writeRoutingXML(routingFile);
 
-        //Sources
-        QString fileNameSource = file.fileName();
-        fileNameSource = fileNameSource.split(".").first() + "_sources.xml";
-        QFile sourceFile(fileNameSource);
+        //Save sources
+        QString fileNameSource=filename.split(".").first()+"_sources.xml";
+        QFile sourcesFile(fileNameSource);
+        if(sourcesFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeSourceXML(sourcesFile);
 
-        if (sourceFile.open(QIODevice::WriteOnly | QIODevice::Text))
-            dmanager->writeSourceXML(routingFile);
+        //Save goals
+        QString fileNameGoal=filename.split(".").first()+"_goals.xml";
+        QFile goalsFile(fileNameGoal);
+        if(goalsFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeGoalXML(goalsFile);
+
+        //Save traffic
+        QString fileNameTraffic = filename.split(".").first()+"_traffic.xml";
+        QFile trafficFile(fileNameTraffic);
+        if(trafficFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeTrafficXML(trafficFile);
+
+        //Save transitions
+        QString fileNameTransition=filename.split(".").first()+"_transitions.xml";
+        QFile transitionFile(fileNameTransition);
+        if(transitionFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeTransitionXML(transitionFile);
+
+        statusBar()->showMessage(tr("Backup file generated!"), 10000);
     }
 }
 
@@ -678,26 +646,8 @@ void MWindow::saveAsXML(){
     if (fileName.isEmpty()) return;
     QFile file(fileName);
 
-    //QString fileNameLines=fileName.split(".").first()+"_lines.xml";
-
-    //QFile LinesFile(fileNameLines);
-    //if (LinesFile.open(QIODevice::WriteOnly|QIODevice::Text))
-    //    dmanager->writeLineItems(LinesFile);
-
     if(file.open(QIODevice::WriteOnly|QIODevice::Text))
     {
-        //QString coord_string=mview->build_coordString();
-
-//        QString message = dmanager->check_printAbility();
-
-//        if (message!="")
-//        {
-//            statusBar()->showMessage(message,10000);
-//            QMessageBox::warning(this,"Warning!", message,
-//                                 QMessageBox::Ok);
-//            return;
-//        }
-
         //Save geometry
         dmanager->writeXML(file);
 
@@ -731,7 +681,6 @@ void MWindow::saveAsXML(){
         if(transitionFile.open(QIODevice::WriteOnly|QIODevice::Text))
             dmanager->writeTransitionXML(transitionFile);
 
-        //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
     }
 }
@@ -804,66 +753,22 @@ void MWindow::anglesnap()
 
 void MWindow::en_disableWall()
 {
-    closePropertyDockWidget();
-
     mview->en_disableWall();
 }
 
-void MWindow::en_disableCrossing()
+void MWindow::en_disableDoor()
 {
-    closePropertyDockWidget();
-
-    mview->en_disableCrossing();
+    mview->en_disableDoor();
 }
 
 void MWindow::en_disableLandmark()
 {
-    closePropertyDockWidget();
-
     mview->en_disableLandmark();
 }
 
 void MWindow::en_disableHLine()
 {
-    closePropertyDockWidget();
-
     mview->en_disableHLine();
-}
-
-void MWindow::transitionButtonClicked()
-{
-    closePropertyDockWidget();
-
-    mview->enableTransition();
-
-    propertyDockWidget = new QDockWidget(tr("Transitions"), this);
-    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    propertyDockWidget->setAllowedAreas( Qt::RightDockWidgetArea);
-
-    auto *transitionWidget = new TransitionWidget(this, this->dmanager);
-    connect(mview, SIGNAL(transitonsChanged()), transitionWidget, SLOT(updateListWidget()));
-
-    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
-    propertyDockWidget->setWidget(transitionWidget);
-}
-
-void MWindow::trackButtonClicked()
-{
-    closePropertyDockWidget();
-
-    mview->enableTrack();
-
-/*  For now Track property Widget isn't needed
-    propertyDockWidget = new QDockWidget(tr("Tracks"), this);
-    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    propertyDockWidget->setAllowedAreas( Qt::RightDockWidgetArea);
-
-    auto *trackPropertyWidget = new TrackPropertyWidget(this, this->dmanager);
-    connect(mview, SIGNAL(tracksChanged()), trackPropertyWidget, SLOT(updateListWidget()));
-
-    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
-    propertyDockWidget->setWidget(trackPropertyWidget);
-*/
 }
 
 void MWindow::objectsnap()
@@ -1003,9 +908,6 @@ void MWindow::define_landmark()
 
 void MWindow::en_selectMode()
 {
-//    actionSelect_Mode->setChecked(true);
-//    actionCopy->setChecked(false);
-
     mview->disable_drawing();
     length_edit->clearFocus();
 
@@ -1018,7 +920,7 @@ void MWindow::en_selectMode()
 
 void MWindow::dis_selectMode()
 {
-/*    if (actionWall->isChecked()==true || actionCrossing->isChecked()==true || actionExit->isChecked()==true
+/*    if (actionWall->isChecked()==true || actionDoor->isChecked()==true || actionExit->isChecked()==true
             || actionLandmark->isChecked()==true)
     {
         actionSelect_Mode->setChecked(false);
@@ -1163,7 +1065,7 @@ void MWindow::on_actionNew_Inifile_triggered()
 
 void MWindow::on_actionBack_to_Origin_triggered()
 {
-    mview->centerOn(QPointF(0.0,0.0));
+    mview->centerOn(QPointF(0.0,0.0)); //TODO: Ensure in any situation
 }
 
 void MWindow::on_actionZoom_Windows_triggered()
@@ -1177,31 +1079,46 @@ void MWindow::on_actionZoom_Extents_triggered()
     mview->AutoZoom();
 }
 
-void MWindow::closePropertyDockWidget()
-{
-    if(propertyDockWidget != nullptr)
-    {
-        mview->disable_drawing();
-        propertyDockWidget->close(); //close() has deleted pointer
-        propertyDockWidget = nullptr;
-    }
-}
-
 void MWindow::sourceButtonClicked()
 {
-    closePropertyDockWidget();
+    if(propertyDockWidget == nullptr)
+    {
+        //source widget off, dockwidget off -> open source widget
+        mview->enableSourceMode();
 
-    //source widget off, dockwidget off -> open source widget
-    mview->enableSourceMode();
+        propertyDockWidget = new QDockWidget(tr("Sources"), this);
+        propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-    propertyDockWidget = new QDockWidget(tr("Sources"), this);
-    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    propertyDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+        auto *sourceWidget = new SourceWidget(this, mview, this->dmanager);
+        addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+        propertyDockWidget->setWidget(sourceWidget);
+    } else if (propertyDockWidget != nullptr && propertyDockWidget->windowTitle() == "Sources")
+    {
+        // source widget on, dockwidget on -> close source widget
+        mview->disable_drawing();
+        actionSource->setChecked(false);
 
-    auto *sourceWidget = new SourceWidget(this, mview, this->dmanager);
-    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
-    propertyDockWidget->setWidget(sourceWidget);
+        propertyDockWidget->close(); //close() has deleted pointer
+        propertyDockWidget = nullptr;
+    } else if (propertyDockWidget != nullptr && propertyDockWidget->windowTitle() != "Sources")
+    {
+        // goal widget off, dockwidget on -> close other widget, open source widget
+        propertyDockWidget->close();
+        propertyDockWidget = nullptr;
 
+        mview->enableSourceMode();
+
+        propertyDockWidget = new QDockWidget(tr("Sources"), this);
+        propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+        auto *sourceWidget = new SourceWidget(this, mview, this->dmanager);
+        addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+        propertyDockWidget->setWidget(sourceWidget);
+    } else
+    {
+    }
 }
 
 // Goal drawing mode
@@ -1213,18 +1130,44 @@ void MWindow::sourceButtonClicked()
 
 void MWindow::goalButtionClicked()
 {
-    closePropertyDockWidget();
+    if(propertyDockWidget == nullptr)
+    {
+        //goal widget off, dockwidget off -> open goal widget
+        mview->enableGoalMode();
 
-    mview->enableGoalMode();
+        propertyDockWidget = new QDockWidget(tr("Goals"), this);
+        propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-    propertyDockWidget = new QDockWidget(tr("Goals"), this);
-    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+        auto *goalWidget = new GoalWidget(this, mview, this->dmanager);
+        addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+        propertyDockWidget->setWidget(goalWidget);
+    } else if (propertyDockWidget != nullptr && propertyDockWidget->windowTitle() == "Goals")
+    {
+        // goal widget on, dockwidget on -> close goal widget
+        mview->disable_drawing();
+        actionGoal->setChecked(false);
 
-    auto *goalWidget = new GoalWidget(this, mview, this->dmanager);
-    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
-    propertyDockWidget->setWidget(goalWidget);
+        propertyDockWidget->close(); //close() has deleted pointer
+        propertyDockWidget = nullptr;
+    } else if (propertyDockWidget != nullptr && propertyDockWidget->windowTitle() != "Goals")
+    {
+        // goal widget off, dockwidget on -> close other widget, open goal widget
+        propertyDockWidget->close();
+        propertyDockWidget = nullptr;
 
+        mview->enableGoalMode();
+
+        propertyDockWidget = new QDockWidget(tr("Goals"), this);
+        propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+        auto *goalWidget = new GoalWidget(this, mview, this->dmanager);
+        addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+        propertyDockWidget->setWidget(goalWidget);
+    } else
+    {
+    }
 }
 
 /*
@@ -1273,8 +1216,12 @@ void MWindow::showStatusBarMessage(QString msg, int duration)
 
 void MWindow::measureLengthButtonClicked()
 {
-    connect(mview, SIGNAL(sendMsgToStatusBar(QString)), this, SLOT(msgReceived(QString)));
     // open snapping widget
+    if(actionMeasureLength->isChecked())
+        actionMeasureLength->setChecked(false);
+    else
+        actionMeasureLength->setChecked(true);
+
     if(snappingOptions==nullptr)
         this->objectsnap();
 
@@ -1309,75 +1256,4 @@ void MWindow::importBackground()
     image->load(fileName);
     QPixmap bkgnd(QPixmap::fromImage(*image));
     mscene->addPixmap(bkgnd);
-}
-
-/*
-    since v0.8.9
-
-    create a listDockwidget and propertyDockwidget
- */
-
-void MWindow::closeListDockWidget()
-{
-    if(listDockWidget != nullptr)
-    {
-        listDockWidget->close();
-        listDockWidget = nullptr;
-    }
-}
-
-void MWindow::corridorButtonClicked()
-{
-    closeListDockWidget();
-    closePropertyDockWidget();
-
-    // left list widget
-    listDockWidget = new QDockWidget(tr("Corridor"), this);
-    listDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    listDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
-
-    auto *corridorListWidget = new RoomListWidget(this, this->dmanager);
-    corridorListWidget->setLabel("Corridors");
-
-    addDockWidget(Qt::LeftDockWidgetArea, listDockWidget);
-    listDockWidget->setWidget(corridorListWidget);
-
-    // right property widget
-    propertyDockWidget = new QDockWidget(tr("Corridor"), this);
-    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    propertyDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-
-    auto *corridorWidget = new BasicPropertyWidget(this, this->dmanager);
-    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
-    propertyDockWidget->setWidget(corridorWidget);
-}
-
-void MWindow::platformButtonclicked()
-{
-    closeListDockWidget();
-    closePropertyDockWidget();
-
-    // left list widget
-    listDockWidget = new QDockWidget(tr("Platform"), this);
-    listDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    listDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
-
-    auto *platformListWidget = new RoomListWidget(this, this->dmanager);
-    platformListWidget->setLabel("Platform");
-
-    addDockWidget(Qt::LeftDockWidgetArea, listDockWidget);
-    listDockWidget->setWidget(platformListWidget);
-
-    // right property widget
-    propertyDockWidget = new QDockWidget(tr("Platform"), this);
-    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    propertyDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-
-    auto *platformPropertyWidget = new PlatformPropertyWidget(this, this->dmanager, mview);
-    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
-    propertyDockWidget->setWidget(platformPropertyWidget);
-
-    connect(platformListWidget, SIGNAL(zoneSelected(JPSZone *)),
-            platformPropertyWidget, SLOT(receiveJPSZone(JPSZone *)));
-
 }
