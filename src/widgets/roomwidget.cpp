@@ -66,8 +66,6 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     ui->stateComboBox->addItem("Close");
 
     //SIGNALS AND SLOTS
-    //close
-//    connect(ui->closeButton_3,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(define_room()));
     //tab room
     connect(ui->new_room_button,SIGNAL(clicked(bool)),this,SLOT(new_room()));
     connect(ui->delete_room,SIGNAL(clicked(bool)),this,SLOT(delete_room()));
@@ -454,7 +452,7 @@ void roomWidget::enable_roomSelectionCrossings()
 
 void roomWidget::disable_roomSelectionCrossings()
 {
-     qDebug("Enter roomWidget::disable_roomSelectionCrossings");
+    qDebug("Enter roomWidget::disable_roomSelectionCrossings");
     ui->roomBox_from->setEnabled(false);
     ui->roomBox_to->setEnabled(false);
     ui->crossing_between->setEnabled(false);
@@ -479,7 +477,7 @@ void roomWidget::add_rooms_to_crossing()
                    ui->roomBox_from->currentText().toStdString().c_str()
                  );
 
-            if (ui->roomBox_to->currentText()=="OUTSIDE") // This door is a exit
+            if (ui->roomBox_to->currentText()=="OUTSIDE") // This door is a transition
             {
                 datamanager->get_crossingList()[cCrossingRow]->add_rooms(datamanager->get_roomlist()[cRoomRow1]);
                 datamanager->get_crossingList()[cCrossingRow]->SetStatExit(true);
@@ -519,7 +517,6 @@ void roomWidget::select_crossing()
         }
         int cCrossRow=ui->crossingList->currentRow();
         graphview->select_line(datamanager->get_crossingList()[cCrossRow]->get_cLine());
-        // autoAssignCrossing(datamanager->get_crossingList()[cCrossRow]);
     }
 }
 

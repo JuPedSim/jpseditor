@@ -177,8 +177,6 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
             break;
         case Landmark:
             break;
-        case Editing:
-            break;
         default:
             // draw wall, door, exit, HLine
             if (current_line!=nullptr)
@@ -302,12 +300,10 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
             case Source:
                 drawSource();
                 break;
-            case Editing:
-                break;
             case Goal:
                 drawGoal();
                 break;
-            case Measure:
+            case MeasureLength:
                 drawMeasureLengthLine();
                 break;
             case Selecting:
@@ -2195,20 +2191,6 @@ bool jpsGraphicsView::statusDoor()
 
 void jpsGraphicsView::en_disableExit()
 {
-/*    statExit=!statExit;
-    statDoor=false;
-    statWall=false;
-    _statHLine=false;
-    statLandmark=false;
-    if (statExit==false)
-    {
-        emit no_drawing();
-    }
-    else
-    {
-        currentPen.setColor(Qt::darkMagenta);
-    }*/
-
     drawingMode = Exit;
 
     if(drawingMode != Exit)
@@ -2436,20 +2418,8 @@ void jpsGraphicsView::DrawPointGrid(QPainter *painter, const QRectF &rect)
     painter->drawPoints(points.data(), points.size());
 }
 
-void jpsGraphicsView::setDrawingMode(DrawingMode mode) {
+void jpsGraphicsView::setDrawingMode(EditorMode mode) {
     drawingMode = mode;
-}
-
-void jpsGraphicsView::enableEditMode()
-{
-    setDrawingMode(Editing);
-
-    if(drawingMode!= Editing)
-    {
-        emit no_drawing();
-    } else
-    {
-    }
 }
 
 //Grid mode
@@ -2714,9 +2684,9 @@ void jpsGraphicsView::drawMeasureLengthLine()
 
 void jpsGraphicsView::enableMeasureLengthMode()
 {
-    setDrawingMode(Measure);
+    setDrawingMode(MeasureLength);
 
-    if(drawingMode != Measure)
+    if(drawingMode != MeasureLength)
     {
         emit no_drawing();
     } else
