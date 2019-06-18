@@ -127,10 +127,6 @@ public:
     void set_view(jpsGraphicsView* view);
     jpsGraphicsView* get_view();
 
-    // Auto Assign
-//    void AutoAssignCrossings();
-//    void AutoAssignExits();
-
 
     // Read XML
 
@@ -151,21 +147,16 @@ public:
     void writeRoutingXML(QFile &file);
     void writeLineItems(QFile & file);
 
-    void AutoSaveXML(QFile &file);
     void writeHeader(QXmlStreamWriter *stream);
     void writeRoutingHeader(QXmlStreamWriter *stream);
     void writeHLines(QXmlStreamWriter *stream, QList<jpsLineItem* >& hLines);
     QString RoomIDHLine(jpsLineItem* lineItem);
     void writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeSubRoom(QXmlStreamWriter *stream, jpsRoom* room, QList<jpsLineItem* >& lines);
-    void AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeObstacles(QXmlStreamWriter *stream, jpsObstacle *obs, QList<jpsLineItem *> &lines);
-    void writeNotAssignedWalls(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
-    void writeNotAssignedDoors(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
-    void writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
-
+    void writeNotAssignedLines(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines);
     void writeTransitionXML(QFile &file);
 
     //Write Cognitive Map XML
@@ -202,7 +193,6 @@ public:
     //Parse Cognitive Map
     bool ParseCogMap(QFile &file);
     jpsRegion* ParseRegion(QXmlStreamReader &xmlReader);
-    void ParseYAHPointer(QXmlStreamReader &xmlReader, const int &frame);
     void ParseLandmark(jpsRegion* actRegion, QXmlStreamReader &xmlReader);
     void ParseConnection(jpsRegion* actRegion, QXmlStreamReader &xmlReader);
 
