@@ -802,7 +802,7 @@
      <normaloff>:/inAppIcons/Icons/ruler.png</normaloff>:/inAppIcons/Icons/ruler.png</iconset>
    </property>
    <property name="text">
-    <string>Measure length</string>
+    <string>MeasureLength length</string>
    </property>
   </action>
   <action name="actionDraw">

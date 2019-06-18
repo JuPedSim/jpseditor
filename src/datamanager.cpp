@@ -791,7 +791,7 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
 
             writeSubRoom(stream,room,lines);
 
-            // A stair hasn't stairs
+            // A stair hasn't crossings
             stream->writeStartElement("crossings");
             stream->writeEndElement(); //crossings
 
@@ -963,9 +963,9 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
     for (int i=0; i<crossingList.size(); i++)
     {
         if (!crossingList[i]->IsExit()
-        && crossingList[i]->get_roomList().size() == 2 // A crossing must between two subrooms
-        && crossingList[i]->get_roomList()[0]->get_type()!="Stair"
-        && crossingList[i]->get_roomList()[1]->get_type()!="Stair") // This door is crossing between rooms,
+        && crossingList[i]->get_roomList().size() == 2 // A crossing must between two subrooms or romm and stair
+        && !(crossingList[i]->get_roomList()[0]->get_type()=="Stair"
+        && crossingList[i]->get_roomList()[1]->get_type()=="Stair")) // both sides can't be stair at the same time
         {
             stream->writeStartElement("crossing");
             stream->writeAttribute("id",QString::number(i));

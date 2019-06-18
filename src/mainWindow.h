@@ -176,7 +176,7 @@ protected slots:
 
     void showStatusBarMessage(QString msg, int duration);
 
-    //Measure
+    //MeasureLength
     void measureLengthButtonClicked();
     void msgReceived(QString Msg);
 

@@ -648,29 +648,30 @@ void jpsRoom::correctPlaneCoefficients()
             this->get_name().toStdString().c_str(),
             this->get_type().toStdString().c_str(),
             (int)_doorList.size());
-    if(_doorList.size() == 0 || this->get_type().toUpper() != "STAIR")
+    if(_doorList.size() == 0 || this->get_type().toUpper() != "Stair")
     {
         this->set_ax(0);
         this->set_by(0);
         this->set_cz(this->get_elevation());
         return;
     }
-     QPointF P1(0,0), P2(0,0), P3(0,0); /// plane is defined by three non-collinear points
-     float elevation_1=0, elevation_2=0;
-     P1 = _doorList[0]->get_cLine()->get_line()->line().p1();
-     P2 = _doorList[0]->get_cLine()->get_line()->line().p2();
-     elevation_1 = _doorList[0]->get_elevation();
 
-     //from _doortList get three points with two different elevations
-     for (int i=1; i<_doorList.size(); i++)
-     {
-          if(_doorList[i]->get_elevation() != _doorList[0]->get_elevation()){
-               P3 = _doorList[i]->get_cLine()->get_line()->line().p1();
-               elevation_2 = _doorList[i]->get_elevation();
-               break;
-          }
-     // @todo: check if the 3 points are collinear.
-     }
+    QPointF P1(0,0), P2(0,0), P3(0,0); // plane is defined by three non-collinear points
+    float elevation_1=0, elevation_2=0;
+    // P1 P2 are the points on the first door of a room
+    P1 = _doorList[0]->get_cLine()->get_line()->line().p1();
+    P2 = _doorList[0]->get_cLine()->get_line()->line().p2();
+    elevation_1 = _doorList[0]->get_elevation();
+
+    //from _doortList get one more point on a door with different elevation as P3
+    for (int i=1; i<_doorList.size(); i++)
+    {
+      if(_doorList[i]->get_elevation() != _doorList[0]->get_elevation()){
+           P3 = _doorList[i]->get_cLine()->get_line()->line().p1();
+           elevation_2 = _doorList[i]->get_elevation();
+           break;
+      }
+    }
 
      // variables for convenience
      float P1_x = P1.x();
