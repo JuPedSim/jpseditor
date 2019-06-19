@@ -53,6 +53,10 @@ If the previous step terminated successfully run
 make -j2
 ``` 
 
+Support
+========
+
+Please open an issue using the [issue-tracker](https://github.com/JuPedSim/jpseditor/issues)
 
 Tutorials
 ========
