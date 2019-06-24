@@ -42,7 +42,7 @@ const char* TiXmlBase::errorString[ TiXmlBase::TIXML_ERROR_STRING_COUNT ] =
 	"Error reading Attributes.",
 	"Error: empty tag.",
 	"Error reading end tag.",
-	"Error parsing Unknown.",
+	"Error parsing NotAssigned.",
 	"Error parsing Comment.",
 	"Error parsing Declaration.",
 	"Error document empty.",

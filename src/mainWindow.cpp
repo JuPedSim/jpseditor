@@ -205,17 +205,50 @@ MWindow :: MWindow()
     objectsnapping.append(SelectedLine_point);
 
     //main toolbar action group
-    auto main_toolbar_action_group = new QActionGroup(this);
-    main_toolbar_action_group->addAction(actionSelect_Mode); // select mode
-    main_toolbar_action_group->addAction(actionMeasureLength); // measure mode
-    main_toolbar_action_group->addAction(actionDraw); // draw mode
+    auto main_toolbar_actionGroup = new QActionGroup(this);
+    main_toolbar_actionGroup->addAction(actionSelect_Mode); // select mode
+    main_toolbar_actionGroup->addAction(actionMeasureLength); // measure mode
+    main_toolbar_actionGroup->addAction(actionDraw); // draw mode
+    main_toolbar_actionGroup->addAction(actionZone); // assemble zone
 
     connect(actionMeasureLength, SIGNAL(triggered(bool)), this, SLOT(measureLengthButtonClicked()));
     connect(actionSelect_Mode,SIGNAL(triggered(bool)),this,SLOT(en_selectMode()));
     connect(actionDraw, SIGNAL(triggered(bool)),this,SLOT(setupDrawingToolBar()));
+    connect(actionZone, SIGNAL(triggered(bool)),this,SLOT(setupZoneToolBar()));
+
+    //drawing toolbar
+    connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
+    connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(en_disableDoor()));
+    connect(actionHLine,SIGNAL(triggered(bool)),this,SLOT(en_disableHLine()));
+    connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
+    connect(actionSource, SIGNAL(triggered(bool)),this,SLOT(sourceButtonClicked()));
+    connect(actionGoal,SIGNAL(triggered(bool)),this,SLOT(goalButtionClicked()));
+
+
+
+    drawingActionGroup = new QActionGroup(this);
+    drawingActionGroup->addAction(actionWall);
+    drawingActionGroup->addAction(actionDoor);
+    drawingActionGroup->addAction(actionHLine);
+    drawingActionGroup->addAction(actionLandmark);
+    drawingActionGroup->addAction(actionSource);
+    drawingActionGroup->addAction(actionGoal);
+
+    //zone toolbar
+
+
+    // Assemble actions group
+    zoneActionGroup = new QActionGroup(this);
+    zoneActionGroup->addAction(actionCorridor);
+    zoneActionGroup->addAction(actionLobby);
+    zoneActionGroup->addAction(actionOffice);
+    zoneActionGroup->addAction(actionEntrance);
+    zoneActionGroup->addAction(actionStairs);
+    zoneActionGroup->addAction(actionPlatform);
 
     //set background
     connect(actionBackground, SIGNAL(triggered(bool)),this,SLOT(importBackground()));
+
 }
 
 MWindow::~MWindow()
@@ -232,39 +265,43 @@ MWindow::~MWindow()
 
 void MWindow::setupDrawingToolBar()
 {
-    if(drawing_toolbar_ == nullptr)
-    {
-        drawing_toolbar_ = new QToolBar("Drawing ToolBar", this);
-        addToolBar(Qt::LeftToolBarArea, drawing_toolbar_);
-        drawing_toolbar_->setMovable(false);
-        drawing_toolbar_->setBackgroundRole(QPalette::HighlightedText);
+    closeLeftToolBarArea(); // close running toolbar at first
 
-        // drawing actions group
-        drawing_toolbar_->addAction(actionWall);
-        drawing_toolbar_->addAction(actionDoor);
-        drawing_toolbar_->addAction(actionHLine);
-        drawing_toolbar_->addAction(actionLandmark);
-        drawing_toolbar_->addAction(actionSource);
-        drawing_toolbar_->addAction(actionGoal);
+    drawing_toolbar_ = new QToolBar("Drawing ToolBar", this);
+    addToolBar(Qt::LeftToolBarArea, drawing_toolbar_);
+    drawing_toolbar_->setMovable(false);
+    drawing_toolbar_->setBackgroundRole(QPalette::HighlightedText);
 
-        drawingActionGroup = new QActionGroup(this);
-        drawingActionGroup->addAction(actionDoor);
-        drawingActionGroup->addAction(actionWall);
-        drawingActionGroup->addAction(actionHLine);
-        drawingActionGroup->addAction(actionLandmark);
-        drawingActionGroup->addAction(actionSource);
-        drawingActionGroup->addAction(actionGoal);
+    // drawing actions group
+    drawing_toolbar_->addActions(drawingActionGroup->actions());
+}
 
-        connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
-        connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(en_disableDoor()));
-        connect(actionHLine,SIGNAL(triggered(bool)),this,SLOT(en_disableHLine()));
-        connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
-        connect(actionSource, SIGNAL(triggered(bool)),this,SLOT(sourceButtonClicked()));
-        connect(actionGoal,SIGNAL(triggered(bool)),this,SLOT(goalButtionClicked()));
-    } else
+void MWindow::setupZoneToolBar()
+{
+    closeLeftToolBarArea();
+
+    zone_toolbar_ = new QToolBar("Zone ToolBar", this);
+
+    addToolBar(Qt::LeftToolBarArea, zone_toolbar_);
+    zone_toolbar_->setMovable(false);
+    zone_toolbar_->setBackgroundRole(QPalette::HighlightedText);
+
+    zone_toolbar_->addActions(zoneActionGroup->actions());
+
+}
+
+void MWindow::closeLeftToolBarArea()
+{
+    if(drawing_toolbar_ != nullptr)
     {
         drawing_toolbar_->close();
         drawing_toolbar_ = nullptr;
+    }
+
+    if(zone_toolbar_ != nullptr)
+    {
+        zone_toolbar_->close();
+        zone_toolbar_ = nullptr;
     }
 }
 

@@ -47,8 +47,9 @@ JPSElementListModel::JPSElementListModel(QObject *parent)
 */
 
 JPSElementListModel::JPSElementListModel(QList<QGraphicsItem *> &items, QObject *parent)
-        : QAbstractListModel(parent),lst(lst)
+        : QAbstractListModel(parent)
 {
+
 }
 
 JPSElementListModel::~JPSElementListModel()

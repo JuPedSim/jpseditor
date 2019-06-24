@@ -28,7 +28,6 @@
 
 #include <QGraphicsItem>
 
-
 bool isDirtyChange(QGraphicsItem::GraphicsItemChange change);
 
 

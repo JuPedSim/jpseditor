@@ -2014,7 +2014,7 @@ void jpsGraphicsView::take_l_from_lineEdit(const qreal &length)
         jpsLineItem* jpsline = new jpsLineItem(current_line);
         jpsline->set_id(id_counter);
         id_counter++;
-//        jpsline->set_type(statWall,statDoor,statExit);
+//        jpsline->setType(statWall,statDoor,statExit);
         switch (drawingMode){
             case Wall:
                 jpsline->setWall();
@@ -2038,7 +2038,7 @@ void jpsGraphicsView::take_l_from_lineEdit(const qreal &length)
         line.setLength(length);
         _currentVLine->setLine(line);
         //jpsLineItem* jpsline = new jpsLineItem(current_line);
-        //jpsline->set_type(statWall,statDoor,statExit);
+        //jpsline->setType(statWall,statDoor,statExit);
         //line_vector.push_back(jpsline);
         translated_pos.setX(_currentVLine->line().p2().x());
         translated_pos.setY(_currentVLine->line().p2().y());
@@ -2062,7 +2062,7 @@ void jpsGraphicsView::take_endpoint_from_xyEdit(const QPointF &endpoint)
         jpsLineItem* jpsline = new jpsLineItem(current_line);
         jpsline->set_id(id_counter);
         id_counter++;
-//        jpsline->set_type(statWall,statDoor,statExit);
+//        jpsline->setType(statWall,statDoor,statExit);
         switch (drawingMode){
             case Wall:
                 jpsline->setWall();
@@ -2085,7 +2085,7 @@ void jpsGraphicsView::take_endpoint_from_xyEdit(const QPointF &endpoint)
         line.setP2(endpoint);
         _currentVLine->setLine(line);
         //jpsLineItem* jpsline = new jpsLineItem(current_line);
-        //jpsline->set_type(statWall,statDoor,statExit);
+        //jpsline->setType(statWall,statDoor,statExit);
         //line_vector.push_back(jpsline);
         translated_pos.setX(_currentVLine->line().p2().x());
         translated_pos.setY(_currentVLine->line().p2().y());

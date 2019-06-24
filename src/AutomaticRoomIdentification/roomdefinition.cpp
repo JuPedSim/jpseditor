@@ -52,7 +52,7 @@ void RoomDefinition::SetUpRoomsAndDoors()
     for (const std::list<double>& room:roomList)
     {
         _dManager->new_room();
-        jpsRoom* cRoom = _dManager->get_roomlist().back();
+        JPSZone* cRoom = _dManager->get_roomlist().back();
         std::vector<double> roomasVector = std::vector<double>{room.begin(),room.end()};
         for (size_t i=0; i<roomasVector.size(); i+=4)
         {
@@ -77,7 +77,7 @@ void RoomDefinition::SetUpRoomsAndDoors()
         }
     }
 
-    for (jpsRoom* room:_dManager->get_roomlist())
+    for (JPSZone* room:_dManager->get_roomlist())
     {
         room->IdentifyInnerOuter();
     }
@@ -88,7 +88,7 @@ void RoomDefinition::SetUpRoomsAndDoors()
 
     // set contigous ids after removing outside
     int idCounter=1;
-    for (jpsRoom* room:_dManager->get_roomlist())
+    for (JPSZone* room:_dManager->get_roomlist())
     {
         room->set_id(idCounter);
         idCounter++;
@@ -111,9 +111,9 @@ void RoomDefinition::SetUpRoomsAndDoors()
 void RoomDefinition::RemoveOutside()
 {
     qreal maxArea=_dManager->get_roomlist().front()->GetArea();
-    jpsRoom* roomWithMaxArea=_dManager->get_roomlist().front();
+    JPSZone* roomWithMaxArea=_dManager->get_roomlist().front();
 
-    for (jpsRoom* room:_dManager->get_roomlist())
+    for (JPSZone* room:_dManager->get_roomlist())
     {
         if (room->GetArea()>maxArea)
         {
@@ -128,7 +128,7 @@ void RoomDefinition::RemoveOutside()
 
 void RoomDefinition::RemoveRoomsWithoutDoors()
 {
-    for (jpsRoom* room:_dManager->get_roomlist())
+    for (JPSZone* room:_dManager->get_roomlist())
     {
         if (room->GetDoors().empty())
             _dManager->remove_room(room);

@@ -29,14 +29,14 @@
 #ifndef JPSEXIT_H
 #define JPSEXIT_H
 
-#include "rooms.h"
+#include "jpszone.h"
 
 class jpsExit
 {
 public:
     jpsExit(jpsLineItem *line);
     ~jpsExit(){}
-    QList<jpsRoom *> get_roomList();
+    QList<JPSZone *> get_roomList();
     QString get_name();
     jpsLineItem *get_cLine();
     void change_name(QString name);
@@ -44,10 +44,10 @@ public:
     int get_id();
     void set_id(int id);
     void set_type(QString type);
-    void set_rooms(jpsRoom* room1, jpsRoom* room2=nullptr);
+    void set_rooms(JPSZone* room1, JPSZone* room2=nullptr);
 
 private:
-    QList<jpsRoom *> roomList;
+    QList<JPSZone *> roomList;
     QString cName;
     jpsLineItem *cLine;
     QString _type;

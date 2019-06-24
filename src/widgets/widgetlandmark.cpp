@@ -140,7 +140,7 @@ void widgetLandmark::enable_room_selection()
         int cLanRow=ui->list_landmarks->currentIndex();
         if (cLanRow!=-1)
         {
-            jpsRoom* cRoom = _dmanager->get_landmarks()[cLanRow]->GetRoom();
+            JPSZone* cRoom = _dmanager->get_landmarks()[cLanRow]->GetRoom();
             if (cRoom!=nullptr)
             {
                 int index = _dmanager->get_roomlist().indexOf(cRoom);

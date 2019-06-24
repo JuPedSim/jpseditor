@@ -28,7 +28,7 @@
 
 #include "roomwidget.h"
 #include "ui_roomwidget.h"
-#include "src/rooms.h"
+#include "src/jpszone.h"
 #include <iostream>
 #include <QDebug>
 #include "src/AutomaticRoomIdentification/roomdefinition.h"
@@ -129,7 +129,7 @@ void roomWidget::show_rooms()
     qDebug("Enter roomWidget::show_rooms");
     ui->list_rooms->clear();
 
-    QList<jpsRoom*> roomlist=datamanager->get_roomlist();
+    QList<JPSZone*> roomlist=datamanager->get_roomlist();
     for (int i=0; i<roomlist.size(); i++)
     {
         ui->list_rooms->addItem(roomlist[i]->get_name());
@@ -410,7 +410,7 @@ void roomWidget::enable_roomSelectionCrossings()
             int cCrossingRow=ui->crossingList->currentRow();
             if (cCrossingRow!=-1) // -1 means there is no current item
             {
-                QList<jpsRoom*> cRoomlist = datamanager->get_crossingList()[cCrossingRow]->get_roomList();
+                QList<JPSZone*> cRoomlist = datamanager->get_crossingList()[cCrossingRow]->get_roomList();
                 if (cRoomlist.size()>1)
                 {
                     int index = datamanager->get_roomlist().indexOf(cRoomlist[0]);
@@ -551,7 +551,7 @@ void roomWidget::enable_roomSelectionExits()
 //            if (ui->exitList->currentRow()!=-1)
 //            {
 //                int cExitRow=ui->exitList->currentRow();
-//                QList<jpsRoom*> cRoomlist = datamanager->get_exitList()[cExitRow]->get_roomList();
+//                QList<JPSZone*> cRoomlist = datamanager->get_exitList()[cExitRow]->get_roomList();
 //                if (cRoomlist.size()>0)
 //                {
 //                    int index = datamanager->get_roomlist().indexOf(cRoomlist[0]);
@@ -795,7 +795,7 @@ void roomWidget::enable_roomSelectionObs()
         int cObsRow=ui->list_obstacles->currentRow();
         if (cObsRow!=-1)
         {
-            jpsRoom* cRoom = datamanager->get_obstaclelist()[cObsRow]->get_room();
+            JPSZone* cRoom = datamanager->get_obstaclelist()[cObsRow]->get_room();
             if (cRoom!=0L)
             {
                 int index = datamanager->get_roomlist().indexOf(cRoom);
@@ -895,22 +895,22 @@ void roomWidget::HighlightAllRooms()
     qDebug() << "Enter roomWidget::HighlightAllRooms()!";
     //unhighlight all rooms first
 
-    for (jpsRoom* room:datamanager->get_roomlist())
+    for (JPSZone* room:datamanager->get_roomlist())
     {
         if (room->is_highlighted())
             room->highlight();
     }
 
 
-    for (jpsRoom* room:datamanager->get_roomlist())
+    for (JPSZone* room:datamanager->get_roomlist())
     {
-        if (room->get_type()!="Corridor")
+        if (room->getType()!=JPSZone::Corridor)
             room->highlight("darkGreen");
     }
 
-    for (jpsRoom* room:datamanager->get_roomlist())
+    for (JPSZone* room:datamanager->get_roomlist())
     {
-        if (room->get_type()=="Corridor")
+        if (room->getType()==JPSZone::Corridor)
             room->highlight("darkMagenta");
     }
     qDebug() << "Leave roomWidget::HighlightAllRooms()!";
@@ -931,7 +931,7 @@ void roomWidget::highlight_obs() //@todo: rename highlight_current_obstacle
 
 void roomWidget::autoAssigneObstacles()
 {
-    for (jpsRoom* room: datamanager->get_roomlist())
+    for (JPSZone* room: datamanager->get_roomlist())
     {
         QVector<QLineF> lines = room->GetOuterPolygon();
         QPolygonF rPolygon = room->RoomAsSortedPolygon(lines);
@@ -954,7 +954,7 @@ void roomWidget::autoAssigneObstacles()
 
 void roomWidget::autoAssignObstacle(jpsObstacle * obstacle)
 {
-    for (jpsRoom* room: datamanager->get_roomlist())
+    for (JPSZone* room: datamanager->get_roomlist())
     {
         QVector<QLineF> lines = room->GetOuterPolygon();
         QPolygonF rPolygon = room->RoomAsSortedPolygon(lines);
@@ -974,7 +974,7 @@ void roomWidget::autoAssignCrossing(jpsCrossing * crossing)
 {
      qDebug("Enter roomWidget::autoAssignCrossing");
      int roomCounter=0; // counts number of added rooms. crossing needs two.
-     for (jpsRoom* room: datamanager->get_roomlist())
+     for (JPSZone* room: datamanager->get_roomlist())
      {
           qDebug("\t room = %s", room->get_name().toStdString().c_str());
          QList<jpsLineItem* > walls = room->get_listWalls();
@@ -1032,18 +1032,18 @@ void roomWidget::autoAssignCrossing(jpsCrossing * crossing)
 
 void roomWidget::ChangeRoomType()
 {
-     qDebug("Enter roomWidget::ChangeRoomType");
-    if (ui->list_rooms->currentItem()!=0L)
-    {
-        int cRoomRow=ui->list_rooms->currentRow();
-        int cClassRow=ui->classBox->currentIndex();
-        qDebug("\t cRoomRow=%d, cClassRow=%d", cRoomRow, cClassRow);
-        if (cClassRow!=-1)
-        {
-            datamanager->get_roomlist()[cRoomRow]->set_type(ui->classBox->currentText());
-        }
-    }
-    qDebug("Leave roomWidget::ChangeRoomType");
+//     qDebug("Enter roomWidget::ChangeRoomType");
+//    if (ui->list_rooms->currentItem()!=0L)
+//    {
+//        int cRoomRow=ui->list_rooms->currentRow();
+//        int cClassRow=ui->classBox->currentIndex();
+//        qDebug("\t cRoomRow=%d, cClassRow=%d", cRoomRow, cClassRow);
+//        if (cClassRow!=-1)
+//        {
+//            datamanager->get_roomlist()[cRoomRow]->setType(ui->classBox->currentText());
+//        }
+//    }
+//    qDebug("Leave roomWidget::ChangeRoomType");
 }
 
 void roomWidget::StartAutoDef()
@@ -1080,13 +1080,13 @@ void roomWidget::GatherRTData()
 void roomWidget::ShowRoomType(int& cRow) const
 {
     qDebug("Enter roomWidget::ShowRoomType(%d)", cRow);
-    QString type = datamanager->get_roomlist()[cRow]->get_type();
+    QString type = QString(datamanager->get_roomlist()[cRow]->getType());
     int itemindex = ui->classBox->findText(type);
     ui->classBox->setCurrentIndex(itemindex);
     qDebug("Leave roomWidget::ShowRoomType(%d)", cRow);
 }
 
-void roomWidget::highlight_room(jpsRoom * room)
+void roomWidget::highlight_room(JPSZone * room)
 {
      qDebug() << "Enter roomWidget::highlight_room()";
      qDebug("\t with room=<%s>", room->get_name().toStdString().c_str());
@@ -1111,7 +1111,7 @@ void roomWidget::highlight_room(jpsRoom * room)
 
      qDebug("Leave roomWidget::highlight_room()");
 }
-void roomWidget::highlight_obs(jpsRoom * room)
+void roomWidget::highlight_obs(JPSZone * room)
 {
      qDebug("Enter roomWidget::highlight_obs(room)");
      QString room_name = room->get_name();
@@ -1148,8 +1148,8 @@ void roomWidget::highlight_obs(jpsRoom * room)
 
 void roomWidget::on_hideButton_clicked()
 {
-    QList<jpsRoom*> roomlist=datamanager->get_roomlist();
-    QListIterator<jpsRoom*> i(roomlist);
+    QList<JPSZone*> roomlist=datamanager->get_roomlist();
+    QListIterator<JPSZone*> i(roomlist);
 
     while (i.hasNext())
     {
@@ -1169,8 +1169,8 @@ void roomWidget::on_hideButton_clicked()
 
 void roomWidget::on_showButton_clicked()
 {
-    QList<jpsRoom*> roomlist=datamanager->get_roomlist();
-    QListIterator<jpsRoom*> i(roomlist);
+    QList<JPSZone*> roomlist=datamanager->get_roomlist();
+    QListIterator<JPSZone*> i(roomlist);
 
     while (i.hasNext())
     {
@@ -1191,7 +1191,7 @@ void roomWidget::on_showButton_clicked()
 
 void roomWidget::show_hideLayer()
 {
-    for (jpsRoom* room:datamanager->get_roomlist())
+    for (JPSZone* room:datamanager->get_roomlist())
     {
         room->switchVisibility();
         room->switchHighlight();

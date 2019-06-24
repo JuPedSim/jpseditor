@@ -1,10 +1,12 @@
-/**
- * \file        jpsObstacle.cpp
- * \date        Oct-01-2018
- * \version     v0.8.4
- * \copyright   <2009-2018> Forschungszentrum Jülich GmbH. All rights reserved.
+/***************************************************************
  *
- * \section License
+ * \file roomlistwidget.cpp
+ * \date 2019-06-19
+ * \version v0.8.9
+ * \author Tao Zhong
+ * \copyright <2009-2019> Forschungszentrum Jülich GmbH. All rights reserved.
+ *
+ * \section Lincense
  * This file is part of JuPedSim.
  *
  * JuPedSim is free software: you can redistribute it and/or modify
@@ -21,27 +23,24 @@
  * along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
  *
  * \section Description
- * This class is representing an obstacle in a certain room of the building. (Table, shelf, ...)
+ * This class define a dock widget for roomlist
  *
- **/
+****************************************************************/
 
-#include "jpsobstacle.h"
+//
+// Created by sainho93 on 2019-06-19.
+//
 
-jpsObstacle::jpsObstacle(int id):JPSZone(id)
+#include "roomlistwidget.h"
+#include "ui_roomlistwidget.h"
+
+RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager)
+    : QWidget(parent), ui(new Ui::RoomListWidget)
 {
-    QString string="Obstacle ";
-    string.append(QString::number(id));
-    JPSZone::change_name(string);
-    _room = nullptr;
+    ui->setupUi(this);
 }
 
-void jpsObstacle::set_room(JPSZone *room)
+RoomListWidget::~RoomListWidget()
 {
-    _room=room;
+    delete ui;
 }
-
-JPSZone* jpsObstacle::get_room()
-{
-    return _room;
-}
-

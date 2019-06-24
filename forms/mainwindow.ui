@@ -105,9 +105,21 @@
     <addaction name="actionSource"/>
     <addaction name="actionGoal"/>
    </widget>
+   <widget class="QMenu" name="menuZone">
+    <property name="title">
+     <string>Zone</string>
+    </property>
+    <addaction name="actionCorridor"/>
+    <addaction name="actionLobby"/>
+    <addaction name="actionEntrance"/>
+    <addaction name="actionOffice"/>
+    <addaction name="actionStairs"/>
+    <addaction name="actionPlatform"/>
+   </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuEdit"/>
    <addaction name="menuDraw"/>
+   <addaction name="menuZone"/>
    <addaction name="menuView"/>
    <addaction name="menuTools"/>
    <addaction name="menuHilfe"/>
@@ -131,6 +143,7 @@
    <addaction name="actionSelect_Mode"/>
    <addaction name="actionDraw"/>
    <addaction name="actionMeasureLength"/>
+   <addaction name="actionZone"/>
    <addaction name="separator"/>
    <addaction name="actiongridmode"/>
    <addaction name="actionObjectsnap"/>
@@ -333,7 +346,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../Resources/resources.qrc">
+    <iconset>
      <normaloff>:/inAppIcons/Icons/exit.png</normaloff>:/inAppIcons/Icons/exit.png</iconset>
    </property>
    <property name="text">
@@ -820,6 +833,111 @@
   <action name="actionBackground">
    <property name="text">
     <string>Import Backgroud</string>
+   </property>
+  </action>
+  <action name="actionCorridor">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/corridor.png</normaloff>:/inAppIcons/Icons/corridor.png</iconset>
+   </property>
+   <property name="text">
+    <string>corridor</string>
+   </property>
+   <property name="toolTip">
+    <string>Assemble Corrosdor</string>
+   </property>
+  </action>
+  <action name="actionLobby">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/lobby.png</normaloff>:/inAppIcons/Icons/lobby.png</iconset>
+   </property>
+   <property name="text">
+    <string>lobby</string>
+   </property>
+   <property name="toolTip">
+    <string>Assemble lobby</string>
+   </property>
+  </action>
+  <action name="actionEntrance">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/entrance.png</normaloff>:/inAppIcons/Icons/entrance.png</iconset>
+   </property>
+   <property name="text">
+    <string>Entrance</string>
+   </property>
+   <property name="toolTip">
+    <string>Assemble entrance</string>
+   </property>
+  </action>
+  <action name="actionOffice">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/office.png</normaloff>:/inAppIcons/Icons/office.png</iconset>
+   </property>
+   <property name="text">
+    <string>Office</string>
+   </property>
+   <property name="toolTip">
+    <string>Assemble office</string>
+   </property>
+  </action>
+  <action name="actionStairs">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/stairs.png</normaloff>:/inAppIcons/Icons/stairs.png</iconset>
+   </property>
+   <property name="text">
+    <string>Stairs</string>
+   </property>
+   <property name="toolTip">
+    <string>Assemble Stairs</string>
+   </property>
+  </action>
+  <action name="actionPlatform">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/platform.png</normaloff>:/inAppIcons/Icons/platform.png</iconset>
+   </property>
+   <property name="text">
+    <string>Platform</string>
+   </property>
+   <property name="toolTip">
+    <string>Assemble Platform</string>
+   </property>
+  </action>
+  <action name="actionZone">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/attribute.svg</normaloff>:/inAppIcons/Icons/attribute.svg</iconset>
+   </property>
+   <property name="text">
+    <string>zone</string>
+   </property>
+   <property name="toolTip">
+    <string>Assemble Zone</string>
    </property>
   </action>
  </widget>

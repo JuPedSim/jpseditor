@@ -92,8 +92,8 @@ protected slots:
     void highlight_room();
     void HighlightAllRooms();
     void highlight_obs();
-    void highlight_room(jpsRoom *);
-    void highlight_obs(jpsRoom *);
+    void highlight_room(JPSZone *);
+    void highlight_obs(JPSZone *);
 
     void autoAssigneObstacles();
     void autoAssignObstacle(jpsObstacle *);

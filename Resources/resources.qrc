@@ -65,5 +65,11 @@
         <file>Icons/edit.png</file>
         <file>Icons/ruler.png</file>
         <file>Icons/draw.png</file>
+        <file>Icons/corridor.png</file>
+        <file>Icons/lobby.png</file>
+        <file>Icons/entrance.png</file>
+        <file>Icons/office.png</file>
+        <file>Icons/stairs.png</file>
+        <file>Icons/platform.png</file>
     </qresource>
 </RCC>
