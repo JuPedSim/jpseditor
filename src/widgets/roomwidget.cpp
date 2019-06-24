@@ -39,8 +39,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     ui(new Ui::roomWidget)
 {
     ui->setupUi(this);
-    //rooms = new list_rooms(this);
-    //rooms->setGeometry(QRect(10,80,291,81));
+
     datamanager=dmanager;
     graphview=gview;
 

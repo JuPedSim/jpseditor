@@ -39,6 +39,7 @@
 #include "src/widgets/roomwidget.h"
 #include "src/widgets/widgetlandmark.h"
 #include "src/widgets/widgetsettings.h"
+#include "src/widgets/roomlistwidget.h"
 #include "GraphicView.h"
 #include "datamanager.h"
 #include "jpszone.h"
@@ -64,6 +65,7 @@ private:
     InifileWidget * inifileWidget;
 
     QDockWidget *propertyDockWidget;
+    QDockWidget *listDockWidget;
 
     QToolBar *drawing_toolbar_;
     QActionGroup *drawingActionGroup;
@@ -209,6 +211,13 @@ private slots:
 
     //Zone ToolBar
     void setupZoneToolBar();
+    void corridorButtonClicked();
+
+    //propertyDockWidget
+    void closePropertyDockWidget();
+
+    //listDockWidget
+    void closeListDockWidget();
 
 };
 

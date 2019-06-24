@@ -224,8 +224,6 @@ MWindow :: MWindow()
     connect(actionSource, SIGNAL(triggered(bool)),this,SLOT(sourceButtonClicked()));
     connect(actionGoal,SIGNAL(triggered(bool)),this,SLOT(goalButtionClicked()));
 
-
-
     drawingActionGroup = new QActionGroup(this);
     drawingActionGroup->addAction(actionWall);
     drawingActionGroup->addAction(actionDoor);
@@ -235,7 +233,7 @@ MWindow :: MWindow()
     drawingActionGroup->addAction(actionGoal);
 
     //zone toolbar
-
+    connect(actionCorridor, SIGNAL(triggered(bool)),this, SLOT(corridorButtonClicked()));
 
     // Assemble actions group
     zoneActionGroup = new QActionGroup(this);
@@ -794,21 +792,29 @@ void MWindow::anglesnap()
 
 void MWindow::en_disableWall()
 {
+    closePropertyDockWidget();
+
     mview->en_disableWall();
 }
 
 void MWindow::en_disableDoor()
 {
+    closePropertyDockWidget();
+
     mview->en_disableDoor();
 }
 
 void MWindow::en_disableLandmark()
 {
+    closePropertyDockWidget();
+
     mview->en_disableLandmark();
 }
 
 void MWindow::en_disableHLine()
 {
+    closePropertyDockWidget();
+
     mview->en_disableHLine();
 }
 
@@ -1125,50 +1131,34 @@ void MWindow::on_actionZoom_Extents_triggered()
     mview->AutoZoom();
 }
 
-void MWindow::sourceButtonClicked()
+void MWindow::closePropertyDockWidget()
 {
-    if(propertyDockWidget == nullptr)
+    if(propertyDockWidget != nullptr)
     {
-        //source widget off, dockwidget off -> open source widget
-        mview->enableSourceMode();
-
-        propertyDockWidget = new QDockWidget(tr("Sources"), this);
-        propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-        propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-
-        auto *sourceWidget = new SourceWidget(this, mview, this->dmanager);
-        addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
-        propertyDockWidget->setWidget(sourceWidget);
-    } else if (propertyDockWidget != nullptr && propertyDockWidget->windowTitle() == "Sources")
-    {
-        // source widget on, dockwidget on -> close source widget
         mview->disable_drawing();
-        actionSource->setChecked(false);
-
         propertyDockWidget->close(); //close() has deleted pointer
         propertyDockWidget = nullptr;
-
-
-    } else if (propertyDockWidget != nullptr && propertyDockWidget->windowTitle() != "Sources")
-    {
-        // goal widget off, dockwidget on -> close other widget, open source widget
-        propertyDockWidget->close();
-        propertyDockWidget = nullptr;
-
-        mview->enableSourceMode();
-
-        propertyDockWidget = new QDockWidget(tr("Sources"), this);
-        propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-        propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-
-        auto *sourceWidget = new SourceWidget(this, mview, this->dmanager);
-        addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
-        propertyDockWidget->setWidget(sourceWidget);
-
-    } else
-    {
     }
 }
+
+void MWindow::sourceButtonClicked()
+{
+    closePropertyDockWidget();
+
+    //source widget off, dockwidget off -> open source widget
+    mview->enableSourceMode();
+
+    propertyDockWidget = new QDockWidget(tr("Sources"), this);
+    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    propertyDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+
+    auto *sourceWidget = new SourceWidget(this, mview, this->dmanager);
+    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+    propertyDockWidget->setWidget(sourceWidget);
+
+}
+
+
 
 // Goal drawing mode
 /*
@@ -1179,42 +1169,18 @@ void MWindow::sourceButtonClicked()
 
 void MWindow::goalButtionClicked()
 {
-    if(propertyDockWidget == nullptr)
-    {
-        //goal widget off, dockwidget off -> open goal widget
-        mview->enableGoalMode();
+    closePropertyDockWidget();
 
-        propertyDockWidget = new QDockWidget(tr("Goals"), this);
-        propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-        propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    mview->enableGoalMode();
 
-        auto *goalWidget = new GoalWidget(this, mview, this->dmanager);
-        addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
-        propertyDockWidget->setWidget(goalWidget);
-    } else if (propertyDockWidget != nullptr && propertyDockWidget->windowTitle() == "Goals")
-    {
-        // goal widget on, dockwidget on -> close goal widget
-        mview->disable_drawing();
-        actionGoal->setChecked(false);
+    propertyDockWidget = new QDockWidget(tr("Goals"), this);
+    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-        propertyDockWidget->close(); //close() has deleted pointer
-        propertyDockWidget = nullptr;
-    } else if (propertyDockWidget != nullptr && propertyDockWidget->windowTitle() != "Goals")
-    {
-        // goal widget off, dockwidget on -> close other widget, open goal widget
-        propertyDockWidget->close();
-        propertyDockWidget = nullptr;
+    auto *goalWidget = new GoalWidget(this, mview, this->dmanager);
+    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+    propertyDockWidget->setWidget(goalWidget);
 
-        propertyDockWidget = new QDockWidget(tr("Goals"), this);
-        propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-        propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-
-        auto *goalWidget = new GoalWidget(this, mview, this->dmanager);
-        addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
-        propertyDockWidget->setWidget(goalWidget);
-    } else
-    {
-    }
 }
 
 /*
@@ -1299,4 +1265,39 @@ void MWindow::importBackground()
     image->load(fileName);
     QPixmap bkgnd(QPixmap::fromImage(*image));
     mscene->addPixmap(bkgnd);
+}
+
+/*
+    since v0.8.9
+
+    create a listDockwidget and propertyDockwidget
+ */
+
+
+
+void MWindow::corridorButtonClicked()
+{
+    closeListDockWidget();
+    closePropertyDockWidget();
+
+    listDockWidget = new QDockWidget(tr("Corridor"), this);
+    listDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    listDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
+
+    auto *corridorListWidget = new RoomListWidget(this, this->dmanager);
+    corridorListWidget->setLabel("Corridors");
+
+    addDockWidget(Qt::LeftDockWidgetArea, listDockWidget);
+    listDockWidget->setWidget(corridorListWidget);
+
+
+}
+
+void MWindow::closeListDockWidget()
+{
+    if(listDockWidget != nullptr)
+    {
+        listDockWidget->close();
+        listDockWidget = nullptr;
+    }
 }
