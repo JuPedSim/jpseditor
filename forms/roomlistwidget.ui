@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Room Widget</string>
+   <string>Room List</string>
   </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
@@ -72,7 +72,7 @@
       <item>
        <widget class="QLabel" name="label_subrrom">
         <property name="text">
-         <string>Subroom</string>
+         <string>Zones</string>
         </property>
        </widget>
       </item>
