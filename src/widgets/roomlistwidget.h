@@ -22,6 +22,8 @@ public:
 
     ~RoomListWidget();
 
+    void setLabel(QString name);
+
 private:
     Ui::RoomListWidget *ui;
 };

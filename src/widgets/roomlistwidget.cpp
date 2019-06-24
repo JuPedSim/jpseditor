@@ -44,3 +44,8 @@ RoomListWidget::~RoomListWidget()
 {
     delete ui;
 }
+
+void RoomListWidget::setLabel(QString name)
+{
+    ui->label_subrrom->setText(name);
+}
