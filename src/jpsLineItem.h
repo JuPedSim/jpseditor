@@ -45,7 +45,7 @@ public:
     QString GetType();
     void set_id(int id);
     void set_name(QString name);
-//    void set_type(bool wall, bool door, bool exit, bool hline=false);
+//    void setType(bool wall, bool door, bool exit, bool hline=false);
 
     enum LineType{wall, door, crossing, exit, hline, undefined};
     void setType(LineType type);
@@ -84,7 +84,7 @@ private:
 
     /*
     jpsCrossing* assigned_crossing=0L;
-    jpsRoom* assigned_room=0L;
+    JPSZone* assigned_room=0L;
     jpsExit* assinged_exit=0L;
     */
 };

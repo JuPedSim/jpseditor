@@ -34,7 +34,7 @@
 #include <QApplication>
 #include <QGraphicsView>
 #include <QMessageBox>
-#include "rooms.h"
+#include "jpszone.h"
 #include "jpscrossing.h"
 #include "jpsLineItem.h"
 #include "jpsexit.h"
@@ -58,10 +58,10 @@ public:
     jpsDatamanager(QWidget* parent=0L, jpsGraphicsView* view=0L);
     ~jpsDatamanager();
     //Room
-    QList<jpsRoom *> get_roomlist();
+    QList<JPSZone *> get_roomlist();
     void new_room();
-    void remove_room(jpsRoom* room);
-    void change_roomName(jpsRoom* room, QString name);
+    void remove_room(JPSZone* room);
+    void change_roomName(JPSZone* room, QString name);
     void remove_all_rooms();
     //Obstacle
     QList<jpsObstacle *> get_obstaclelist();
@@ -138,11 +138,11 @@ public:
     bool readRoutingXML(QFile &file);
     void parseHline(QXmlStreamReader &xmlReader);
     void parseSubRoom(QXmlStreamReader &xmlReader);
-    void parseWalls(QXmlStreamReader &xmlReader,jpsRoom* room);
+    void parseWalls(QXmlStreamReader &xmlReader,JPSZone* room);
     void parseWalls(QXmlStreamReader &xmlReader,jpsObstacle* room);
     void parseCrossings(QXmlStreamReader &xmlReader);
     void parseTransitions(QXmlStreamReader &xmlReader);
-    void parseObstacles(QXmlStreamReader &xmlReader, jpsRoom *room);
+    void parseObstacles(QXmlStreamReader &xmlReader, JPSZone *room);
     QPointF parseUp(QXmlStreamReader &xmlReader); /// stair's up point
     QPointF parseDown(QXmlStreamReader &xmlReader); /// stair's down point
 
@@ -157,7 +157,7 @@ public:
     void writeHLines(QXmlStreamWriter *stream, QList<jpsLineItem* >& hLines);
     QString RoomIDHLine(jpsLineItem* lineItem);
     void writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
-    void writeSubRoom(QXmlStreamWriter *stream, jpsRoom* room, QList<jpsLineItem* >& lines);
+    void writeSubRoom(QXmlStreamWriter *stream, JPSZone* room, QList<jpsLineItem* >& lines);
     void AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
@@ -209,7 +209,8 @@ public:
     // read line file
     bool ReadLineFile(QFile &file);
 
-
+    // convert string to ZoneTyep
+    JPSZone::ZoneType convertToZoneType (const QString string);
 
 //    //Show Cognitive Map
 //    void ShowCMapFrame(const int& frame) const;
@@ -218,8 +219,11 @@ public:
 
 private:
     //Geometry
-    QList<jpsRoom *> roomlist;
+    QList<JPSZone *> roomlist;
     QList<jpsObstacle *> obstaclelist;
+
+    QList<JPSSource *> sourcelist;
+    QList<JPSGoal *> goallist;
     QList<jpsCrossing *> crossingList;
     QList<jpsExit *> exitList;
     QList<jpsLandmark* > _landmarks;
@@ -227,9 +231,6 @@ private:
     QList<jpsLandmark* > _landmarksAfterLoose;
     QList<jpsConnection* > _ConnectionsAfterLandmarkLoose;
     QList<jpsRegion* > _regions;
-
-    QList<JPSSource *> sourcelist;
-    QList<JPSGoal *> goallist;
 
     int room_id_counter;
     int obs_id_counter;

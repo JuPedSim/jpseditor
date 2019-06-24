@@ -1,7 +1,7 @@
 #ifndef ROOMIDENTIFICATION_H
 #define ROOMIDENTIFICATION_H
 
-#include "../rooms.h"
+#include "src/jpszone.h"
 
 struct AverageRoomData
 {
@@ -29,7 +29,7 @@ class RoomIdentification
 {
 public:
     explicit RoomIdentification();
-    explicit RoomIdentification(const QList<jpsRoom *>& rooms);
+    explicit RoomIdentification(const QList<JPSZone *>& rooms);
 
     void IdentifyRooms();
     void GatherData();
@@ -39,7 +39,7 @@ public:
     double CalcStd(const std::vector<double>& v, double mean);
 
 private:
-    QList<jpsRoom *> _rooms;
+    QList<JPSZone *> _rooms;
     AverageRoomData _commonRoom;
     AverageRoomData _circRoom;
 

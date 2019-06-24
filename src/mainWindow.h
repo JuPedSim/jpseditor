@@ -41,7 +41,7 @@
 #include "src/widgets/widgetsettings.h"
 #include "GraphicView.h"
 #include "datamanager.h"
-#include "rooms.h"
+#include "jpszone.h"
 #include "src/widgets/settingdialog.h"
 #include "src/widgets/inifilewidget.h"
 #include "src/widgets/snappingoptions.h"
@@ -64,7 +64,12 @@ private:
     InifileWidget * inifileWidget;
 
     QDockWidget *propertyDockWidget;
+
     QToolBar *drawing_toolbar_;
+    QActionGroup *drawingActionGroup;
+
+    QToolBar *zone_toolbar_;
+    QActionGroup *zoneActionGroup;
 
     SnappingOptions* snappingOptions;
 //    WidgetSettings* _settings;
@@ -94,7 +99,7 @@ private:
     bool _statScale;
     QList<bool> objectsnapping;
 
-    QActionGroup *drawingActionGroup;
+
 
 protected slots:
     
@@ -196,8 +201,15 @@ private slots:
     void on_actionZoom_Windows_triggered();
     void on_actionZoom_Extents_triggered();
 
+    //ToolBar
+    void closeLeftToolBarArea();
+
     //Drawing ToolBar
     void setupDrawingToolBar();
+
+    //Zone ToolBar
+    void setupZoneToolBar();
+
 };
 
 #endif // MAINWINDOW_H

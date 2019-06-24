@@ -138,7 +138,8 @@ set( SRCS
     src/main.cpp
     src/GraphicView.cpp
     src/graphicscene.cpp
-    src/rooms.cpp
+
+        src/jpszone.cpp
     src/datamanager.cpp
     src/global.cpp
 
@@ -189,6 +190,8 @@ set( SRCS
     src/tinyxml/tinyxmlerror.cpp
     src/tinyxml/tinyxmlparser.cpp
 
+    src/widgets/roomlistwidget.cpp
+
         )
   )
 # all header files that should be treated with moc
@@ -199,7 +202,7 @@ set( HDR
     src/graphicscene.h
     src/elementtype.h
     src/global.h
-    src/rooms.h
+        src/jpszone.h
     src/datamanager.h
 
     src/jpscrossing.h
@@ -247,7 +250,11 @@ set( HDR
     src/AutomaticRoomIdentification/roomID.h
     src/AutomaticRoomIdentification/roomdefinition.h
     src/AutomaticRoomIdentification/roomidentification.h
-  )
+    src/tinyxml/tinystr.h
+    src/tinyxml/tinyxml.h
+
+    src/widgets/roomlistwidget.h
+        )
 
 # *.ui files
 set( UIS
@@ -260,6 +267,7 @@ set( UIS
     forms/snappingoptions.ui
     forms/sourcewidget.ui
     forms/goalwidget.ui
+    forms/roomlistwidget.ui
   )
 
 # and finally a resource file

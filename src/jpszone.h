@@ -1,32 +1,3 @@
-/**
- * \file        rooms.h
- * \date        Oct-01-2018
- * \version     v0.8.4
- * \copyright   <2009-2018> Forschungszentrum Jülich GmbH. All rights reserved.
- *
- * \section License
- * This file is part of JuPedSim.
- *
- * JuPedSim is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * JuPedSim is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
- *
- * \section Description
- * This class represents a (sub)room. Walls and/or doors belonging to a certain room have to defined with the help of roomwidget.
- *
- *
- **/
-
-
 #ifndef ROOMS_H
 #define ROOMS_H
 #include <QGraphicsView>
@@ -34,12 +5,14 @@
 
 class jpsCrossing;
 
-class jpsRoom
+class JPSZone
 {
 
 public:
-    jpsRoom(int id_room);
-    ~jpsRoom(){}
+    JPSZone(int id_zone);
+    ~JPSZone(){}
+
+    enum ZoneType {Room, Corridor, Office, Lobby, Entrance, Stair, Obstacle, Plattform, NotAssigned};
 
     void addWall(QList<jpsLineItem *> newWalls);
     void addWall(jpsLineItem* newWall);
@@ -69,8 +42,8 @@ public:
     QPointF get_center();
     void highlight(const QString &color="random");
     void switchVisibility();
-    QString get_type() const;
-    void set_type(const QString &string);
+    ZoneType getType() const;
+    void setType(const ZoneType &type);
     QList<QPointF> GetDoorVertices() const;
 
     void AddDoor(jpsCrossing *door);
@@ -94,23 +67,28 @@ public:
 
 private:
     int id;
+    ZoneType zoneType;
+    QString name;
+
     bool highlighted;
+
+    bool visible;
+
     float A_x;
     float B_y;
     float C_z;
-    QPointF _up;
-    QPointF _down;
-    QString name;
+    QPointF up_;
+    QPointF down_;
+
     QList<jpsLineItem*> wall_list;
     QVector<QLineF> outer_polygon;
     QVector<QVector<QLineF>> inner_polygons;
 //    QVector<QPointF> sorted_polygon;
-    QString _type;
-    QList<jpsCrossing* > _doorList;
-    qreal _area;
-    bool visible;
+    QList<jpsCrossing* > doorList_;
+    qreal area_;
 
-    float _elevation; /// this makes only sense for horizontal rooms. 
+
+    float elevation_; /// this makes only sense for horizontal rooms.
 };
 
 bool EqualsPoint(const QPointF& point1, const QPointF& point2, double eps=0.001);

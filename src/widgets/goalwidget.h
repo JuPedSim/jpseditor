@@ -32,6 +32,7 @@ protected slots:
     void deleteButtonClicked();
 private:
     Ui::GoalWidget *ui;
+
     jpsGraphicsView *currentView;
     JPSGoalListModel *model;
 

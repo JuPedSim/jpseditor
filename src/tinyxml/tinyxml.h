@@ -1363,7 +1363,7 @@ public:
 
 	/// Creates a copy of this Unknown and returns it.
 	virtual TiXmlNode* Clone() const;
-	// Print this Unknown to a FILE stream.
+	// Print this NotAssigned to a FILE stream.
 	virtual void Print( FILE* cfile, int depth ) const;
 
 	virtual const char* Parse( const char* p, TiXmlParsingData* data, TiXmlEncoding encoding );

@@ -28,7 +28,7 @@
 #ifndef JPSCROSSING_H
 #define JPSCROSSING_H
 
-#include "rooms.h"
+#include "jpszone.h"
 
 class jpsCrossing
 {
@@ -38,15 +38,15 @@ public:
     jpsCrossing(jpsLineItem *cLine, bool isExit, float elevation);
 
     ~jpsCrossing(){}
-    QList<jpsRoom *> get_roomList();
+    QList<JPSZone *> get_roomList();
     QString get_name();
     int get_id();
     void set_id(int id);
     jpsLineItem *get_cLine();
     void change_name(QString name);
-    void add_rooms(jpsRoom* room1, jpsRoom* room2=0L);
-    void SetRoom(jpsRoom* room);
-    void RemoveRoom(jpsRoom* room);
+    void add_rooms(JPSZone* room1, JPSZone* room2=0L);
+    void SetRoom(JPSZone* room);
+    void RemoveRoom(JPSZone* room);
     void SetStatExit(bool stat);
     bool IsExit();
     float get_elevation();
@@ -66,7 +66,7 @@ public:
 
 
 private:
-    QList<jpsRoom *> roomList;
+    QList<JPSZone *> roomList;
     QString cName;
     jpsLineItem *cLine;
     int cId;

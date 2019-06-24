@@ -69,7 +69,7 @@ void jpsLandmark::SetPixmap(QGraphicsPixmapItem *pixmap)
 
 
 
-void jpsLandmark::SetRoom(jpsRoom *room)
+void jpsLandmark::SetRoom(JPSZone *room)
 {
     _room=room;
 }
@@ -86,7 +86,7 @@ QGraphicsPixmapItem* jpsLandmark::GetPixmap() const
 
 
 
-jpsRoom *jpsLandmark::GetRoom() const
+JPSZone *jpsLandmark::GetRoom() const
 {
     return _room;
 }

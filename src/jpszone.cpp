@@ -42,8 +42,8 @@ jpsRoom::jpsRoom(int id_room)
     QString string="Room ";
     name=string.append(QString::number(id));
     highlighted=false;
-    _type="Not specified";
-    _area=0.0;
+    area_=0.0;
+
     A_x=0.0; //plane equation: A_x . x + B_y . y + C_z = z
     B_y=0.0;
     C_z=0.0;
@@ -101,14 +101,14 @@ void jpsRoom::removeWall(QList <jpsLineItem *> wall)
 
 const QList<jpsCrossing *>& jpsRoom::GetDoors() const
 {
-    return _doorList;
+    return doorList_;
 }
 
 void jpsRoom::removeDoor(jpsCrossing *crossing)
 {
-    if (_doorList.contains(crossing))
+    if (doorList_.contains(crossing))
     {
-        _doorList.removeOne(crossing);
+        doorList_.removeOne(crossing);
     }
      qDebug("Leave jpsRoom::removeWall");
 }
@@ -151,7 +151,7 @@ QVector<QPointF> jpsRoom::get_vertices() const
             vertices.push_back(wall_list[i]->get_line()->line().p2());
         }
     }
-    for (jpsCrossing* crossing:_doorList)
+    for (jpsCrossing* crossing:doorList_)
     {
         if (vertices.contains(crossing->get_cLine()->get_line()->line().p1())==false)
         {
@@ -313,17 +313,17 @@ QList<QPointF> jpsRoom::GetDoorVertices() const
 
 void jpsRoom::AddDoor(jpsCrossing *door)
 {
-    if (!_doorList.contains(door))
-        _doorList.push_back(door);
+    if (!doorList_.contains(door))
+        doorList_.push_back(door);
     //outer_polygon.push_back(door->get_cLine()->get_line()->line());
 }
 
 void jpsRoom::AddInnerDoor(jpsCrossing *door, int id_polygon)
 {
 
-    if (!_doorList.contains(door))
+    if (!doorList_.contains(door))
     {
-        _doorList.push_back(door);
+        doorList_.push_back(door);
         if (id_polygon >= inner_polygons.size())
             inner_polygons.push_back(QVector<QLineF>{});
 
@@ -342,7 +342,7 @@ QVector<QPointF> jpsRoom::RoomAsSortedPolygon(const QVector<QLineF>& lines) cons
     QVector<QLineF> clines=lines;
     QVector<QPointF> points = {};
 
-    if(lines.size() == 0)
+    if(lines.empty())
     {
          qDebug("\t empty lines!!");
          qDebug("Leave jpsRoom::RoomAsSortedPolygon with ERROR");         
@@ -392,7 +392,7 @@ const QVector<QLineF> &jpsRoom::GetOuterPolygon() const
 
 qreal jpsRoom::GetArea() const
 {
-    return _area;
+    return area_;
 }
 
 
@@ -402,12 +402,12 @@ void jpsRoom::IdentifyInnerOuter()
     QList<QLineF> lines;
 
 
-    if (wall_list.isEmpty()==false){
+    if (!wall_list.isEmpty()){
         for (jpsLineItem* lineItem:wall_list)
         {
             lines.append(lineItem->get_line()->line());
         }
-        for (jpsCrossing* crossing:_doorList)
+        for (jpsCrossing* crossing:doorList_)
         {
             lines.append(crossing->get_cLine()->get_line()->line());
         }
@@ -484,8 +484,8 @@ void jpsRoom::IdentifyInnerOuter()
 
     }
 
-    _area=std::fabs(maxArea)-(sumArea-std::fabs(maxArea));
-    //std::cout << _area << std::endl;
+    area_=std::fabs(maxArea)-(sumArea-std::fabs(maxArea));
+    //std::cout << area_ << std::endl;
     outer_polygon=polygons[maxN];
     polygons.remove(maxN);
 
@@ -545,8 +545,7 @@ qreal jpsRoom::CalculateArea(const QVector<QLineF>& poly) const
 }
 
 
-
-void jpsRoom::set_id(int id_room)
+void JPSZone::set_id(int id_room)
 {
     id=id_room;
 }
@@ -604,22 +603,22 @@ inline QColor rndColors(int seed){
 
 QPointF jpsRoom::get_up()
 {
-     return _up;
+     return up_;
 }
 
 void jpsRoom::set_up(QPointF up)
 {
-     _up = up;
+     up_ = up;
 }
 
 QPointF jpsRoom::get_down()
 {
-     return _down;
+     return down_;
 }
 
 void jpsRoom::set_down(QPointF down)
 {
-     _down = down;
+     down_ = down;
 }
 
 void jpsRoom::switchHighlight()
@@ -629,7 +628,7 @@ void jpsRoom::switchHighlight()
 
 float jpsRoom::get_elevation()
 {
-     return _elevation;
+     return elevation_;
 }
 
 void jpsRoom::set_elevation(float elevation)
@@ -638,7 +637,7 @@ void jpsRoom::set_elevation(float elevation)
           for (auto crossing: _doorList)
                crossing->set_elevation(elevation);
 
-     _elevation = elevation;
+     elevation_ = elevation;
 }
 
 void jpsRoom::correctPlaneCoefficients()
@@ -659,16 +658,16 @@ void jpsRoom::correctPlaneCoefficients()
     QPointF P1(0,0), P2(0,0), P3(0,0); // plane is defined by three non-collinear points
     float elevation_1=0, elevation_2=0;
     // P1 P2 are the points on the first door of a room
-    P1 = _doorList[0]->get_cLine()->get_line()->line().p1();
-    P2 = _doorList[0]->get_cLine()->get_line()->line().p2();
-    elevation_1 = _doorList[0]->get_elevation();
+    P1 = doorList_[0]->get_cLine()->get_line()->line().p1();
+    P2 = doorList_[0]->get_cLine()->get_line()->line().p2();
+    elevation_1 = doorList_[0]->get_elevation();
 
     //from _doortList get one more point on a door with different elevation as P3
-    for (int i=1; i<_doorList.size(); i++)
+    for (int i=1; i<doorList_.size(); i++)
     {
-      if(_doorList[i]->get_elevation() != _doorList[0]->get_elevation()){
-           P3 = _doorList[i]->get_cLine()->get_line()->line().p1();
-           elevation_2 = _doorList[i]->get_elevation();
+      if(doorList_[i]->get_elevation() != doorList_[0]->get_elevation()){
+           P3 = doorList_[i]->get_cLine()->get_line()->line().p1();
+           elevation_2 = doorList_[i]->get_elevation();
            break;
       }
     }

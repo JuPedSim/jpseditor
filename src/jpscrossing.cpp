@@ -37,7 +37,7 @@ jpsCrossing::jpsCrossing(jpsLineItem *line)
 
 }
 
-QList<jpsRoom *> jpsCrossing::get_roomList()
+QList<JPSZone *> jpsCrossing::get_roomList()
 {
     return roomList;
 }
@@ -91,17 +91,17 @@ void jpsCrossing::setOutflow(QString outflow) {
     jpsCrossing::outflow = outflow;
 }
 
-void jpsCrossing::add_rooms(jpsRoom *room1, jpsRoom *room2)
+void jpsCrossing::add_rooms(JPSZone *room1, JPSZone *room2)
 {
      qDebug("Enter jpsCrossing::add_rooms");
      qDebug("\t room1 = <%s> of type <%s>", 
             room1->get_name().toStdString().c_str(),
-            room1->get_type().toStdString().c_str());
+            QString(room1->getType()).toStdString().c_str());
     roomList.clear();
     roomList.push_back(room1);
     room1->AddDoor(this);
 
-    if(room1->get_type().toUpper() != "STAIR")  // assuming a crossing can
+    if(room1->getType() != JPSZone::Stair)  // assuming a crossing can
                                                //  not separate two stairs
          this->set_elevation(room1->get_elevation());
 
@@ -109,8 +109,8 @@ void jpsCrossing::add_rooms(jpsRoom *room1, jpsRoom *room2)
     {
          qDebug("\t room2 = <%s> of type <%s>", 
                 room2->get_name().toStdString().c_str(),
-                room2->get_type().toStdString().c_str());
-         if(room2->get_type().toUpper() != "STAIR")
+                QString(room2->getType()).toStdString().c_str());
+         if(room2->getType() != JPSZone::Stair)
               this->set_elevation(room2->get_elevation());
         roomList.push_back(room2);
         room2->AddDoor(this);
@@ -118,7 +118,7 @@ void jpsCrossing::add_rooms(jpsRoom *room1, jpsRoom *room2)
     qDebug("Leave jpsCrossing::add_rooms");
 }
 
-void jpsCrossing::SetRoom(jpsRoom *room)
+void jpsCrossing::SetRoom(JPSZone *room)
 {
     if (roomList.size()==2)
         std::cout << "Hier!" << std::endl;
@@ -129,9 +129,9 @@ void jpsCrossing::SetRoom(jpsRoom *room)
     }
 }
 
-void jpsCrossing::RemoveRoom(jpsRoom *room)
+void jpsCrossing::RemoveRoom(JPSZone *room)
 {
-    for (jpsRoom* myRoom:roomList)
+    for (JPSZone* myRoom:roomList)
     {
         if (room==myRoom)
         {
