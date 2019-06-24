@@ -50,6 +50,7 @@
 #include "src/widgets/goalwidget.h"
 #include "src/XML/goalreader.h"
 #include "src/XML/sourcereader.h"
+#include "src/widgets/basiczonewidget.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 
@@ -212,6 +213,7 @@ private slots:
     //Zone ToolBar
     void setupZoneToolBar();
     void corridorButtonClicked();
+    void platformButtonclicked();
 
     //propertyDockWidget
     void closePropertyDockWidget();

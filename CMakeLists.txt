@@ -191,7 +191,7 @@ set( SRCS
     src/tinyxml/tinyxmlparser.cpp
 
     src/widgets/roomlistwidget.cpp
-
+    src/widgets/basiczonewidget.cpp
         )
   )
 # all header files that should be treated with moc
@@ -254,6 +254,7 @@ set( HDR
     src/tinyxml/tinyxml.h
 
     src/widgets/roomlistwidget.h
+    src/widgets/basiczonewidget.h
         )
 
 # *.ui files
@@ -268,6 +269,7 @@ set( UIS
     forms/sourcewidget.ui
     forms/goalwidget.ui
     forms/roomlistwidget.ui
+    forms/basicZoneWidget.ui
   )
 
 # and finally a resource file

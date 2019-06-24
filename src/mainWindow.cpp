@@ -234,6 +234,7 @@ MWindow :: MWindow()
 
     //zone toolbar
     connect(actionCorridor, SIGNAL(triggered(bool)),this, SLOT(corridorButtonClicked()));
+    connect(actionPlatform, SIGNAL(triggered(bool)),this, SLOT(platformButtonclicked()));
 
     // Assemble actions group
     zoneActionGroup = new QActionGroup(this);
@@ -1273,13 +1274,21 @@ void MWindow::importBackground()
     create a listDockwidget and propertyDockwidget
  */
 
-
+void MWindow::closeListDockWidget()
+{
+    if(listDockWidget != nullptr)
+    {
+        listDockWidget->close();
+        listDockWidget = nullptr;
+    }
+}
 
 void MWindow::corridorButtonClicked()
 {
     closeListDockWidget();
     closePropertyDockWidget();
 
+    // left list widget
     listDockWidget = new QDockWidget(tr("Corridor"), this);
     listDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     listDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
@@ -1290,14 +1299,34 @@ void MWindow::corridorButtonClicked()
     addDockWidget(Qt::LeftDockWidgetArea, listDockWidget);
     listDockWidget->setWidget(corridorListWidget);
 
+    // right property widget
+    propertyDockWidget = new QDockWidget(tr("Corridor"), this);
+    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    propertyDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
 
+    auto *corridorWidget = new BasicZoneWidget(this, this->dmanager);
+    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+    propertyDockWidget->setWidget(corridorWidget);
 }
 
-void MWindow::closeListDockWidget()
+void MWindow::platformButtonclicked()
 {
-    if(listDockWidget != nullptr)
-    {
-        listDockWidget->close();
-        listDockWidget = nullptr;
-    }
+    closeListDockWidget();
+    closePropertyDockWidget();
+
+    // left list widget
+    listDockWidget = new QDockWidget(tr("Platform"), this);
+    listDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    listDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
+
+    auto *platformListWidget = new RoomListWidget(this, this->dmanager);
+    platformListWidget->setLabel("Platform");
+
+    addDockWidget(Qt::LeftDockWidgetArea, listDockWidget);
+    listDockWidget->setWidget(platformListWidget);
+
+    // right property widget
+    propertyDockWidget = new QDockWidget(tr("Platform"), this);
+    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    propertyDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
 }
