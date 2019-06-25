@@ -27,10 +27,6 @@
  *
 ****************************************************************/
 
-//
-// Created by sainho93 on 2019-06-19.
-//
-
 #include "roomlistwidget.h"
 #include "ui_roomlistwidget.h"
 
@@ -38,6 +34,13 @@ RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager)
     : QWidget(parent), ui(new Ui::RoomListWidget)
 {
     ui->setupUi(this);
+    data = dmanager;
+
+    updateRoomsListWidget();
+
+    connect(ui->listWidget_rooms, SIGNAL(itemSelectionChanged()),this,SLOT(updateZonesListWidget()));
+    connect(ui->pushButton_addRoom, SIGNAL(clicked()), this, SLOT(addRoomButtonClicked()));
+    connect(ui->pushButton_addZone, SIGNAL(clicked()), this, SLOT(addZoneButtonClicked()));
 }
 
 RoomListWidget::~RoomListWidget()
@@ -47,5 +50,84 @@ RoomListWidget::~RoomListWidget()
 
 void RoomListWidget::setLabel(QString name)
 {
-    ui->label_subrrom->setText(name);
+    ui->label_zone->setText(name);
+}
+
+void RoomListWidget::updateRoomsListWidget()
+{
+    qDebug("Enter RoomListWidget::updateRoomsListWidget");
+    ui->listWidget_rooms->clear();
+
+    QList<JPSZone*> roomslist = data->getRoomslist();
+
+    foreach(JPSZone *room, roomslist)
+    {
+        ui->listWidget_rooms->addItem(room->get_name());
+    }
+
+    qDebug("Leave RoomListWidget::updateRoomsListWidget");
+}
+
+void RoomListWidget::updateZonesListWidget()
+{
+    qDebug("Enter RoomListWidget::updateZonesListWidget");
+    ui->listWidget_zones->clear();
+
+    ZoneType type = data->convertToZoneType(ui->label_zone->text());
+    QList<JPSZone*> zoneslist;
+
+    switch(type)
+    {
+        case ZoneType::Platform:
+            zoneslist = data->getPlatformslist();
+            break;
+    }
+
+    // show zones
+    foreach(JPSZone *zone, zoneslist)
+    {
+        ui->listWidget_zones->addItem(zone->get_name());
+    }
+    qDebug("Leave RoomListWidget::updateZonesListWidget");
+}
+
+void RoomListWidget::addRoomButtonClicked()
+{
+    qDebug("Enter RoomListWidget::addRoomButtonClicked");
+    data->addRoom();
+    updateRoomsListWidget();
+    qDebug("Leave RoomListWidget::addRoomButtonClicked");
+}
+
+void RoomListWidget::addZoneButtonClicked()
+{
+    qDebug("Enter RoomListWidget::addZoneButtonClicked");
+    if(ui->listWidget_rooms->currentItem() != nullptr)
+    {
+        QString father_zone_name = ui->listWidget_rooms->currentItem()->text();
+        ZoneType type = data->convertToZoneType(ui->label_zone->text());
+
+        foreach(JPSZone *room, data->getRoomslist())
+            {
+                if(room->getName() == father_zone_name) // find selected room
+                {
+                    switch(type)
+                    {
+                        case ZoneType::Platform:
+                            data->addPlatform(room);
+                            break;
+                    }
+                }
+            }
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Add or select a room at first!");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.exec();
+    }
+
+    updateZonesListWidget();
+    qDebug("Leave RoomListWidget::addZoneButtonClicked");
 }

@@ -44,6 +44,7 @@
 #include "jpsregion.h"
 #include "jpssource.h"
 #include <random>
+#include "src/global.h"
 
 #include "../dxflib/src/dl_creationadapter.h"
 #include "../dxflib/src/dl_dxf.h"
@@ -59,7 +60,7 @@ public:
     ~jpsDatamanager();
     //Room
     QList<JPSZone *> get_roomlist();
-    void new_room();
+    void addRoom();
     void remove_room(JPSZone* room);
     void change_roomName(JPSZone* room, QString name);
     void remove_all_rooms();
@@ -127,13 +128,8 @@ public:
     void set_view(jpsGraphicsView* view);
     jpsGraphicsView* get_view();
 
-    // Auto Assign
-//    void AutoAssignCrossings();
-//    void AutoAssignExits();
-
 
     // Read XML
-
     bool readXML(QFile &file);
     bool readRoutingXML(QFile &file);
     void parseHline(QXmlStreamReader &xmlReader);
@@ -210,7 +206,13 @@ public:
     bool ReadLineFile(QFile &file);
 
     // convert string to ZoneTyep
-    JPSZone::ZoneType convertToZoneType (const QString string);
+    ZoneType convertToZoneType(const QString string);
+
+    // getter for JPSZones;
+    const QList<JPSZone *> &getRoomslist() const;
+    const QList<JPSZone *> &getPlatformslist() const;
+
+    void addPlatform(JPSZone *father_zone);
 
 //    //Show Cognitive Map
 //    void ShowCMapFrame(const int& frame) const;
@@ -219,7 +221,14 @@ public:
 
 private:
     //Geometry
-    QList<JPSZone *> roomlist;
+    QList<JPSZone *> roomlist; // all zones
+
+    QList<JPSZone *> roomslist; // zoneTye is room
+    int room_id_counter;
+
+    QList<JPSZone *> platformslist;// zoneTye is platform
+    int platform_id_counter;
+
     QList<jpsObstacle *> obstaclelist;
 
     QList<JPSSource *> sourcelist;
@@ -232,7 +241,7 @@ private:
     QList<jpsConnection* > _ConnectionsAfterLandmarkLoose;
     QList<jpsRegion* > _regions;
 
-    int room_id_counter;
+
     int obs_id_counter;
     int _crossingIdCounter;
     QWidget* parent_widget;

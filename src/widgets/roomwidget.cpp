@@ -205,8 +205,8 @@ void roomWidget::show_obstacles()
 
 void roomWidget::new_room()
 {
-    qDebug("Enter roomWidget::new_room");
-    datamanager->new_room();
+    qDebug("Enter roomWidget::addRoom");
+    datamanager->addRoom();
     // Next three calls are necessary
     // if the user first generates a
     // crossing/exit/obs and secondly generates rooms
@@ -215,7 +215,7 @@ void roomWidget::new_room()
     enable_roomSelectionObs();
     this->show_rooms();
     this->showLayersInfo();
-    qDebug("Leave roomWidget::new_room");
+    qDebug("Leave roomWidget::addRoom");
 }
 
 void roomWidget::delete_room()
@@ -903,13 +903,13 @@ void roomWidget::HighlightAllRooms()
 
     for (JPSZone* room:datamanager->get_roomlist())
     {
-        if (room->getType()!=JPSZone::Corridor)
+        if (room->getType()!=Corridor)
             room->highlight("darkGreen");
     }
 
     for (JPSZone* room:datamanager->get_roomlist())
     {
-        if (room->getType()==JPSZone::Corridor)
+        if (room->getType()==Corridor)
             room->highlight("darkMagenta");
     }
     qDebug() << "Leave roomWidget::HighlightAllRooms()!";

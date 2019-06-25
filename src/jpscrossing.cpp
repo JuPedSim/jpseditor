@@ -101,7 +101,7 @@ void jpsCrossing::add_rooms(JPSZone *room1, JPSZone *room2)
     roomList.push_back(room1);
     room1->AddDoor(this);
 
-    if(room1->getType() != JPSZone::Stair)  // assuming a crossing can
+    if(room1->getType() != Stair)  // assuming a crossing can
                                                //  not separate two stairs
          this->set_elevation(room1->get_elevation());
 
@@ -110,7 +110,7 @@ void jpsCrossing::add_rooms(JPSZone *room1, JPSZone *room2)
          qDebug("\t room2 = <%s> of type <%s>", 
                 room2->get_name().toStdString().c_str(),
                 QString(room2->getType()).toStdString().c_str());
-         if(room2->getType() != JPSZone::Stair)
+         if(room2->getType() != Stair)
               this->set_elevation(room2->get_elevation());
         roomList.push_back(room2);
         room2->AddDoor(this);

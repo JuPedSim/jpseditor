@@ -265,6 +265,8 @@ MWindow::~MWindow()
 void MWindow::setupDrawingToolBar()
 {
     closeLeftToolBarArea(); // close running toolbar at first
+    closeListDockWidget();
+    closePropertyDockWidget();
 
     drawing_toolbar_ = new QToolBar("Drawing ToolBar", this);
     addToolBar(Qt::LeftToolBarArea, drawing_toolbar_);
@@ -278,6 +280,8 @@ void MWindow::setupDrawingToolBar()
 void MWindow::setupZoneToolBar()
 {
     closeLeftToolBarArea();
+    closeListDockWidget();
+    closePropertyDockWidget();
 
     zone_toolbar_ = new QToolBar("Zone ToolBar", this);
 
