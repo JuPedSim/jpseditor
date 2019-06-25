@@ -25,19 +25,56 @@
  * \section Description
  *
  * This class is for platform property Dockwidget
- * Inherited from basicpropertywidget
 ****************************************************************/
 
 #include "platformpropertywidget.h"
 #include "ui_platformpropertywidget.h"
 
-PlatformPropertyWidget::PlatformPropertyWidget(QWidget *parent, jpsDatamanager *dmanager)
-    : BasicPropertyWidget(parent, dmanager), ui(new Ui::PlatformPropertyWidget)
+PlatformPropertyWidget::PlatformPropertyWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsView *gview)
+    : QWidget(parent), ui(new Ui::PlatformPropertyWidget)
 {
     ui->setupUi(this);
+
+    data = dmanager;
+    view = gview;
+
+    connect(ui->pushButton_addWall, SIGNAL(clicked()), this, SLOT(addWallButtonClicked()));
 }
 
 PlatformPropertyWidget::~PlatformPropertyWidget()
 {
     delete ui;
+}
+
+void PlatformPropertyWidget::addWallButtonClicked()
+{
+//    qDebug("Enter roomWidget::addWall");
+//
+//    if (graphview->get_markedLines().size()>0)
+//    {
+//        qDebug("%d",graphview->get_markedLines().size());
+//        if (ui->list_rooms->currentItem()!=0L)
+//        {
+//            int crow=ui->list_rooms->currentRow();
+//
+//            datamanager->get_roomlist()[crow]->addWall(graphview->get_markedLines());
+//
+//            this->showWallsAndType();
+//        }
+//    }
+//    qDebug("Leave roomWidget::addWall");
+
+    qDebug("Enter PlatformPropertyWidget::addWallButtonClicked");
+    if(!view->get_markedLines().isEmpty())
+    {
+
+    }
+    qDebug("Leave PlatformPropertyWidget::addWallButtonClicked");
+}
+
+void PlatformPropertyWidget::receiveJPSZone(JPSZone *zone)
+{
+    current_zone = zone;
+    QString name = current_zone->getName();
+    qDebug("%s", name.data());
 }

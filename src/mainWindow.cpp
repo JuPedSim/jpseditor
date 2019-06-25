@@ -1334,7 +1334,10 @@ void MWindow::platformButtonclicked()
     propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     propertyDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
 
-    auto *platformWidget = new PlatformPropertyWidget(this, this->dmanager);
+    auto *platformPropertyWidget = new PlatformPropertyWidget(this, this->dmanager, mview);
     addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
-    propertyDockWidget->setWidget(platformWidget);
+    propertyDockWidget->setWidget(platformPropertyWidget);
+
+    connect(platformListWidget, SIGNAL(zoneSelected(JPSZone *)),
+            platformPropertyWidget, SLOT(receiveJPSZone(JPSZone *)));
 }

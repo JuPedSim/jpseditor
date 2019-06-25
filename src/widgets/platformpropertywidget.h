@@ -5,22 +5,33 @@
 #include <QtWidgets>
 #include "src/datamanager.h"
 #include "src/widgets/basicpropertywidget.h"
+#include "src/GraphicView.h"
 
 namespace Ui {
     class PlatformPropertyWidget;
 }
 
-class PlatformPropertyWidget : public BasicPropertyWidget
+class PlatformPropertyWidget : public QWidget
 {
     Q_OBJECT;
 
 public:
-    explicit PlatformPropertyWidget(QWidget *parent = nullptr, jpsDatamanager *dmanager = nullptr);
+    explicit PlatformPropertyWidget(QWidget *parent = nullptr, jpsDatamanager *dmanager = nullptr,
+                                    jpsGraphicsView *gview = nullptr);
 
     ~PlatformPropertyWidget();
 
+public slots:
+    void receiveJPSZone(JPSZone *zone);
+
+protected slots:
+    void addWallButtonClicked();
+
 private:
     Ui::PlatformPropertyWidget *ui;
+    jpsDatamanager *data;
+    jpsGraphicsView *view;
+    JPSZone *current_zone;
 };
 
 

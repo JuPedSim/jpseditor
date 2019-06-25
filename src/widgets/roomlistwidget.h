@@ -31,6 +31,11 @@ public slots:
     void addRoomButtonClicked();
     void addZoneButtonClicked();
 
+    void currentZoneChanged();
+    JPSZone * getCurrentZone(QListWidgetItem *item);
+
+signals:
+    void zoneSelected(JPSZone *);
 
 private:
     Ui::RoomListWidget *ui;
