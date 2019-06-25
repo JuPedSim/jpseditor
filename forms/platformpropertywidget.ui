@@ -31,7 +31,7 @@
      <x>10</x>
      <y>10</y>
      <width>281</width>
-     <height>311</height>
+     <height>303</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -73,10 +73,10 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_numberTrack"/>
+       <widget class="QLineEdit" name="lineEdit"/>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_applyNumber">
+       <widget class="QPushButton" name="pushButton_3">
         <property name="text">
          <string>Apply</string>
         </property>

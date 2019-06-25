@@ -276,7 +276,7 @@ void roomWidget::change_roomname()
 
 void roomWidget::addWall()
 {
-     qDebug("Enter roomWidget::addWall");
+    qDebug("Enter roomWidget::addWall");
 
     if (graphview->get_markedLines().size()>0)
     {

@@ -38,9 +38,11 @@ RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager)
 
     updateRoomsListWidget();
 
-    connect(ui->listWidget_rooms, SIGNAL(itemSelectionChanged()),this,SLOT(updateZonesListWidget()));
+    connect(ui->listWidget_rooms, SIGNAL(itemSelectionChanged()), this, SLOT(updateZonesListWidget()));
     connect(ui->pushButton_addRoom, SIGNAL(clicked()), this, SLOT(addRoomButtonClicked()));
     connect(ui->pushButton_addZone, SIGNAL(clicked()), this, SLOT(addZoneButtonClicked()));
+
+    connect(ui->listWidget_zones, SIGNAL(itemSelectionChanged()), this, SLOT(currentZoneChanged()));
 }
 
 RoomListWidget::~RoomListWidget()
@@ -108,17 +110,17 @@ void RoomListWidget::addZoneButtonClicked()
         ZoneType type = data->convertToZoneType(ui->label_zone->text());
 
         foreach(JPSZone *room, data->getRoomslist())
+        {
+            if(room->getName() == father_zone_name) // find selected room
             {
-                if(room->getName() == father_zone_name) // find selected room
+                switch(type)
                 {
-                    switch(type)
-                    {
-                        case ZoneType::Platform:
-                            data->addPlatform(room);
-                            break;
-                    }
+                    case ZoneType::Platform:
+                        data->addPlatform(room);
+                        break;
                 }
             }
+        }
     }
     else
     {
@@ -130,4 +132,33 @@ void RoomListWidget::addZoneButtonClicked()
 
     updateZonesListWidget();
     qDebug("Leave RoomListWidget::addZoneButtonClicked");
+}
+
+void RoomListWidget::currentZoneChanged()
+{
+    auto *zone = getCurrentZone(ui->listWidget_zones->currentItem());
+    emit zoneSelected(zone);
+}
+
+JPSZone * RoomListWidget::getCurrentZone(QListWidgetItem *item)
+{
+    QString name = item->text();
+
+    ZoneType type = data->convertToZoneType(ui->label_zone->text());
+    QList<JPSZone*> zoneslist;
+
+    switch(type)
+    {
+        case ZoneType::Platform:
+            zoneslist = data->getPlatformslist();
+            break;
+    }
+
+    foreach(JPSZone *zone, zoneslist)
+    {
+        if(name == zone->getName()) // find selected room
+        {
+            return zone;
+        }
+    }
 }
