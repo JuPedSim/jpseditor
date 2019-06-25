@@ -50,7 +50,8 @@
 #include "src/widgets/goalwidget.h"
 #include "src/XML/goalreader.h"
 #include "src/XML/sourcereader.h"
-#include "src/widgets/basiczonewidget.h"
+#include "src/widgets/basicpropertywidget.h"
+#include "src/widgets/platformpropertywidget.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 

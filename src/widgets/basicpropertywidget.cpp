@@ -28,16 +28,16 @@
 ****************************************************************/
 
 
-#include "basiczonewidget.h"
-#include "ui_basiczonewidget.h"
+#include "basicpropertywidget.h"
+#include "ui_basicpropertywidget.h"
 
-BasicZoneWidget::BasicZoneWidget(QWidget *parent, jpsDatamanager *dmanager)
-    : QWidget(parent), ui(new Ui::BasicZoneWidget)
+BasicPropertyWidget::BasicPropertyWidget(QWidget *parent, jpsDatamanager *dmanager)
+    : QWidget(parent), ui(new Ui::BasicPropertyWidget)
 {
     ui->setupUi(this);
 }
 
-BasicZoneWidget::~BasicZoneWidget()
+BasicPropertyWidget::~BasicPropertyWidget()
 {
     delete ui;
 }
