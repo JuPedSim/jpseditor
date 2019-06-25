@@ -1304,7 +1304,7 @@ void MWindow::corridorButtonClicked()
     propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     propertyDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
 
-    auto *corridorWidget = new BasicZoneWidget(this, this->dmanager);
+    auto *corridorWidget = new BasicPropertyWidget(this, this->dmanager);
     addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
     propertyDockWidget->setWidget(corridorWidget);
 }
@@ -1329,4 +1329,8 @@ void MWindow::platformButtonclicked()
     propertyDockWidget = new QDockWidget(tr("Platform"), this);
     propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     propertyDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+
+    auto *platformWidget = new PlatformPropertyWidget(this, this->dmanager);
+    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+    propertyDockWidget->setWidget(platformWidget);
 }
