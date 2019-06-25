@@ -8,6 +8,7 @@
 #include <QtGui>
 #include <QtWidgets>
 #include "src/datamanager.h"
+#include "src/global.h"
 
 namespace Ui {
 class RoomListWidget;
@@ -24,8 +25,16 @@ public:
 
     void setLabel(QString name);
 
+public slots:
+    void updateRoomsListWidget();
+    void updateZonesListWidget();
+    void addRoomButtonClicked();
+    void addZoneButtonClicked();
+
+
 private:
     Ui::RoomListWidget *ui;
+    jpsDatamanager *data;
 };
 
 #endif //JPSEDITOR_ROOMLISTWIDGET_H

@@ -51,7 +51,7 @@ void RoomDefinition::SetUpRoomsAndDoors()
 
     for (const std::list<double>& room:roomList)
     {
-        _dManager->new_room();
+        _dManager->addRoom();
         JPSZone* cRoom = _dManager->get_roomlist().back();
         std::vector<double> roomasVector = std::vector<double>{room.begin(),room.end()};
         for (size_t i=0; i<roomasVector.size(); i+=4)

@@ -2,6 +2,7 @@
 #define ROOMS_H
 #include <QGraphicsView>
 #include "jpsLineItem.h"
+#include "global.h"
 
 class jpsCrossing;
 
@@ -9,10 +10,8 @@ class JPSZone
 {
 
 public:
-    JPSZone(int id_zone);
+    JPSZone(int id_zone, JPSZone *father, ZoneType type);
     ~JPSZone(){}
-
-    enum ZoneType {Room, Corridor, Office, Lobby, Entrance, Stair, Obstacle, Plattform, NotAssigned};
 
     void addWall(QList<jpsLineItem *> newWalls);
     void addWall(jpsLineItem* newWall);
@@ -65,15 +64,22 @@ public:
     bool isVisible();
     void setVisible(bool visibility);
 
+    // father zone can only be JPSZone::Room;
+    JPSZone *getFatherZone() const;
+    void setFatherZone(JPSZone *fatherZone);
+
+    const QString &getName() const;
+
+    void setName(const QString &name);
+
 private:
     int id;
+    JPSZone *father_zone;
+
     ZoneType zoneType;
     QString name;
-
     bool highlighted;
-
     bool visible;
-
     float A_x;
     float B_y;
     float C_z;
@@ -87,8 +93,9 @@ private:
     QList<jpsCrossing* > doorList_;
     qreal area_;
 
-
     float elevation_; /// this makes only sense for horizontal rooms.
+
+
 };
 
 bool EqualsPoint(const QPointF& point1, const QPointF& point2, double eps=0.001);

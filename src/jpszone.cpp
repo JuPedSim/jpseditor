@@ -720,3 +720,25 @@ void jpsRoom::setVisible(bool visibility)
 {
     visible = visibility;
 }
+
+JPSZone *JPSZone::getFatherZone() const
+{
+    qDebug("Enter JPSZone::getFatherZone");
+    return father_zone;
+    qDebug("Leave JPSZone::getFatherZone");
+}
+
+void JPSZone::setFatherZone(JPSZone *fatherZone)
+{
+    qDebug("Enter JPSZone::setFatherZone");
+    father_zone = fatherZone;
+    qDebug("Leave JPSZone::setFatherZone");
+}
+
+const QString &JPSZone::getName() const {
+    return name;
+}
+
+void JPSZone::setName(const QString &name) {
+    JPSZone::name = name;
+}
