@@ -340,7 +340,6 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                     break;
                 }
             default:
-                // If door, wall, exit, hline is edited currently
                 if (_statLineEdit)
                 {
                     for (jpsLineItem* line:line_vector)
@@ -353,7 +352,7 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                     emit no_drawing();
                     break;
                 }
-                else
+                else // If door, wall, exit, hline is edited currently
                 {
                     drawLine();
                     break;

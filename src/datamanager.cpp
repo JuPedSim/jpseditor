@@ -40,7 +40,6 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 {
     parent_widget=parent;
     _mView=view;
-
     obs_id_counter=0;
     _crossingIdCounter=1;
     //_frameRate=0;
@@ -75,7 +74,7 @@ jpsDatamanager::~jpsDatamanager()
 
 /*
     since v0.8.9
-    
+
     Create new Room;
  */
 void jpsDatamanager::addRoom()
@@ -472,7 +471,7 @@ void jpsDatamanager::writeXML(QFile &file)
 {
     qDebug(">> Enter jpsDatamanager::writeXML");
     auto *stream = new QXmlStreamWriter(&file);
-    QList<jpsLineItem* > lines = _mView->get_line_vector();
+    QList<jpsLineItem* > lines = _mView->get_line_vector(); //lines are all unassign jpsLineItem
 
     stream->setAutoFormatting(true);
     stream->writeStartDocument("1.0",true);
@@ -482,7 +481,7 @@ void jpsDatamanager::writeXML(QFile &file)
 
     if(check_printAbility().isEmpty()) // crossing, transitions, obstacles will be checked.
     {
-        //write rooms and crossings
+        //write rooms and transitions
         stream->writeStartElement("rooms");
         writeRooms(stream,lines);
         stream->writeEndElement(); // End rooms
@@ -491,10 +490,10 @@ void jpsDatamanager::writeXML(QFile &file)
         writeTransitions(stream,lines);
         stream->writeEndElement();// End transitions
     }
+    /// write unassignd lines
     stream->writeStartElement("Undefine");
-    writeNotAssignedDoors(stream,lines);
-    writeNotAssignedWalls(stream,lines);
-    stream->writeEndElement();
+    writeNotAssignedLines(stream, lines);
+    stream->writeEndElement(); // Undefine
 
     stream->writeEndElement();//geometry
 
@@ -519,7 +518,6 @@ void jpsDatamanager::writeRoutingXML(QFile &file) // Construction side
             hLines.push_back(line);
         }
     }
-
 
     writeRoutingHeader(stream);
 
@@ -667,32 +665,6 @@ void jpsDatamanager::WriteRegions(QXmlStreamWriter *stream, int k, double m, dou
 
         stream->writeEndElement();//region
     }
-}
-
-void jpsDatamanager::AutoSaveXML(QFile &file)
-{
-    qDebug("Enter jpsDatamanager::AutoSaveXML");
-    QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
-    QList<jpsLineItem* > lines = _mView->get_line_vector();
-
-    writeHeader(stream);
-    stream->writeStartElement("rooms");
-    AutoSaveRooms(stream,lines);
-    stream->writeEndElement();//rooms
-
-    stream->writeStartElement("transitions");
-    writeTransitions(stream,lines);
-    stream->writeEndElement();//transitions
-
-//    stream->writeStartElement("landmarks");
-//    writeLandmarks(stream,landmarks);
-//    stream->writeEndElement();//landmarks
-
-    stream->writeEndElement();//geometry
-
-    stream->writeEndDocument();
-    qDebug("Leave jpsDatamanager::AutoSaveXML");
-    delete stream;
 }
 
 void jpsDatamanager::writeHeader(QXmlStreamWriter *stream)
@@ -903,81 +875,6 @@ void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, JPSZone *room, QList
     stream->writeEndElement();//subroom
 }
 
-void jpsDatamanager::AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
-{
-     qDebug("Enter jpsDatamanager::AutoSaveRooms");
-    ///rooms
-    stream->writeStartElement("room");
-    stream->writeAttribute("id","0");
-    stream->writeAttribute("caption","hall");
-
-    for (int i=0; i<roomlist.size(); i++)
-    {
-        stream->writeStartElement("subroom");
-        stream->writeAttribute("id",QString::number(roomlist[i]->get_id()));
-        stream->writeAttribute("caption",roomlist[i]->get_name());
-        stream->writeAttribute("class","subroom");
-
-        //walls
-        QList<jpsLineItem* > wallList=roomlist[i]->get_listWalls();
-        for (int j=0; j<wallList.size(); j++)
-        {
-            stream->writeStartElement("polygon");
-            stream->writeAttribute("caption","wall");
-
-            stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x1()));
-            stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y1()));
-            stream->writeEndElement(); //vertex
-
-            stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x2()));
-            stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y2()));
-            stream->writeEndElement(); //vertex
-
-            stream->writeEndElement(); //polygon
-
-            ///remove wall from lines
-            lines.removeOne(wallList[j]);
-        }
-
-        //polygonzug
-        /*
-        QList<QPointF> vertices = roomlist[i]->get_vertices();
-
-        for (int j=0; j<vertices.size(); j++)
-        {
-
-            stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(vertices[j].x()));
-            stream->writeAttribute("py",QString::number(vertices[j].y()));
-            stream->writeEndElement(); //vertex
-        }*/
-
-        for (int k=0; k<obstaclelist.size(); k++)
-        {
-            if (roomlist[i]==obstaclelist[k]->get_room())
-            {
-                writeObstacles(stream ,obstaclelist[k],lines);
-            }
-        }
-
-        stream->writeEndElement();//subroom
-    }
-    // Not assigned lines
-    writeNotAssignedWalls(stream,lines);
-
-    //Crossings
-    writeCrossings(stream,lines);
-
-    // Not assigned doors
-    writeNotAssignedDoors(stream,lines);
-    stream->writeEndElement();//crossings
-
-    stream->writeEndElement();//room
-    qDebug("Leave jpsDatamanager::AutoSaveRooms");
-}
-
 void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
     qDebug("Enter jpsDatamanager::writeCrossings");
@@ -1131,14 +1028,14 @@ void jpsDatamanager::writeObstacles(QXmlStreamWriter *stream, jpsObstacle* obs, 
 
 }
 
-void jpsDatamanager::writeNotAssignedWalls(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
+void jpsDatamanager::writeNotAssignedLines(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
-     qDebug("Enter jpsDatamanager::writeNotAssignedWalls");
+     qDebug("Enter jpsDatamanager::writeNotAssignedLines");
 
     /// save lines which are not assigned to a room yet
     QList<jpsLineItem *> walls;
 
-    for (jpsLineItem* line:lines)
+    for (jpsLineItem* line:lines) //lines
     {
         if (line->is_Wall())
         {
@@ -1149,6 +1046,7 @@ void jpsDatamanager::writeNotAssignedWalls(QXmlStreamWriter *stream, QList<jpsLi
         return;
 
     stream->writeStartElement("subroom");
+
     stream->writeAttribute("id",QString::number(-1));
     stream->writeAttribute("caption","not assigned lines");
     stream->writeAttribute("class","container");
@@ -1173,66 +1071,8 @@ void jpsDatamanager::writeNotAssignedWalls(QXmlStreamWriter *stream, QList<jpsLi
         lines.removeOne(line);
     }
     stream->writeEndElement();//subroom
-    qDebug("Leave jpsDatamanager::writeNotAssignedWalls");
+    qDebug("Leave jpsDatamanager::writeNotAssignedLines");
 }
-
-void jpsDatamanager::writeNotAssignedDoors(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
-{
-     qDebug("Enter jpsDatamanager::writeNotAssignedDoors");
-    for (jpsLineItem* line:lines)
-    {
-        if (line->is_Crossing() && !isInCrossingList(line))
-        {
-            stream->writeStartElement("crossing");
-
-            stream->writeAttribute("id",QString::number(-2));
-            stream->writeAttribute("subroom1_id","-2");
-            stream->writeAttribute("subroom2_id","-2");
-            stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(line->get_line()->line().x1()));
-            stream->writeAttribute("py",QString::number(line->get_line()->line().y1()));
-            stream->writeEndElement(); //vertex
-            stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(line->get_line()->line().x2()));
-            stream->writeAttribute("py",QString::number(line->get_line()->line().y2()));
-            stream->writeEndElement();//vertex
-
-            stream->writeEndElement();//crossing
-
-            lines.removeOne(line);
-        }
-    }
-    qDebug("Leave jpsDatamanager::writeNotAssignedDoors");
-}
-
-void jpsDatamanager::writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
-{
-
-    for (jpsLineItem* line:lines)
-    {
-        stream->writeStartElement("transition");
-
-        stream->writeAttribute("id",QString::number(-2));
-        stream->writeAttribute("caption","main exit");
-        stream->writeAttribute("type","emergency");
-        stream->writeAttribute("room1_id","0");
-        stream->writeAttribute("subroom1_id","-2");
-        stream->writeAttribute("room2_id","-1");
-        stream->writeAttribute("subroom2_id","-2");
-        stream->writeStartElement("vertex");
-        stream->writeAttribute("px",QString::number(line->get_line()->line().x1()));
-        stream->writeAttribute("py",QString::number(line->get_line()->line().y1()));
-        stream->writeEndElement(); //vertex
-        stream->writeStartElement("vertex");
-        stream->writeAttribute("px",QString::number(line->get_line()->line().x2()));
-        stream->writeAttribute("py",QString::number(line->get_line()->line().y2()));
-        stream->writeEndElement();//vertex
-
-        stream->writeEndElement();//transition
-    }
-
-}
-
 
 void jpsDatamanager::WriteLandmarks(jpsRegion* cRegion, QXmlStreamWriter *stream, bool fuzzy)
 {
@@ -1668,7 +1508,7 @@ void jpsDatamanager::remove_all()
     remove_all_landmarks();
     RemoveAllConnections();
     RemoveAllRegions();
-    room_id_counter=0;
+    room_id_counter=1;
     obs_id_counter=0;
     platform_id_counter=0;
     qDebug("Leave jpsDatamanager::remove_all");

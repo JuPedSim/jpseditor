@@ -187,13 +187,13 @@ MWindow :: MWindow()
     connect(actionUndo,SIGNAL(triggered(bool)),mview,SLOT(Undo()));
     connect(actionRedo,SIGNAL(triggered(bool)),mview,SLOT(Redo()));
 
-    // room type data gathering
+    ///  room type data gathering
     connect(actionGather_data,SIGNAL(triggered(bool)),this, SLOT(GatherData()));
 
-    // right dock widget
+    ///  right dock widget
     propertyDockWidget = nullptr;
 
-    //object snapping
+    /// object snapping
     objectsnapping = {};
     bool endpoint = false;
     bool Intersections_point = false;
@@ -204,7 +204,7 @@ MWindow :: MWindow()
     objectsnapping.append(Center_point);
     objectsnapping.append(SelectedLine_point);
 
-    //main toolbar action group
+    /// main toolbar action group
     auto main_toolbar_actionGroup = new QActionGroup(this);
     main_toolbar_actionGroup->addAction(actionSelect_Mode); // select mode
     main_toolbar_actionGroup->addAction(actionMeasureLength); // measure mode
@@ -252,6 +252,7 @@ MWindow :: MWindow()
     //set background
     connect(actionBackground, SIGNAL(triggered(bool)),this,SLOT(importBackground()));
 
+    connect(mview, SIGNAL(sendMsgToStatusBar(QString)), this, SLOT(msgReceived(QString))); /// Get length from mview
 }
 
 MWindow::~MWindow()
@@ -320,28 +321,42 @@ void MWindow::AutoSave()
     QString filename = backupfolder + "/backup_untitled.xml";
     QFile file(filename);
 
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        //QString coord_string=mview->build_coordString();
-
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        //Save geometry
         dmanager->writeXML(file);
-        //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
-        statusBar()->showMessage(tr("Backup file generated!"), 10000);
 
-        //routing (hlines)
-        QString fileNameRouting = file.fileName();
-        fileNameRouting = fileNameRouting.split(".").first() + "_routing.xml";
+        //Save routing (hlines)
+        QString fileNameRouting=filename.split(".").first()+"_routing.xml";
         QFile routingFile(fileNameRouting);
-
-        if (routingFile.open(QIODevice::WriteOnly | QIODevice::Text))
+        if (routingFile.open(QIODevice::WriteOnly|QIODevice::Text))
             dmanager->writeRoutingXML(routingFile);
 
-        //Sources
-        QString fileNameSource = file.fileName();
-        fileNameSource = fileNameSource.split(".").first() + "_sources.xml";
-        QFile sourceFile(fileNameSource);
+        //Save sources
+        QString fileNameSource=filename.split(".").first()+"_sources.xml";
+        QFile sourcesFile(fileNameSource);
+        if(sourcesFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeSourceXML(sourcesFile);
 
-        if (sourceFile.open(QIODevice::WriteOnly | QIODevice::Text))
-            dmanager->writeSourceXML(routingFile);
+        //Save goals
+        QString fileNameGoal=filename.split(".").first()+"_goals.xml";
+        QFile goalsFile(fileNameGoal);
+        if(goalsFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeGoalXML(goalsFile);
+
+        //Save traffic
+        QString fileNameTraffic = filename.split(".").first()+"_traffic.xml";
+        QFile trafficFile(fileNameTraffic);
+        if(trafficFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeTrafficXML(trafficFile);
+
+        //Save transitions
+        QString fileNameTransition=filename.split(".").first()+"_transitions.xml";
+        QFile transitionFile(fileNameTransition);
+        if(transitionFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeTransitionXML(transitionFile);
+
+        statusBar()->showMessage(tr("Backup file generated!"), 10000);
     }
 }
 
@@ -675,26 +690,8 @@ void MWindow::saveAsXML(){
     if (fileName.isEmpty()) return;
     QFile file(fileName);
 
-    //QString fileNameLines=fileName.split(".").first()+"_lines.xml";
-
-    //QFile LinesFile(fileNameLines);
-    //if (LinesFile.open(QIODevice::WriteOnly|QIODevice::Text))
-    //    dmanager->writeLineItems(LinesFile);
-
     if(file.open(QIODevice::WriteOnly|QIODevice::Text))
     {
-        //QString coord_string=mview->build_coordString();
-
-//        QString message = dmanager->check_printAbility();
-
-//        if (message!="")
-//        {
-//            statusBar()->showMessage(message,10000);
-//            QMessageBox::warning(this,"Warning!", message,
-//                                 QMessageBox::Ok);
-//            return;
-//        }
-
         //Save geometry
         dmanager->writeXML(file);
 
@@ -728,7 +725,6 @@ void MWindow::saveAsXML(){
         if(transitionFile.open(QIODevice::WriteOnly|QIODevice::Text))
             dmanager->writeTransitionXML(transitionFile);
 
-        //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
     }
 }
@@ -987,9 +983,6 @@ void MWindow::define_landmark()
 
 void MWindow::en_selectMode()
 {
-//    actionSelect_Mode->setChecked(true);
-//    actionCopy->setChecked(false);
-
     mview->disable_drawing();
     length_edit->clearFocus();
 
@@ -1257,8 +1250,8 @@ void MWindow::showStatusBarMessage(QString msg, int duration)
 
 void MWindow::measureLengthButtonClicked()
 {
-    connect(mview, SIGNAL(sendMsgToStatusBar(QString)), this, SLOT(msgReceived(QString)));
     // open snapping widget
+
     if(snappingOptions==nullptr)
         this->objectsnap();
 
