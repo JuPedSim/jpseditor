@@ -37,6 +37,8 @@ TransitionWidget::TransitionWidget(QWidget *parent, jpsDatamanager *dmanager)
     ui->setupUi(this);
 
     data = dmanager;
+
+    updateListWidget();
 }
 
 TransitionWidget::~TransitionWidget()
@@ -46,4 +48,21 @@ TransitionWidget::~TransitionWidget()
 
 void TransitionWidget::updateListWidget()
 {
+    qDebug("Enter TransitionWidget::updateListWidget");
+    ui->listWidget->clear();
+
+    QList<jpsTransition *> transition_list = data->getTransitionList();
+
+    for (int i=0; i<transition_list.size(); i++)
+    {
+        QString string = "";
+        string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
+                       transition_list[i]->get_cLine()->get_line()->line().x1(),
+                       transition_list[i]->get_cLine()->get_line()->line().x2(),
+                       transition_list[i]->get_cLine()->get_line()->line().y1(),
+                       transition_list[i]->get_cLine()->get_line()->line().y2());
+
+        ui->listWidget->addItem(string);
+    }
+    qDebug("Leave TransitionWidget::updateListWidget");
 }

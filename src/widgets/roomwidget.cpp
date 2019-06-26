@@ -93,7 +93,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     //connect(ui->auto_assign_doors,SIGNAL(clicked(bool)),this,SLOT(autoAssignDoors()));
 
     //tab exit
-//    connect(ui->addExitButton,SIGNAL(clicked(bool)),this,SLOT(new_exit()));
+//    connect(ui->addExitButton,SIGNAL(clicked(bool)),this,SLOT(newTransition()));
 //    connect(ui->exitList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(enable_roomSelectionExits()));
 //    connect(ui->roomBox_exits,SIGNAL(activated(int)),this,SLOT(add_rooms_to_exit()));
 //    connect(ui->removeExitButton,SIGNAL(clicked(bool)),this,SLOT(delete_exit()));
