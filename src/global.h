@@ -31,4 +31,8 @@
 bool isDirtyChange(QGraphicsItem::GraphicsItemChange change);
 
 enum ZoneType {Room, Corridor, Office, Lobby, Entrance, Stair, Obstacle, Platform, NotAssigned};
+
+enum LineType {wall, door, crossing, transition, hline, track, undefined};
+
+enum EditorMode {Selecting, Wall, Crossing, Hline, Landmark, Source, Goal, Transition, Track, MeasureLength};
 #endif //JPSEDITOR_GLOBAL_H

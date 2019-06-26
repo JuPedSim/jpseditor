@@ -99,11 +99,13 @@
      <string>Draw</string>
     </property>
     <addaction name="actionWall"/>
-    <addaction name="actionDoor"/>
+    <addaction name="actionCrossing"/>
+    <addaction name="actionTransition"/>
     <addaction name="actionHLine"/>
     <addaction name="actionLandmark"/>
     <addaction name="actionSource"/>
     <addaction name="actionGoal"/>
+    <addaction name="actionTrack"/>
    </widget>
    <widget class="QMenu" name="menuZone">
     <property name="title">
@@ -314,7 +316,7 @@
     <bool>true</bool>
    </property>
   </action>
-  <action name="actionDoor">
+  <action name="actionCrossing">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -323,13 +325,13 @@
    </property>
    <property name="icon">
     <iconset resource="../Resources/resources.qrc">
-     <normaloff>:/inAppIcons/Icons/door-open.svg</normaloff>:/inAppIcons/Icons/door-open.svg</iconset>
+     <normaloff>:/inAppIcons/Icons/door.png</normaloff>:/inAppIcons/Icons/door.png</iconset>
    </property>
    <property name="text">
-    <string>Door</string>
+    <string>Crossing</string>
    </property>
    <property name="toolTip">
-    <string>Door</string>
+    <string>Crossing</string>
    </property>
    <property name="shortcut">
     <string>Meta+D</string>
@@ -338,7 +340,7 @@
     <bool>true</bool>
    </property>
   </action>
-  <action name="actionExit">
+  <action name="actionTransition">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -346,14 +348,14 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>:/inAppIcons/Icons/exit.png</normaloff>:/inAppIcons/Icons/exit.png</iconset>
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/Exit.png</normaloff>:/inAppIcons/Icons/Exit.png</iconset>
    </property>
    <property name="text">
-    <string>Exit</string>
+    <string>Transition</string>
    </property>
    <property name="toolTip">
-    <string>Exit</string>
+    <string>Draw transition</string>
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
@@ -938,6 +940,21 @@
    </property>
    <property name="toolTip">
     <string>Assemble Zone</string>
+   </property>
+  </action>
+  <action name="actionTrack">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/track.png</normaloff>:/inAppIcons/Icons/track.png</iconset>
+   </property>
+   <property name="text">
+    <string>Track</string>
+   </property>
+   <property name="toolTip">
+    <string>Draw Track</string>
    </property>
   </action>
  </widget>

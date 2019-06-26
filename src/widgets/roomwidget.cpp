@@ -60,7 +60,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     ui->classBox->addItem("Entrance");
     ui->classBox->addItem("Stair");
 
-    // Door state
+    // Crossing state
     ui->stateComboBox->addItem("Open");
     ui->stateComboBox->addItem("Close");
 
@@ -156,7 +156,7 @@ void roomWidget::show_crossings()
     }
 //    for (jpsExit* crossing:datamanager->get_exitList())
 //    {
-//        QString string = "Door ";
+//        QString string = "Crossing ";
 //        string.append("x1:"+QString::number(crossing->get_cLine()->get_line()->line().x1()));
 //        string.append(" x2:"+QString::number(crossing->get_cLine()->get_line()->line().x2()));
 //        string.append(" y1:"+QString::number(crossing->get_cLine()->get_line()->line().y1()));
@@ -480,7 +480,7 @@ void roomWidget::add_rooms_to_crossing()
             {
                 datamanager->get_crossingList()[cCrossingRow]->add_rooms(datamanager->get_roomlist()[cRoomRow1]);
                 datamanager->get_crossingList()[cCrossingRow]->SetStatExit(true);
-                datamanager->get_crossingList()[cCrossingRow]->get_cLine()->setExit();
+                datamanager->get_crossingList()[cCrossingRow]->get_cLine()->setCrossing();
             }
 
             else // This door is a crossing
@@ -488,7 +488,7 @@ void roomWidget::add_rooms_to_crossing()
                 datamanager->get_crossingList()[cCrossingRow]->add_rooms(datamanager->get_roomlist()[cRoomRow1],
                                                                  datamanager->get_roomlist()[cRoomRow2]);
                 datamanager->get_crossingList()[cCrossingRow]->SetStatExit(false);
-                datamanager->get_crossingList()[cCrossingRow]->get_cLine()->setDoor();
+                datamanager->get_crossingList()[cCrossingRow]->get_cLine()->setCrossing();
             }
         }
     }

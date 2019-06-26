@@ -131,12 +131,14 @@ protected slots:
     //drawing options
     void anglesnap();
     void en_disableWall();
-    void en_disableDoor();
+    void en_disableCrossing();
     void en_disableLandmark();
     void en_disableHLine();
     void objectsnap();
     void sourceButtonClicked();
     void goalButtionClicked();
+    void transitionButtonClicked();
+    void trackButtonClicked();
 
     //Line operations
     void show_coords();

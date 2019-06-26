@@ -61,7 +61,7 @@ void RoomDefinition::SetUpRoomsAndDoors()
             if (cLineItem->is_Wall())
                 cRoom->addWall(cLineItem);
 
-            else if (cLineItem->is_Door())
+            else if (cLineItem->is_Crossing())
             {
                 // will only be done if crossing not already exists (check in function new_crossing)
                 _dManager->new_crossing(cLineItem);
@@ -102,7 +102,7 @@ void RoomDefinition::SetUpRoomsAndDoors()
         if (crossing->get_roomList().size()<2)
         {
             crossing->SetStatExit(true);
-            crossing->get_cLine()->setExit();
+            crossing->get_cLine()->setCrossing();
         }
     }
 

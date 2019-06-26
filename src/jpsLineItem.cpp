@@ -64,14 +64,14 @@ QString jpsLineItem::GetType()
     switch (lineType){
         case wall:
             return "Wall";
-        case door:
-            return "Door";
         case crossing:
             return "Crossing";
-        case exit:
+        case track:
+            return "Track";
+        case transition:
             return "Exit";
         case hline:
-            return "HLine";
+            return "Hline";
         case undefined:
             return "NOT_KNOWN";
     }
@@ -92,14 +92,17 @@ void jpsLineItem::setType(LineType type) {
         case wall:
             setWall();
             break;
-        case door:
-            setDoor();
+        case track:
+            setTrack();
             break;
-        case exit:
-            setExit();
+        case crossing:
+            setCrossing();
             break;
         case hline:
-            setHLine();
+            setHline();
+            break;
+        case transition:
+            setTransition();
             break;
         default:
             break;
@@ -112,23 +115,28 @@ void jpsLineItem::setWall()
     defaultColor="black";
 }
 
-void jpsLineItem::setDoor()
+void jpsLineItem::setCrossing()
 {
-    lineType = door;
-    defaultColor="blue";
-}
-
-void jpsLineItem::setExit()
-{
-    lineType = exit;
+    lineType = crossing;
     defaultColor="darkMagenta";
 }
 
-void jpsLineItem::setHLine()
+void jpsLineItem::setHline()
 {
     lineType = hline;
     defaultColor="darkCyan";
+}
 
+void jpsLineItem::setTransition()
+{
+    lineType = transition;
+    defaultColor="darkBlue";
+}
+
+void jpsLineItem::setTrack()
+{
+    lineType = track;
+    defaultColor="darkGreen";
 }
 
 void jpsLineItem::set_defaultColor(QString color)
@@ -148,9 +156,9 @@ bool jpsLineItem::is_Wall()
 
 }
 
-bool jpsLineItem::is_Door()
+bool jpsLineItem::is_Crossing()
 {
-    if(lineType == door)
+    if(lineType == crossing)
     {
         return true;
     } else
@@ -159,9 +167,9 @@ bool jpsLineItem::is_Door()
     }
 }
 
-bool jpsLineItem::is_Exit()
+bool jpsLineItem::is_Transition()
 {
-    if(lineType == exit)
+    if(lineType == transition)
     {
         return true;
     } else

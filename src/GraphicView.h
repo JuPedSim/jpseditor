@@ -38,6 +38,7 @@
 #include "jpssource.h"
 #include "jpsgoal.h"
 #include "./UndoFramework/actionstack.h"
+#include "global.h"
 
 using ptrConnection = std::shared_ptr<jpsConnection>;
 using ptrLandmark = std::shared_ptr<jpsLandmark>;
@@ -67,7 +68,7 @@ public:
     void SetDatamanager(jpsDatamanager* datamanager);
 
     //Change modes
-    enum EditorMode {Selecting, Wall, Door, Exit, HLine, Landmark, Source, Goal, MeasureLength};
+
     void setDrawingMode(EditorMode mode);
 
     void change_stat_anglesnap();
@@ -78,9 +79,9 @@ public:
     bool statusWall();
     void en_disableWall();
     bool statusDoor();
-    void en_disableDoor();
-    bool statusExit();
-    void en_disableExit();
+    void en_disableCrossing();
+    void enableTransition();
+    void enableTrack();
     bool statusHLine();
     void en_disableHLine();
     bool statusLandmark();

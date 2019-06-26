@@ -320,7 +320,7 @@
   </widget>
   <widget class="QWidget" name="doorTab">
    <attribute name="title">
-    <string>Door</string>
+    <string>Crossing</string>
    </attribute>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
@@ -349,7 +349,7 @@
        <item>
         <widget class="QPushButton" name="addCrossingButton">
          <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add new Door&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add new Crossing&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="text">
           <string>Add</string>
@@ -584,7 +584,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Assign Door to room&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Assign Crossing to room&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="text">
           <string>Auto Assign</string>
