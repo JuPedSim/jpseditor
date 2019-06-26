@@ -218,19 +218,23 @@ MWindow :: MWindow()
 
     //drawing toolbar
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
-    connect(actionDoor,SIGNAL(triggered(bool)),this,SLOT(en_disableDoor()));
+    connect(actionCrossing,SIGNAL(triggered(bool)),this,SLOT(en_disableCrossing()));
     connect(actionHLine,SIGNAL(triggered(bool)),this,SLOT(en_disableHLine()));
     connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
     connect(actionSource, SIGNAL(triggered(bool)),this,SLOT(sourceButtonClicked()));
     connect(actionGoal,SIGNAL(triggered(bool)),this,SLOT(goalButtionClicked()));
+    connect(actionTransition,SIGNAL(triggered(bool)),this,SLOT(transitionButtonClicked()));
+    connect(actionTrack,SIGNAL(triggered(bool)),this,SLOT(trackButtonClicked()));
 
     drawingActionGroup = new QActionGroup(this);
     drawingActionGroup->addAction(actionWall);
-    drawingActionGroup->addAction(actionDoor);
+    drawingActionGroup->addAction(actionCrossing);
+    drawingActionGroup->addAction(actionTransition);
     drawingActionGroup->addAction(actionHLine);
     drawingActionGroup->addAction(actionLandmark);
     drawingActionGroup->addAction(actionSource);
     drawingActionGroup->addAction(actionGoal);
+    drawingActionGroup->addAction(actionTrack);
 
     //zone toolbar
     connect(actionCorridor, SIGNAL(triggered(bool)),this, SLOT(corridorButtonClicked()));
@@ -802,11 +806,11 @@ void MWindow::en_disableWall()
     mview->en_disableWall();
 }
 
-void MWindow::en_disableDoor()
+void MWindow::en_disableCrossing()
 {
     closePropertyDockWidget();
 
-    mview->en_disableDoor();
+    mview->en_disableCrossing();
 }
 
 void MWindow::en_disableLandmark()
@@ -821,6 +825,17 @@ void MWindow::en_disableHLine()
     closePropertyDockWidget();
 
     mview->en_disableHLine();
+}
+
+void MWindow::transitionButtonClicked()
+{
+
+}
+
+void MWindow::trackButtonClicked()
+{
+    closePropertyDockWidget();
+
 }
 
 void MWindow::objectsnap()
@@ -975,7 +990,7 @@ void MWindow::en_selectMode()
 
 void MWindow::dis_selectMode()
 {
-/*    if (actionWall->isChecked()==true || actionDoor->isChecked()==true || actionExit->isChecked()==true
+/*    if (actionWall->isChecked()==true || actionCrossing->isChecked()==true || actionExit->isChecked()==true
             || actionLandmark->isChecked()==true)
     {
         actionSelect_Mode->setChecked(false);

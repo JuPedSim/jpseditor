@@ -38,6 +38,7 @@ PlatformPropertyWidget::PlatformPropertyWidget(QWidget *parent, jpsDatamanager *
     data = dmanager;
     view = gview;
     current_zone = nullptr;
+    current_wall = nullptr;
 
     updateListWidget();
     connect(ui->pushButton_addWall, SIGNAL(clicked()), this, SLOT(addWallButtonClicked()));
@@ -94,8 +95,7 @@ void PlatformPropertyWidget::updateListWidget()
 void PlatformPropertyWidget::applyNumberButtonClicked()
 {
     qDebug("Enter PlatformPropertyWidget::applyNumberButtonClicked");
-
-
-
+    int current_row=ui->listWidget->currentRow();
+    current_wall = current_zone->get_listWalls()[current_row];
     qDebug("Leave PlatformPropertyWidget::applyNumberButtonClicked");
 }

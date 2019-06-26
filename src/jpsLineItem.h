@@ -30,6 +30,7 @@
 #define JPSLineItem_H
 
 #include <QGraphicsView>
+#include "global.h"
 
 class jpsLineItem
 {
@@ -47,17 +48,17 @@ public:
     void set_name(QString name);
 //    void setType(bool wall, bool door, bool exit, bool hline=false);
 
-    enum LineType{wall, door, crossing, exit, hline, undefined};
     void setType(LineType type);
 
     void setWall();
-    void setDoor();
-    void setExit();
-    void setHLine();
+    void setCrossing();
+    void setHline();
+    void setTransition();
+    void setTrack();
     void set_defaultColor(QString color);
     bool is_Wall();
-    bool is_Door();
-    bool is_Exit();
+    bool is_Crossing();
+    bool is_Transition();
     bool IsHLine();
 
     void add_intersectionPoint(QPointF *point);
@@ -73,6 +74,8 @@ private:
     QString mName;
     QString defaultColor;
     LineType lineType;
+    QString track_number;
+
 
 //    bool wall;
 //    bool door;

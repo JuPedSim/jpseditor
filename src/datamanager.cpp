@@ -226,7 +226,7 @@ void jpsDatamanager::new_crossing(QList <jpsLineItem *> newCrossings)
     qDebug("Enter jpsDatamanager::new_crossing QList");
     for (int i=0; i<newCrossings.size(); i++)
     {
-        if ((newCrossings[i]->is_Door() || newCrossings[i]->is_Exit())
+        if ((newCrossings[i]->is_Crossing() || newCrossings[i]->is_Transition())
         && !isInCrossingList(newCrossings[i]))// only door can be crossing
         {
             auto newCrossing = new jpsCrossing(newCrossings[i]);
@@ -243,7 +243,7 @@ void jpsDatamanager::new_crossing(QList <jpsLineItem *> newCrossings)
 void jpsDatamanager::new_crossing(jpsLineItem *newCrossing)
 {
     qDebug("Enter jpsDatamanager::new_crossing");
-    if (newCrossing->is_Door() && !isInCrossingList(newCrossing))
+    if (newCrossing->is_Crossing() && !isInCrossingList(newCrossing))
     {
         jpsCrossing* newCros = new jpsCrossing(newCrossing);
         newCros->set_id(_crossingIdCounter);
@@ -314,7 +314,7 @@ void jpsDatamanager::new_exit(QList <jpsLineItem *> newExits)
     qDebug("Enter jpsDatamanager::new_exit QList");
     for (int i=0; i<newExits.size(); i++)
     {
-        //if (newExits[i]->is_Exit())
+        //if (newExits[i]->is_Transition())
         //{
         jpsExit* newExit = new jpsExit(newExits[i]);
         exitList.push_back(newExit);
@@ -1181,7 +1181,7 @@ void jpsDatamanager::writeNotAssignedDoors(QXmlStreamWriter *stream, QList<jpsLi
      qDebug("Enter jpsDatamanager::writeNotAssignedDoors");
     for (jpsLineItem* line:lines)
     {
-        if (line->is_Door() && !isInCrossingList(line))
+        if (line->is_Crossing() && !isInCrossingList(line))
         {
             stream->writeStartElement("crossing");
 
@@ -1722,7 +1722,7 @@ void jpsDatamanager::remove_marked_lines()
             qDebug()<< "jpsDatamanager::remove_marked_lines: marked line is removed" ;
         }
 
-        else if (marked_lines[i]->is_Door() || marked_lines[i]->is_Exit())
+        else if (marked_lines[i]->is_Crossing() || marked_lines[i]->is_Transition())
         {
             QList<jpsCrossing* > cList= this->get_crossingList();
             for (int j=0; j<cList.size(); j++)
@@ -1733,7 +1733,7 @@ void jpsDatamanager::remove_marked_lines()
                     break;
                 }
             }
-            qDebug()<< "jpsDatamanager::remove_marked_lines(): Door line is deleted!";
+            qDebug()<< "jpsDatamanager::remove_marked_lines(): Crossing line is deleted!";
         }
         else
         {
@@ -2170,7 +2170,7 @@ void jpsDatamanager::parseCrossings(QXmlStreamReader &xmlReader)
     qreal x2=xmlReader.attributes().value("px").toString().toFloat();
     qreal y2=xmlReader.attributes().value("py").toString().toFloat();
     qDebug("\t x1 = %.2f, y1 = %.2f, x2 = %.2f y2 = %.2f", x1, y1, x2, y2);
-    jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"Door");
+    jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"Crossing");
 
     if (id!=-2)
     {
@@ -2348,7 +2348,7 @@ void jpsDatamanager::addLine(const DL_LineData &d)
     if (layername=="wall")
         _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"Wall");
     else if (layername=="door")
-        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"Door");
+        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"Crossing");
     else
         _mView->addLineItem(d.x1,d.y1,d.x2,d.y2);
 }
@@ -2806,7 +2806,7 @@ bool jpsDatamanager::ReadLineFile(QFile &file)
                 {
                   if (lineItem->is_Wall())
                     this->roomlist.back()->addWall(lineItem);
-                  else if (lineItem->is_Door())
+                  else if (lineItem->is_Crossing())
                   {
                       this->new_crossing(lineItem);
 

@@ -137,8 +137,10 @@ void RoomListWidget::addZoneButtonClicked()
 
 void RoomListWidget::currentZoneChanged()
 {
+    qDebug("Enter currentZoneChanged");
     auto *zone = getCurrentZone(ui->listWidget_zones->currentItem());
     emit zoneSelected(zone);
+    qDebug("Leave currentZoneChanged");
 }
 
 JPSZone * RoomListWidget::getCurrentZone(QListWidgetItem *item)

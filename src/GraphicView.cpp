@@ -266,7 +266,7 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
 
         //VLine
-        if (point_tracked && (drawingMode==Wall || drawingMode==Door || drawingMode==Exit))
+        if (point_tracked && (drawingMode==Wall || drawingMode==Crossing || drawingMode==Exit))
         {
 //            SetVLine();
         }
@@ -1094,11 +1094,17 @@ void jpsGraphicsView::drawLine()
             case Wall:
                 lineItem->setWall();
                 break;
-            case Door:
-                lineItem->setDoor();
+            case Crossing:
+                lineItem->setCrossing();
                 break;
-            case HLine:
-                lineItem->setHLine();
+            case Hline:
+                lineItem->setHline();
+                break;
+            case Transition:
+                lineItem->setTransition();
+                break;
+            case Track:
+                lineItem->setTrack();
                 break;
             default:
                 break;
@@ -1193,17 +1199,17 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
     newLine->set_id(id_counter);
     id_counter++;
 
-    if (type=="Door")
+    if (type=="Crossing")
     {
-        newLine->setDoor();
+        newLine->setCrossing();
     }
     else if (type=="Exit")
     {
-        newLine->setExit();
+        newLine->setCrossing();
     }
-    else if (type=="HLine")
+    else if (type=="Hline")
     {
-        newLine->setHLine();
+        newLine->setHline();
     }
     else
     {
@@ -2019,11 +2025,11 @@ void jpsGraphicsView::take_l_from_lineEdit(const qreal &length)
             case Wall:
                 jpsline->setWall();
                 break;
-            case Door:
-                jpsline->setDoor();
+            case Crossing:
+                jpsline->setCrossing();
                 break;
             case Exit:
-                jpsline->setExit();
+                jpsline->setCrossing();
                 break;
             default:
                 break;
@@ -2067,11 +2073,11 @@ void jpsGraphicsView::take_endpoint_from_xyEdit(const QPointF &endpoint)
             case Wall:
                 jpsline->setWall();
                 break;
-            case Door:
-                jpsline->setDoor();
+            case Crossing:
+                jpsline->setCrossing();
                 break;
             case Exit:
-                jpsline->setExit();
+                jpsline->setCrossing();
                 break;
             default:
                 break;
@@ -2167,11 +2173,11 @@ bool jpsGraphicsView::get_stat_anglesnap()
     return anglesnap;
 }
 
-void jpsGraphicsView::en_disableDoor()
+void jpsGraphicsView::en_disableCrossing()
 {
-    drawingMode = Door;
+    drawingMode = Crossing;
 
-    if(drawingMode != Door)
+    if(drawingMode != Crossing)
     {
         emit no_drawing();
     } else
@@ -2182,30 +2188,43 @@ void jpsGraphicsView::en_disableDoor()
 
 bool jpsGraphicsView::statusDoor()
 {
-    if(drawingMode == Door)
+    if(drawingMode == Crossing)
     {
         return true;
     } else
         return false;
 }
 
-void jpsGraphicsView::en_disableExit()
+void jpsGraphicsView::enableTransition()
 {
-    drawingMode = Exit;
+    drawingMode = Transition;
 
-    if(drawingMode != Exit)
+    if(drawingMode != Transition)
     {
         emit no_drawing();
     } else
     {
-        currentPen.setColor(Qt::darkMagenta);
+        currentPen.setColor(Qt::darkBlue);
+    }
+}
+
+void jpsGraphicsView::enableTrack()
+{
+    drawingMode = Track;
+
+    if(drawingMode != Track)
+    {
+        emit no_drawing();
+    } else
+    {
+        currentPen.setColor(Qt::darkGreen);
     }
 }
 
 bool jpsGraphicsView::statusHLine()
 {
 //    return _statHLine;
-    if(drawingMode == HLine)
+    if(drawingMode == Hline)
     {
         return true;
     } else
@@ -2214,26 +2233,10 @@ bool jpsGraphicsView::statusHLine()
 
 void jpsGraphicsView::en_disableHLine()
 {
-/*    _statHLine=!_statHLine;
-    statExit=false;
-    statDoor=false;
-    statWall=false;
-    statLandmark=false;
-
-
-    if (_statHLine==false)
-    {
-        emit no_drawing();
-    }
-    else
-    {
-        currentPen.setColor(Qt::darkCyan);
-    }*/
-
     _statCopy=0;
-    drawingMode = HLine;
+    drawingMode = Hline;
 
-    if(drawingMode != HLine)
+    if(drawingMode != Hline)
     {
         emit no_drawing();
     } else
@@ -2261,16 +2264,6 @@ void jpsGraphicsView::en_disableLandmark()
     {
         emit no_drawing();
     }
-}
-
-bool jpsGraphicsView::statusExit()
-{
-//    return statExit;
-    if(drawingMode == Exit)
-    {
-        return true;
-    } else
-        return false;
 }
 
 void jpsGraphicsView::start_Copy_function()

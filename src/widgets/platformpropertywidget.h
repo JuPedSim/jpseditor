@@ -34,6 +34,7 @@ private:
     jpsDatamanager *data;
     jpsGraphicsView *view;
     JPSZone *current_zone;
+    jpsLineItem *current_wall;
 };
 
 
