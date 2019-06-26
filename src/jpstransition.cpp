@@ -27,55 +27,55 @@
  **/
 
 
-#include "jpsexit.h"
+#include "jpstransition.h"
 
 
-jpsExit::jpsExit(jpsLineItem *line)
+jpsTransition::jpsTransition(jpsLineItem *line)
 {
     cLine=line;
 }
 
-QList<JPSZone *> jpsExit::get_roomList()
+QList<JPSZone *> jpsTransition::get_roomList()
 {
     return roomList;
 }
 
-QString jpsExit::get_name()
+QString jpsTransition::get_name()
 {
     return cName;
 }
 
-jpsLineItem *jpsExit::get_cLine()
+jpsLineItem *jpsTransition::get_cLine()
 {
     return cLine;
 }
 
-void jpsExit::change_name(QString name)
+void jpsTransition::change_name(QString name)
 {
     cName=name;
 }
 
-QString jpsExit::get_type()
+QString jpsTransition::get_type()
 {
     return _type;
 }
 
-int jpsExit::get_id()
+int jpsTransition::get_id()
 {
     return _id;
 }
 
-void jpsExit::set_id(int id)
+void jpsTransition::set_id(int id)
 {
     _id=id;
 }
 
-void jpsExit::set_type(QString type)
+void jpsTransition::set_type(QString type)
 {
     _type=type;
 }
 
-void jpsExit::set_rooms(JPSZone *room1, JPSZone *room2)
+void jpsTransition::set_rooms(JPSZone *room1, JPSZone *room2)
 {
     roomList.clear();
     roomList.push_back(room1);

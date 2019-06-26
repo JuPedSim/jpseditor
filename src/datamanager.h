@@ -37,7 +37,7 @@
 #include "jpszone.h"
 #include "jpscrossing.h"
 #include "jpsLineItem.h"
-#include "jpsexit.h"
+#include "jpstransition.h"
 #include "jpsobstacle.h"
 #include "GraphicView.h"
 #include "jpsconnection.h"
@@ -78,11 +78,11 @@ public:
     void change_crossingName(jpsCrossing* crossing, QString name);
     void remove_all_crossings();
     //Exit
-    QList<jpsExit *> get_exitList();
+    QList<jpsTransition *> getTransitionList();
     void new_exit(QList<jpsLineItem *> newExits);
     void new_exit(jpsLineItem* newExit);
-    void remove_exit(jpsExit* exit);
-    void change_exitName(jpsExit* exit, QString name);
+    void remove_exit(jpsTransition* exit);
+    void change_exitName(jpsTransition* exit, QString name);
     void remove_all_exits();
     //Landmark
     QList<jpsLandmark *> get_landmarks();
@@ -234,7 +234,7 @@ private:
     QList<JPSSource *> sourcelist;
     QList<JPSGoal *> goallist;
     QList<jpsCrossing *> crossingList;
-    QList<jpsExit *> exitList;
+    QList<jpsTransition *> transition_list;
     QList<jpsLandmark* > _landmarks;
     QList<jpsConnection* > _landmarkConnections;
     QList<jpsLandmark* > _landmarksAfterLoose;

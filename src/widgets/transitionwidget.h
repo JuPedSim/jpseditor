@@ -28,6 +28,8 @@ public slots:
 
 private:
     Ui::TransitionWidget *ui;
+    
+    jpsDatamanager *data;
 };
 
 

@@ -154,7 +154,7 @@ void roomWidget::show_crossings()
         ui->crossingList->addItem(string);
 
     }
-//    for (jpsExit* crossing:datamanager->get_exitList())
+//    for (jpsTransition* crossing:datamanager->getTransitionList())
 //    {
 //        QString string = "Crossing ";
 //        string.append("x1:"+QString::number(crossing->get_cLine()->get_line()->line().x1()));
@@ -164,7 +164,7 @@ void roomWidget::show_crossings()
 //        ui->crossingList->addItem(string);
 
 //    }
-    ui->crossingList->setCurrentRow(datamanager->get_crossingList().size()+datamanager->get_exitList().size()-1);
+    ui->crossingList->setCurrentRow(datamanager->get_crossingList().size()+ datamanager->getTransitionList().size()-1);
     qDebug("Leave roomWidget::show_crossings");
 }
 
@@ -172,7 +172,7 @@ void roomWidget::show_exits()
 {
 //    ui->exitList->clear();
 
-//    QList<jpsExit *> exitList=datamanager->get_exitList();
+//    QList<jpsTransition *> exitList=datamanager->getTransitionList();
 
 //    for (int i=0; i<exitList.size(); i++)
 //    {
@@ -530,7 +530,7 @@ void roomWidget::new_exit()
 
 void roomWidget::enable_roomSelectionExits()
 {
-//    if (datamanager->get_exitList().size()>0)
+//    if (datamanager->getTransitionList().size()>0)
 //    {
 //        //ui->roomBox_exits->setEnabled(true);
 //        ui->exit_from->setEnabled(true);
@@ -550,7 +550,7 @@ void roomWidget::enable_roomSelectionExits()
 //            if (ui->exitList->currentRow()!=-1)
 //            {
 //                int cExitRow=ui->exitList->currentRow();
-//                QList<JPSZone*> cRoomlist = datamanager->get_exitList()[cExitRow]->get_roomList();
+//                QList<JPSZone*> cRoomlist = datamanager->getTransitionList()[cExitRow]->get_roomList();
 //                if (cRoomlist.size()>0)
 //                {
 //                    int index = datamanager->get_roomlist().indexOf(cRoomlist[0]);
@@ -589,7 +589,7 @@ void roomWidget::add_rooms_to_exit()
 //        if (ui->roomBox_exits->currentIndex()!=-1)
 //        {
 //            int cRoomRow=ui->roomBox_exits->currentIndex();
-//            datamanager->get_exitList()[cExitRow]->add_rooms(datamanager->get_roomlist()[cRoomRow]);
+//            datamanager->getTransitionList()[cExitRow]->add_rooms(datamanager->get_roomlist()[cRoomRow]);
 //        }
 //    }
 
@@ -600,7 +600,7 @@ void roomWidget::delete_exit()
 //    if (ui->exitList->currentItem()!=0L)
 //    {
 //        int index = ui->exitList->currentRow();
-//        datamanager->remove_exit(datamanager->get_exitList()[index]);
+//        datamanager->remove_exit(datamanager->getTransitionList()[index]);
 //        ui->exitList->setCurrentRow(-1);
 //        this->show_exits();
 
@@ -618,7 +618,7 @@ void roomWidget::select_exit()
 //        int cExitRow=ui->exitList->currentRow();
 
 
-//        graphview->select_line(datamanager->get_exitList()[cExitRow]->get_cLine());
+//        graphview->select_line(datamanager->getTransitionList()[cExitRow]->get_cLine());
 
 //    }
 }
