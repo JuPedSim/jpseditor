@@ -1,7 +1,7 @@
 /**
- * \file        rooms.cpp
- * \date        Oct-01-2018
- * \version     v0.8.4
+ * \file        jpszone.cpp
+ * \date        Jun-19-2019
+ * \version     v0.8.9
  * \copyright   <2009-2018> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
@@ -21,12 +21,12 @@
  * along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
  *
  * \section Description
- * This class represents a (sub)room. Walls and/or doors belonging to a certain room have to defined with the help of roomwidget.
- *
+ * This class represents all zones in geometry, include room, subroom(corridor, office, lobby
+ * entrance, stair, plattform) and obstacles
  *
  **/
 
-#include "rooms.h"
+#include "jpszone.h"
 #include <QtGui>
 #include <iostream>
 #include <fstream>
@@ -35,34 +35,37 @@
 #include <QDebug>
 
 
-
-jpsRoom::jpsRoom(int id_room)
+JPSZone::JPSZone(int id_zone, JPSZone *father, ZoneType type)
 {
-    id=id_room;
-    QString string="Room ";
-    name=string.append(QString::number(id));
+    id=id_zone;
+    zoneType = Room;
+    father_zone = father;
+
+    name = "Unnamed " + QString::number(id_zone);
+
     highlighted=false;
     area_=0.0;
 
     A_x=0.0; //plane equation: A_x . x + B_y . y + C_z = z
     B_y=0.0;
     C_z=0.0;
-    _elevation=0;
+    elevation_=0;
+
     visible=true;
 }
 
 
-void jpsRoom::addWall(QList <jpsLineItem *> newWalls)
+void JPSZone::addWall(QList <jpsLineItem *> newWalls)
 {
-    qDebug("Enter jpsRoom::removeWall(newWall)");
+    qDebug("Enter JPSZone::addWall)");
     for (int i=0; i<newWalls.size(); i++)
     {
         addWall(newWalls[i]);
     }
-    qDebug("Leave jpsRoom::removeWall(newWall)");
+    qDebug("Leave JPSZone::addWall");
 }
 
-void jpsRoom::addWall(jpsLineItem *newWall)
+void JPSZone::addWall(jpsLineItem *newWall)
 {
     if (newWall->is_Wall() && !wall_list.contains(newWall))
     {
@@ -70,7 +73,7 @@ void jpsRoom::addWall(jpsLineItem *newWall)
     }
 }
 
-void jpsRoom::addinnerWall(QList<jpsLineItem *> newWalls, int id_polygon)
+void JPSZone::addinnerWall(QList<jpsLineItem *> newWalls, int id_polygon)
 {
     for (int i=0; i<newWalls.size(); ++i)
     {
@@ -78,7 +81,7 @@ void jpsRoom::addinnerWall(QList<jpsLineItem *> newWalls, int id_polygon)
     }
 }
 
-void jpsRoom::addinnerWall(jpsLineItem *newWall, int id_polygon)
+void JPSZone::addinnerWall(jpsLineItem *newWall, int id_polygon)
 {
     if (newWall->is_Wall() && !wall_list.contains(newWall))
     {
@@ -90,45 +93,45 @@ void jpsRoom::addinnerWall(jpsLineItem *newWall, int id_polygon)
     }
 }
 
-void jpsRoom::removeWall(QList <jpsLineItem *> wall)
+void JPSZone::removeWall(QList <jpsLineItem *> wall)
 {
-     qDebug("Enter jpsRoom::removeWall(wall)");
+     qDebug("Enter JPSZone::removeWall(wall)");
     for (int i=0; i<wall.size(); i++)
     {
         wall_list.removeOne(wall[i]);
     }
 }
 
-const QList<jpsCrossing *>& jpsRoom::GetDoors() const
+const QList<jpsCrossing *>& JPSZone::GetDoors() const
 {
     return doorList_;
 }
 
-void jpsRoom::removeDoor(jpsCrossing *crossing)
+void JPSZone::removeDoor(jpsCrossing *crossing)
 {
     if (doorList_.contains(crossing))
     {
         doorList_.removeOne(crossing);
     }
-     qDebug("Leave jpsRoom::removeWall");
+     qDebug("Leave JPSZone::removeWall");
 }
 
-QString jpsRoom::get_name()
+QString JPSZone::get_name()
 {
     return name;
 }
 
-void jpsRoom::change_name(QString name)
+void JPSZone::change_name(QString name)
 {
     this->name=name;
 }
 
-QList<jpsLineItem *> jpsRoom::get_listWalls()
+QList<jpsLineItem *> JPSZone::get_listWalls()
 {
     return wall_list;
 }
 
-void jpsRoom::activate()
+void JPSZone::activate()
 {
     for (signed int i=0; i<wall_list.size(); i++)
     {
@@ -136,7 +139,7 @@ void jpsRoom::activate()
     }
 }
 
-QVector<QPointF> jpsRoom::get_vertices() const
+QVector<QPointF> JPSZone::get_vertices() const
 {
     QVector<QPointF> vertices;
 
@@ -168,9 +171,9 @@ QVector<QPointF> jpsRoom::get_vertices() const
     return vertices;
 }
 
-QPointF jpsRoom::get_center()
+QPointF JPSZone::get_center()
 {
-    qDebug() << "Enter jpsRoom::get_center";
+    qDebug() << "Enter JPSZone::get_center";
     IdentifyInnerOuter(); // write outer_polygon
 
     if(outer_polygon.size()==0){
@@ -191,13 +194,13 @@ QPointF jpsRoom::get_center()
     mean.setX(sum_x/vertices.size());
     mean.setY(sum_y/vertices.size());
 
-    qDebug() << "Leave jpsRoom::get_center";
+    qDebug() << "Leave JPSZone::get_center";
     return mean;
 }
 
-void jpsRoom::highlight(const QString& color)
+void JPSZone::highlight(const QString& color)
 {
-     qDebug("Enter jpsRoom::highlight. highlighted=<%d>", highlighted);
+     qDebug("Enter JPSZone::highlight. highlighted=<%d>", highlighted);
 
     if (!highlighted)
     {
@@ -230,12 +233,12 @@ void jpsRoom::highlight(const QString& color)
 
         highlighted=false;
     }
-    qDebug("Enter jpsRoom::highlight. highlight=<%d>", highlighted);
+    qDebug("Enter JPSZone::highlight. highlight=<%d>", highlighted);
 }
 
-void jpsRoom::switchVisibility()
+void JPSZone::switchVisibility()
 {
-    qDebug("Enter jpsRoom::switchVisibility. visible=<%d>", visible);
+    qDebug("Enter JPSZone::switchVisibility. visible=<%d>", visible);
     if(!visible)
     {
         QColor color(0,0,0,0);
@@ -257,21 +260,21 @@ void jpsRoom::switchVisibility()
             wall_list[i]->set_defaultColor("black");
         }
     }
-    qDebug("Exit jpsRoom::switchVisibility. visible=<%d>", visible);
+    qDebug("Exit JPSZone::switchVisibility. visible=<%d>", visible);
 }
 
 
-QString jpsRoom::get_type() const
+ZoneType JPSZone::getType() const
 {
-    return _type;
+    return zoneType;
 }
 
-void jpsRoom::set_type(const QString &string)
+void JPSZone::setType(const ZoneType &type)
 {
-    _type=string;
+    zoneType=type;
 }
 
-QList<QPointF> jpsRoom::GetDoorVertices() const
+QList<QPointF> JPSZone::GetDoorVertices() const
 {
     QList<QPointF> vertices;
 
@@ -311,14 +314,14 @@ QList<QPointF> jpsRoom::GetDoorVertices() const
     return vertices;
 }
 
-void jpsRoom::AddDoor(jpsCrossing *door)
+void JPSZone::AddDoor(jpsCrossing *door)
 {
     if (!doorList_.contains(door))
         doorList_.push_back(door);
     //outer_polygon.push_back(door->get_cLine()->get_line()->line());
 }
 
-void jpsRoom::AddInnerDoor(jpsCrossing *door, int id_polygon)
+void JPSZone::AddInnerDoor(jpsCrossing *door, int id_polygon)
 {
 
     if (!doorList_.contains(door))
@@ -331,21 +334,21 @@ void jpsRoom::AddInnerDoor(jpsCrossing *door, int id_polygon)
     }
 }
 
-//QPolygonF jpsRoom::RoomAsPolygon() const
+//QPolygonF JPSZone::RoomAsPolygon() const
 //{
 //    return QPolygonF(get_vertices());
 //}
 
-QVector<QPointF> jpsRoom::RoomAsSortedPolygon(const QVector<QLineF>& lines) const
+QVector<QPointF> JPSZone::RoomAsSortedPolygon(const QVector<QLineF>& lines) const
 {
-     qDebug("Enter jpsRoom::RoomAsSortedPolygon");
+     qDebug("Enter JPSZone::RoomAsSortedPolygon");
     QVector<QLineF> clines=lines;
     QVector<QPointF> points = {};
 
     if(lines.empty())
     {
          qDebug("\t empty lines!!");
-         qDebug("Leave jpsRoom::RoomAsSortedPolygon with ERROR");         
+         qDebug("Leave JPSZone::RoomAsSortedPolygon with ERROR");
          return points;
          
     }
@@ -381,24 +384,24 @@ QVector<QPointF> jpsRoom::RoomAsSortedPolygon(const QVector<QLineF>& lines) cons
 //    }
 //    std::cout << "----------------------------" << std::endl;
 
-    qDebug("Leave jpsRoom::RoomAsSortedPolygon");         
+    qDebug("Leave JPSZone::RoomAsSortedPolygon");
     return points;
 }
 
-const QVector<QLineF> &jpsRoom::GetOuterPolygon() const
+const QVector<QLineF> &JPSZone::GetOuterPolygon() const
 {
     return outer_polygon;
 }
 
-qreal jpsRoom::GetArea() const
+qreal JPSZone::GetArea() const
 {
     return area_;
 }
 
 
-void jpsRoom::IdentifyInnerOuter()
+void JPSZone::IdentifyInnerOuter()
 {
-    qDebug() << "Enter jpsRoom::IdentifyInnerOuter";
+    qDebug() << "Enter JPSZone::IdentifyInnerOuter";
     QList<QLineF> lines;
 
 
@@ -491,11 +494,11 @@ void jpsRoom::IdentifyInnerOuter()
 
     inner_polygons=polygons;
 
-    qDebug() << "Leave jpsRoom::IdentifyInnerOuter";
+    qDebug() << "Leave JPSZone::IdentifyInnerOuter";
 }
 
 
-QRectF jpsRoom::CalculateBoundingBox() const
+QRectF JPSZone::CalculateBoundingBox() const
 {
     if (outer_polygon.empty())
         return QRectF();
@@ -523,7 +526,7 @@ QRectF jpsRoom::CalculateBoundingBox() const
     return QRectF(QPointF(x_min,y_min),QPointF(x_max,y_max));
 }
 
-qreal jpsRoom::CalculateArea(const QVector<QLineF>& poly) const
+qreal JPSZone::CalculateArea(const QVector<QLineF>& poly) const
 {
     if (poly.isEmpty())
         return 0.0;
@@ -550,33 +553,33 @@ void JPSZone::set_id(int id_room)
     id=id_room;
 }
 
-int jpsRoom::get_id()
+int JPSZone::get_id()
 {
     return id;
 }
-float jpsRoom::get_ax()
+float JPSZone::get_ax()
 {
      return A_x;
 }
-void jpsRoom::set_ax(float AX)
+void JPSZone::set_ax(float AX)
 {
      A_x=AX;
 }
 
-float jpsRoom::get_by()
+float JPSZone::get_by()
 {
      return B_y;
 }
-void jpsRoom::set_by(float BY)
+void JPSZone::set_by(float BY)
 {
      B_y=BY;
 }
 
-float jpsRoom::get_cz()
+float JPSZone::get_cz()
 {
      return C_z;
 }
-void jpsRoom::set_cz(float CZ)
+void JPSZone::set_cz(float CZ)
 {
      C_z=CZ;
 }
@@ -601,53 +604,53 @@ inline QColor rndColors(int seed){
     return color;
 }
 
-QPointF jpsRoom::get_up()
+QPointF JPSZone::get_up()
 {
      return up_;
 }
 
-void jpsRoom::set_up(QPointF up)
+void JPSZone::set_up(QPointF up)
 {
      up_ = up;
 }
 
-QPointF jpsRoom::get_down()
+QPointF JPSZone::get_down()
 {
      return down_;
 }
 
-void jpsRoom::set_down(QPointF down)
+void JPSZone::set_down(QPointF down)
 {
      down_ = down;
 }
 
-void jpsRoom::switchHighlight()
+void JPSZone::switchHighlight()
 {
     highlighted = !highlighted;
 }
 
-float jpsRoom::get_elevation()
+float JPSZone::get_elevation()
 {
      return elevation_;
 }
 
-void jpsRoom::set_elevation(float elevation)
+void JPSZone::set_elevation(float elevation)
 {
-     if(this->get_type().toUpper() != "STAIR") // only for horizontal floors
-          for (auto crossing: _doorList)
+     if(this->getType() != Stair) // only for horizontal floors
+          for (auto crossing: doorList_)
                crossing->set_elevation(elevation);
 
      elevation_ = elevation;
 }
 
-void jpsRoom::correctPlaneCoefficients()
+void JPSZone::correctPlaneCoefficients()
 {
      qDebug("Enter correctPlaneCoefficients");
      qDebug("\t room=<%s> of type=<%s> has %d doors",
             this->get_name().toStdString().c_str(),
-            this->get_type().toStdString().c_str(),
-            (int)_doorList.size());
-    if(_doorList.size() == 0 || this->get_type().toUpper() != "Stair")
+            QString(this->getType()).toStdString().c_str(),
+            (int)doorList_.size());
+    if(doorList_.size() == 0 || this->getType() != Stair)
     {
         this->set_ax(0);
         this->set_by(0);
@@ -706,17 +709,17 @@ void jpsRoom::correctPlaneCoefficients()
      qDebug("Leave correctPlaneCoefficients");
 }
 
-bool jpsRoom::is_highlighted()
+bool JPSZone::is_highlighted()
 {
      return highlighted;
 }
 
-bool jpsRoom::isVisible()
+bool JPSZone::isVisible()
 {
     return visible;
 }
 
-void jpsRoom::setVisible(bool visibility)
+void JPSZone::setVisible(bool visibility)
 {
     visible = visibility;
 }
