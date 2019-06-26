@@ -180,7 +180,7 @@ set( SRCS
     src/widgets/roomlistwidget.cpp
         src/widgets/basicpropertywidget.cpp
     src/widgets/platformpropertywidget.cpp
-        )
+        src/widgets/transitionwidget.cpp )
 # all header files that should be treated with moc
 set( HDR
     src/dtrace.h
@@ -237,8 +237,9 @@ set( HDR
     src/tinyxml/tinyxml.h
 
     src/widgets/roomlistwidget.h
-        src/widgets/basicpropertywidget.h
+    src/widgets/basicpropertywidget.h
     src/widgets/platformpropertywidget.h
+    src/widgets/transitionwidget.h
         )
 
 # *.ui files
@@ -255,6 +256,7 @@ set( UIS
     forms/roomlistwidget.ui
     forms/basicpropertywidget.ui
     forms/platformpropertywidget.ui
+    forms/transitionwidget.ui
   )
 
 # and finally a resource file

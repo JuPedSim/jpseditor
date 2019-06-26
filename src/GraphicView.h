@@ -330,6 +330,7 @@ signals:
     void RegionDefCompleted();
     void sourcesChanged();
     void goalsChanged();
+    void transitonsChanged();
     void sendMsgToStatusBar(QString Msg);
     //void DoubleClick();
 

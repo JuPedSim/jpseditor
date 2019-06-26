@@ -52,6 +52,7 @@
 #include "src/XML/sourcereader.h"
 #include "src/widgets/basicpropertywidget.h"
 #include "src/widgets/platformpropertywidget.h"
+#include "src/widgets/transitionwidget.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 

@@ -829,7 +829,19 @@ void MWindow::en_disableHLine()
 
 void MWindow::transitionButtonClicked()
 {
+    closePropertyDockWidget();
 
+    mview->enableTransition();
+
+    propertyDockWidget = new QDockWidget(tr("Transitions"), this);
+    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    propertyDockWidget->setAllowedAreas( Qt::RightDockWidgetArea);
+
+    auto *transitionWidget = new TransitionWidget(this, this->dmanager);
+    connect(mview, SIGNAL(transitonsChanged()), transitionWidget, SLOT(updateListWidget()));
+
+    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+    propertyDockWidget->setWidget(transitionWidget);
 }
 
 void MWindow::trackButtonClicked()
@@ -1175,8 +1187,6 @@ void MWindow::sourceButtonClicked()
     propertyDockWidget->setWidget(sourceWidget);
 
 }
-
-
 
 // Goal drawing mode
 /*
