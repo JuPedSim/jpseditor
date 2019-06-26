@@ -266,7 +266,7 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
 
         //VLine
-        if (point_tracked && (drawingMode==Wall || drawingMode==Crossing || drawingMode==Exit))
+        if (point_tracked && (drawingMode==Wall || drawingMode==Crossing || drawingMode==Transition))
         {
 //            SetVLine();
         }
@@ -1102,6 +1102,7 @@ void jpsGraphicsView::drawLine()
                 break;
             case Transition:
                 lineItem->setTransition();
+                emit transitonsChanged();
                 break;
             case Track:
                 lineItem->setTrack();
@@ -2028,8 +2029,8 @@ void jpsGraphicsView::take_l_from_lineEdit(const qreal &length)
             case Crossing:
                 jpsline->setCrossing();
                 break;
-            case Exit:
-                jpsline->setCrossing();
+            case Transition:
+                jpsline->setTransition();
                 break;
             default:
                 break;
@@ -2076,8 +2077,8 @@ void jpsGraphicsView::take_endpoint_from_xyEdit(const QPointF &endpoint)
             case Crossing:
                 jpsline->setCrossing();
                 break;
-            case Exit:
-                jpsline->setCrossing();
+            case Transition:
+                jpsline->setTransition();
                 break;
             default:
                 break;
