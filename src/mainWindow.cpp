@@ -112,7 +112,7 @@ MWindow :: MWindow()
     statusBar()->addPermanentWidget(label_y);
     statusBar()->addPermanentWidget(y_edit);
 
-    //Timer needed for autosaving function
+    // Timer needed for autosaving function
     // timer will trigger autosave every 5th minute
     timer = new QTimer(this);
     timer->setInterval(600000);
@@ -123,7 +123,7 @@ MWindow :: MWindow()
 
     _statScale=false;
 
-    //Signals and Slots
+    // Signals and Slots
     // Tab File
     connect(actionBeenden, SIGNAL(triggered(bool)),this,SLOT(close()));
     connect(action_ffnen,SIGNAL(triggered(bool)),this,SLOT(openFileDXF()));
@@ -154,7 +154,7 @@ MWindow :: MWindow()
     connect(x_edit,SIGNAL(returnPressed()),this,SLOT(send_xy()));
     connect(y_edit,SIGNAL(returnPressed()),this,SLOT(send_xy()));
 
-    // mview
+    // Mview
     connect(mview,SIGNAL(no_drawing()),this,SLOT(en_selectMode()));
     connect(mview,SIGNAL(remove_marked_lines()),this,SLOT(lines_deleted()));
     connect(mview,SIGNAL(remove_all()),this,SLOT(remove_all_lines()));
@@ -179,21 +179,21 @@ MWindow :: MWindow()
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
     // Landmark specifications
     connect(actionLandmarkWidget,SIGNAL(triggered(bool)),this,SLOT(define_landmark()));
-    //CMap
+    // CMap
 //    connect(actionRun_visualisation,SIGNAL(triggered(bool)),this,SLOT(RunCMap()));
 //    connect(_cMapTimer,SIGNAL(timeout()),this,SLOT(UpdateCMap()));
 //    connect(actionSpeichern_cogmap,SIGNAL(triggered()),this,SLOT(SaveCogMapXML()));
-    //Undo Redo
+    // Undo Redo
     connect(actionUndo,SIGNAL(triggered(bool)),mview,SLOT(Undo()));
     connect(actionRedo,SIGNAL(triggered(bool)),mview,SLOT(Redo()));
 
-    // room type data gathering
+    // Room type data gathering
     connect(actionGather_data,SIGNAL(triggered(bool)),this, SLOT(GatherData()));
 
-    // right dock widget
+    // Right dock widget
     propertyDockWidget = nullptr;
 
-    //object snapping
+    // Object snapping
     objectsnapping = {};
     bool endpoint = false;
     bool Intersections_point = false;
@@ -204,19 +204,19 @@ MWindow :: MWindow()
     objectsnapping.append(Center_point);
     objectsnapping.append(SelectedLine_point);
 
-    //main toolbar action group
+    // Main toolbar action group
     auto main_toolbar_actionGroup = new QActionGroup(this);
     main_toolbar_actionGroup->addAction(actionSelect_Mode); // select mode
-    main_toolbar_actionGroup->addAction(actionMeasureLength); // measure mode
     main_toolbar_actionGroup->addAction(actionDraw); // draw mode
     main_toolbar_actionGroup->addAction(actionZone); // assemble zone
+    main_toolbar_actionGroup->addAction(actionMeasureLength); // measure mode
 
     connect(actionMeasureLength, SIGNAL(triggered(bool)), this, SLOT(measureLengthButtonClicked()));
     connect(actionSelect_Mode,SIGNAL(triggered(bool)),this,SLOT(en_selectMode()));
     connect(actionDraw, SIGNAL(triggered(bool)),this,SLOT(setupDrawingToolBar()));
     connect(actionZone, SIGNAL(triggered(bool)),this,SLOT(setupZoneToolBar()));
 
-    //drawing toolbar
+    // Drawing toolbar
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
     connect(actionCrossing,SIGNAL(triggered(bool)),this,SLOT(en_disableCrossing()));
     connect(actionHLine,SIGNAL(triggered(bool)),this,SLOT(en_disableHLine()));
@@ -236,7 +236,7 @@ MWindow :: MWindow()
     drawingActionGroup->addAction(actionGoal);
     drawingActionGroup->addAction(actionTrack);
 
-    //zone toolbar
+    // Zone toolbar
     connect(actionCorridor, SIGNAL(triggered(bool)),this, SLOT(corridorButtonClicked()));
     connect(actionPlatform, SIGNAL(triggered(bool)),this, SLOT(platformButtonclicked()));
 
@@ -249,7 +249,7 @@ MWindow :: MWindow()
     zoneActionGroup->addAction(actionStairs);
     zoneActionGroup->addAction(actionPlatform);
 
-    //set background
+    // Set background
     connect(actionBackground, SIGNAL(triggered(bool)),this,SLOT(importBackground()));
 
 }
@@ -264,6 +264,7 @@ MWindow::~MWindow()
     delete infoLabel;
     delete timer;
     delete _cMapTimer;
+    delete drawing_toolbar_;
 }
 
 void MWindow::setupDrawingToolBar()

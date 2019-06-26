@@ -144,9 +144,9 @@
    <addaction name="separator"/>
    <addaction name="actionSelect_Mode"/>
    <addaction name="actionDraw"/>
-   <addaction name="actionMeasureLength"/>
    <addaction name="actionZone"/>
    <addaction name="separator"/>
+   <addaction name="actionMeasureLength"/>
    <addaction name="actiongridmode"/>
    <addaction name="actionObjectsnap"/>
    <addaction name="separator"/>
