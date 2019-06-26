@@ -42,6 +42,7 @@ RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager)
     connect(ui->pushButton_addRoom, SIGNAL(clicked()), this, SLOT(addRoomButtonClicked()));
     connect(ui->pushButton_addZone, SIGNAL(clicked()), this, SLOT(addZoneButtonClicked()));
 
+    // send emit to PropertyWidget
     connect(ui->listWidget_zones, SIGNAL(itemSelectionChanged()), this, SLOT(currentZoneChanged()));
 }
 

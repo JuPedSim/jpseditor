@@ -970,8 +970,6 @@ void MWindow::en_selectMode()
     {
         drawing_toolbar_->close();
         drawing_toolbar_ = nullptr;
-
-
     }
 }
 

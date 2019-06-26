@@ -91,7 +91,7 @@ void jpsDatamanager::addRoom()
 void jpsDatamanager::addPlatform(JPSZone *father_zone)
 {
     qDebug("Enter jpsDatamanager::addPlatform");
-    JPSZone *new_Platform = new JPSZone(platform_id_counter, father_zone, NotAssigned);
+    JPSZone *new_Platform = new JPSZone(platform_id_counter, father_zone, Platform);
     new_Platform->setType(Platform);
     platformslist.push_back(new_Platform);
     platform_id_counter += 1;

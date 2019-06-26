@@ -37,7 +37,9 @@ PlatformPropertyWidget::PlatformPropertyWidget(QWidget *parent, jpsDatamanager *
 
     data = dmanager;
     view = gview;
+    current_zone = nullptr;
 
+    updateListWidget();
     connect(ui->pushButton_addWall, SIGNAL(clicked()), this, SLOT(addWallButtonClicked()));
 }
 
@@ -48,33 +50,52 @@ PlatformPropertyWidget::~PlatformPropertyWidget()
 
 void PlatformPropertyWidget::addWallButtonClicked()
 {
-//    qDebug("Enter roomWidget::addWall");
-//
-//    if (graphview->get_markedLines().size()>0)
-//    {
-//        qDebug("%d",graphview->get_markedLines().size());
-//        if (ui->list_rooms->currentItem()!=0L)
-//        {
-//            int crow=ui->list_rooms->currentRow();
-//
-//            datamanager->get_roomlist()[crow]->addWall(graphview->get_markedLines());
-//
-//            this->showWallsAndType();
-//        }
-//    }
-//    qDebug("Leave roomWidget::addWall");
-
     qDebug("Enter PlatformPropertyWidget::addWallButtonClicked");
     if(!view->get_markedLines().isEmpty())
     {
+        current_zone->addWall(view->get_markedLines());
 
+        updateListWidget();
     }
     qDebug("Leave PlatformPropertyWidget::addWallButtonClicked");
 }
 
 void PlatformPropertyWidget::receiveJPSZone(JPSZone *zone)
 {
+    qDebug("Enter PlatformPropertyWidget::receiveJPSZone");
     current_zone = zone;
-    QString name = current_zone->getName();
-    qDebug("%s", name.data());
+    updateListWidget();
+    qDebug("Leave PlatformPropertyWidget::receiveJPSZone");
+}
+
+void PlatformPropertyWidget::updateListWidget()
+{
+    qDebug("Enter PlatformPropertyWidget::updateListWidget");
+    ui->listWidget->clear();
+
+    if(current_zone != nullptr)
+    {
+        QList<jpsLineItem *> walllist = current_zone->get_listWalls();
+        for (int i=0; i<walllist.size(); i++)
+        {
+            QString string = "";
+            string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
+                           walllist[i]->get_line()->line().x1(),
+                           walllist[i]->get_line()->line().x2(),
+                           walllist[i]->get_line()->line().y1(),
+                           walllist[i]->get_line()->line().y2());
+
+            ui->listWidget->addItem(string);
+        }
+    }
+    qDebug("Leave PlatformPropertyWidget::updateListWidget");
+}
+
+void PlatformPropertyWidget::applyNumberButtonClicked()
+{
+    qDebug("Enter PlatformPropertyWidget::applyNumberButtonClicked");
+
+
+
+    qDebug("Leave PlatformPropertyWidget::applyNumberButtonClicked");
 }
