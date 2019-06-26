@@ -1102,6 +1102,7 @@ void jpsGraphicsView::drawLine()
                 break;
             case Transition:
                 lineItem->setTransition();
+                _datamanager->newTransition(lineItem);
                 emit transitonsChanged();
                 break;
             case Track:

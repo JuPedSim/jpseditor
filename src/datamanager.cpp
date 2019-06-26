@@ -311,7 +311,7 @@ QList<jpsTransition *> jpsDatamanager::getTransitionList()
 
 void jpsDatamanager::new_exit(QList <jpsLineItem *> newExits)
 {
-    qDebug("Enter jpsDatamanager::new_exit QList");
+    qDebug("Enter jpsDatamanager::newTransition QList");
     for (int i=0; i<newExits.size(); i++)
     {
         //if (newExits[i]->is_Transition())
@@ -320,15 +320,15 @@ void jpsDatamanager::new_exit(QList <jpsLineItem *> newExits)
         transition_list.push_back(newExit);
         //}
     }
-    qDebug("Leave jpsDatamanager::new_exit QList");
+    qDebug("Leave jpsDatamanager::newTransition QList");
 }
 
-void jpsDatamanager::new_exit(jpsLineItem *newExit)
+void jpsDatamanager::newTransition(jpsLineItem *transition)
 {
-    qDebug("Enter jpsDatamanager::new_exit");
-    jpsTransition* newEx = new jpsTransition(newExit);
-    transition_list.push_back(newEx);
-    qDebug("Leave jpsDatamanager::new_exit");
+    qDebug("Enter jpsDatamanager::newTransition");
+    auto *newTr = new jpsTransition(transition);
+    transition_list.push_back(newTr);
+    qDebug("Leave jpsDatamanager::newTransition");
 }
 
 void jpsDatamanager::remove_exit(jpsTransition *exit)
@@ -1013,7 +1013,7 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
         else
         {
             //TODO: Exception handling, error return to event log
-//            this->new_exit(crossingList[i]->get_cLine());
+//            this->newTransition(crossingList[i]->get_cLine());
 //            if (crossingList[i]->get_roomList().size()>1)
 //            {
 //                // mention stair id first

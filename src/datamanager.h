@@ -80,7 +80,7 @@ public:
     //Exit
     QList<jpsTransition *> getTransitionList();
     void new_exit(QList<jpsLineItem *> newExits);
-    void new_exit(jpsLineItem* newExit);
+    void newTransition(jpsLineItem *transition);
     void remove_exit(jpsTransition* exit);
     void change_exitName(jpsTransition* exit, QString name);
     void remove_all_exits();
@@ -213,6 +213,9 @@ public:
     const QList<JPSZone *> &getPlatformslist() const;
 
     void addPlatform(JPSZone *father_zone);
+
+    //
+
 
 //    //Show Cognitive Map
 //    void ShowCMapFrame(const int& frame) const;
