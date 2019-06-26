@@ -63,9 +63,10 @@ public:
 
 
 private:
-    roomWidget* rwidget;
-    widgetLandmark* lwidget;
-    InifileWidget * inifileWidget;
+    // qwidget pointers, will be deleted by QtWidgets itself
+    roomWidget *rwidget;
+    widgetLandmark *lwidget;
+    InifileWidget *inifileWidget;
 
     QDockWidget *propertyDockWidget;
     QDockWidget *listDockWidget;
@@ -77,9 +78,7 @@ private:
     QActionGroup *zoneActionGroup;
 
     SnappingOptions* snappingOptions;
-//    WidgetSettings* _settings;
-    jpsDatamanager* dmanager;
-    jpsGraphicsView* mview;
+
     QGraphicsScene *mscene;
     //QVBoxLayout* VBox;
     QLineEdit* length_edit;
@@ -92,16 +91,25 @@ private:
     QLabel* infoLabel;
     QString _filename;
 
-    //CMap
+    SettingDialog *settingDialog;
+
+    /// Pointers, delete these in ~MWindow()
+    jpsDatamanager* dmanager;
+
+    // CMap
     QTimer *_cMapTimer;
+
+    jpsGraphicsView* mview;
+
+    /// Variabes
     int _cMapFrame;
 
-    //default setting
-    SettingDialog *settingDialog;
-    QTimer *timer;
     QSettings settings;
 
+    QTimer *timer;
+
     bool _statScale;
+
     QList<bool> objectsnapping;
 
 protected slots:
