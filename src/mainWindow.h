@@ -103,8 +103,6 @@ private:
     bool _statScale;
     QList<bool> objectsnapping;
 
-
-
 protected slots:
     
     //parseFiles

@@ -26,6 +26,8 @@ public slots:
 
 protected slots:
     void addWallButtonClicked();
+    void updateListWidget();
+    void applyNumberButtonClicked();
 
 private:
     Ui::PlatformPropertyWidget *ui;

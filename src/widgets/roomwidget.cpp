@@ -315,7 +315,7 @@ void roomWidget::showWallsAndType()
 
     if (ui->list_rooms->currentItem()!=nullptr)
     {
-        int crow=ui->list_rooms->currentRow();
+        int crow = ui->list_rooms->currentRow();
         auto room = datamanager->get_roomlist()[crow];
         bool show = graphview->is_hide_roomCaption(room->get_name());
         if(show){
