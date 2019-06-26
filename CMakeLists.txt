@@ -144,7 +144,7 @@ set( SRCS
     src/datamanager.cpp
     src/jpscrossing.cpp
     src/jpsLineItem.cpp
-    src/jpsexit.cpp
+        src/jpstransition.cpp
     src/jpsobstacle.cpp
     src/jpslandmark.cpp
     src/widgets/widgetlandmark.cpp
@@ -192,7 +192,7 @@ set( HDR
     src/datamanager.h
     src/jpscrossing.h
     src/jpsLineItem.h
-    src/jpsexit.h
+        src/jpstransition.h
     src/jpsobstacle.h
     src/jpslandmark.h
     src/widgets/widgetlandmark.h

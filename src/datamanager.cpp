@@ -303,10 +303,10 @@ void jpsDatamanager::remove_all_crossings()
 }
 
 
-QList<jpsExit *> jpsDatamanager::get_exitList()
+QList<jpsTransition *> jpsDatamanager::getTransitionList()
 {
-     qDebug("Enter/Return jpsDatamanager::get_exitList");
-    return exitList;
+     qDebug("Enter/Return jpsDatamanager::getTransitionList");
+    return transition_list;
 }
 
 void jpsDatamanager::new_exit(QList <jpsLineItem *> newExits)
@@ -316,8 +316,8 @@ void jpsDatamanager::new_exit(QList <jpsLineItem *> newExits)
     {
         //if (newExits[i]->is_Transition())
         //{
-        jpsExit* newExit = new jpsExit(newExits[i]);
-        exitList.push_back(newExit);
+        jpsTransition* newExit = new jpsTransition(newExits[i]);
+        transition_list.push_back(newExit);
         //}
     }
     qDebug("Leave jpsDatamanager::new_exit QList");
@@ -326,17 +326,17 @@ void jpsDatamanager::new_exit(QList <jpsLineItem *> newExits)
 void jpsDatamanager::new_exit(jpsLineItem *newExit)
 {
     qDebug("Enter jpsDatamanager::new_exit");
-    jpsExit* newEx = new jpsExit(newExit);
-    exitList.push_back(newEx);
+    jpsTransition* newEx = new jpsTransition(newExit);
+    transition_list.push_back(newEx);
     qDebug("Leave jpsDatamanager::new_exit");
 }
 
-void jpsDatamanager::remove_exit(jpsExit *exit)
+void jpsDatamanager::remove_exit(jpsTransition *exit)
 {
      qDebug("Enter jpsDatamanager::remove_exit");
-    if (exitList.size()>0)
+    if (transition_list.size()>0)
     {
-        exitList.removeOne(exit);
+        transition_list.removeOne(exit);
         delete exit;
     }
     qDebug("Leave jpsDatamanager::remove_exit");
@@ -345,11 +345,11 @@ void jpsDatamanager::remove_exit(jpsExit *exit)
 void jpsDatamanager::remove_all_exits()
 {
      qDebug("Enter jpsDatamanager::remove_all_exits");
-    for (int i=0; i<exitList.size(); i++)
+    for (int i=0; i<transition_list.size(); i++)
     {
-        delete exitList[i];
+        delete transition_list[i];
     }
-    exitList.clear();
+    transition_list.clear();
     qDebug("Leave jpsDatamanager::remove_all_exits");
 }
 
@@ -1823,7 +1823,7 @@ jpsGraphicsView * jpsDatamanager::get_view()
 
 //void jpsDatamanager::AutoAssignExits()
 //{
-//    for (jpsExit *exit: exitList)
+//    for (jpsTransition *exit: exitList)
 //    {
 //        for (JPSZone *room: roomlist)
 //        {
@@ -3112,7 +3112,7 @@ void jpsDatamanager::writeTransitionXML(QFile &file)
     stream->writeStartElement("JPScore");
     stream->writeStartElement("transitions");
     writeTransitions(stream,lines);
-    exitList.clear();
+    transition_list.clear();
     stream->writeEndElement();//transitions
 
     stream->writeEndDocument();

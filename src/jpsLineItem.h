@@ -88,7 +88,7 @@ private:
     /*
     jpsCrossing* assigned_crossing=0L;
     JPSZone* assigned_room=0L;
-    jpsExit* assinged_exit=0L;
+    jpsTransition* assinged_exit=0L;
     */
 };
 

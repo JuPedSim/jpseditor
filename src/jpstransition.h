@@ -31,11 +31,11 @@
 
 #include "jpszone.h"
 
-class jpsExit
+class jpsTransition
 {
 public:
-    jpsExit(jpsLineItem *line);
-    ~jpsExit(){}
+    jpsTransition(jpsLineItem *line);
+    ~jpsTransition(){}
     QList<JPSZone *> get_roomList();
     QString get_name();
     jpsLineItem *get_cLine();

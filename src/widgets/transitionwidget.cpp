@@ -35,6 +35,8 @@ TransitionWidget::TransitionWidget(QWidget *parent, jpsDatamanager *dmanager)
     : QWidget(parent), ui(new Ui::TransitionWidget)
 {
     ui->setupUi(this);
+
+    data = dmanager;
 }
 
 TransitionWidget::~TransitionWidget()
@@ -44,5 +46,4 @@ TransitionWidget::~TransitionWidget()
 
 void TransitionWidget::updateListWidget()
 {
-    qDebug("d");
 }

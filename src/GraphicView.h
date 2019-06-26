@@ -283,8 +283,6 @@ private:
 //    QGraphicsItemGroup *sourceGroup;
 //    QGraphicsItemGroup *getSourceGroup() const;
 
-private:
-
     //Landmark and waypoints
     jpsLandmark* markedLandmark;
     QGraphicsRectItem* currentLandmarkRect;
@@ -315,6 +313,8 @@ private:
     qreal _translationX;
     qreal _translationY;
     QString _statgrid;
+
+
 
 signals:
     void mouse_moved();
