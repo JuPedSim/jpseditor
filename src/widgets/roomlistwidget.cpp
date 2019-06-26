@@ -89,7 +89,10 @@ void RoomListWidget::updateZonesListWidget()
     // show zones
     foreach(JPSZone *zone, zoneslist)
     {
-        ui->listWidget_zones->addItem(zone->get_name());
+        if(zone->getFatherZone()->getName()==ui->listWidget_rooms->currentItem()->text())
+        {
+            ui->listWidget_zones->addItem(zone->get_name());
+        }
     }
     qDebug("Leave RoomListWidget::updateZonesListWidget");
 }
