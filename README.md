@@ -1,8 +1,6 @@
 [![Build Status](https://gitlab.version.fz-juelich.de/jupedsim/jpseditor/badges/develop/build.svg)](https://gitlab.version.fz-juelich.de/JuPedSim/jpseditor/pipelines)[![GitHub license](https://img.shields.io/badge/license-GPL-blue.svg)](https://raw.githubusercontent.com/JuPedSim/jpscore/master/LICENSE)
 
 # JPSeditor
-====================
-
 
 `JPSeditor` is a graphical user interface to create the geometry of a scenario simulated by JuPedSim. It comes with set of CAD- and further tools to simplify the creation of proper xml-files 
 incorporating information about the scenario' geometry.
