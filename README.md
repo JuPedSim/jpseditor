@@ -18,7 +18,7 @@ Features
 	- Orthomode
 	- Zooming 
 	- Line editing
-	- ...
+	- Import background image
 - Tools for automatic room and door declarations
 
 
@@ -50,7 +50,7 @@ cmake ..
 - Compile the project
 If the previous step terminated successfully run 
 ``` javascript
-make -j2
+make -j
 ``` 
 
 Support
