@@ -2491,7 +2491,7 @@ QList<JPSSource *> jpsGraphicsView::getSources() {
 
     QList<JPSSource *> sources;
 
-            foreach(QGraphicsItem *item, items())
+        foreach(QGraphicsItem *item, items())
         {
             switch (item->type()) {
                 case  SourceElementType:

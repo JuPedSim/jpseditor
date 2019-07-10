@@ -38,16 +38,13 @@ PlatformPropertyWidget::PlatformPropertyWidget(QWidget *parent, jpsDatamanager *
     data = dmanager;
     view = gview;
     current_zone = nullptr;
-    current_wall = nullptr;
 
-    updateListWidget();
+    updateWallListWidget();
     connect(ui->pushButton_addWall, SIGNAL(clicked()), this, SLOT(addWallButtonClicked()));
-    // Active track number line
-    connect(ui->comboBox_lineType, SIGNAL(currentIndexChanged(int)), this, SLOT(activeTrackNumber(int)));
     // Change details of line
     connect(ui->pushButton_applyNumber, SIGNAL(clicked()), this, SLOT(applyNumberButtonClicked()));
     // Show details of line
-    connect(ui->listWidget, SIGNAL(currentRowChanged(int)), this, SLOT((updateLineDetails(int))));
+    connect(ui->listWidget_walls, SIGNAL(currentRowChanged(int)), this, SLOT(updateLineDetails(int)));
 
     // for wall there is no number property
     ui->lineEdit->setEnabled(false);
@@ -63,9 +60,13 @@ void PlatformPropertyWidget::addWallButtonClicked()
     qDebug("Enter PlatformPropertyWidget::addWallButtonClicked");
     if(!view->get_markedLines().isEmpty())
     {
-        current_zone->addWall(view->get_markedLines());
+        foreach(jpsLineItem *line, view->get_markedLines())
+        {
+            if(line->getType() == "wall")
+                current_zone->addWall(line);
+        }
 
-        updateListWidget();
+        updateWallListWidget();
     }
     qDebug("Leave PlatformPropertyWidget::addWallButtonClicked");
 }
@@ -74,14 +75,14 @@ void PlatformPropertyWidget::receiveJPSZone(JPSZone *zone)
 {
     qDebug("Enter PlatformPropertyWidget::receiveJPSZone");
     current_zone = zone;
-    updateListWidget();
+    updateWallListWidget();
     qDebug("Leave PlatformPropertyWidget::receiveJPSZone");
 }
 
-void PlatformPropertyWidget::updateListWidget()
+void PlatformPropertyWidget::updateWallListWidget()
 {
-    qDebug("Enter PlatformPropertyWidget::updateListWidget");
-    ui->listWidget->clear();
+    qDebug("Enter PlatformPropertyWidget::updateWallListWidget");
+    ui->listWidget_walls->clear();
 
     if(current_zone != nullptr)
     {
@@ -95,62 +96,20 @@ void PlatformPropertyWidget::updateListWidget()
                            walllist[i]->get_line()->line().y1(),
                            walllist[i]->get_line()->line().y2());
 
-            ui->listWidget->addItem(string);
+            ui->listWidget_walls->addItem(string);
         }
     }
-    qDebug("Leave PlatformPropertyWidget::updateListWidget");
+    qDebug("Leave PlatformPropertyWidget::updateWallListWidget");
 }
 
 void PlatformPropertyWidget::applyNumberButtonClicked()
 {
     qDebug("Enter PlatformPropertyWidget::applyNumberButtonClicked");
-    int current_row=ui->listWidget->currentRow();
-
-    if(current_zone != nullptr)
-    {
-        current_wall = current_zone->get_listWalls()[current_row];
-    }
-
-    if(ui->comboBox_lineType->currentIndex() == 1)
-    {
-        QString track_number = ui->lineEdit->text();
-        current_wall->setType(track); //see all types in global.h
-    } else
-    {
-        current_wall->setType(wall);
-    }
-
-
-
     qDebug("Leave PlatformPropertyWidget::applyNumberButtonClicked");
-}
-
-void PlatformPropertyWidget::activeTrackNumber(int type)
-{
-    qDebug("Enter PlatformPropertyWidget::activeTrackNumber");
-    if(type == 1)// 1 means track type
-    {
-        ui->lineEdit->setEnabled(true);
-    }
-    qDebug("Leave PlatformPropertyWidget::activeTrackNumber");
 }
 
 void PlatformPropertyWidget::updateLineDetails(int index)
 {
     qDebug("Enter PlatformPropertyWidget::updateLineDetails");
-    if(current_zone != nullptr)
-    {
-        current_wall = current_zone->get_listWalls()[index];
-    }
-
-    if(current_wall->getType() == "track")
-    {
-        ui->comboBox_lineType->setCurrentIndex(1);
-    } else
-    {
-        ui->comboBox_lineType->setCurrentIndex(0);
-        ui->lineEdit->setEnabled(false);
-    }
-
     qDebug("Leave PlatformPropertyWidget::updateLineDetails");
 }
