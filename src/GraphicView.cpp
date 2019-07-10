@@ -1101,7 +1101,7 @@ void jpsGraphicsView::drawLine()
                 break;
             case Transition:
                 lineItem->setTransition();
-                // Show transitions directly in transitionwidget
+                // Transion won't be added in any zone, so should be created here
                 _datamanager->newTransition(lineItem);
                 emit transitonsChanged();
                 break;

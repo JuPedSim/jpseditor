@@ -19,6 +19,8 @@ public:
 
     ~TrackPropertyWidget();
 
+    void updateListWidget();
+
 private:
     Ui::TrackPropertyWidget *ui;
     jpsDatamanager *data;

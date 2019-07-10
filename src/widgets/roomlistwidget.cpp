@@ -79,11 +79,9 @@ void RoomListWidget::updateZonesListWidget()
     ZoneType type = data->convertToZoneType(ui->label_zone->text());
     QList<JPSZone*> zoneslist;
 
-    switch(type)
+    if(type == ZoneType::Platform)
     {
-        case ZoneType::Platform:
-            zoneslist = data->getPlatformslist();
-            break;
+        zoneslist = data->getPlatformslist();
     }
 
     // show zones
@@ -117,11 +115,9 @@ void RoomListWidget::addZoneButtonClicked()
         {
             if(room->getName() == father_zone_name) // find selected room
             {
-                switch(type)
+                if(type == ZoneType::Platform)
                 {
-                    case ZoneType::Platform:
-                        data->addPlatform(room);
-                        break;
+                    data->addPlatform(room);
                 }
             }
         }
@@ -146,18 +142,16 @@ void RoomListWidget::currentZoneChanged()
     qDebug("Leave currentZoneChanged");
 }
 
-JPSZone * RoomListWidget::getCurrentZone(QListWidgetItem *item)
+JPSZone *RoomListWidget::getCurrentZone(QListWidgetItem *item)
 {
     QString name = item->text();
 
     ZoneType type = data->convertToZoneType(ui->label_zone->text());
     QList<JPSZone*> zoneslist;
 
-    switch(type)
+    if(type == ZoneType::Platform)
     {
-        case ZoneType::Platform:
-            zoneslist = data->getPlatformslist();
-            break;
+        zoneslist = data->getPlatformslist();
     }
 
     foreach(JPSZone *zone, zoneslist)
@@ -167,4 +161,5 @@ JPSZone * RoomListWidget::getCurrentZone(QListWidgetItem *item)
             return zone;
         }
     }
+
 }

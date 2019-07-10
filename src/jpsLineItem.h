@@ -68,32 +68,15 @@ public:
     void add_intersectLine(jpsLineItem * lineItem);
     void remove_interLine(jpsLineItem * lineItem);
 
-    const QString &getTrackNumber() const;
-
-    void setTrackNumber(const QString &trackNumber);
-
 private:
     QGraphicsLineItem* mLine;
     int mId;
     QString mName;
     QString defaultColor;
     LineType lineType;
-    QString track_number;
-
-
-//    bool wall;
-//    bool door;
-//    bool exit;
-//    bool _hLine;
 
     QList<QPointF *> intersectionVector;
     QList<jpsLineItem* > intersectLineVector;
-
-    /*
-    jpsCrossing* assigned_crossing=0L;
-    JPSZone* assigned_room=0L;
-    jpsTransition* assinged_exit=0L;
-    */
 };
 
 #endif // JPSLineItem_H

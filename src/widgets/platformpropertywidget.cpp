@@ -115,7 +115,6 @@ void PlatformPropertyWidget::applyNumberButtonClicked()
     {
         QString track_number = ui->lineEdit->text();
         current_wall->setType(track); //see all types in global.h
-        current_wall->setTrackNumber(track_number);
     } else
     {
         current_wall->setType(wall);
@@ -147,7 +146,6 @@ void PlatformPropertyWidget::updateLineDetails(int index)
     if(current_wall->getType() == "track")
     {
         ui->comboBox_lineType->setCurrentIndex(1);
-        ui->lineEdit->setText(current_wall->getTrackNumber());
     } else
     {
         ui->comboBox_lineType->setCurrentIndex(0);

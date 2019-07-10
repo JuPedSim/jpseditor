@@ -29,10 +29,9 @@
 #include <iostream>
 
 jpsLineItem::jpsLineItem(QGraphicsLineItem *line)
+    : mId(-1), mLine(nullptr), lineType(undefined)
 {
-    mLine=line;
-    lineType = undefined;
-    track_number = -1;
+    mLine = line;
 }
 
 jpsLineItem::~jpsLineItem()
@@ -74,7 +73,9 @@ QString jpsLineItem::getType()
         case hline:
             return "hline";
         case undefined:
-            return "NOT_KNOWN";
+            return "undefined";
+        default:
+            return "invaild";
     }
 }
 
@@ -224,12 +225,3 @@ QString jpsLineItem::get_defaultColor()
 {
     return defaultColor;
 }
-
-const QString &jpsLineItem::getTrackNumber() const {
-    return track_number;
-}
-
-void jpsLineItem::setTrackNumber(const QString &trackNumber) {
-    track_number = trackNumber;
-}
-

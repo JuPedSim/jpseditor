@@ -3318,3 +3318,4 @@ const QList<JPSZone *> &jpsDatamanager::getPlatformslist() const
     qDebug("Leave jpsDatamanager::getPlatformslist()");
 
 }
+
