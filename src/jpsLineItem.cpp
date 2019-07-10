@@ -32,6 +32,7 @@ jpsLineItem::jpsLineItem(QGraphicsLineItem *line)
 {
     mLine=line;
     lineType = undefined;
+    track_number = -1;
 }
 
 jpsLineItem::~jpsLineItem()
@@ -59,19 +60,19 @@ QString jpsLineItem::get_name()
     return mName;
 }
 
-QString jpsLineItem::GetType()
+QString jpsLineItem::getType()
 {
     switch (lineType){
         case wall:
-            return "Wall";
+            return "wall";
         case crossing:
-            return "Crossing";
+            return "crossing";
         case track:
-            return "Track";
+            return "track";
         case transition:
-            return "Exit";
+            return "exit";
         case hline:
-            return "Hline";
+            return "hline";
         case undefined:
             return "NOT_KNOWN";
     }
@@ -224,6 +225,11 @@ QString jpsLineItem::get_defaultColor()
     return defaultColor;
 }
 
+const QString &jpsLineItem::getTrackNumber() const {
+    return track_number;
+}
 
-
+void jpsLineItem::setTrackNumber(const QString &trackNumber) {
+    track_number = trackNumber;
+}
 

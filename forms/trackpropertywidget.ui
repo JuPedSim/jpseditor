@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>TransitionWidget</class>
- <widget class="QWidget" name="TransitionWidget">
+ <class>TrackPropertyWidget</class>
+ <widget class="QWidget" name="TrackPropertyWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -19,23 +19,17 @@
   <property name="minimumSize">
    <size>
     <width>300</width>
-    <height>600</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>300</width>
-    <height>16777215</height>
+    <height>0</height>
    </size>
   </property>
   <property name="windowTitle">
-   <string>Transitions</string>
+   <string>Track Property</string>
   </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>20</y>
+     <y>10</y>
      <width>281</width>
      <height>271</height>
     </rect>
@@ -44,7 +38,7 @@
     <item>
      <widget class="QLabel" name="label">
       <property name="text">
-       <string>Transitions</string>
+       <string>Tracks</string>
       </property>
      </widget>
     </item>
@@ -56,22 +50,12 @@
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>From</string>
+         <string>Number of Track</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox"/>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>To</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="comboBox_2"/>
+       <widget class="QLineEdit" name="lineEdit"/>
       </item>
       <item>
        <widget class="QPushButton" name="pushButton">

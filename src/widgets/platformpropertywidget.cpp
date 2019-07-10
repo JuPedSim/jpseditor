@@ -42,6 +42,15 @@ PlatformPropertyWidget::PlatformPropertyWidget(QWidget *parent, jpsDatamanager *
 
     updateListWidget();
     connect(ui->pushButton_addWall, SIGNAL(clicked()), this, SLOT(addWallButtonClicked()));
+    // Active track number line
+    connect(ui->comboBox_lineType, SIGNAL(currentIndexChanged(int)), this, SLOT(activeTrackNumber(int)));
+    // Change details of line
+    connect(ui->pushButton_applyNumber, SIGNAL(clicked()), this, SLOT(applyNumberButtonClicked()));
+    // Show details of line
+    connect(ui->listWidget, SIGNAL(currentRowChanged(int)), this, SLOT((updateLineDetails(int))));
+
+    // for wall there is no number property
+    ui->lineEdit->setEnabled(false);
 }
 
 PlatformPropertyWidget::~PlatformPropertyWidget()
@@ -96,6 +105,54 @@ void PlatformPropertyWidget::applyNumberButtonClicked()
 {
     qDebug("Enter PlatformPropertyWidget::applyNumberButtonClicked");
     int current_row=ui->listWidget->currentRow();
-    current_wall = current_zone->get_listWalls()[current_row];
+
+    if(current_zone != nullptr)
+    {
+        current_wall = current_zone->get_listWalls()[current_row];
+    }
+
+    if(ui->comboBox_lineType->currentIndex() == 1)
+    {
+        QString track_number = ui->lineEdit->text();
+        current_wall->setType(track); //see all types in global.h
+        current_wall->setTrackNumber(track_number);
+    } else
+    {
+        current_wall->setType(wall);
+    }
+
+
+
     qDebug("Leave PlatformPropertyWidget::applyNumberButtonClicked");
+}
+
+void PlatformPropertyWidget::activeTrackNumber(int type)
+{
+    qDebug("Enter PlatformPropertyWidget::activeTrackNumber");
+    if(type == 1)// 1 means track type
+    {
+        ui->lineEdit->setEnabled(true);
+    }
+    qDebug("Leave PlatformPropertyWidget::activeTrackNumber");
+}
+
+void PlatformPropertyWidget::updateLineDetails(int index)
+{
+    qDebug("Enter PlatformPropertyWidget::updateLineDetails");
+    if(current_zone != nullptr)
+    {
+        current_wall = current_zone->get_listWalls()[index];
+    }
+
+    if(current_wall->getType() == "track")
+    {
+        ui->comboBox_lineType->setCurrentIndex(1);
+        ui->lineEdit->setText(current_wall->getTrackNumber());
+    } else
+    {
+        ui->comboBox_lineType->setCurrentIndex(0);
+        ui->lineEdit->setEnabled(false);
+    }
+
+    qDebug("Leave PlatformPropertyWidget::updateLineDetails");
 }
