@@ -32,7 +32,7 @@
    <string notr="true">background-color: rgb(240, 240, 240);</string>
   </property>
   <property name="currentIndex">
-   <number>1</number>
+   <number>2</number>
   </property>
   <widget class="QWidget" name="layerTab">
    <attribute name="title">
@@ -105,7 +105,7 @@
    <attribute name="title">
     <string>Rooms</string>
    </attribute>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QWidget" name="layoutWidget_1">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -322,7 +322,7 @@
    <attribute name="title">
     <string>Crossing</string>
    </attribute>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QWidget" name="layoutWidget_2">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -623,7 +623,7 @@
    <attribute name="title">
     <string>Obstacles</string>
    </attribute>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QWidget" name="layoutWidget_3">
     <property name="geometry">
      <rect>
       <x>0</x>

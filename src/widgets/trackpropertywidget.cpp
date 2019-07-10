@@ -41,3 +41,8 @@ TrackPropertyWidget::~TrackPropertyWidget()
 {
     delete ui;
 }
+
+void TrackPropertyWidget::updateListWidget()
+{
+
+}
