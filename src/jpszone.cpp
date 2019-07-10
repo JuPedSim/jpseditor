@@ -67,7 +67,7 @@ void JPSZone::addWall(QList <jpsLineItem *> newWalls)
 
 void JPSZone::addWall(jpsLineItem *newWall)
 {
-    if (newWall->is_Wall() && !wall_list.contains(newWall))
+    if (!wall_list.contains(newWall))
     {
         wall_list.push_back(newWall);
     }

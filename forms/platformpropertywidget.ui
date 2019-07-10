@@ -25,13 +25,13 @@
   <property name="windowTitle">
    <string>Platform</string>
   </property>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>10</y>
      <width>281</width>
-     <height>303</height>
+     <height>571</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -43,7 +43,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QListWidget" name="listWidget"/>
+     <widget class="QListWidget" name="listWidget_walls"/>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -64,40 +64,30 @@
      </layout>
     </item>
     <item>
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>Tracks</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QListWidget" name="listWidget_tracks"/>
+    </item>
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
-       <widget class="QLabel" name="label_3">
+       <widget class="QPushButton" name="pushButton_addTrack">
         <property name="text">
-         <string>Line Type:</string>
+         <string>Add</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox_lineType">
-        <item>
-         <property name="text">
-          <string>Wall</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Track</string>
-         </property>
-        </item>
+       <widget class="QPushButton" name="pushButton_removeTrack">
+        <property name="text">
+         <string>Remove</string>
+        </property>
        </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
       </item>
      </layout>
     </item>

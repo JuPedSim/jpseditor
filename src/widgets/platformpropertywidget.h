@@ -25,9 +25,8 @@ public slots:
 
 protected slots:
     void addWallButtonClicked();
-    void updateListWidget();
+    void updateWallListWidget();
     void applyNumberButtonClicked();
-    void activeTrackNumber(int type);
     void updateLineDetails(int index);
 
 private:
@@ -35,7 +34,7 @@ private:
     jpsDatamanager *data;
     jpsGraphicsView *view;
     JPSZone *current_zone;
-    jpsLineItem *current_wall; //marked lines
+
 };
 
 
