@@ -849,6 +849,17 @@ void MWindow::trackButtonClicked()
 {
     closePropertyDockWidget();
 
+    mview->enableTrack();
+
+    propertyDockWidget = new QDockWidget(tr("Tracks"), this);
+    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    propertyDockWidget->setAllowedAreas( Qt::RightDockWidgetArea);
+
+    auto *trackPropertyWidget = new TrackPropertyWidget(this, this->dmanager);
+//    connect(mview, SIGNAL(transitonsChanged()), trackPropertyWidget, SLOT(updateListWidget()));
+
+    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+    propertyDockWidget->setWidget(trackPropertyWidget);
 }
 
 void MWindow::objectsnap()

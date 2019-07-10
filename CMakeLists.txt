@@ -178,9 +178,10 @@ set( SRCS
     src/tinyxml/tinyxmlparser.cpp
 
     src/widgets/roomlistwidget.cpp
-        src/widgets/basicpropertywidget.cpp
+    src/widgets/basicpropertywidget.cpp
     src/widgets/platformpropertywidget.cpp
-        src/widgets/transitionwidget.cpp )
+    src/widgets/transitionwidget.cpp
+    src/widgets/trackpropertywidget.cpp)
 # all header files that should be treated with moc
 set( HDR
     src/dtrace.h
@@ -240,6 +241,7 @@ set( HDR
     src/widgets/basicpropertywidget.h
     src/widgets/platformpropertywidget.h
     src/widgets/transitionwidget.h
+    src/widgets/trackpropertywidget.h
         )
 
 # *.ui files
@@ -257,6 +259,7 @@ set( UIS
     forms/basicpropertywidget.ui
     forms/platformpropertywidget.ui
     forms/transitionwidget.ui
+    forms/trackpropertywidget.ui
   )
 
 # and finally a resource file

@@ -43,7 +43,7 @@ public:
     int get_id();
     QString get_defaultColor();
     QString get_name();
-    QString GetType();
+    QString getType();
     void set_id(int id);
     void set_name(QString name);
 //    void setType(bool wall, bool door, bool exit, bool hline=false);
@@ -67,6 +67,10 @@ public:
     QList<jpsLineItem* > get_intersectLineVector();
     void add_intersectLine(jpsLineItem * lineItem);
     void remove_interLine(jpsLineItem * lineItem);
+
+    const QString &getTrackNumber() const;
+
+    void setTrackNumber(const QString &trackNumber);
 
 private:
     QGraphicsLineItem* mLine;

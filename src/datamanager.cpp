@@ -1424,7 +1424,7 @@ void jpsDatamanager::CutOutLandmarks(int k, double m, double p0)
     for (jpsLandmark* landmark:cLandmarks)
     {
 //        // at least one main target will be kept
-//        if (landmark->GetType()=="main" || landmark->GetType()=="Main Target")
+//        if (landmark->GetType()=="main" || landmark->getType()=="Main Target")
 //        {
 //            if (numberMainTargets==1)
 //                continue;

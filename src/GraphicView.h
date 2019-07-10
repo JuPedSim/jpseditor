@@ -69,7 +69,7 @@ public:
 
     //Change modes
 
-    void setDrawingMode(EditorMode mode);
+    void setDrawingMode(DrawingMode mode);
 
     void change_stat_anglesnap();
     bool get_stat_anglesnap();
@@ -249,7 +249,7 @@ private:
     bool anglesnap;
 
     // Drawing Mode
-    EditorMode drawingMode;
+    DrawingMode drawingMode;
 
     bool stat_break_;
     int _statCopy;

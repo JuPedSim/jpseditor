@@ -340,7 +340,6 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                     break;
                 }
             default:
-                // If door, wall, exit, hline is edited currently
                 if (_statLineEdit)
                 {
                     for (jpsLineItem* line:line_vector)
@@ -355,7 +354,7 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                 }
                 else
                 {
-                    drawLine();
+                    drawLine(); // Draw wall, crossing, transition, hline, track
                     break;
                 }
         }
@@ -1102,6 +1101,7 @@ void jpsGraphicsView::drawLine()
                 break;
             case Transition:
                 lineItem->setTransition();
+                // Show transitions directly in transitionwidget
                 _datamanager->newTransition(lineItem);
                 emit transitonsChanged();
                 break;
@@ -1118,7 +1118,7 @@ void jpsGraphicsView::drawLine()
         current_line = nullptr;
 
         //Undo
-        RecordUndoLineAction("LineAdded",lineItem->GetType(),lineItem->get_id(),lineItem->get_line()->line());
+        RecordUndoLineAction("LineAdded", lineItem->getType(),lineItem->get_id(),lineItem->get_line()->line());
 
         //drawLine();
     }
@@ -1310,7 +1310,7 @@ void jpsGraphicsView::EditLine(QPointF* point)
 
         if (marked_lines.first()->get_line()->line().p1()==*point)
         {
-            RecordUndoLineAction("LineEdited",marked_lines.first()->GetType(),marked_lines.first()->get_id(),marked_lines.first()->get_line()->line());
+            RecordUndoLineAction("LineEdited", marked_lines.first()->getType(),marked_lines.first()->get_id(),marked_lines.first()->get_line()->line());
             current_line=marked_lines[0]->get_line();
             marked_lines[0]->get_line()->setLine(marked_lines[0]->get_line()->line().x2(),marked_lines[0]->get_line()->line().y2(),translated_pos.x(),translated_pos.y());
             //current_line=this->scene()->addLine(marked_lines[0]->get_line()->line().p2().x(),
@@ -1321,7 +1321,7 @@ void jpsGraphicsView::EditLine(QPointF* point)
 
         else if (marked_lines.first()->get_line()->line().p2()==*point)
         {
-            RecordUndoLineAction("LineEdited",marked_lines.first()->GetType(),marked_lines.first()->get_id(),marked_lines.first()->get_line()->line());
+            RecordUndoLineAction("LineEdited", marked_lines.first()->getType(),marked_lines.first()->get_id(),marked_lines.first()->get_line()->line());
             current_line=marked_lines[0]->get_line();
             marked_lines[0]->get_line()->setLine(marked_lines[0]->get_line()->line().x1(),marked_lines[0]->get_line()->line().y1(),translated_pos.x(),translated_pos.y());
 
@@ -1411,7 +1411,7 @@ void jpsGraphicsView::UndoLineEdit(const int& lineID, const QLineF& old_line)
     {
         if (lineItem->get_id()==lineID)
         {
-           RecordRedoLineAction("LineEdited",lineItem->GetType(),lineItem->get_id(),lineItem->get_line()->line());
+           RecordRedoLineAction("LineEdited", lineItem->getType(),lineItem->get_id(),lineItem->get_line()->line());
            lineItem->get_line()->setLine(old_line);
            break;
         }
@@ -1424,7 +1424,7 @@ void jpsGraphicsView::RedoLineEdit(const int &lineID, const QLineF &old_line)
     {
         if (lineItem->get_id()==lineID)
         {
-           RecordUndoLineAction("LineEdited",lineItem->GetType(),lineItem->get_id(),lineItem->get_line()->line());
+           RecordUndoLineAction("LineEdited", lineItem->getType(),lineItem->get_id(),lineItem->get_line()->line());
            lineItem->get_line()->setLine(old_line);
            break;
         }
@@ -1448,7 +1448,7 @@ void jpsGraphicsView::Undo()
         }
         else if (recentAction.GetName()=="LineAdded")
         {
-            RecordRedoLineAction("LineDeleted",line_vector.back()->GetType(),line_vector.back()->get_id(),
+            RecordRedoLineAction("LineDeleted", line_vector.back()->getType(),line_vector.back()->get_id(),
                                  line_vector.back()->get_line()->line());
             RemoveLineItem(line_vector.back());
         }
@@ -1478,7 +1478,7 @@ void jpsGraphicsView::Redo()
 
         else if (recentAction.GetName()=="LineAdded")
         {
-            RecordUndoLineAction("LineDeleted",line_vector.back()->GetType(),line_vector.back()->get_id(),
+            RecordUndoLineAction("LineDeleted", line_vector.back()->getType(),line_vector.back()->get_id(),
                                  line_vector.back()->get_line()->line());
             RemoveLineItem(line_vector.back());
 
@@ -1896,7 +1896,7 @@ void jpsGraphicsView::delete_marked_lines()
         for (int i=0; i<marked_lines.size(); ++i)
         {
 
-            RecordUndoLineAction("LineDeleted",marked_lines[i]->GetType(),marked_lines[i]->get_id(),marked_lines[i]->get_line()->line());
+            RecordUndoLineAction("LineDeleted", marked_lines[i]->getType(),marked_lines[i]->get_id(),marked_lines[i]->get_line()->line());
 
             RemoveIntersections(marked_lines[i]);
 
@@ -2281,7 +2281,7 @@ void jpsGraphicsView::Copy_lines(const QPointF& delta)
                     line->get_line()->line().p1().y()+delta.y(),
                     line->get_line()->line().p2().x()+delta.x(),
                     line->get_line()->line().p2().y()+delta.y(),
-                    line->GetType());
+                    line->getType());
     }
     _statCopy=0;
 }
@@ -2413,7 +2413,7 @@ void jpsGraphicsView::DrawPointGrid(QPainter *painter, const QRectF &rect)
     painter->drawPoints(points.data(), points.size());
 }
 
-void jpsGraphicsView::setDrawingMode(EditorMode mode) {
+void jpsGraphicsView::setDrawingMode(DrawingMode mode) {
     drawingMode = mode;
 }
 

@@ -73,7 +73,18 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_lineType"/>
+       <widget class="QComboBox" name="comboBox_lineType">
+        <item>
+         <property name="text">
+          <string>Wall</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Track</string>
+         </property>
+        </item>
+       </widget>
       </item>
       <item>
        <spacer name="horizontalSpacer">
