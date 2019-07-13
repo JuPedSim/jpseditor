@@ -21,7 +21,7 @@
  * along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
  *
  * \section Description
- * This class is representing a door to another room in the building or to the outside.
+ * This class is representing a crossing to another room in the building.
  *
  **/
 

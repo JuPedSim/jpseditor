@@ -84,7 +84,7 @@ endif()
 message( STATUS "Generating  ................................... ${PROJECT_NAME} (${JPSEDITOR_VERSION}) -- ${CMAKE_BUILD_TYPE}")
 if(APPLE )
   set (CMAKE_INSTALL_PREFIX "/Applications")
-  set (CMAKE_PREFIX_PATH "/Applications/Qt/5.12.0/clang_64")
+  set (CMAKE_PREFIX_PATH "/Applications/Qt/5.13.0/clang_64")
 endif()
 message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
 
@@ -140,13 +140,15 @@ set( SRCS
     src/GraphicView.cpp
     src/graphicscene.cpp
     src/widgets/roomwidget.cpp
-        src/jpszone.cpp
+    src/jpszone.cpp
     src/datamanager.cpp
     src/jpscrossing.cpp
     src/jpsLineItem.cpp
-        src/jpstransition.cpp
+    src/jpstransition.cpp
     src/jpsobstacle.cpp
     src/jpslandmark.cpp
+    src/jpstrack.cpp
+
     src/widgets/widgetlandmark.cpp
     src/widgets/widgetsettings.cpp
     src/jpsconnection.cpp
@@ -154,7 +156,7 @@ set( SRCS
     src/widgets/settingdialog.cpp
     src/widgets/inifilewidget.cpp
     src/widgets/snappingoptions.cpp
-        src/jpssource.cpp
+    src/jpssource.cpp
     src/widgets/sourcewidget.cpp
     src/jpsgoal.cpp
     src/widgets/goalwidget.cpp
@@ -193,9 +195,10 @@ set( HDR
     src/datamanager.h
     src/jpscrossing.h
     src/jpsLineItem.h
-        src/jpstransition.h
+    src/jpstransition.h
     src/jpsobstacle.h
     src/jpslandmark.h
+    src/jpstrack.h
     src/widgets/widgetlandmark.h
     src/widgets/widgetsettings.h
     src/jpsconnection.h

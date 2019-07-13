@@ -58,65 +58,65 @@ class jpsDatamanager: public DL_CreationAdapter
 public:
     jpsDatamanager(QWidget* parent=0L, jpsGraphicsView* view=0L);
     ~jpsDatamanager();
-    //Room
+    ///Zone
     QList<JPSZone *> get_roomlist();
     void addRoom();
     void remove_room(JPSZone* room);
     void change_roomName(JPSZone* room, QString name);
     void remove_all_rooms();
-    //Obstacle
+    ///Obstacle
     QList<jpsObstacle *> get_obstaclelist();
     void new_obstacle();
     void remove_obstacle(jpsObstacle* obs);
     void change_obstacleName(jpsObstacle* obs, QString name);
     void remove_all_obstacles();
-    //Crossing
+    ///Crossing
     QList<jpsCrossing *> get_crossingList();
     void new_crossing(QList<jpsLineItem *> newCrossing);
     void new_crossing(jpsLineItem* newCrossing);
     void remove_crossing(jpsCrossing* crossing);
     void change_crossingName(jpsCrossing* crossing, QString name);
     void remove_all_crossings();
-    //Exit
+    ///Transition
     QList<jpsTransition *> getTransitionList();
     void new_exit(QList<jpsLineItem *> newExits);
     void newTransition(jpsLineItem *transition);
     void remove_exit(jpsTransition* exit);
     void change_exitName(jpsTransition* exit, QString name);
     void remove_all_exits();
-    //Landmark
+    ///Landmark
     QList<jpsLandmark *> get_landmarks();
     void new_landmark(jpsLandmark * newlandmark);
     void remove_landmark(jpsLandmark* landmark);
     void change_LandmarkName(jpsLandmark* landmark, QString name);
     void remove_all_landmarks();
     const int& GetLandmarkCounter() const;
-    //Connection
+    ///Connection
     const QList<jpsConnection*>& GetAllConnections() const;
     void NewConnection(jpsConnection* newConnection);
     void RemoveConnection(jpsConnection* connection);
     void RemoveAllConnections();
-    //Regions
+    ///Regions
     const QList<jpsRegion*>& GetRegions() const;
     void NewRegion(jpsRegion* region);
     void RemoveRegion(jpsRegion* region);
     void RemoveAllRegions();
     const int& GetRegionCounter() const;
-    //Layers
+    ///Layers
     QList<QString> getElevationList();
 
-    //Sources
+    ///Sources
     void writeSourceXML(QFile &file);
     void writeSourceHeader(QXmlStreamWriter *stream);
     void writeSources(QXmlStreamWriter *stream, QList<JPSSource *>& sourcelist);
     const QList<JPSSource *> &getSourcelist();
 
-    //Goals
+    ///Goals
     void writeGoalXML(QFile &file);
     void writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *>& goallist);
     const QList<JPSGoal *> &getGoallist();
 
-    //Traffic
+    ///Traffic
     void writeTrafficXML(QFile &file);
     void writeTraffics(QXmlStreamWriter *stream, QList<jpsCrossing *> const &doorlist);
     bool readTrafficXML(QFile &file);
@@ -224,7 +224,7 @@ public:
 
 private:
     //Geometry
-    QList<JPSZone *> roomlist; // all zones
+    QList<JPSZone *> roomlist; // all zones. old naming, s
 
     QList<JPSZone *> roomslist; // zoneTye is room
     int room_id_counter;
@@ -244,6 +244,7 @@ private:
     QList<jpsConnection* > _ConnectionsAfterLandmarkLoose;
     QList<jpsRegion* > _regions;
 
+    QList<JPSTrack *> track_list; // fow saving tracks
 
     int obs_id_counter;
     int _crossingIdCounter;

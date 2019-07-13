@@ -745,3 +745,19 @@ const QString &JPSZone::getName() const {
 void JPSZone::setName(const QString &name) {
     JPSZone::name = name;
 }
+
+const QList<JPSTrack *> &JPSZone::getTrackList() const {
+    return track_list;
+}
+
+void JPSZone::addTrack(JPSTrack *track)
+{
+    qDebug("Enter JPSZone::addTrack");
+    if(track != nullptr && !track_list.contains(track))//TODO: 防止重复添加
+    {
+        track_list.append(track);
+    }
+    qDebug("Leave JPSZone::addTrack");
+}
+
+
