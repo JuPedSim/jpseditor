@@ -2,6 +2,7 @@
 #define ROOMS_H
 #include <QGraphicsView>
 #include "jpsLineItem.h"
+#include "jpstrack.h"
 #include "global.h"
 
 class jpsCrossing;
@@ -72,6 +73,9 @@ public:
 
     void setName(const QString &name);
 
+    void addTrack(JPSTrack *track);
+    const QList<JPSTrack *> &getTrackList() const;
+
 private:
     int id;
     JPSZone *father_zone;
@@ -86,7 +90,9 @@ private:
     QPointF up_;
     QPointF down_;
 
-    QList<jpsLineItem*> wall_list;
+    QList<jpsLineItem *> wall_list;
+    QList<JPSTrack *>track_list;
+
     QVector<QLineF> outer_polygon;
     QVector<QVector<QLineF>> inner_polygons;
 //    QVector<QPointF> sorted_polygon;

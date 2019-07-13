@@ -40,14 +40,13 @@ PlatformPropertyWidget::PlatformPropertyWidget(QWidget *parent, jpsDatamanager *
     current_zone = nullptr;
 
     updateWallListWidget();
+    updateTrackListWidget();
+
     connect(ui->pushButton_addWall, SIGNAL(clicked()), this, SLOT(addWallButtonClicked()));
     // Change details of line
     connect(ui->pushButton_applyNumber, SIGNAL(clicked()), this, SLOT(applyNumberButtonClicked()));
-    // Show details of line
-    connect(ui->listWidget_walls, SIGNAL(currentRowChanged(int)), this, SLOT(updateLineDetails(int)));
-
-    // for wall there is no number property
-    ui->lineEdit->setEnabled(false);
+    // Add track into Platform
+    connect(ui->pushButton_addTrack,  SIGNAL(clicked()), this, SLOT(addTrackButtonClicked()));
 }
 
 PlatformPropertyWidget::~PlatformPropertyWidget()
@@ -108,8 +107,46 @@ void PlatformPropertyWidget::applyNumberButtonClicked()
     qDebug("Leave PlatformPropertyWidget::applyNumberButtonClicked");
 }
 
-void PlatformPropertyWidget::updateLineDetails(int index)
+void PlatformPropertyWidget::addTrackButtonClicked()
 {
-    qDebug("Enter PlatformPropertyWidget::updateLineDetails");
-    qDebug("Leave PlatformPropertyWidget::updateLineDetails");
+    qDebug("Enter PlatformPropertyWidget::addTrackButtonClicked");
+    if(!view->get_markedLines().isEmpty())
+    {
+        foreach(jpsLineItem *marked_line, view->get_markedLines())
+        {
+            if(marked_line->getType() == "track")
+            {
+                auto *track = new JPSTrack(marked_line);
+                QString number = ui->lineEdit->text();
+                track->setNumber(number);
+                current_zone->addTrack(track);
+            }
+        }
+
+        updateTrackListWidget();
+    }
+    qDebug("Leave PlatformPropertyWidget::addTrackButtonClicked");
+}
+
+void PlatformPropertyWidget::updateTrackListWidget()
+{
+    qDebug("Enter PlatformPropertyWidget::updateTrackListWidget");
+    ui->listWidget_tracks->clear();
+
+    if(current_zone != nullptr)
+    {
+        QList<JPSTrack *> tracks = current_zone->getTrackList();
+        for (int i=0; i<tracks.size(); i++)
+        {
+            QString string = "";
+            string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
+                           tracks[i]->getLine()->get_line()->line().x1(),
+                           tracks[i]->getLine()->get_line()->line().x2(),
+                           tracks[i]->getLine()->get_line()->line().y1(),
+                           tracks[i]->getLine()->get_line()->line().y2());
+
+            ui->listWidget_tracks->addItem(string);
+        }
+    }
+    qDebug("Leave PlatformPropertyWidget::updateTrackListWidget");
 }
