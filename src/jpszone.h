@@ -19,11 +19,13 @@ public:
     void addinnerWall(QList<jpsLineItem *> newWalls, int id_polygon=0);
     void addinnerWall(jpsLineItem* newWall, int id_polygon=0);
     void removeWall(QList<jpsLineItem *> wall);
+    QList<jpsLineItem*> get_listWalls();
+
     const QList<jpsCrossing *> &GetDoors() const;
     void removeDoor(jpsCrossing* crossing);
     QString get_name();
     void change_name(QString name);
-    QList<jpsLineItem*> get_listWalls();
+
     void activate();
     //QVector<QPointF> get_vertices() const;
     void set_id(int id_room);
@@ -73,8 +75,9 @@ public:
 
     void setName(const QString &name);
 
-    void addTrack(JPSTrack *track);
+    void addTrack(jpsLineItem *line, QString number);
     const QList<JPSTrack *> &getTrackList() const;
+    bool isInTrackList(JPSTrack *track);
 
 private:
     int id;

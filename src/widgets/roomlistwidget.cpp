@@ -144,6 +144,7 @@ void RoomListWidget::currentZoneChanged()
 
 JPSZone *RoomListWidget::getCurrentZone(QListWidgetItem *item)
 {
+    qDebug("Enter RoomListWidget::getCurrentZone");
     QString name = item->text();
 
     ZoneType type = data->convertToZoneType(ui->label_zone->text());
@@ -154,12 +155,12 @@ JPSZone *RoomListWidget::getCurrentZone(QListWidgetItem *item)
         zoneslist = data->getPlatformslist();
     }
 
-    foreach(JPSZone *zone, zoneslist)
-    {
-        if(name == zone->getName()) // find selected room
+            foreach(JPSZone *zone, zoneslist)
         {
-            return zone;
+            if(name == zone->getName()) // find selected room
+            {
+                return zone;
+            }
         }
-    }
-
+    qDebug("Leave RoomListWidget::getCurrentZone");
 }
