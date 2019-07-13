@@ -116,10 +116,8 @@ void PlatformPropertyWidget::addTrackButtonClicked()
         {
             if(marked_line->getType() == "track")
             {
-                auto *track = new JPSTrack(marked_line);
                 QString number = ui->lineEdit->text();
-                track->setNumber(number);
-                current_zone->addTrack(track);
+                current_zone->addTrack(marked_line, number);
             }
         }
 

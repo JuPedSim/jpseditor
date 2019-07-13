@@ -26,13 +26,16 @@
  *
  **/
 
-#include "jpszone.h"
 #include <QtGui>
 #include <iostream>
 #include <fstream>
-#include <QGraphicsLineItem>
-#include "jpscrossing.h"
 #include <QDebug>
+#include <QGraphicsLineItem>
+
+#include "jpszone.h"
+#include "jpscrossing.h"
+#include "jpsLineItem.h"
+
 
 
 JPSZone::JPSZone(int id_zone, JPSZone *father, ZoneType type)
@@ -750,14 +753,39 @@ const QList<JPSTrack *> &JPSZone::getTrackList() const {
     return track_list;
 }
 
-void JPSZone::addTrack(JPSTrack *track)
+void JPSZone::addTrack(jpsLineItem *line, QString number)
 {
     qDebug("Enter JPSZone::addTrack");
-    if(track != nullptr && !track_list.contains(track))//TODO: 防止重复添加
+    if(line == nullptr)
+        return;
+
+    auto *track = new JPSTrack(line);
+    track->setNumber(number);
+
+    if(!isInTrackList(track))
     {
         track_list.append(track);
     }
     qDebug("Leave JPSZone::addTrack");
 }
 
+/*
+    Von v0.8.9
 
+    Check the track if it's already added in the zone.
+ */
+
+bool JPSZone::isInTrackList(JPSTrack *track) {
+    qDebug("Enter JPSZone::isInTrackList");
+    if(track == nullptr)
+        return false;
+
+    foreach(JPSTrack *track_inList, track_list)
+    {
+        if(track->getLine() == track_inList->getLine()) //if same jpsLineItem, reture true;
+            return true;
+    }
+
+    qDebug("Leave JPSZone::isInTrackList");
+    return false;
+}
