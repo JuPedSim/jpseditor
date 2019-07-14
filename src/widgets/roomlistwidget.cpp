@@ -39,6 +39,7 @@ RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager)
     updateRoomsListWidget();
 
     connect(ui->listWidget_rooms, SIGNAL(itemSelectionChanged()), this, SLOT(updateZonesListWidget()));
+
     connect(ui->pushButton_addRoom, SIGNAL(clicked()), this, SLOT(addRoomButtonClicked()));
     connect(ui->pushButton_addZone, SIGNAL(clicked()), this, SLOT(addZoneButtonClicked()));
 
@@ -46,9 +47,8 @@ RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager)
     connect(ui->listWidget_zones, SIGNAL(itemSelectionChanged()), this, SLOT(currentZoneChanged()));
 
     // Rename items
-    connect(ui->listWidget_rooms, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(renameRoom(QListWidgetItem
-                                                                                                      * ))
-    );
+    connect(ui->listWidget_rooms, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(renameRoom(QListWidgetItem*)));
+    connect(ui->listWidget_zones, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(renameZone(QListWidgetItem*)));
 }
 
 RoomListWidget::~RoomListWidget()
@@ -194,6 +194,7 @@ JPSZone *RoomListWidget::getCurrentRoom(QListWidgetItem *item)
 
 void RoomListWidget::renameRoom(QListWidgetItem *item)
 {
+    qDebug("Enter RoomListWidget::renameRoom");
     QString name = QInputDialog::getText(this, tr("Rename"),
                                          tr("New name:"), QLineEdit::Normal,
                                          "Room");
@@ -204,6 +205,7 @@ void RoomListWidget::renameRoom(QListWidgetItem *item)
     }
 
     updateRoomsListWidget();
+    qDebug("Leave RoomListWidget::renameRoom");
 }
 
 bool RoomListWidget::isRepeatedRoomName(QString name)
@@ -216,5 +218,44 @@ bool RoomListWidget::isRepeatedRoomName(QString name)
         }
     qDebug("Leave RoomListWidget::isRepeatedRoomName");
     return false;
+}
 
+void RoomListWidget::renameZone(QListWidgetItem *item)
+{
+    qDebug("Enter RoomListWidget::renameZone");
+    QString name = QInputDialog::getText(this, tr("Rename"),
+                                         tr("New name:"), QLineEdit::Normal,
+                                         "Zone");
+
+    if(!isRepeatedZoneName(name) && getCurrentZone(item) != nullptr)
+    {
+        getCurrentZone(item)->setName(name);
+    }
+
+    updateZonesListWidget();
+    qDebug("Leave RoomListWidget::renameZone");
+}
+
+bool RoomListWidget::isRepeatedZoneName(QString name)
+{
+    qDebug("Enter RoomListWidget::isRepeatedZoneName");
+    ZoneType type = data->convertToZoneType(ui->label_zone->text());
+    QList<JPSZone*> zoneslist;
+
+    switch(type)
+    {
+        case Platform:
+            zoneslist = data->getPlatformslist();
+            break;
+        default:
+            return false;
+    }
+
+    foreach(JPSZone *zone, zoneslist)
+    {
+        if(name == zone->getName())
+            return true;
+    }
+    qDebug("Leave RoomListWidget::isRepeatedZoneName");
+    return false;
 }

@@ -39,6 +39,9 @@ public slots:
     void renameRoom(QListWidgetItem *item);
     bool isRepeatedRoomName(QString name);
 
+    void renameZone(QListWidgetItem *item);
+    bool isRepeatedZoneName(QString name);
+
 signals:
     void zoneSelected(JPSZone *);
 
