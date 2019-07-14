@@ -24,7 +24,7 @@
  *
  * \section Description
  *
- *
+ * This class is for track drawing element
 ****************************************************************/
 
 #include "jpstrack.h"

@@ -41,7 +41,7 @@
 JPSZone::JPSZone(int id_zone, JPSZone *father, ZoneType type)
 {
     id=id_zone;
-    zoneType = Room;
+    zoneType = type;
     father_zone = father;
 
     name = "Unnamed " + QString::number(id_zone);

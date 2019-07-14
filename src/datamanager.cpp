@@ -81,7 +81,7 @@ jpsDatamanager::~jpsDatamanager()
 void jpsDatamanager::addRoom()
 {
     qDebug("Enter jpsDatamanager::addRoom. now room_id_counter = %d", room_id_counter);
-    JPSZone* new_room = new JPSZone(this->room_id_counter, nullptr, NotAssigned);
+    JPSZone* new_room = new JPSZone(this->room_id_counter, nullptr, Room);
     new_room->setType(Room);
     roomslist.push_back(new_room);
     room_id_counter+=1;

@@ -42,8 +42,13 @@ RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager)
     connect(ui->pushButton_addRoom, SIGNAL(clicked()), this, SLOT(addRoomButtonClicked()));
     connect(ui->pushButton_addZone, SIGNAL(clicked()), this, SLOT(addZoneButtonClicked()));
 
-    // send emit to PropertyWidget
+    // Send emit to PropertyWidget
     connect(ui->listWidget_zones, SIGNAL(itemSelectionChanged()), this, SLOT(currentZoneChanged()));
+
+    // Rename items
+    connect(ui->listWidget_rooms, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(renameRoom(QListWidgetItem
+                                                                                                      * ))
+    );
 }
 
 RoomListWidget::~RoomListWidget()
@@ -150,17 +155,66 @@ JPSZone *RoomListWidget::getCurrentZone(QListWidgetItem *item)
     ZoneType type = data->convertToZoneType(ui->label_zone->text());
     QList<JPSZone*> zoneslist;
 
-    if(type == ZoneType::Platform)
+    switch(type)
     {
-        zoneslist = data->getPlatformslist();
+        case Platform:
+            zoneslist = data->getPlatformslist();
+            break;
+        default:
+            return nullptr;
     }
 
-            foreach(JPSZone *zone, zoneslist)
+    foreach(JPSZone *zone, zoneslist)
+    {
+        if(name == zone->getName()) // find selected room
         {
-            if(name == zone->getName()) // find selected room
-            {
-                return zone;
-            }
+            return zone;
         }
+    }
     qDebug("Leave RoomListWidget::getCurrentZone");
+}
+
+JPSZone *RoomListWidget::getCurrentRoom(QListWidgetItem *item)
+{
+    qDebug("Enter RoomListWidget::getCurrentRoom");
+    QString name = item->text();
+
+    QList<JPSZone*> zoneslist = data->getRoomslist();
+
+    foreach(JPSZone *room, zoneslist)
+    {
+        if(name == room->getName()) // find selected room
+        {
+            return room;
+        }
+    }
+    qDebug("Leave RoomListWidget::getCurrentRoom");
+    return nullptr;
+}
+
+void RoomListWidget::renameRoom(QListWidgetItem *item)
+{
+    QString name = QInputDialog::getText(this, tr("Rename"),
+                                         tr("New name:"), QLineEdit::Normal,
+                                         "Room");
+
+    if(!isRepeatedRoomName(name) && getCurrentRoom(item) != nullptr)
+    {
+        getCurrentRoom(item)->setName(name);
+    }
+
+    updateRoomsListWidget();
+}
+
+bool RoomListWidget::isRepeatedRoomName(QString name)
+{
+    qDebug("Enter RoomListWidget::isRepeatedRoomName");
+    foreach(JPSZone *zone, data->getRoomslist())
+        {
+            if(name == zone->getName())
+                return true;
+        }
+    qDebug("Leave RoomListWidget::isRepeatedRoomName");
+    return false;
+
 }
