@@ -32,7 +32,12 @@ public slots:
     void addZoneButtonClicked();
 
     void currentZoneChanged();
-    JPSZone * getCurrentZone(QListWidgetItem *item);
+    JPSZone *getCurrentZone(QListWidgetItem *item);
+
+    JPSZone *getCurrentRoom(QListWidgetItem *item);
+
+    void renameRoom(QListWidgetItem *item);
+    bool isRepeatedRoomName(QString name);
 
 signals:
     void zoneSelected(JPSZone *);
