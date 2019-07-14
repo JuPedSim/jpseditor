@@ -121,7 +121,7 @@
           <item>
            <widget class="QLineEdit" name="lineEdit_general_03">
             <property name="text">
-             <string/>
+             <string>1</string>
             </property>
            </widget>
           </item>
@@ -155,7 +155,7 @@
              <string/>
             </property>
             <property name="text">
-             <string/>
+             <string>0.8</string>
             </property>
            </widget>
           </item>
@@ -220,7 +220,7 @@
           <item>
            <widget class="QLineEdit" name="lineEdit_general_05">
             <property name="text">
-             <string/>
+             <string>1</string>
             </property>
            </widget>
           </item>
@@ -234,7 +234,7 @@
           <item>
            <widget class="QLineEdit" name="lineEdit_general_08">
             <property name="text">
-             <string/>
+             <string>log.txt</string>
             </property>
            </widget>
           </item>
@@ -473,7 +473,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>8</string>
      </property>
     </widget>
     <widget class="QComboBox" name="comboBox_general_03">
@@ -630,7 +630,57 @@
      </column>
      <item row="0" column="0">
       <property name="text">
+       <string>1</string>
+      </property>
+     </item>
+     <item row="0" column="1">
+      <property name="text">
+       <string>1</string>
+      </property>
+     </item>
+     <item row="0" column="2">
+      <property name="text">
+       <string>0</string>
+      </property>
+     </item>
+     <item row="0" column="3">
+      <property name="text">
+       <string>0</string>
+      </property>
+     </item>
+     <item row="0" column="4">
+      <property name="text">
+       <string>1</string>
+      </property>
+     </item>
+     <item row="0" column="5">
+      <property name="text">
        <string/>
+      </property>
+     </item>
+     <item row="0" column="6">
+      <property name="text">
+       <string>1</string>
+      </property>
+     </item>
+     <item row="0" column="11">
+      <property name="text">
+       <string>1</string>
+      </property>
+     </item>
+     <item row="0" column="12">
+      <property name="text">
+       <string>0</string>
+      </property>
+     </item>
+     <item row="0" column="13">
+      <property name="text">
+       <string>1</string>
+      </property>
+     </item>
+     <item row="0" column="14">
+      <property name="text">
+       <string>0.1</string>
       </property>
      </item>
     </widget>
@@ -701,7 +751,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>euler</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_02">
@@ -727,7 +777,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0.1</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_03">
@@ -753,7 +803,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>1</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_04">
@@ -779,7 +829,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>true</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_05">
@@ -805,7 +855,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>2</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_06">
@@ -831,7 +881,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0.3</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_07">
@@ -857,7 +907,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>3</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_08">
@@ -883,7 +933,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>2</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_09">
@@ -909,7 +959,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0.1</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gcfm_13">
@@ -922,7 +972,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0.1</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_11">
@@ -948,7 +998,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>3</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_12">
@@ -974,7 +1024,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0.2</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_13">
@@ -1000,7 +1050,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>2</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_10">
@@ -1064,6 +1114,9 @@
        <height>21</height>
       </rect>
      </property>
+     <property name="text">
+      <string>0</string>
+     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_model_gompertz">
@@ -1080,7 +1133,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0.25</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gompertz_01">
@@ -1106,7 +1159,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>3</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gompertz_10">
@@ -1210,7 +1263,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>true</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gompertz_09">
@@ -1223,7 +1276,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>10</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gompertz_04">
@@ -1249,7 +1302,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0.1</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gompertz_06">
@@ -1262,7 +1315,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>3</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gompertz_03">
@@ -1288,7 +1341,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>2</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gompertz_08">
@@ -1314,7 +1367,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>3</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gompertz_a">
@@ -1340,7 +1393,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0.7</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gompertz_03">
@@ -1353,7 +1406,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>1</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gompertz_09">
@@ -1392,7 +1445,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>euler</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gompertz_12">
@@ -1403,6 +1456,9 @@
        <width>113</width>
        <height>21</height>
       </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gompertz_12">
@@ -1433,7 +1489,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>euler</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_tordeux_08">
@@ -1446,7 +1502,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>5</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_tordeux_06">
@@ -1459,7 +1515,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>5</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_tordeux_07">
@@ -1498,7 +1554,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>3</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_tordeux_07">
@@ -1511,7 +1567,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0.2</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_tordeux_04">
@@ -1524,7 +1580,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>true</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_tordeux_08">
@@ -1550,7 +1606,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0.02</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_tordeux_02">
@@ -1563,7 +1619,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0.05</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_tordeux_05">
@@ -1576,7 +1632,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>2</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_tordeux_c">
@@ -1705,6 +1761,9 @@
        <height>21</height>
       </rect>
      </property>
+     <property name="text">
+      <string>0</string>
+     </property>
     </widget>
     <widget class="QLabel" name="label_model_tordeux_10">
      <property name="geometry">
@@ -1734,7 +1793,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>3</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_14">
@@ -1773,7 +1832,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>true</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_c">
@@ -1825,7 +1884,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>9</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gradnav_15">
@@ -1838,7 +1897,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>3</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_11">
@@ -1877,7 +1936,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>1</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_03">
@@ -1903,7 +1962,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0.01</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gradnav_14">
@@ -1916,7 +1975,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0.7</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gradnav_12">
@@ -1929,7 +1988,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>3</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gradnav_13">
@@ -1942,7 +2001,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>1</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_13">
@@ -1981,7 +2040,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>4.2</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_02">
@@ -2033,7 +2092,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>euler</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_a">
@@ -2072,7 +2131,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0.4</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gradnav_08">
@@ -2085,7 +2144,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>true</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_08">
@@ -2124,7 +2183,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0.0625</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_09">
@@ -2150,7 +2209,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0.2</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gradnav_16">
@@ -2161,6 +2220,9 @@
        <width>113</width>
        <height>21</height>
       </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_16">
@@ -2204,7 +2266,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>0.1</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_krausz_01">
@@ -2217,7 +2279,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>euler</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_krausz_03">
@@ -2230,7 +2292,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>1</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_krausz_02">
@@ -2269,7 +2331,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>true</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_krausz_05">
@@ -2282,7 +2344,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>2</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_krausz_a">
@@ -2332,6 +2394,9 @@
        <width>113</width>
        <height>21</height>
       </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_krausz_06">
@@ -2501,6 +2566,141 @@
        <string>Freq. B</string>
       </property>
      </column>
+     <item row="0" column="0">
+      <property name="text">
+       <string>1</string>
+      </property>
+     </item>
+     <item row="0" column="1">
+      <property name="text">
+       <string>1.34</string>
+      </property>
+     </item>
+     <item row="0" column="2">
+      <property name="text">
+       <string>0</string>
+      </property>
+     </item>
+     <item row="0" column="3">
+      <property name="text">
+       <string>0.6</string>
+      </property>
+     </item>
+     <item row="0" column="4">
+      <property name="text">
+       <string>0.188</string>
+      </property>
+     </item>
+     <item row="0" column="5">
+      <property name="text">
+       <string>0.6</string>
+      </property>
+     </item>
+     <item row="0" column="6">
+      <property name="text">
+       <string>0.0</string>
+      </property>
+     </item>
+     <item row="0" column="7">
+      <property name="text">
+       <string>0.6</string>
+      </property>
+     </item>
+     <item row="0" column="8">
+      <property name="text">
+       <string>0.0</string>
+      </property>
+     </item>
+     <item row="0" column="9">
+      <property name="text">
+       <string>0.25</string>
+      </property>
+     </item>
+     <item row="0" column="10">
+      <property name="text">
+       <string>0</string>
+      </property>
+     </item>
+     <item row="0" column="11">
+      <property name="text">
+       <string>0.2</string>
+      </property>
+     </item>
+     <item row="0" column="12">
+      <property name="text">
+       <string>0</string>
+      </property>
+     </item>
+     <item row="0" column="13">
+      <property name="text">
+       <string>0.15</string>
+      </property>
+     </item>
+     <item row="0" column="14">
+      <property name="text">
+       <string>0</string>
+      </property>
+     </item>
+     <item row="0" column="15">
+      <property name="text">
+       <string>0.15</string>
+      </property>
+     </item>
+     <item row="0" column="16">
+      <property name="text">
+       <string>0</string>
+      </property>
+     </item>
+     <item row="0" column="17">
+      <property name="text">
+       <string>0.5</string>
+      </property>
+     </item>
+     <item row="0" column="18">
+      <property name="text">
+       <string>0</string>
+      </property>
+     </item>
+     <item row="0" column="19">
+      <property name="text">
+       <string>0</string>
+      </property>
+     </item>
+     <item row="0" column="20">
+      <property name="text">
+       <string>0</string>
+      </property>
+     </item>
+     <item row="0" column="21">
+      <property name="text">
+       <string>1</string>
+      </property>
+     </item>
+     <item row="0" column="22">
+      <property name="text">
+       <string>0</string>
+      </property>
+     </item>
+     <item row="0" column="23">
+      <property name="text">
+       <string/>
+      </property>
+     </item>
+     <item row="0" column="24">
+      <property name="text">
+       <string/>
+      </property>
+     </item>
+     <item row="0" column="25">
+      <property name="text">
+       <string/>
+      </property>
+     </item>
+     <item row="0" column="26">
+      <property name="text">
+       <string/>
+      </property>
+     </item>
     </widget>
     <widget class="QLabel" name="label_agents_krausz_a">
      <property name="geometry">
@@ -2844,7 +3044,11 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_16">
       <item>
-       <widget class="QLineEdit" name="lineEdit_ff_global_ID"/>
+       <widget class="QLineEdit" name="lineEdit_ff_global_ID">
+        <property name="text">
+         <string>1</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QComboBox" name="comboBox_ff_global">
