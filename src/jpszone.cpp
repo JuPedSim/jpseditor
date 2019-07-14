@@ -55,6 +55,8 @@ JPSZone::JPSZone(int id_zone, JPSZone *father, ZoneType type)
     elevation_=0;
 
     visible=true;
+
+    wall_list = {};
 }
 
 
