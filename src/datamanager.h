@@ -212,9 +212,12 @@ public:
     const QList<JPSZone *> &getRoomslist() const;
     const QList<JPSZone *> &getPlatformslist() const;
 
-    void addPlatform(JPSZone *father_zone);
+    // add zones
+    void addPlatform(JPSZone *father_room);
 
-    //
+    // delete zones
+    void removeRoom(JPSZone *room);
+    void removeZone(JPSZone *room, JPSZone *zone);
 
 
 //    //Show Cognitive Map
@@ -224,7 +227,7 @@ public:
 
 private:
     //Geometry
-    QList<JPSZone *> roomlist; // all zones. old naming, s
+    QList<JPSZone *> roomlist; // old list, no more used.
 
     QList<JPSZone *> roomslist; // zoneTye is room
     int room_id_counter;

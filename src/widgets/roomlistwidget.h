@@ -28,8 +28,11 @@ public:
 public slots:
     void updateRoomsListWidget();
     void updateZonesListWidget();
+
     void addRoomButtonClicked();
     void addZoneButtonClicked();
+    void deleteRoomButtonClicked();
+    void deleteZoneButtonClicked();
 
     void currentZoneChanged();
     JPSZone *getCurrentZone(QListWidgetItem *item);

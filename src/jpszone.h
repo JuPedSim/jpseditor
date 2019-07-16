@@ -12,6 +12,9 @@ class JPSZone
 
 public:
     JPSZone(int id_zone, JPSZone *father, ZoneType type);
+
+    JPSZone(const QList<jpsLineItem *> &wallList);
+
     ~JPSZone(){}
 
     void addWall(QList<jpsLineItem *> newWalls);
@@ -67,9 +70,12 @@ public:
     bool isVisible();
     void setVisible(bool visibility);
 
-    // father zone can only be JPSZone::Room;
-    JPSZone *getFatherZone() const;
-    void setFatherZone(JPSZone *fatherZone);
+    // father room can only be JPSZone::Room;
+    JPSZone *getFatherRoom() const;
+    void setFatherRoom(JPSZone *room);
+
+    void addZoneInList(JPSZone *zone);
+    void removeZoneFromList(JPSZone *zone);
 
     const QString &getName() const;
 
@@ -79,9 +85,11 @@ public:
     const QList<JPSTrack *> &getTrackList() const;
     bool isInTrackList(JPSTrack *track);
 
+    const QList<JPSZone *> &getPlatfromList() const;
+
 private:
     int id;
-    JPSZone *father_zone;
+    JPSZone *father_room;
 
     ZoneType zoneType;
     QString name;
@@ -98,12 +106,13 @@ private:
 
     QVector<QLineF> outer_polygon;
     QVector<QVector<QLineF>> inner_polygons;
-//    QVector<QPointF> sorted_polygon;
     QList<jpsCrossing* > doorList_;
     qreal area_;
 
     float elevation_; /// this makes only sense for horizontal rooms.
 
+    // For room type
+    QList<JPSZone *> platfrom_list;
 
 };
 

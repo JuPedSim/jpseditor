@@ -225,10 +225,6 @@ void roomWidget::delete_room()
     {
         int cRow=ui->list_rooms->currentRow();
 
-//        QString roomName = datamanager->get_roomlist()[cRow]->get_name();
-//        QPointF roomCenter = datamanager->get_roomlist()[cRow]->get_center();
-//        graphview->show_hide_roomCaption(roomName,roomCenter.x(),roomCenter.y());
-
         switchRoomCaption();
 
         datamanager->remove_room(datamanager->get_roomlist()[cRow]);
