@@ -21,8 +21,12 @@
  * along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
  *
  * \section Description
- * The class is responsible for handling and organisation of rooms, walls and doors. Further more
+ * The class is responsible for handling and organisation of all elements and zones. Further more
  * it handles the reading and writing of dxf and xml files.
+ *
+ * The class should control all opreations for editing data. Editing data outside only by setter!
+ *
+ * \section Structure of JPSElement
  *
  **/
 
@@ -88,12 +92,12 @@ void jpsDatamanager::addRoom()
     qDebug("Leave jpsDatamanager::addRoom. now room_id_counter = %d", room_id_counter);
 }
 
-void jpsDatamanager::addPlatform(JPSZone *father_zone)
+void jpsDatamanager::addPlatform(JPSZone *father_room)
 {
     qDebug("Enter jpsDatamanager::addPlatform");
-    JPSZone *new_Platform = new JPSZone(platform_id_counter, father_zone, Platform);
-    new_Platform->setType(Platform);
-    platformslist.push_back(new_Platform);
+    JPSZone *new_Platform = new JPSZone(platform_id_counter, father_room, Platform);
+    father_room->addZoneInList(new_Platform); // Platform belongs to the father room and saving in father room,
+    // rather than datamanger;
     platform_id_counter += 1;
     qDebug("Leave jpsDatamanager::addPlatform");
 }
@@ -102,7 +106,7 @@ void jpsDatamanager::remove_room(JPSZone *room)
 {
     qDebug("Enter jpsDatamanager::remove_room. room_id_counter = %d", room_id_counter);
     //set room to nullptr in doors
-    for (jpsCrossing* crossing: get_crossingList())
+    for (jpsCrossing* crossing : get_crossingList())
     {
         // will only be removed if room is in crossings roomlist
         crossing->RemoveRoom(room);
@@ -3317,4 +3321,36 @@ const QList<JPSZone *> &jpsDatamanager::getPlatformslist() const
     return platformslist;
     qDebug("Leave jpsDatamanager::getPlatformslist()");
 
+}
+
+/*
+    Purpose: Remove selected room from roomslist
+
+    Note: Assemable elements will be deleted, but drawing elements will be kept in datamanager
+*/
+void jpsDatamanager::removeRoom(JPSZone *room)
+{
+    qDebug("Enter jpsDatamanager::removeRoom");
+    if(room == nullptr)
+        return;
+
+    roomslist.removeOne(room); //removed from roomslist
+
+    delete room;
+    room = nullptr; //removed from memory
+    qDebug("Leave jpsDatamanager::removeRoom");
+}
+
+//TODO: Not working jet!
+void jpsDatamanager::removeZone(JPSZone *room, JPSZone *zone)
+{
+    qDebug("Enter jpsDatamanager::removeZone");
+    if(zone == nullptr)
+    {
+        return;
+    } else
+    {
+        room->removeZoneFromList(zone);
+    }
+    qDebug("Leave jpsDatamanager::removeZone");
 }

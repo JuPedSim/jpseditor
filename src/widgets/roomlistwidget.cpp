@@ -38,13 +38,17 @@ RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager)
 
     updateRoomsListWidget();
 
-    connect(ui->listWidget_rooms, SIGNAL(itemSelectionChanged()), this, SLOT(updateZonesListWidget()));
-
+    // Add
     connect(ui->pushButton_addRoom, SIGNAL(clicked()), this, SLOT(addRoomButtonClicked()));
     connect(ui->pushButton_addZone, SIGNAL(clicked()), this, SLOT(addZoneButtonClicked()));
 
+    // delete
+    connect(ui->pushButton_deleteRoom, SIGNAL(clicked()), this, SLOT(deleteRoomButtonClicked()));
+    connect(ui->pushButton_deleteZone, SIGNAL(clicked()), this, SLOT(deleteZoneButtonClicked()));
+
     // Send emit to PropertyWidget
     connect(ui->listWidget_zones, SIGNAL(itemSelectionChanged()), this, SLOT(currentZoneChanged()));
+    connect(ui->listWidget_rooms, SIGNAL(itemSelectionChanged()), this, SLOT(updateZonesListWidget()));
 
     // Rename items
     connect(ui->listWidget_rooms, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(renameRoom(QListWidgetItem*)));
@@ -84,18 +88,20 @@ void RoomListWidget::updateZonesListWidget()
     ZoneType type = data->convertToZoneType(ui->label_zone->text());
     QList<JPSZone*> zoneslist;
 
+    // If current room is deleted, just show empty zone list
+    if(getCurrentRoom(ui->listWidget_rooms->currentItem()) == nullptr)
+        return;
+
+    // Get right list
     if(type == ZoneType::Platform)
     {
-        zoneslist = data->getPlatformslist();
+        zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getPlatfromList();
     }
 
-    // show zones
+    // Show zones
     foreach(JPSZone *zone, zoneslist)
     {
-        if(zone->getFatherZone()->getName()==ui->listWidget_rooms->currentItem()->text())
-        {
-            ui->listWidget_zones->addItem(zone->get_name());
-        }
+        ui->listWidget_zones->addItem(zone->get_name());
     }
     qDebug("Leave RoomListWidget::updateZonesListWidget");
 }
@@ -113,21 +119,17 @@ void RoomListWidget::addZoneButtonClicked()
     qDebug("Enter RoomListWidget::addZoneButtonClicked");
     if(ui->listWidget_rooms->currentItem() != nullptr)
     {
-        QString father_zone_name = ui->listWidget_rooms->currentItem()->text();
         ZoneType type = data->convertToZoneType(ui->label_zone->text());
 
-        foreach(JPSZone *room, data->getRoomslist())
+        switch (type)
         {
-            if(room->getName() == father_zone_name) // find selected room
-            {
-                if(type == ZoneType::Platform)
-                {
-                    data->addPlatform(room);
-                }
-            }
+            case Platform:
+                data->addPlatform(getCurrentRoom(ui->listWidget_rooms->currentItem()));
+            default:
+                break;
         }
     }
-    else
+    else // Show warning message
     {
         QMessageBox msgBox;
         msgBox.setText("Add or select a room at first!");
@@ -202,6 +204,10 @@ void RoomListWidget::renameRoom(QListWidgetItem *item)
     if(!isRepeatedRoomName(name) && getCurrentRoom(item) != nullptr)
     {
         getCurrentRoom(item)->setName(name);
+    } else
+    {
+        QMessageBox::warning(this,"Warning!", "This name is already used, change another?",
+                             QMessageBox::Ok);
     }
 
     updateRoomsListWidget();
@@ -230,6 +236,10 @@ void RoomListWidget::renameZone(QListWidgetItem *item)
     if(!isRepeatedZoneName(name) && getCurrentZone(item) != nullptr)
     {
         getCurrentZone(item)->setName(name);
+    } else
+    {
+        QMessageBox::warning(this,"Warning!", "This name is already used, change another?",
+                                 QMessageBox::Ok);
     }
 
     updateZonesListWidget();
@@ -258,4 +268,43 @@ bool RoomListWidget::isRepeatedZoneName(QString name)
     }
     qDebug("Leave RoomListWidget::isRepeatedZoneName");
     return false;
+}
+
+/*
+    Purpose: Delete room from room list widget
+
+    Flow: RoomListWidget::deleteRoomButtonClicked
+            -> jpsDatamanager::removeRoom
+
+*/
+void RoomListWidget::deleteRoomButtonClicked()
+{
+    qDebug("Enter RoomListWidget::deleteRoomButtonClicked");
+    if(ui->listWidget_rooms->currentItem() != nullptr)
+    {
+        data->removeRoom(getCurrentRoom(ui->listWidget_rooms->currentItem())); // removing opreation in datamanager
+    }
+
+    updateRoomsListWidget();
+    qDebug("Leave RoomListWidget::deleteRoomButtonClicked");
+}
+
+
+/*
+    Purpose: Delete zone from zone list widget
+
+    Flow: RoomListWidget::deleteZoneButtonClicked
+            -> jpsDatamanager::removeZone
+*/
+void RoomListWidget::deleteZoneButtonClicked()
+{
+    qDebug("Enter RoomListWidget::deleteZoneButtonClicked");
+    if(ui->listWidget_zones->currentItem() != nullptr)
+    {
+        data->removeZone(getCurrentRoom(ui->listWidget_rooms->currentItem()),
+                getCurrentZone(ui->listWidget_zones->currentItem()));
+    }
+
+    updateZonesListWidget();
+    qDebug("Leave RoomListWidget::deleteZoneButtonClicked");
 }

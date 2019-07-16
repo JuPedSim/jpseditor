@@ -85,9 +85,9 @@ void PlatformPropertyWidget::updateWallListWidget()
 
     if(current_zone != nullptr)
     {
-        QList<jpsLineItem *> walllist = current_zone->get_listWalls();
-        if(!walllist.isEmpty())
+        if(!current_zone->get_listWalls().isEmpty()) //TODO: Fix empty wall list
         {
+            QList<jpsLineItem *> walllist = current_zone->get_listWalls();
             for(int i=0; i<walllist.size(); i++)
             {
                 QString string = "";
@@ -99,6 +99,9 @@ void PlatformPropertyWidget::updateWallListWidget()
 
                 ui->listWidget_walls->addItem(string);
             }
+        } else
+        {
+            return;
         }
     }
     qDebug("Leave PlatformPropertyWidget::updateWallListWidget");

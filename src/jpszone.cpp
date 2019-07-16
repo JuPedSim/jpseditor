@@ -36,13 +36,11 @@
 #include "jpscrossing.h"
 #include "jpsLineItem.h"
 
-
-
 JPSZone::JPSZone(int id_zone, JPSZone *father, ZoneType type)
 {
     id=id_zone;
     zoneType = type;
-    father_zone = father;
+    father_room = father;
 
     name = "Unnamed " + QString::number(id_zone);
 
@@ -56,9 +54,7 @@ JPSZone::JPSZone(int id_zone, JPSZone *father, ZoneType type)
 
     visible=true;
 
-    wall_list = {};
 }
-
 
 void JPSZone::addWall(QList <jpsLineItem *> newWalls)
 {
@@ -133,7 +129,9 @@ void JPSZone::change_name(QString name)
 
 QList<jpsLineItem *> JPSZone::get_listWalls()
 {
+    qDebug("Enter JPSZone::get_listWalls");
     return wall_list;
+    qDebug("Leave JPSZone::get_listWalls");
 }
 
 void JPSZone::activate()
@@ -729,18 +727,18 @@ void JPSZone::setVisible(bool visibility)
     visible = visibility;
 }
 
-JPSZone *JPSZone::getFatherZone() const
+JPSZone *JPSZone::getFatherRoom() const
 {
-    qDebug("Enter JPSZone::getFatherZone");
-    return father_zone;
-    qDebug("Leave JPSZone::getFatherZone");
+    qDebug("Enter JPSZone::getFatherRoom");
+    return father_room;
+    qDebug("Leave JPSZone::getFatherRoom");
 }
 
-void JPSZone::setFatherZone(JPSZone *fatherZone)
+void JPSZone::setFatherRoom(JPSZone *room)
 {
-    qDebug("Enter JPSZone::setFatherZone");
-    father_zone = fatherZone;
-    qDebug("Leave JPSZone::setFatherZone");
+    qDebug("Enter JPSZone::setFatherRoom");
+    father_room = room;
+    qDebug("Leave JPSZone::setFatherRoom");
 }
 
 const QString &JPSZone::getName() const {
@@ -790,4 +788,42 @@ bool JPSZone::isInTrackList(JPSTrack *track) {
 
     qDebug("Leave JPSZone::isInTrackList");
     return false;
+}
+
+const QList<JPSZone *> &JPSZone::getPlatfromList() const {
+    qDebug("Enter JPSZone::getPlatfromList");
+    return platfrom_list;
+    qDebug("Leave JPSZone::getPlatfromList");
+}
+
+void JPSZone::addZoneInList(JPSZone *zone)
+{
+    qDebug("Enter JPSZone::addZoneInList");
+    ZoneType type = zone->getType();
+
+    switch (type)
+    {
+        case Platform:
+            platfrom_list.append(zone);
+        default:
+            break;
+    }
+    qDebug("Leave JPSZone::addZoneInList");
+}
+
+void JPSZone::removeZoneFromList(JPSZone *zone)
+{
+    qDebug("Enter JPSZone::removeZoneFromList");
+    ZoneType type = zone->getType();
+
+    switch (type)
+    {
+        case Platform:
+            platfrom_list.removeOne(zone);
+            delete zone;
+            zone = nullptr;
+        default:
+            break;
+    }
+    qDebug("Leave JPSZone::removeZoneFromList");
 }

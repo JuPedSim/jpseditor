@@ -22,8 +22,6 @@
  *
  * \section Description
  * This class is representing an exit to the outside.
- * This class will vanish in the nearer future since the class jpscrossing will overtake the objectives of this class.
- *
  **/
 
 #ifndef JPSEXIT_H
