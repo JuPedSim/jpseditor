@@ -210,7 +210,6 @@ public:
 
     // getter for JPSZones;
     const QList<JPSZone *> &getRoomslist() const;
-    const QList<JPSZone *> &getPlatformslist() const;
 
     // add zones
     void addPlatform(JPSZone *father_room);
@@ -232,7 +231,6 @@ private:
     QList<JPSZone *> roomslist; // zoneTye is room
     int room_id_counter;
 
-    QList<JPSZone *> platformslist;// zoneTye is platform
     int platform_id_counter;
 
     QList<jpsObstacle *> obstaclelist;

@@ -62,7 +62,6 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
     roomslist = QList<JPSZone *>();
     room_id_counter=1;
 
-    platformslist = QList<JPSZone *> ();
     platform_id_counter = 1;
 
     sourcelist = _mView->getSources();
@@ -3313,14 +3312,6 @@ const QList<JPSZone *> &jpsDatamanager::getRoomslist() const
     qDebug("Enter jpsDatamanager::getRoomslist()");
     return roomslist;
     qDebug("Leave jpsDatamanager::getRoomslist()");
-}
-
-const QList<JPSZone *> &jpsDatamanager::getPlatformslist() const
-{
-    qDebug("Enter jpsDatamanager::getPlatformslist()");
-    return platformslist;
-    qDebug("Leave jpsDatamanager::getPlatformslist()");
-
 }
 
 /*

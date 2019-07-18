@@ -83,27 +83,21 @@ void PlatformPropertyWidget::updateWallListWidget()
     qDebug("Enter PlatformPropertyWidget::updateWallListWidget");
     ui->listWidget_walls->clear();
 
-    if(current_zone != nullptr)
-    {
-        if(!current_zone->get_listWalls().isEmpty()) //TODO: Fix empty wall list
-        {
-            QList<jpsLineItem *> walllist = current_zone->get_listWalls();
-            for(int i=0; i<walllist.size(); i++)
-            {
-                QString string = "";
-                string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
-                               walllist[i]->get_line()->line().x1(),
-                               walllist[i]->get_line()->line().x2(),
-                               walllist[i]->get_line()->line().y1(),
-                               walllist[i]->get_line()->line().y2());
-
-                ui->listWidget_walls->addItem(string);
-            }
-        } else
-        {
-            return;
-        }
-    }
+//    if(current_zone != nullptr)
+//    {
+//        QList<jpsLineItem *> walllist = current_zone->get_listWalls();
+//        for(int i=0; i<walllist.size(); i++)
+//        {
+//            QString string = "";
+//            string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
+//                           walllist[i]->get_line()->line().x1(),
+//                           walllist[i]->get_line()->line().x2(),
+//                           walllist[i]->get_line()->line().y1(),
+//                           walllist[i]->get_line()->line().y2());
+//
+//            ui->listWidget_walls->addItem(string);
+//        }
+//    }
     qDebug("Leave PlatformPropertyWidget::updateWallListWidget");
 }
 

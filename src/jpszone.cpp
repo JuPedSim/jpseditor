@@ -53,7 +53,6 @@ JPSZone::JPSZone(int id_zone, JPSZone *father, ZoneType type)
     elevation_=0;
 
     visible=true;
-
 }
 
 void JPSZone::addWall(QList <jpsLineItem *> newWalls)
@@ -746,7 +745,9 @@ const QString &JPSZone::getName() const {
 }
 
 void JPSZone::setName(const QString &name) {
-    JPSZone::name = name;
+    qDebug("Enter JPSZone::setName");
+    this->name = name;
+    qDebug("Name changed. Leave JPSZone::setName");
 }
 
 const QList<JPSTrack *> &JPSZone::getTrackList() const {
@@ -791,9 +792,8 @@ bool JPSZone::isInTrackList(JPSTrack *track) {
 }
 
 const QList<JPSZone *> &JPSZone::getPlatfromList() const {
-    qDebug("Enter JPSZone::getPlatfromList");
+    qDebug("Enter/Leave JPSZone::getPlatfromList");
     return platfrom_list;
-    qDebug("Leave JPSZone::getPlatfromList");
 }
 
 void JPSZone::addZoneInList(JPSZone *zone)
