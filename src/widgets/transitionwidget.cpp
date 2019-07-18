@@ -48,7 +48,7 @@ TransitionWidget::~TransitionWidget()
 
 void TransitionWidget::updateListWidget()
 {
-    qDebug("Enter TransitionWidget::updateWallListWidget");
+    qDebug("Enter TransitionWidget::updateListWidget");
     ui->listWidget_transitions->clear();
 
     QList<jpsTransition *> transition_list = data->getTransitionList();
@@ -64,5 +64,5 @@ void TransitionWidget::updateListWidget()
 
         ui->listWidget_transitions->addItem(string);
     }
-    qDebug("Leave TransitionWidget::updateWallListWidget");
+    qDebug("Leave TransitionWidget::updateListWidget");
 }

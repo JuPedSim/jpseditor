@@ -39,7 +39,7 @@ PlatformPropertyWidget::PlatformPropertyWidget(QWidget *parent, jpsDatamanager *
     view = gview;
     current_zone = nullptr;
 
-    updateWallListWidget();
+    updateListWidget();
     updateTrackListWidget();
 
     connect(ui->pushButton_addWall, SIGNAL(clicked()), this, SLOT(addWallButtonClicked()));
@@ -65,7 +65,7 @@ void PlatformPropertyWidget::addWallButtonClicked()
                 current_zone->addWall(line);
         }
 
-        updateWallListWidget();
+        updateListWidget();
     }
     qDebug("Leave PlatformPropertyWidget::addWallButtonClicked");
 }
@@ -74,33 +74,48 @@ void PlatformPropertyWidget::receiveJPSZone(JPSZone *zone)
 {
     qDebug("Enter PlatformPropertyWidget::receiveJPSZone");
     current_zone = zone;
-    updateWallListWidget();
+    updateListWidget();
     qDebug("Leave PlatformPropertyWidget::receiveJPSZone");
 }
 
-void PlatformPropertyWidget::updateWallListWidget()
+void PlatformPropertyWidget::updateListWidget()
 {
-    qDebug("Enter PlatformPropertyWidget::updateWallListWidget");
+    qDebug("Enter PlatformPropertyWidget::updateListWidget");
     ui->listWidget_walls->clear();
+    ui->listWidget_tracks->clear();
+    ui->lineEdit->clear();
 
-//    if(current_zone != nullptr)
-//    {
-//        QList<jpsLineItem *> walllist = current_zone->get_listWalls();
-//        for(int i=0; i<walllist.size(); i++)
-//        {
-//            QString string = "";
-//            string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
-//                           walllist[i]->get_line()->line().x1(),
-//                           walllist[i]->get_line()->line().x2(),
-//                           walllist[i]->get_line()->line().y1(),
-//                           walllist[i]->get_line()->line().y2());
-//
-//            ui->listWidget_walls->addItem(string);
-//        }
-//    }
-    qDebug("Leave PlatformPropertyWidget::updateWallListWidget");
+    if(current_zone != nullptr)
+    {
+        QList<jpsLineItem *> walllist = current_zone->get_listWalls();
+        for(int i=0; i<walllist.size(); i++)
+        {
+            QString string = "";
+            string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
+                           walllist[i]->get_line()->line().x1(),
+                           walllist[i]->get_line()->line().x2(),
+                           walllist[i]->get_line()->line().y1(),
+                           walllist[i]->get_line()->line().y2());
+
+            ui->listWidget_walls->addItem(string);
+        }
+
+        QList<JPSTrack *> tracklist = current_zone->getTrackList();
+        for (int j = 0; j < tracklist.size(); ++j) {
+            QString string = "";
+            string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
+                           tracklist[j]->getLine()->get_line()->line().x1(),
+                           tracklist[j]->getLine()->get_line()->line().x2(),
+                           tracklist[j]->getLine()->get_line()->line().y1(),
+                           tracklist[j]->getLine()->get_line()->line().y2());
+
+            ui->listWidget_tracks->addItem(string);
+        }
+    }
+    qDebug("Leave PlatformPropertyWidget::updateListWidget");
 }
 
+//TODO: Finish this!
 void PlatformPropertyWidget::applyNumberButtonClicked()
 {
     qDebug("Enter PlatformPropertyWidget::applyNumberButtonClicked");
