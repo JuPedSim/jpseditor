@@ -101,6 +101,7 @@ void RoomListWidget::updateZonesListWidget()
     // Show zones
     foreach(JPSZone *zone, zoneslist)
     {
+        qDebug("Name: %s", zone->get_name().toStdString().data());
         ui->listWidget_zones->addItem(zone->get_name());
     }
     qDebug("Leave RoomListWidget::updateZonesListWidget");
@@ -160,7 +161,7 @@ JPSZone *RoomListWidget::getCurrentZone(QListWidgetItem *item)
     switch(type)
     {
         case Platform:
-            zoneslist = data->getPlatformslist();
+            zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getPlatfromList();
             break;
         default:
             return nullptr;
@@ -170,10 +171,10 @@ JPSZone *RoomListWidget::getCurrentZone(QListWidgetItem *item)
     {
         if(name == zone->getName()) // find selected room
         {
+            qDebug("Found current zone. Leave RoomListWidget::getCurrentZone");
             return zone;
         }
     }
-    qDebug("Leave RoomListWidget::getCurrentZone");
 }
 
 JPSZone *RoomListWidget::getCurrentRoom(QListWidgetItem *item)
@@ -229,7 +230,7 @@ bool RoomListWidget::isRepeatedRoomName(QString name)
 void RoomListWidget::renameZone(QListWidgetItem *item)
 {
     qDebug("Enter RoomListWidget::renameZone");
-    QString name = QInputDialog::getText(this, tr("Rename"),
+    QString name = QInputDialog::getText(this, tr("Rename Zone"),
                                          tr("New name:"), QLineEdit::Normal,
                                          "Zone");
 
@@ -255,7 +256,7 @@ bool RoomListWidget::isRepeatedZoneName(QString name)
     switch(type)
     {
         case Platform:
-            zoneslist = data->getPlatformslist();
+            zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getPlatfromList();
             break;
         default:
             return false;

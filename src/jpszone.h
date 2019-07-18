@@ -13,8 +13,6 @@ class JPSZone
 public:
     JPSZone(int id_zone, JPSZone *father, ZoneType type);
 
-    JPSZone(const QList<jpsLineItem *> &wallList);
-
     ~JPSZone(){}
 
     void addWall(QList<jpsLineItem *> newWalls);
