@@ -128,9 +128,8 @@ void JPSZone::change_name(QString name)
 
 QList<jpsLineItem *> JPSZone::get_listWalls()
 {
-    qDebug("Enter JPSZone::get_listWalls");
+    qDebug("Enter/Leave JPSZone::get_listWalls");
     return wall_list;
-    qDebug("Leave JPSZone::get_listWalls");
 }
 
 void JPSZone::activate()

@@ -857,7 +857,7 @@ void MWindow::trackButtonClicked()
     propertyDockWidget->setAllowedAreas( Qt::RightDockWidgetArea);
 
     auto *trackPropertyWidget = new TrackPropertyWidget(this, this->dmanager);
-    connect(mview, SIGNAL(tracksChanged()), trackPropertyWidget, SLOT(updateWallListWidget()));
+    connect(mview, SIGNAL(tracksChanged()), trackPropertyWidget, SLOT(updateListWidget()));
 
     addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
     propertyDockWidget->setWidget(trackPropertyWidget);

@@ -26,7 +26,7 @@ public slots:
 protected slots:
     void addWallButtonClicked();
     void addTrackButtonClicked();
-    void updateWallListWidget();
+    void updateListWidget();
     void applyNumberButtonClicked();
     void updateTrackListWidget();
 
