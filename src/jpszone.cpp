@@ -67,10 +67,12 @@ void JPSZone::addWall(QList <jpsLineItem *> newWalls)
 
 void JPSZone::addWall(jpsLineItem *newWall)
 {
+    qDebug("Enter JPSZone::addWall");
     if (!wall_list.contains(newWall))
     {
         wall_list.push_back(newWall);
     }
+    qDebug("Leave JPSZone::addWall");
 }
 
 void JPSZone::addinnerWall(QList<jpsLineItem *> newWalls, int id_polygon)
@@ -103,10 +105,19 @@ void JPSZone::removeWall(QList <jpsLineItem *> wall)
     qDebug("Leave JPSZone::removeWall");
 }
 
-//TODO: Description
+/*
+    Purpose: Remove selecting wall from wall list
+
+    Note: Wall won't be deleted in graphic view after removing
+*/
 void JPSZone::removeWall(jpsLineItem *wall)
 {
     wall_list.removeOne(wall);
+}
+
+void JPSZone::removeTrack(JPSTrack *track)
+{
+    track_list.removeOne(track);
 }
 
 const QList<jpsCrossing *>& JPSZone::GetDoors() const

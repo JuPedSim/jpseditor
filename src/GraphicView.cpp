@@ -2604,19 +2604,19 @@ QList<JPSGoal *> jpsGraphicsView::getGoals() {
 
     QList<JPSGoal *> goals;
 
-            foreach(QGraphicsItem *item, items())
-        {
-            switch (item->type()) {
-                case GoalElementType:
-                {
-                    auto *goal = qgraphicsitem_cast<JPSGoal *>(item);
-                    goals.append(goal);
-                    break;
-                }
-                default:
-                    break;
+    foreach(QGraphicsItem *item, items())
+    {
+        switch (item->type()) {
+            case GoalElementType:
+            {
+                auto *goal = qgraphicsitem_cast<JPSGoal *>(item);
+                goals.append(goal);
+                break;
             }
+            default:
+                break;
         }
+    }
 
     return goals;
 }

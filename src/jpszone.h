@@ -21,6 +21,7 @@ public:
     void addinnerWall(jpsLineItem* newWall, int id_polygon=0);
     void removeWall(QList<jpsLineItem *> wall);
     void removeWall(jpsLineItem *wall);
+    void removeTrack(JPSTrack *track);
     QList<jpsLineItem*> get_listWalls();
 
     const QList<jpsCrossing *> &GetDoors() const;

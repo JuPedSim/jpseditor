@@ -186,8 +186,7 @@ set( SRCS
     src/widgets/trackpropertywidget.cpp)
 # all header files that should be treated with moc
 set( HDR
-    src/dtrace.h
-    src/mainWindow.h
+        src/mainWindow.h
     src/GraphicView.h
     src/graphicscene.h
     src/widgets/roomwidget.h
@@ -203,8 +202,7 @@ set( HDR
     src/widgets/widgetsettings.h
     src/jpsconnection.h
     src/jpsregion.h
-    src/dtrace.h
-    src/widgets/settingdialog.h
+        src/widgets/settingdialog.h
     src/widgets/inifilewidget.h
     src/widgets/snappingoptions.h
         src/jpssource.h

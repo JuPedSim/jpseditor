@@ -64,11 +64,11 @@ GoalWidget::~GoalWidget()
     delete ui;
 }
 
+/*
+    show the new added goal informations
+*/
 void GoalWidget::showGoals()
 {
-    /*
-        show the new added goal informations
-     */
     model->setGoalsList(currentView->getGoals());
     ui->goalsListView->setModel(model);
     ui->IDlineEdit->clear();

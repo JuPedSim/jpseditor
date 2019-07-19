@@ -109,7 +109,7 @@ void GoalReader::readGoal()
             xml.skipCurrentElement();
     }
 
-    QRectF rect(vertexes[0], vertexes[2]); //TODO: use x_min, x_max, y_min, y_max to draw the rect.
+    QRectF rect(vertexes[0], vertexes[2]);
     auto *rectItem = new QGraphicsRectItem;
     rectItem->setRect(rect);
     auto *goal = new JPSGoal(rectItem);

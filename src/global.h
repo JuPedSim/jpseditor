@@ -34,5 +34,5 @@ enum ZoneType {Room, Corridor, Office, Lobby, Entrance, Stair, Obstacle, Platfor
 
 enum LineType {wall, crossing, transition, hline, track, undefined};
 
-enum DrawingMode {Selecting, Wall, Crossing, Hline, Landmark, Source, Goal, Transition, Track, MeasureLength};
+enum DrawingMode {Wall, Crossing, Transition, Hline, Track,  Landmark, Source, Goal, Selecting, MeasureLength};
 #endif //JPSEDITOR_GLOBAL_H

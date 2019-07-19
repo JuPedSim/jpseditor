@@ -166,15 +166,21 @@ JPSZone *RoomListWidget::getCurrentZone(QListWidgetItem *item)
             return nullptr;
     }
 
-    foreach(JPSZone *zone, zoneslist)
+    if(!zoneslist.isEmpty())
     {
-        if(name == zone->getName()) // find selected room
+        foreach(JPSZone *zone, zoneslist)
         {
-            qDebug("Found current zone. Leave RoomListWidget::getCurrentZone");
-            return zone;
+            if(name == zone->getName()) // find selected room
+            {
+                qDebug("Found current zone. Leave RoomListWidget::getCurrentZone");
+                return zone;
+            }
         }
     }
+
+    return zoneslist[0]; //TODO: Fix unsafe return value.
 }
+
 
 JPSZone *RoomListWidget::getCurrentRoom(QListWidgetItem *item)
 {
