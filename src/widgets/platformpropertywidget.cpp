@@ -43,10 +43,12 @@ PlatformPropertyWidget::PlatformPropertyWidget(QWidget *parent, jpsDatamanager *
     updateTrackListWidget();
 
     connect(ui->pushButton_addWall, SIGNAL(clicked()), this, SLOT(addWallButtonClicked()));
-    // Change details of line
-    connect(ui->pushButton_applyNumber, SIGNAL(clicked()), this, SLOT(applyNumberButtonClicked()));
     // Add track into Platform
     connect(ui->pushButton_addTrack,  SIGNAL(clicked()), this, SLOT(addTrackButtonClicked()));
+    // Change details of line
+    connect(ui->pushButton_applyNumber, SIGNAL(clicked()), this, SLOT(applyNumberButtonClicked()));
+    // Update number
+    connect(ui->listWidget_tracks, SIGNAL(itemSelectionChanged()), this, SLOT(updateNumberLineEdit()));
 }
 
 PlatformPropertyWidget::~PlatformPropertyWidget()
@@ -78,6 +80,11 @@ void PlatformPropertyWidget::receiveJPSZone(JPSZone *zone)
     qDebug("Leave PlatformPropertyWidget::receiveJPSZone");
 }
 
+/*
+    Purpose: Update wall listWidget, track listWidget, and number lineEdit
+
+    Note: This function cleared number, but does't update number. See more in
+*/
 void PlatformPropertyWidget::updateListWidget()
 {
     qDebug("Enter PlatformPropertyWidget::updateListWidget");
@@ -115,10 +122,15 @@ void PlatformPropertyWidget::updateListWidget()
     qDebug("Leave PlatformPropertyWidget::updateListWidget");
 }
 
-//TODO: Finish this!
 void PlatformPropertyWidget::applyNumberButtonClicked()
 {
     qDebug("Enter PlatformPropertyWidget::applyNumberButtonClicked");
+    QString number = ui->lineEdit->text();
+
+    int cRow = ui->listWidget_tracks->currentRow();
+    JPSTrack *current_track = current_zone->getTrackList()[cRow];
+
+    current_track->setNumber(number);
     qDebug("Leave PlatformPropertyWidget::applyNumberButtonClicked");
 }
 
@@ -162,4 +174,16 @@ void PlatformPropertyWidget::updateTrackListWidget()
         }
     }
     qDebug("Leave PlatformPropertyWidget::updateTrackListWidget");
+}
+
+//TODO: Description
+void PlatformPropertyWidget::updateNumberLineEdit()
+{
+    qDebug("Enter PlatformPropertyWidget::updateNumberLineEdit");
+    int cRow = ui->listWidget_tracks->currentRow();
+    JPSTrack *current_track = current_zone->getTrackList()[cRow];
+    QString number = current_track->getNumber();
+
+    ui->lineEdit->setText(number);
+    qDebug("Leave PlatformPropertyWidget::updateNumberLineEdit");
 }
