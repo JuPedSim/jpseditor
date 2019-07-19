@@ -101,7 +101,6 @@ void RoomListWidget::updateZonesListWidget()
     // Show zones
     foreach(JPSZone *zone, zoneslist)
     {
-        qDebug("Name: %s", zone->get_name().toStdString().data());
         ui->listWidget_zones->addItem(zone->get_name());
     }
     qDebug("Leave RoomListWidget::updateZonesListWidget");
@@ -219,10 +218,10 @@ bool RoomListWidget::isRepeatedRoomName(QString name)
 {
     qDebug("Enter RoomListWidget::isRepeatedRoomName");
     foreach(JPSZone *zone, data->getRoomslist())
-        {
-            if(name == zone->getName())
-                return true;
-        }
+    {
+        if(name == zone->getName())
+            return true;
+    }
     qDebug("Leave RoomListWidget::isRepeatedRoomName");
     return false;
 }

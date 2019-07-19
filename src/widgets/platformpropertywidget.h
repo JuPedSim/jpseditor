@@ -29,6 +29,7 @@ protected slots:
     void updateListWidget();
     void applyNumberButtonClicked();
     void updateTrackListWidget();
+    void updateNumberLineEdit();
 
 private:
     Ui::PlatformPropertyWidget *ui;
