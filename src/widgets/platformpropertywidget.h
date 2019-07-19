@@ -30,10 +30,9 @@ protected slots:
     void applyNumberButtonClicked();
     void updateTrackListWidget();
     void updateNumberLineEdit();
-    void highlightWall(int row);
+    void highlightWall(QListWidgetItem *item);
+    void highlightTrack(QListWidgetItem *item);
 
-signals:
-    void currentLineChanged(jpsLineItem *);
 
 private:
     Ui::PlatformPropertyWidget *ui;

@@ -1134,7 +1134,6 @@ void jpsGraphicsView::drawLine()
 
 void jpsGraphicsView::select_line(jpsLineItem *mline)
 {
-
     if (!marked_lines.contains(mline))
     {
         QPen pen = QPen(Qt::red,4);
@@ -1145,7 +1144,7 @@ void jpsGraphicsView::select_line(jpsLineItem *mline)
     }
     else
     {
-        QPen pen = QPen(Qt::black,4);
+        QPen pen = QPen(Qt::black,2);
         pen.setCosmetic(true);
         mline->get_line()->setPen(pen);
         marked_lines.removeOne(mline);
