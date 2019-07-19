@@ -49,6 +49,8 @@ PlatformPropertyWidget::PlatformPropertyWidget(QWidget *parent, jpsDatamanager *
     connect(ui->pushButton_applyNumber, SIGNAL(clicked()), this, SLOT(applyNumberButtonClicked()));
     // Update number
     connect(ui->listWidget_tracks, SIGNAL(itemSelectionChanged()), this, SLOT(updateNumberLineEdit()));
+    // Hightlight
+    connect(ui->listWidget_walls, SIGNAL(currentRowChanged(int)), this, SLOT(highlightWall(int)));
 }
 
 PlatformPropertyWidget::~PlatformPropertyWidget()
@@ -122,6 +124,7 @@ void PlatformPropertyWidget::updateListWidget()
     qDebug("Leave PlatformPropertyWidget::updateListWidget");
 }
 
+//TODO: Description
 void PlatformPropertyWidget::applyNumberButtonClicked()
 {
     qDebug("Enter PlatformPropertyWidget::applyNumberButtonClicked");
@@ -186,4 +189,11 @@ void PlatformPropertyWidget::updateNumberLineEdit()
 
     ui->lineEdit->setText(number);
     qDebug("Leave PlatformPropertyWidget::updateNumberLineEdit");
+}
+
+//TODO: Description
+void PlatformPropertyWidget::highlightWall(int row)
+{
+    jpsLineItem *wall= current_zone->get_listWalls()[row];
+    view->select_line(wall);
 }
