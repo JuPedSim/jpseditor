@@ -1377,4 +1377,5 @@ void MWindow::platformButtonclicked()
 
     connect(platformListWidget, SIGNAL(zoneSelected(JPSZone *)),
             platformPropertyWidget, SLOT(receiveJPSZone(JPSZone *)));
+
 }

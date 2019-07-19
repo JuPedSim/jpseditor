@@ -30,6 +30,10 @@ protected slots:
     void applyNumberButtonClicked();
     void updateTrackListWidget();
     void updateNumberLineEdit();
+    void highlightWall(int row);
+
+signals:
+    void currentLineChanged(jpsLineItem *);
 
 private:
     Ui::PlatformPropertyWidget *ui;
