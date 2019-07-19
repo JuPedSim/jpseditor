@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-**JuPedSim - JPSreport**
+**JuPedSim - JPSeditor**
 
 - Current date   :
 - Version        :
