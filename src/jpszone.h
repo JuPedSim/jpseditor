@@ -20,6 +20,7 @@ public:
     void addinnerWall(QList<jpsLineItem *> newWalls, int id_polygon=0);
     void addinnerWall(jpsLineItem* newWall, int id_polygon=0);
     void removeWall(QList<jpsLineItem *> wall);
+    void removeWall(jpsLineItem *wall);
     QList<jpsLineItem*> get_listWalls();
 
     const QList<jpsCrossing *> &GetDoors() const;

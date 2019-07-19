@@ -42,12 +42,14 @@ PlatformPropertyWidget::PlatformPropertyWidget(QWidget *parent, jpsDatamanager *
     updateListWidget();
     updateTrackListWidget();
 
+    // Add wall/track into platform
     connect(ui->pushButton_addWall, SIGNAL(clicked()), this, SLOT(addWallButtonClicked()));
-    // Add track into Platform
     connect(ui->pushButton_addTrack,  SIGNAL(clicked()), this, SLOT(addTrackButtonClicked()));
-    // Change details of line
+    // Remove wall/track from platform
+    connect(ui->pushButton_removeWall, SIGNAL(clicked()), this, SLOT(removeWallButtonClicked()));
+    connect(ui->pushButton_removeTrack,  SIGNAL(clicked()), this, SLOT(removeTrackButtonClicked()));
+    // Change/Update number of line
     connect(ui->pushButton_applyNumber, SIGNAL(clicked()), this, SLOT(applyNumberButtonClicked()));
-    // Update number
     connect(ui->listWidget_tracks, SIGNAL(itemSelectionChanged()), this, SLOT(updateNumberLineEdit()));
     // Hightlight
     connect(ui->listWidget_walls, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlightWall(QListWidgetItem *)));
@@ -185,6 +187,10 @@ void PlatformPropertyWidget::updateNumberLineEdit()
 {
     qDebug("Enter PlatformPropertyWidget::updateNumberLineEdit");
     int cRow = ui->listWidget_tracks->currentRow();
+
+    if(cRow == -1) // There is no rows in list
+        return;
+
     JPSTrack *current_track = current_zone->getTrackList()[cRow];
     QString number = current_track->getNumber();
 
@@ -196,6 +202,10 @@ void PlatformPropertyWidget::updateNumberLineEdit()
 void PlatformPropertyWidget::highlightWall(QListWidgetItem *item)
 {
     int row = ui->listWidget_walls->currentRow();
+
+    if(row == -1) // There is no rows in list
+        return;
+
     jpsLineItem *wall= current_zone->get_listWalls()[row];
     view->select_line(wall);
 }
@@ -204,6 +214,33 @@ void PlatformPropertyWidget::highlightWall(QListWidgetItem *item)
 void PlatformPropertyWidget::highlightTrack(QListWidgetItem *item)
 {
     int row = ui->listWidget_tracks->currentRow();
+
+    if(row == -1) // There is no rows in list
+        return;
+
     JPSTrack *track = current_zone->getTrackList()[row];
     view->select_line(track->getLine());
+}
+
+//TODO: Description
+void PlatformPropertyWidget::removeWallButtonClicked()
+{
+    int row = ui->listWidget_walls->currentRow();
+
+    if(row == -1) // There is no rows in list
+        return;
+
+    jpsLineItem *wall = current_zone->get_listWalls()[row];
+
+    current_zone->removeWall(wall);
+
+    updateListWidget();
+}
+
+//TODO: Description
+void PlatformPropertyWidget::removeTrackButtonClicked()
+{
+
+
+
 }

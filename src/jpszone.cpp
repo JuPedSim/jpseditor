@@ -95,11 +95,18 @@ void JPSZone::addinnerWall(jpsLineItem *newWall, int id_polygon)
 
 void JPSZone::removeWall(QList <jpsLineItem *> wall)
 {
-     qDebug("Enter JPSZone::removeWall(wall)");
+    qDebug("Enter JPSZone::removeWall");
     for (int i=0; i<wall.size(); i++)
     {
         wall_list.removeOne(wall[i]);
     }
+    qDebug("Leave JPSZone::removeWall");
+}
+
+//TODO: Description
+void JPSZone::removeWall(jpsLineItem *wall)
+{
+    wall_list.removeOne(wall);
 }
 
 const QList<jpsCrossing *>& JPSZone::GetDoors() const

@@ -32,6 +32,8 @@ protected slots:
     void updateNumberLineEdit();
     void highlightWall(QListWidgetItem *item);
     void highlightTrack(QListWidgetItem *item);
+    void removeWallButtonClicked();
+    void removeTrackButtonClicked();
 
 
 private:
