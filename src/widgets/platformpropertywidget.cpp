@@ -127,7 +127,9 @@ void PlatformPropertyWidget::updateListWidget()
     qDebug("Leave PlatformPropertyWidget::updateListWidget");
 }
 
-//TODO: Description
+/*
+    Purpose: Change number of track from input in LineEdit
+*/
 void PlatformPropertyWidget::applyNumberButtonClicked()
 {
     qDebug("Enter PlatformPropertyWidget::applyNumberButtonClicked");
@@ -182,14 +184,21 @@ void PlatformPropertyWidget::updateTrackListWidget()
     qDebug("Leave PlatformPropertyWidget::updateTrackListWidget");
 }
 
-//TODO: Description
+/*
+    Purpose: Update content in LineEdit, when selection in listWidget_tracks changed.
+
+    Note: Default number of track is 0, but it won't be showed.
+*/
 void PlatformPropertyWidget::updateNumberLineEdit()
 {
     qDebug("Enter PlatformPropertyWidget::updateNumberLineEdit");
     int cRow = ui->listWidget_tracks->currentRow();
 
     if(cRow == -1) // There is no rows in list
+    {
+        qDebug("No row is selected. Leave PlatformPropertyWidget::updateNumberLineEdit");
         return;
+    }
 
     JPSTrack *current_track = current_zone->getTrackList()[cRow];
     QString number = current_track->getNumber();
@@ -198,19 +207,33 @@ void PlatformPropertyWidget::updateNumberLineEdit()
     qDebug("Leave PlatformPropertyWidget::updateNumberLineEdit");
 }
 
-//TODO: Description
+/*
+    Purpose: Highlight selected wall in listWidget_walls.
+
+    Note: Hightlighting operation is by jpsGraphicsView::select_line.
+*/
 void PlatformPropertyWidget::highlightWall(QListWidgetItem *item)
 {
+    qDebug("Enter PlatformPropertyWidget::highlightWall");
     int row = ui->listWidget_walls->currentRow();
 
     if(row == -1) // There is no rows in list
+    {
+        qDebug("No row is selected. Leave PlatformPropertyWidget::highlightWall");
         return;
+    }
 
     jpsLineItem *wall= current_zone->get_listWalls()[row];
     view->select_line(wall);
+    qDebug("Leave PlatformPropertyWidget::highlightWall");
+
 }
 
-//TODO: Description
+/*
+    Purpose: Highlight selected track in listWidget_tracks.
+
+    Note: Hightlighting operation is by jpsGraphicsView::select_line.
+*/
 void PlatformPropertyWidget::highlightTrack(QListWidgetItem *item)
 {
     int row = ui->listWidget_tracks->currentRow();
@@ -222,7 +245,9 @@ void PlatformPropertyWidget::highlightTrack(QListWidgetItem *item)
     view->select_line(track->getLine());
 }
 
-//TODO: Description
+/*
+    Purpose: Remove wall from wall_lists
+*/
 void PlatformPropertyWidget::removeWallButtonClicked()
 {
     int row = ui->listWidget_walls->currentRow();
@@ -234,13 +259,28 @@ void PlatformPropertyWidget::removeWallButtonClicked()
 
     current_zone->removeWall(wall);
 
+    ui->listWidget_walls->setCurrentRow(-1); // Set no focus
+
     updateListWidget();
 }
 
-//TODO: Description
+/*
+    Purpose: Remove track from track_lists
+
+    Note: Set no focus after removing, otherwise updateNumberLineEdit() will get wrong currentRow
+*/
 void PlatformPropertyWidget::removeTrackButtonClicked()
 {
+    int row = ui->listWidget_tracks->currentRow();
 
+    if(row == -1) // There is no focus in list
+        return;
 
+    JPSTrack *track = current_zone->getTrackList()[row];
 
+    current_zone->removeTrack(track);
+
+    ui->listWidget_tracks->setCurrentRow(-1);
+
+    updateListWidget();
 }

@@ -277,6 +277,7 @@ void MWindow::setupDrawingToolBar()
     addToolBar(Qt::LeftToolBarArea, drawing_toolbar_);
     drawing_toolbar_->setMovable(false);
     drawing_toolbar_->setBackgroundRole(QPalette::HighlightedText);
+    drawing_toolbar_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
     // drawing actions group
     drawing_toolbar_->addActions(drawingActionGroup->actions());
@@ -293,6 +294,7 @@ void MWindow::setupZoneToolBar()
     addToolBar(Qt::LeftToolBarArea, zone_toolbar_);
     zone_toolbar_->setMovable(false);
     zone_toolbar_->setBackgroundRole(QPalette::HighlightedText);
+    zone_toolbar_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
     zone_toolbar_->addActions(zoneActionGroup->actions());
 
@@ -1161,7 +1163,7 @@ void MWindow::on_actionNew_Inifile_triggered()
 
 void MWindow::on_actionBack_to_Origin_triggered()
 {
-    mview->centerOn(QPointF(0.0,0.0)); //TODO: Ensure in any situation
+    mview->centerOn(QPointF(0.0,0.0));
 }
 
 void MWindow::on_actionZoom_Windows_triggered()

@@ -872,7 +872,7 @@ bool roomWidget::shhi_roomCaption_obs()
 
 
 
-void roomWidget::highlight_room() //@todo: rename -> highlight_current_room()
+void roomWidget::highlight_room()
 {
     qDebug("Enter roomWidget::highlight_room");
 
@@ -912,7 +912,7 @@ void roomWidget::HighlightAllRooms()
 }
 
 
-void roomWidget::highlight_obs() //@todo: rename highlight_current_obstacle
+void roomWidget::highlight_obs()
 
 {
      qDebug("Enter roomWidget::highlight_obs");

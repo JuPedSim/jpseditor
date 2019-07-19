@@ -3332,7 +3332,7 @@ void jpsDatamanager::removeRoom(JPSZone *room)
     qDebug("Leave jpsDatamanager::removeRoom");
 }
 
-//TODO: Not working jet!
+
 void jpsDatamanager::removeZone(JPSZone *room, JPSZone *zone)
 {
     qDebug("Enter jpsDatamanager::removeZone");
