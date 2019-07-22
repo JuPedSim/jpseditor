@@ -25,9 +25,9 @@ There are only a few rules and advices we want to give to you:
     - Reverting commits
     
 - [The explanation and workflow of using branches](#The-explanation-and-workflow-of-using-branches)
-    - [Long-running branches](Long-running-branches)
-    - [Topic branches](Topic-branches)
-    - [Workflow for contributing JPSeditor repository](Workflow-for-contributing-JPSeditor-repository)
+    - [Long-running branches](#Long-running-branches)
+    - [Topic branches](#Topic-branches)
+    - [Workflow for contributing JPSeditor repository](#Workflow-for-contributing-JPSeditor-repository)
 
 ## Reporting bugs and requesting features
 If you got a question or a problem and need support from our team feel free to contact us.
