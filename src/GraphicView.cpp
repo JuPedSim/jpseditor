@@ -352,7 +352,7 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                     emit no_drawing();
                     break;
                 }
-                else
+                else // If door, wall, exit, hline is edited currently
                 {
                     drawLine(); // Draw wall, crossing, transition, hline, track
                     break;

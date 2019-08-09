@@ -147,7 +147,6 @@ public:
     void writeRoutingXML(QFile &file);
     void writeLineItems(QFile & file);
 
-    void AutoSaveXML(QFile &file);
     void writeHeader(QXmlStreamWriter *stream);
     void writeRoutingHeader(QXmlStreamWriter *stream);
     void writeHLines(QXmlStreamWriter *stream, QList<jpsLineItem* >& hLines);
@@ -158,10 +157,7 @@ public:
     void writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeObstacles(QXmlStreamWriter *stream, jpsObstacle *obs, QList<jpsLineItem *> &lines);
-    void writeNotAssignedWalls(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
-    void writeNotAssignedDoors(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
-    void writeNotAssignedExits(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
-
+    void writeNotAssignedLines(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines);
     void writeTransitionXML(QFile &file);
 
     //Write Cognitive Map XML
@@ -198,7 +194,6 @@ public:
     //Parse Cognitive Map
     bool ParseCogMap(QFile &file);
     jpsRegion* ParseRegion(QXmlStreamReader &xmlReader);
-    void ParseYAHPointer(QXmlStreamReader &xmlReader, const int &frame);
     void ParseLandmark(jpsRegion* actRegion, QXmlStreamReader &xmlReader);
     void ParseConnection(jpsRegion* actRegion, QXmlStreamReader &xmlReader);
 
