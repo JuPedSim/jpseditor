@@ -1,6 +1,19 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## v0.8.8 [03.05.2019]
+### Added
+- Add Goal&Source Element support #98
+- Dock widget for goals and sources #98
+- Export external xml files #138 #139
+
+### Changed
+- Redesign Inifile widget #125
+- Rewrite inifile xml file reader and writer #140
+
+### Bugs fixed
+- Fix shortcut 
+
 ## v0.8.7 [08.03.2019]
 ### Added
 - Add line snapping options #102
