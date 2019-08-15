@@ -86,6 +86,8 @@ public:
     bool isInTrackList(JPSTrack *track);
 
     const QList<JPSZone *> &getPlatfromList() const;
+    const QList<JPSZone *> & getCorridorList() const;
+
 
 private:
     int id;
@@ -113,6 +115,7 @@ private:
 
     // For room type
     QList<JPSZone *> platfrom_list;
+    QList<JPSZone *> corridor_list;
 
 };
 

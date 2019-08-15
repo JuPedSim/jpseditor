@@ -40,7 +40,7 @@ JPSZone::JPSZone(int id_zone, JPSZone *father, ZoneType type)
 {
     id=id_zone;
     zoneType = type;
-    father_room = father;
+    father_room = father; // Room hasn't father room, subroom must have a room as father room
 
     name = "Unnamed " + QString::number(id_zone);
 
@@ -808,7 +808,8 @@ bool JPSZone::isInTrackList(JPSTrack *track) {
     return false;
 }
 
-const QList<JPSZone *> &JPSZone::getPlatfromList() const {
+const QList<JPSZone *> &JPSZone::getPlatfromList() const
+{
     qDebug("Enter/Leave JPSZone::getPlatfromList");
     return platfrom_list;
 }
@@ -820,8 +821,12 @@ void JPSZone::addZoneInList(JPSZone *zone)
 
     switch (type)
     {
+        case Corridor:
+            corridor_list.append(zone);
+            break;
         case Platform:
             platfrom_list.append(zone);
+            break;
         default:
             break;
     }
@@ -835,12 +840,24 @@ void JPSZone::removeZoneFromList(JPSZone *zone)
 
     switch (type)
     {
+        case Corridor:
+            corridor_list.removeOne(zone);
+            delete zone;
+            zone = nullptr;
+            break;
         case Platform:
             platfrom_list.removeOne(zone);
             delete zone;
             zone = nullptr;
+            break;
         default:
             break;
     }
     qDebug("Leave JPSZone::removeZoneFromList");
+}
+
+const QList<JPSZone*> &JPSZone::getCorridorList() const
+{
+    qDebug("Enter/Leave JPSZone::getCorridorList");
+    return corridor_list;
 }

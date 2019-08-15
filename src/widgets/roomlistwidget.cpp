@@ -37,7 +37,6 @@ RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager)
     data = dmanager;
 
     updateRoomsListWidget();
-
     // Add
     connect(ui->pushButton_addRoom, SIGNAL(clicked()), this, SLOT(addRoomButtonClicked()));
     connect(ui->pushButton_addZone, SIGNAL(clicked()), this, SLOT(addZoneButtonClicked()));
@@ -70,7 +69,7 @@ void RoomListWidget::updateRoomsListWidget()
     qDebug("Enter RoomListWidget::updateRoomsListWidget");
     ui->listWidget_rooms->clear();
 
-    QList<JPSZone*> roomslist = data->getRoomslist();
+    QList<JPSZone*> roomslist = data->getRoomlist();
 
     foreach(JPSZone *room, roomslist)
     {
@@ -93,9 +92,16 @@ void RoomListWidget::updateZonesListWidget()
         return;
 
     // Get right list
-    if(type == ZoneType::Platform)
+    switch (type)
     {
-        zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getPlatfromList();
+        case Corridor:
+            zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getCorridorList();
+            break;
+        case Platform:
+            zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getPlatfromList();
+            break;
+        default:
+            break;
     }
 
     // Show zones
@@ -123,8 +129,12 @@ void RoomListWidget::addZoneButtonClicked()
 
         switch (type)
         {
+            case Corridor:
+                data->addCorridor(getCurrentRoom(ui->listWidget_rooms->currentItem()));
+                break;
             case Platform:
                 data->addPlatform(getCurrentRoom(ui->listWidget_rooms->currentItem()));
+                break;
             default:
                 break;
         }
@@ -159,6 +169,9 @@ JPSZone *RoomListWidget::getCurrentZone(QListWidgetItem *item)
 
     switch(type)
     {
+        case Corridor:
+            zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getCorridorList();
+            break;
         case Platform:
             zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getPlatfromList();
             break;
@@ -187,7 +200,7 @@ JPSZone *RoomListWidget::getCurrentRoom(QListWidgetItem *item)
     qDebug("Enter RoomListWidget::getCurrentRoom");
     QString name = item->text();
 
-    QList<JPSZone*> zoneslist = data->getRoomslist();
+    QList<JPSZone*> zoneslist = data->getRoomlist();
 
     foreach(JPSZone *room, zoneslist)
     {
@@ -223,7 +236,7 @@ void RoomListWidget::renameRoom(QListWidgetItem *item)
 bool RoomListWidget::isRepeatedRoomName(QString name)
 {
     qDebug("Enter RoomListWidget::isRepeatedRoomName");
-    foreach(JPSZone *zone, data->getRoomslist())
+    foreach(JPSZone *zone, data->getRoomlist())
     {
         if(name == zone->getName())
             return true;
@@ -260,6 +273,9 @@ bool RoomListWidget::isRepeatedZoneName(QString name)
 
     switch(type)
     {
+        case Corridor:
+            zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getCorridorList();
+            break;
         case Platform:
             zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getPlatfromList();
             break;

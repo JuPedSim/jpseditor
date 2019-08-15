@@ -1330,7 +1330,7 @@ void MWindow::corridorButtonClicked()
     listDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
 
     auto *corridorListWidget = new RoomListWidget(this, this->dmanager);
-    corridorListWidget->setLabel("Corridors");
+    corridorListWidget->setLabel("Corridor");
 
     addDockWidget(Qt::LeftDockWidgetArea, listDockWidget);
     listDockWidget->setWidget(corridorListWidget);
@@ -1340,7 +1340,7 @@ void MWindow::corridorButtonClicked()
     propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     propertyDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
 
-    auto *corridorWidget = new BasicPropertyWidget(this, this->dmanager);
+    auto *corridorWidget = new PropertyWidget(this, this->dmanager);
     addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
     propertyDockWidget->setWidget(corridorWidget);
 }

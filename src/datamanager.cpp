@@ -56,12 +56,11 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 
     _generator=std::default_random_engine(seed);
 
+
+    // For zone
     roomlist = QList<JPSZone *> ();
 
-    roomslist = QList<JPSZone *>();
-    room_id_counter=1;
-
-    platform_id_counter = 1;
+    zone_id = 1;
 
     sourcelist = _mView->getSources();
     goallist = _mView->getGoals();
@@ -82,27 +81,36 @@ jpsDatamanager::~jpsDatamanager()
  */
 void jpsDatamanager::addRoom()
 {
-    qDebug("Enter jpsDatamanager::addRoom. now room_id_counter = %d", room_id_counter);
-    JPSZone* new_room = new JPSZone(this->room_id_counter, nullptr, Room);
-    new_room->setType(Room);
-    roomslist.push_back(new_room);
-    room_id_counter+=1;
-    qDebug("Leave jpsDatamanager::addRoom. now room_id_counter = %d", room_id_counter);
+    qDebug("Enter jpsDatamanager::addRoom. now zone_id = %d", zone_id);
+    JPSZone* new_room = new JPSZone(this->zone_id, nullptr, Room);
+    roomlist.push_back(new_room);
+    zone_id+=1;
+    qDebug("Leave jpsDatamanager::addRoom. now zone_id = %d", zone_id);
 }
 
 void jpsDatamanager::addPlatform(JPSZone *father_room)
 {
     qDebug("Enter jpsDatamanager::addPlatform");
-    JPSZone *new_Platform = new JPSZone(platform_id_counter, father_room, Platform);
+    auto *new_Platform = new JPSZone(zone_id, father_room, Platform);
     father_room->addZoneInList(new_Platform); // Platform belongs to the father room and saving in father room,
     // rather than datamanger;
-    platform_id_counter += 1;
+    zone_id += 1;
     qDebug("Leave jpsDatamanager::addPlatform");
+}
+
+void jpsDatamanager::addCorridor(JPSZone *father_room)
+{
+    qDebug("Enter jpsDatamanager::addCorridor");
+    auto *new_Corridor = new JPSZone(zone_id, father_room, Corridor);// Corridor belongs to the father room and
+    // saving in father room, rather than datamanger;
+    father_room->addZoneInList(new_Corridor);
+    zone_id += 1;
+    qDebug("Leave jpsDatamanager::addCorridor");
 }
 
 void jpsDatamanager::remove_room(JPSZone *room)
 {
-    qDebug("Enter jpsDatamanager::remove_room. room_id_counter = %d", room_id_counter);
+    qDebug("Enter jpsDatamanager::remove_room. zone_id = %d", zone_id);
     //set room to nullptr in doors
     for (jpsCrossing* crossing : get_crossingList())
     {
@@ -121,10 +129,9 @@ void jpsDatamanager::remove_room(JPSZone *room)
         if (otherroom->get_id()>roomID)
             otherroom->set_id(otherroom->get_id()-1);
 
-    room_id_counter-=1;
 
     //}
-    qDebug("Leave jpsDatamanager::remove_room. room_id_counter = %d", room_id_counter);
+    qDebug("Leave jpsDatamanager::remove_room. zone_id = %d", zone_id);
 }
 
 void jpsDatamanager::change_roomName(JPSZone* room, QString name)
@@ -1511,9 +1518,8 @@ void jpsDatamanager::remove_all()
     remove_all_landmarks();
     RemoveAllConnections();
     RemoveAllRegions();
-    room_id_counter=1;
+    zone_id=1;
     obs_id_counter=0;
-    platform_id_counter=0;
     qDebug("Leave jpsDatamanager::remove_all");
 }
 
@@ -3147,15 +3153,15 @@ ZoneType jpsDatamanager::convertToZoneType(const QString string)
     }
 }
 
-const QList<JPSZone *> &jpsDatamanager::getRoomslist() const
+const QList<JPSZone *> &jpsDatamanager::getRoomlist() const
 {
-    qDebug("Enter jpsDatamanager::getRoomslist()");
-    return roomslist;
-    qDebug("Leave jpsDatamanager::getRoomslist()");
+    qDebug("Enter jpsDatamanager::getRoomlist()");
+    return roomlist;
+    qDebug("Leave jpsDatamanager::getRoomlist()");
 }
 
 /*
-    Purpose: Remove selected room from roomslist
+    Purpose: Remove selected room from roomlist
 
     Note: Assemable elements will be deleted, but drawing elements will be kept in datamanager
 */
@@ -3165,7 +3171,7 @@ void jpsDatamanager::removeRoom(JPSZone *room)
     if(room == nullptr)
         return;
 
-    roomslist.removeOne(room); //removed from roomslist
+    roomlist.removeOne(room); //removed from roomlist
 
     delete room;
     room = nullptr; //removed from memory

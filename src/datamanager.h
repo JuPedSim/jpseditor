@@ -204,10 +204,11 @@ public:
     ZoneType convertToZoneType(const QString string);
 
     // getter for JPSZones;
-    const QList<JPSZone *> &getRoomslist() const;
+    const QList<JPSZone *> &getRoomlist() const;
 
     // add zones
     void addPlatform(JPSZone *father_room);
+    void addCorridor(JPSZone *father_room);
 
     // delete zones
     void removeRoom(JPSZone *room);
@@ -221,12 +222,9 @@ public:
 
 private:
     //Geometry
-    QList<JPSZone *> roomlist; // old list, no more used.
+    QList<JPSZone *> roomlist; // zontType is room
 
-    QList<JPSZone *> roomslist; // zoneTye is room
-    int room_id_counter;
-
-    int platform_id_counter;
+    int zone_id; // For identify zone
 
     QList<jpsObstacle *> obstaclelist;
 
