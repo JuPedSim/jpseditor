@@ -180,7 +180,7 @@ set( SRCS
     src/tinyxml/tinyxmlparser.cpp
 
     src/widgets/roomlistwidget.cpp
-    src/widgets/basicpropertywidget.cpp
+        src/widgets/propertywidget.cpp
     src/widgets/platformpropertywidget.cpp
     src/widgets/transitionwidget.cpp
     src/widgets/trackpropertywidget.cpp)
@@ -239,7 +239,7 @@ set( HDR
     src/tinyxml/tinyxml.h
 
     src/widgets/roomlistwidget.h
-    src/widgets/basicpropertywidget.h
+        src/widgets/propertywidget.h
     src/widgets/platformpropertywidget.h
     src/widgets/transitionwidget.h
     src/widgets/trackpropertywidget.h
@@ -257,7 +257,7 @@ set( UIS
     forms/sourcewidget.ui
     forms/goalwidget.ui
     forms/roomlistwidget.ui
-    forms/basicpropertywidget.ui
+        forms/propertywidget.ui
     forms/platformpropertywidget.ui
     forms/transitionwidget.ui
     forms/trackpropertywidget.ui

@@ -34,16 +34,17 @@
 #include <QApplication>
 #include <QGraphicsView>
 #include <QMessageBox>
-#include "rooms.h"
+#include "jpszone.h"
 #include "jpscrossing.h"
 #include "jpsLineItem.h"
-#include "jpsexit.h"
+#include "jpstransition.h"
 #include "jpsobstacle.h"
 #include "GraphicView.h"
 #include "jpsconnection.h"
 #include "jpsregion.h"
 #include "jpssource.h"
 #include <random>
+#include "src/global.h"
 
 #include "../dxflib/src/dl_creationadapter.h"
 #include "../dxflib/src/dl_dxf.h"
@@ -57,65 +58,65 @@ class jpsDatamanager: public DL_CreationAdapter
 public:
     jpsDatamanager(QWidget* parent=0L, jpsGraphicsView* view=0L);
     ~jpsDatamanager();
-    //Room
-    QList<jpsRoom *> get_roomlist();
-    void new_room();
-    void remove_room(jpsRoom* room);
-    void change_roomName(jpsRoom* room, QString name);
+    ///Zone
+    QList<JPSZone *> get_roomlist();
+    void addRoom();
+    void remove_room(JPSZone* room);
+    void change_roomName(JPSZone* room, QString name);
     void remove_all_rooms();
-    //Obstacle
+    ///Obstacle
     QList<jpsObstacle *> get_obstaclelist();
     void new_obstacle();
     void remove_obstacle(jpsObstacle* obs);
     void change_obstacleName(jpsObstacle* obs, QString name);
     void remove_all_obstacles();
-    //Crossing
+    ///Crossing
     QList<jpsCrossing *> get_crossingList();
     void new_crossing(QList<jpsLineItem *> newCrossing);
     void new_crossing(jpsLineItem* newCrossing);
     void remove_crossing(jpsCrossing* crossing);
     void change_crossingName(jpsCrossing* crossing, QString name);
     void remove_all_crossings();
-    //Exit
-    QList<jpsExit *> get_exitList();
+    ///Transition
+    QList<jpsTransition *> getTransitionList();
     void new_exit(QList<jpsLineItem *> newExits);
-    void new_exit(jpsLineItem* newExit);
-    void remove_exit(jpsExit* exit);
-    void change_exitName(jpsExit* exit, QString name);
+    void newTransition(jpsLineItem *transition);
+    void remove_exit(jpsTransition* exit);
+    void change_exitName(jpsTransition* exit, QString name);
     void remove_all_exits();
-    //Landmark
+    ///Landmark
     QList<jpsLandmark *> get_landmarks();
     void new_landmark(jpsLandmark * newlandmark);
     void remove_landmark(jpsLandmark* landmark);
     void change_LandmarkName(jpsLandmark* landmark, QString name);
     void remove_all_landmarks();
     const int& GetLandmarkCounter() const;
-    //Connection
+    ///Connection
     const QList<jpsConnection*>& GetAllConnections() const;
     void NewConnection(jpsConnection* newConnection);
     void RemoveConnection(jpsConnection* connection);
     void RemoveAllConnections();
-    //Regions
+    ///Regions
     const QList<jpsRegion*>& GetRegions() const;
     void NewRegion(jpsRegion* region);
     void RemoveRegion(jpsRegion* region);
     void RemoveAllRegions();
     const int& GetRegionCounter() const;
-    //Layers
+    ///Layers
     QList<QString> getElevationList();
 
-    //Sources
+    ///Sources
     void writeSourceXML(QFile &file);
     void writeSourceHeader(QXmlStreamWriter *stream);
     void writeSources(QXmlStreamWriter *stream, QList<JPSSource *>& sourcelist);
     const QList<JPSSource *> &getSourcelist();
 
-    //Goals
+    ///Goals
     void writeGoalXML(QFile &file);
     void writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *>& goallist);
     const QList<JPSGoal *> &getGoallist();
 
-    //Traffic
+    ///Traffic
     void writeTrafficXML(QFile &file);
     void writeTraffics(QXmlStreamWriter *stream, QList<jpsCrossing *> const &doorlist);
     bool readTrafficXML(QFile &file);
@@ -129,16 +130,15 @@ public:
 
 
     // Read XML
-
     bool readXML(QFile &file);
     bool readRoutingXML(QFile &file);
     void parseHline(QXmlStreamReader &xmlReader);
     void parseSubRoom(QXmlStreamReader &xmlReader);
-    void parseWalls(QXmlStreamReader &xmlReader,jpsRoom* room);
+    void parseWalls(QXmlStreamReader &xmlReader,JPSZone* room);
     void parseWalls(QXmlStreamReader &xmlReader,jpsObstacle* room);
     void parseCrossings(QXmlStreamReader &xmlReader);
     void parseTransitions(QXmlStreamReader &xmlReader);
-    void parseObstacles(QXmlStreamReader &xmlReader, jpsRoom *room);
+    void parseObstacles(QXmlStreamReader &xmlReader, JPSZone *room);
     QPointF parseUp(QXmlStreamReader &xmlReader); /// stair's up point
     QPointF parseDown(QXmlStreamReader &xmlReader); /// stair's down point
 
@@ -152,7 +152,8 @@ public:
     void writeHLines(QXmlStreamWriter *stream, QList<jpsLineItem* >& hLines);
     QString RoomIDHLine(jpsLineItem* lineItem);
     void writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
-    void writeSubRoom(QXmlStreamWriter *stream, jpsRoom* room, QList<jpsLineItem* >& lines);
+    void writeSubRoom(QXmlStreamWriter *stream, JPSZone* room, QList<jpsLineItem* >& lines);
+    void AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeObstacles(QXmlStreamWriter *stream, jpsObstacle *obs, QList<jpsLineItem *> &lines);
@@ -199,6 +200,19 @@ public:
     // read line file
     bool ReadLineFile(QFile &file);
 
+    // convert string to ZoneTyep
+    ZoneType convertToZoneType(const QString string);
+
+    // getter for JPSZones;
+    const QList<JPSZone *> &getRoomlist() const;
+
+    // add zones
+    void addPlatform(JPSZone *father_room);
+    void addCorridor(JPSZone *father_room);
+
+    // delete zones
+    void removeRoom(JPSZone *room);
+    void removeZone(JPSZone *room, JPSZone *zone);
 
 
 //    //Show Cognitive Map
@@ -208,20 +222,24 @@ public:
 
 private:
     //Geometry
-    QList<jpsRoom *> roomlist;
+    QList<JPSZone *> roomlist; // zontType is room
+
+    int zone_id; // For identify zone
+
     QList<jpsObstacle *> obstaclelist;
+
+    QList<JPSSource *> sourcelist;
+    QList<JPSGoal *> goallist;
     QList<jpsCrossing *> crossingList;
-    QList<jpsExit *> exitList;
+    QList<jpsTransition *> transition_list;
     QList<jpsLandmark* > _landmarks;
     QList<jpsConnection* > _landmarkConnections;
     QList<jpsLandmark* > _landmarksAfterLoose;
     QList<jpsConnection* > _ConnectionsAfterLandmarkLoose;
     QList<jpsRegion* > _regions;
 
-    QList<JPSSource *> sourcelist;
-    QList<JPSGoal *> goallist;
+    QList<JPSTrack *> track_list; // fow saving tracks
 
-    int room_id_counter;
     int obs_id_counter;
     int _crossingIdCounter;
     QWidget* parent_widget;

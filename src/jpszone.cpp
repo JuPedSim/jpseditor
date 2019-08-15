@@ -26,20 +26,21 @@
  *
  **/
 
-#include "jpszone.h"
 #include <QtGui>
 #include <iostream>
 #include <fstream>
-#include <QGraphicsLineItem>
-#include "jpscrossing.h"
 #include <QDebug>
+#include <QGraphicsLineItem>
 
+#include "jpszone.h"
+#include "jpscrossing.h"
+#include "jpsLineItem.h"
 
 JPSZone::JPSZone(int id_zone, JPSZone *father, ZoneType type)
 {
     id=id_zone;
-    zoneType = Room;
-    father_zone = father;
+    zoneType = type;
+    father_room = father; // Room hasn't father room, subroom must have a room as father room
 
     name = "Unnamed " + QString::number(id_zone);
 
@@ -54,7 +55,6 @@ JPSZone::JPSZone(int id_zone, JPSZone *father, ZoneType type)
     visible=true;
 }
 
-
 void JPSZone::addWall(QList <jpsLineItem *> newWalls)
 {
     qDebug("Enter JPSZone::addWall)");
@@ -67,10 +67,12 @@ void JPSZone::addWall(QList <jpsLineItem *> newWalls)
 
 void JPSZone::addWall(jpsLineItem *newWall)
 {
-    if (newWall->is_Wall() && !wall_list.contains(newWall))
+    qDebug("Enter JPSZone::addWall");
+    if (!wall_list.contains(newWall))
     {
         wall_list.push_back(newWall);
     }
+    qDebug("Leave JPSZone::addWall");
 }
 
 void JPSZone::addinnerWall(QList<jpsLineItem *> newWalls, int id_polygon)
@@ -95,11 +97,27 @@ void JPSZone::addinnerWall(jpsLineItem *newWall, int id_polygon)
 
 void JPSZone::removeWall(QList <jpsLineItem *> wall)
 {
-     qDebug("Enter JPSZone::removeWall(wall)");
+    qDebug("Enter JPSZone::removeWall");
     for (int i=0; i<wall.size(); i++)
     {
         wall_list.removeOne(wall[i]);
     }
+    qDebug("Leave JPSZone::removeWall");
+}
+
+/*
+    Purpose: Remove selecting wall from wall list
+
+    Note: Wall won't be deleted in graphic view after removing
+*/
+void JPSZone::removeWall(jpsLineItem *wall)
+{
+    wall_list.removeOne(wall);
+}
+
+void JPSZone::removeTrack(JPSTrack *track)
+{
+    track_list.removeOne(track);
 }
 
 const QList<jpsCrossing *>& JPSZone::GetDoors() const
@@ -128,6 +146,7 @@ void JPSZone::change_name(QString name)
 
 QList<jpsLineItem *> JPSZone::get_listWalls()
 {
+    qDebug("Enter/Leave JPSZone::get_listWalls");
     return wall_list;
 }
 
@@ -724,18 +743,18 @@ void JPSZone::setVisible(bool visibility)
     visible = visibility;
 }
 
-JPSZone *JPSZone::getFatherZone() const
+JPSZone *JPSZone::getFatherRoom() const
 {
-    qDebug("Enter JPSZone::getFatherZone");
-    return father_zone;
-    qDebug("Leave JPSZone::getFatherZone");
+    qDebug("Enter JPSZone::getFatherRoom");
+    return father_room;
+    qDebug("Leave JPSZone::getFatherRoom");
 }
 
-void JPSZone::setFatherZone(JPSZone *fatherZone)
+void JPSZone::setFatherRoom(JPSZone *room)
 {
-    qDebug("Enter JPSZone::setFatherZone");
-    father_zone = fatherZone;
-    qDebug("Leave JPSZone::setFatherZone");
+    qDebug("Enter JPSZone::setFatherRoom");
+    father_room = room;
+    qDebug("Leave JPSZone::setFatherRoom");
 }
 
 const QString &JPSZone::getName() const {
@@ -743,5 +762,102 @@ const QString &JPSZone::getName() const {
 }
 
 void JPSZone::setName(const QString &name) {
-    JPSZone::name = name;
+    qDebug("Enter JPSZone::setName");
+    this->name = name;
+    qDebug("Name changed. Leave JPSZone::setName");
+}
+
+const QList<JPSTrack *> &JPSZone::getTrackList() const {
+    return track_list;
+}
+
+void JPSZone::addTrack(jpsLineItem *line, QString number)
+{
+    qDebug("Enter JPSZone::addTrack");
+    if(line == nullptr)
+        return;
+
+    auto *track = new JPSTrack(line);
+    track->setNumber(number);
+
+    if(!isInTrackList(track))
+    {
+        track_list.append(track);
+    }
+    qDebug("Leave JPSZone::addTrack");
+}
+
+/*
+    Von v0.8.9
+
+    Check the track if it's already added in the zone.
+ */
+
+bool JPSZone::isInTrackList(JPSTrack *track) {
+    qDebug("Enter JPSZone::isInTrackList");
+    if(track == nullptr)
+        return false;
+
+    foreach(JPSTrack *track_inList, track_list)
+    {
+        if(track->getLine() == track_inList->getLine()) //if same jpsLineItem, reture true;
+            return true;
+    }
+
+    qDebug("Leave JPSZone::isInTrackList");
+    return false;
+}
+
+const QList<JPSZone *> &JPSZone::getPlatfromList() const
+{
+    qDebug("Enter/Leave JPSZone::getPlatfromList");
+    return platfrom_list;
+}
+
+void JPSZone::addZoneInList(JPSZone *zone)
+{
+    qDebug("Enter JPSZone::addZoneInList");
+    ZoneType type = zone->getType();
+
+    switch (type)
+    {
+        case Corridor:
+            corridor_list.append(zone);
+            break;
+        case Platform:
+            platfrom_list.append(zone);
+            break;
+        default:
+            break;
+    }
+    qDebug("Leave JPSZone::addZoneInList");
+}
+
+void JPSZone::removeZoneFromList(JPSZone *zone)
+{
+    qDebug("Enter JPSZone::removeZoneFromList");
+    ZoneType type = zone->getType();
+
+    switch (type)
+    {
+        case Corridor:
+            corridor_list.removeOne(zone);
+            delete zone;
+            zone = nullptr;
+            break;
+        case Platform:
+            platfrom_list.removeOne(zone);
+            delete zone;
+            zone = nullptr;
+            break;
+        default:
+            break;
+    }
+    qDebug("Leave JPSZone::removeZoneFromList");
+}
+
+const QList<JPSZone*> &JPSZone::getCorridorList() const
+{
+    qDebug("Enter/Leave JPSZone::getCorridorList");
+    return corridor_list;
 }
