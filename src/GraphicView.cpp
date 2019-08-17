@@ -1134,6 +1134,9 @@ void jpsGraphicsView::drawLine()
 
 void jpsGraphicsView::select_line(jpsLineItem *mline)
 {
+    if (mline == nullptr)
+        return;
+
     if (!marked_lines.contains(mline))
     {
         QPen pen = QPen(Qt::red,4);
