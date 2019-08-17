@@ -112,6 +112,9 @@ void JPSZone::removeWall(QList <jpsLineItem *> wall)
 */
 void JPSZone::removeWall(jpsLineItem *wall)
 {
+    if (wall == nullptr)
+        return;
+
     wall_list.removeOne(wall);
 }
 

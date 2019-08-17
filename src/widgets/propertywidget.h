@@ -23,7 +23,11 @@ protected slots:
     void updateWidget(ZoneType type);
     void updateWallListWidget();
 
+    void highlightWall(QListWidgetItem *item);
+
+    // Wall tab
     void addWallButtonClicked();
+    void removeWallButtonClicked();
 
 private:
     Ui::PropertyWidget *ui;
