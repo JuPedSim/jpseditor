@@ -70,7 +70,7 @@ void RoomDefinition::SetUpRoomsAndDoors()
                 {
                     if (crossing->get_cLine()==cLineItem)
                     {
-                        crossing->SetRoom(cRoom);
+                        crossing->setRoom(cRoom);
                     }
                 }
             }
@@ -101,7 +101,7 @@ void RoomDefinition::SetUpRoomsAndDoors()
     {
         if (crossing->get_roomList().size()<2)
         {
-            crossing->SetStatExit(true);
+//            crossing->SetStatExit(true);
             crossing->get_cLine()->setCrossing();
         }
     }

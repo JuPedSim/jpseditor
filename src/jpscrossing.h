@@ -22,7 +22,6 @@
  *
  * \section Description
  * This class is representing a door to another room in the building or to the outside.
- *
  **/
 
 #ifndef JPSCROSSING_H
@@ -35,9 +34,8 @@ class jpsCrossing
 public:
     jpsCrossing(jpsLineItem *line);
 
-    jpsCrossing(jpsLineItem *cLine, bool isExit, float elevation);
-
     ~jpsCrossing(){}
+
     QList<JPSZone *> get_roomList();
     QString get_name();
     int get_id();
@@ -45,10 +43,8 @@ public:
     jpsLineItem *get_cLine();
     void change_name(QString name);
     void add_rooms(JPSZone* room1, JPSZone* room2=0L);
-    void SetRoom(JPSZone* room);
+    void setRoom(JPSZone* room);
     void RemoveRoom(JPSZone* room);
-    void SetStatExit(bool stat);
-    bool IsExit();
     float get_elevation();
     void set_elevation(float elevation);
 
@@ -70,7 +66,6 @@ private:
     QString cName;
     jpsLineItem *cLine;
     int cId;
-    bool _isExit;
     float _elevation;
     bool state;
     QString max_agents;

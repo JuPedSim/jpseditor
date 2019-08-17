@@ -47,6 +47,9 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
     connect(ui->pushButton_addWall, SIGNAL(clicked()), this, SLOT(addWallButtonClicked()));
     connect(ui->pushButton_removeWall, SIGNAL(clicked()), this, SLOT(removeWallButtonClicked()));
     connect(ui->listWidget_walls, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlightWall(QListWidgetItem *)));
+
+    // Add crossing into room
+    connect(ui->pushButton_addCrossing, SIGNAL(clicked()), this, SLOT(addCrossingButtonClicked()));
 }
 
 PropertyWidget::~PropertyWidget()
@@ -70,7 +73,30 @@ void PropertyWidget::updateWidget(ZoneType type)
         default:
             return;
     }
+}
 
+void PropertyWidget::updateWallListWidget()
+{
+    qDebug("Enter PropertyWidget::updateWallListWidget");
+    ui->listWidget_walls->clear();
+
+    if(current_zone == nullptr)
+        return;
+
+    QList<jpsLineItem *> walllist = current_zone->get_listWalls();
+    for (int i = 0; i < walllist.size(); i++)
+    {
+        QString string = "";
+        string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
+                       walllist[i]->get_line()->line().x1(),
+                       walllist[i]->get_line()->line().x2(),
+                       walllist[i]->get_line()->line().y1(),
+                       walllist[i]->get_line()->line().y2());
+
+        ui->listWidget_walls->addItem(string);
+    }
+
+    qDebug("Leave PropertyWidget::updateWallListWidget");
 }
 
 void PropertyWidget::addWallButtonClicked()
@@ -107,30 +133,6 @@ void PropertyWidget::removeWallButtonClicked()
     qDebug("Leave PropertyWidget::removeWallButtonClicked");
 }
 
-void PropertyWidget::updateWallListWidget()
-{
-    qDebug("Enter PropertyWidget::updateWallListWidget");
-    ui->listWidget_walls->clear();
-
-    if(current_zone == nullptr)
-        return;
-
-    QList<jpsLineItem *> walllist = current_zone->get_listWalls();
-    for (int i = 0; i < walllist.size(); i++)
-    {
-        QString string = "";
-        string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
-                       walllist[i]->get_line()->line().x1(),
-                       walllist[i]->get_line()->line().x2(),
-                       walllist[i]->get_line()->line().y1(),
-                       walllist[i]->get_line()->line().y2());
-
-        ui->listWidget_walls->addItem(string);
-    }
-
-    qDebug("Leave PropertyWidget::updateWallListWidget");
-}
-
 void PropertyWidget::highlightWall(QListWidgetItem *item)
 {
     qDebug("Enter PropertyWidget::highlightWall");
@@ -146,3 +148,44 @@ void PropertyWidget::highlightWall(QListWidgetItem *item)
     view->select_line(wall);
     qDebug("Leave PropertyWidget::highlightWall");
 }
+
+void PropertyWidget::updateCrossingListWidget()
+{
+    qDebug("Enter PropertyWidget::updateCrossingListWidget");
+    ui->listWidget_crossing->clear();
+
+    if(current_zone == nullptr)
+        return;
+
+    QList<jpsCrossing *> crossing_list = current_zone->getCrossingList();
+    for (int i = 0; i < crossing_list.size(); i++)
+    {
+        QString string = "";
+        string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
+                       crossing_list[i]->get_cLine()->get_line()->line().x1(),
+                       crossing_list[i]->get_cLine()->get_line()->line().x2(),
+                       crossing_list[i]->get_cLine()->get_line()->line().y1(),
+                       crossing_list[i]->get_cLine()->get_line()->line().y2());
+
+        ui->listWidget_crossing->addItem(string);
+    }
+
+    qDebug("Leave PropertyWidget::updateCrossingListWidget");
+}
+
+void PropertyWidget::addCrossingButtonClicked()
+{
+    qDebug("Enter PropertyWidget::addCrossingButtonClicked");
+    if(!view->get_markedLines().isEmpty())
+    {
+        foreach(jpsLineItem *line, view->get_markedLines())
+        {
+            if(line->getType() == "crossing")
+                current_zone->addCrossing(line);
+        }
+    }
+
+    updateCrossingListWidget();
+    qDebug("Leave PropertyWidget::addCrossingButtonClicked");
+}
+
