@@ -45,6 +45,7 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
 
     // Add wall into zone
     connect(ui->pushButton_addWall, SIGNAL(clicked()), this, SLOT(addWallButtonClicked()));
+    connect(ui->pushButton_removeWall, SIGNAL(clicked()), this, SLOT(removeWallButtonClicked()));
 
 }
 
@@ -88,6 +89,24 @@ void PropertyWidget::addWallButtonClicked()
     qDebug("Leave PropertyWidget::addWallButtonClicked");
 }
 
+void PropertyWidget::removeWallButtonClicked()
+{
+    qDebug("Enter PropertyWidget::removeWallButtonClicked");
+    int row = ui->listWidget_walls->currentRow();
+
+    if(row == -1) // There is no rows in list
+        return;
+
+    jpsLineItem *wall = current_zone->get_listWalls()[row];
+
+    current_zone->removeWall(wall);
+
+    ui->listWidget_walls->setCurrentRow(-1); // Set no focus
+
+    updateWallListWidget();
+    qDebug("Leave PropertyWidget::removeWallButtonClicked");
+}
+
 void PropertyWidget::updateWallListWidget()
 {
     qDebug("Enter PropertyWidget::updateWallListWidget");
@@ -110,4 +129,11 @@ void PropertyWidget::updateWallListWidget()
     }
 
     qDebug("Leave PropertyWidget::updateWallListWidget");
+}
+
+void PropertyWidget::highlightWall(QListWidgetItem *item)
+{
+    qDebug("Enter PropertyWidget::highlightWall");
+
+    qDebug("Leave PropertyWidget::highlightWall");
 }
