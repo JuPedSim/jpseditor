@@ -46,12 +46,21 @@ RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager)
     connect(ui->pushButton_deleteZone, SIGNAL(clicked()), this, SLOT(deleteZoneButtonClicked()));
 
     // Send emit to PropertyWidget
-    connect(ui->listWidget_zones, SIGNAL(itemSelectionChanged()), this, SLOT(currentZoneChanged()));
-    connect(ui->listWidget_rooms, SIGNAL(itemSelectionChanged()), this, SLOT(updateZonesListWidget()));
+    // click room -> update zone list
+    connect(ui->listWidget_rooms, SIGNAL(itemClicked(QListWidgetItem *)),
+            this, SLOT(updateZonesListWidget(QListWidgetItem *)));
+    // click room -> add room property widget
+    connect(ui->listWidget_rooms, SIGNAL(itemClicked(QListWidgetItem *)),
+            this, SLOT(selectRoom(QListWidgetItem *)));
+    // click room -> add zone property widget
+    connect(ui->listWidget_zones, SIGNAL(itemClicked(QListWidgetItem *)),
+            this, SLOT(selectZone(QListWidgetItem *)));
 
     // Rename items
-    connect(ui->listWidget_rooms, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(renameRoom(QListWidgetItem*)));
-    connect(ui->listWidget_zones, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(renameZone(QListWidgetItem*)));
+    connect(ui->listWidget_rooms, SIGNAL(itemDoubleClicked(QListWidgetItem *)),
+            this, SLOT(renameRoom(QListWidgetItem*)));
+    connect(ui->listWidget_zones, SIGNAL(itemDoubleClicked(QListWidgetItem *)),
+            this, SLOT(renameZone(QListWidgetItem*)));
 }
 
 RoomListWidget::~RoomListWidget()
@@ -79,7 +88,7 @@ void RoomListWidget::updateRoomsListWidget()
     qDebug("Leave RoomListWidget::updateRoomsListWidget");
 }
 
-void RoomListWidget::updateZonesListWidget()
+void RoomListWidget::updateZonesListWidget(QListWidgetItem *item)
 {
     qDebug("Enter RoomListWidget::updateZonesListWidget");
     ui->listWidget_zones->clear();
@@ -88,17 +97,17 @@ void RoomListWidget::updateZonesListWidget()
     QList<JPSZone*> zoneslist;
 
     // If current room is deleted, just show empty zone list
-    if(getCurrentRoom(ui->listWidget_rooms->currentItem()) == nullptr)
+    if(item == nullptr || getCurrentRoom(item) == nullptr)
         return;
 
     // Get right list
     switch (type)
     {
         case Corridor:
-            zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getCorridorList();
+            zoneslist = getCurrentRoom(item)->getCorridorList();
             break;
         case Platform:
-            zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getPlatfromList();
+            zoneslist = getCurrentRoom(item)->getPlatfromList();
             break;
         default:
             break;
@@ -139,6 +148,7 @@ void RoomListWidget::addZoneButtonClicked()
                 break;
         }
     }
+
     else // Show warning message
     {
         QMessageBox msgBox;
@@ -147,16 +157,30 @@ void RoomListWidget::addZoneButtonClicked()
         msgBox.exec();
     }
 
-    updateZonesListWidget();
+    updateZonesListWidget(ui->listWidget_rooms->currentItem());
     qDebug("Leave RoomListWidget::addZoneButtonClicked");
 }
 
-void RoomListWidget::currentZoneChanged()
+void RoomListWidget::selectRoom(QListWidgetItem *item)
 {
-    qDebug("Enter currentZoneChanged");
-    auto *zone = getCurrentZone(ui->listWidget_zones->currentItem());
+    qDebug("Enter RoomListWidget::selectRoom");
+    if(item == nullptr)
+        return;
+
+    auto *room = getCurrentRoom(item);
+    emit roomSelected(room); // emit to mainWindow
+    qDebug("Leave RoomListWidget::selectRoom");
+}
+
+void RoomListWidget::selectZone(QListWidgetItem *item)
+{
+    qDebug("Enter selectZone");
+    if(item == nullptr)
+        return;;
+
+    auto *zone = getCurrentZone(item);
     emit zoneSelected(zone);
-    qDebug("Leave currentZoneChanged");
+    qDebug("Leave selectZone");
 }
 
 JPSZone *RoomListWidget::getCurrentZone(QListWidgetItem *item)
@@ -183,7 +207,7 @@ JPSZone *RoomListWidget::getCurrentZone(QListWidgetItem *item)
     {
         foreach(JPSZone *zone, zoneslist)
         {
-            if(name == zone->getName()) // find selected room
+            if(name == zone->getName()) // find selected zone
             {
                 qDebug("Found current zone. Leave RoomListWidget::getCurrentZone");
                 return zone;
@@ -191,13 +215,16 @@ JPSZone *RoomListWidget::getCurrentZone(QListWidgetItem *item)
         }
     }
 
-    return zoneslist[0]; //TODO: Fix unsafe return value.
+    return nullptr;
 }
 
 
 JPSZone *RoomListWidget::getCurrentRoom(QListWidgetItem *item)
 {
     qDebug("Enter RoomListWidget::getCurrentRoom");
+    if(item == nullptr)
+        return nullptr;
+
     QString name = item->text();
 
     QList<JPSZone*> zoneslist = data->getRoomlist();
@@ -261,7 +288,7 @@ void RoomListWidget::renameZone(QListWidgetItem *item)
                                  QMessageBox::Ok);
     }
 
-    updateZonesListWidget();
+    updateZonesListWidget(ui->listWidget_rooms->currentItem());
     qDebug("Leave RoomListWidget::renameZone");
 }
 
@@ -327,6 +354,6 @@ void RoomListWidget::deleteZoneButtonClicked()
                 getCurrentZone(ui->listWidget_zones->currentItem()));
     }
 
-    updateZonesListWidget();
+    updateZonesListWidget(ui->listWidget_rooms->currentItem());
     qDebug("Leave RoomListWidget::deleteZoneButtonClicked");
 }

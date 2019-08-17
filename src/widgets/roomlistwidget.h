@@ -27,16 +27,17 @@ public:
 
 public slots:
     void updateRoomsListWidget();
-    void updateZonesListWidget();
+    void updateZonesListWidget(QListWidgetItem *item);
 
     void addRoomButtonClicked();
     void addZoneButtonClicked();
     void deleteRoomButtonClicked();
     void deleteZoneButtonClicked();
 
-    void currentZoneChanged();
+    void selectZone(QListWidgetItem *item);
     JPSZone *getCurrentZone(QListWidgetItem *item);
 
+    void selectRoom(QListWidgetItem *item);
     JPSZone *getCurrentRoom(QListWidgetItem *item);
 
     void renameRoom(QListWidgetItem *item);
@@ -47,7 +48,7 @@ public slots:
 
 signals:
     void zoneSelected(JPSZone *);
-
+    void roomSelected(JPSZone *);
 private:
     Ui::RoomListWidget *ui;
     jpsDatamanager *data;

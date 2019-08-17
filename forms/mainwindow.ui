@@ -59,7 +59,6 @@
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="actionRoom"/>
     <addaction name="actionAuto_Definition"/>
     <addaction name="actionGather_data"/>
     <addaction name="actionLandmarkWidget"/>

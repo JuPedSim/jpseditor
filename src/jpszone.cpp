@@ -68,7 +68,7 @@ void JPSZone::addWall(QList <jpsLineItem *> newWalls)
 void JPSZone::addWall(jpsLineItem *newWall)
 {
     qDebug("Enter JPSZone::addWall");
-    if (!wall_list.contains(newWall))
+    if (newWall!= nullptr || !wall_list.contains(newWall))
     {
         wall_list.push_back(newWall);
     }
