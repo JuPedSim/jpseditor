@@ -390,8 +390,8 @@ void InifileWidget::writeTrafficData(QXmlStreamWriter *stream, QFile &file)
 
     for(jpsCrossing *crossing:crossings)
     {
-        if(crossing->IsExit())
-            doorlist.append(crossing);
+//        if(crossing->IsExit())
+//            doorlist.append(crossing);
     }
 
     dataManager->writeTraffics(stream, doorlist);

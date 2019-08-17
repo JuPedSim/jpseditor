@@ -53,6 +53,22 @@ JPSZone::JPSZone(int id_zone, JPSZone *father, ZoneType type)
     elevation_=0;
 
     visible=true;
+
+}
+
+bool JPSZone::isInWallList(jpsLineItem *wall)
+{
+    qDebug("Enter JPSZone::isInWallList");
+    if(wall == nullptr)
+        return false;
+
+    foreach(jpsLineItem* wall_inList, wall_list)
+    {
+        if(wall == wall_inList)
+            return true;
+    }
+    qDebug("Leave JPSZone::isInWallList");
+    return false;
 }
 
 void JPSZone::addWall(QList <jpsLineItem *> newWalls)
@@ -68,7 +84,10 @@ void JPSZone::addWall(QList <jpsLineItem *> newWalls)
 void JPSZone::addWall(jpsLineItem *newWall)
 {
     qDebug("Enter JPSZone::addWall");
-    if (newWall!= nullptr || !wall_list.contains(newWall))
+    if(newWall == nullptr)
+        return;
+
+    if (!isInWallList(newWall))
     {
         wall_list.push_back(newWall);
     }
@@ -863,4 +882,51 @@ const QList<JPSZone*> &JPSZone::getCorridorList() const
 {
     qDebug("Enter/Leave JPSZone::getCorridorList");
     return corridor_list;
+}
+
+
+// Crossing
+const QList<jpsCrossing*> &JPSZone::getCrossingList() const
+{
+    qDebug("Enter/Leave JPSZone::getCrossingList");
+    return crossing_list;
+}
+
+bool JPSZone::isInCrossingList(jpsCrossing *crossing)
+{
+    qDebug("Enter JPSZone::isInCrossingList");
+    if(crossing == nullptr)
+        return false;
+
+    foreach(jpsCrossing *crossing_inList, crossing_list)
+    {
+        if(crossing->get_cLine() == crossing_inList->get_cLine())
+            return true;
+    }
+    qDebug("Leave JPSZone::isInCrossingList");
+    return false;
+}
+
+void JPSZone::addCrossing(jpsLineItem *crossing)
+{
+    qDebug("Enter JPSZone::addCrossing");
+    if(crossing == nullptr)
+        return;
+
+    auto *newcrossing = new jpsCrossing(crossing);
+
+    if(!isInCrossingList(newcrossing))
+        crossing_list.push_back(newcrossing);
+
+    qDebug("Leave JPSZone::addCrossing");
+}
+
+void JPSZone::addCrossing(QList<jpsLineItem *> crossings)
+{
+    qDebug("Enter JPSZone::addCrossing");
+    foreach(jpsLineItem *crossing, crossings)
+    {
+        addCrossing(crossing);
+    }
+    qDebug("Leave JPSZone::addCrossing");
 }

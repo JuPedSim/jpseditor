@@ -1,5 +1,6 @@
 #ifndef ROOMS_H
 #define ROOMS_H
+
 #include <QGraphicsView>
 #include "jpsLineItem.h"
 #include "jpstrack.h"
@@ -15,14 +16,7 @@ public:
 
     ~JPSZone(){}
 
-    void addWall(QList<jpsLineItem *> newWalls);
-    void addWall(jpsLineItem* newWall);
-    void addinnerWall(QList<jpsLineItem *> newWalls, int id_polygon=0);
-    void addinnerWall(jpsLineItem* newWall, int id_polygon=0);
-    void removeWall(QList<jpsLineItem *> wall);
-    void removeWall(jpsLineItem *wall);
-    void removeTrack(JPSTrack *track);
-    QList<jpsLineItem*> get_listWalls();
+
 
     const QList<jpsCrossing *> &GetDoors() const;
     void removeDoor(jpsCrossing* crossing);
@@ -88,6 +82,24 @@ public:
     const QList<JPSZone *> &getPlatfromList() const;
     const QList<JPSZone *> & getCorridorList() const;
 
+    //Wall
+    void addWall(QList<jpsLineItem *> newWalls);
+    void addWall(jpsLineItem* newWall);
+    void addinnerWall(QList<jpsLineItem *> newWalls, int id_polygon=0);
+    void addinnerWall(jpsLineItem* newWall, int id_polygon=0);
+    void removeWall(QList<jpsLineItem *> wall);
+    void removeWall(jpsLineItem *wall);
+    void removeTrack(JPSTrack *track);
+    QList<jpsLineItem *> get_listWalls();
+    bool isInWallList(jpsLineItem* wall);
+
+    //Crossing
+    const QList<jpsCrossing *> &getCrossingList() const;
+    bool isInCrossingList(jpsCrossing *crossing);
+    void addCrossing(jpsLineItem* crossing);
+    void addCrossing(QList<jpsLineItem *> crossings);
+
+
 
 private:
     int id;
@@ -104,14 +116,15 @@ private:
     QPointF down_;
 
     QList<jpsLineItem *> wall_list;
-    QList<JPSTrack *>track_list;
+    QList<JPSTrack *> track_list;
+    QList<jpsCrossing *> crossing_list;
 
     QVector<QLineF> outer_polygon;
     QVector<QVector<QLineF>> inner_polygons;
     QList<jpsCrossing* > doorList_;
     qreal area_;
 
-    float elevation_; /// this makes only sense for horizontal rooms.
+    float elevation_; // this makes only sense for horizontal rooms.
 
     // For room type
     QList<JPSZone *> platfrom_list;

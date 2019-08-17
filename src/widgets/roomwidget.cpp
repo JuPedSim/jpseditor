@@ -415,7 +415,7 @@ void roomWidget::enable_roomSelectionCrossings()
 
                     ui->roomBox_to->setCurrentIndex(index);
                 }
-                else if (cRoomlist.size()>0 && datamanager->get_crossingList()[cCrossingRow]->IsExit())
+                else if (cRoomlist.size()>0)
                 {
                     int index = datamanager->get_roomlist().indexOf(cRoomlist[0]);
                     ui->roomBox_from->setCurrentIndex(index);
@@ -475,7 +475,6 @@ void roomWidget::add_rooms_to_crossing()
             if (ui->roomBox_to->currentText()=="OUTSIDE") // This door is a transition
             {
                 datamanager->get_crossingList()[cCrossingRow]->add_rooms(datamanager->get_roomlist()[cRoomRow1]);
-                datamanager->get_crossingList()[cCrossingRow]->SetStatExit(true);
                 datamanager->get_crossingList()[cCrossingRow]->get_cLine()->setCrossing();
             }
 
@@ -483,7 +482,6 @@ void roomWidget::add_rooms_to_crossing()
             {
                 datamanager->get_crossingList()[cCrossingRow]->add_rooms(datamanager->get_roomlist()[cRoomRow1],
                                                                  datamanager->get_roomlist()[cRoomRow2]);
-                datamanager->get_crossingList()[cCrossingRow]->SetStatExit(false);
                 datamanager->get_crossingList()[cCrossingRow]->get_cLine()->setCrossing();
             }
         }

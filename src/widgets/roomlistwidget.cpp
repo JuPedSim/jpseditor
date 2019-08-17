@@ -357,3 +357,5 @@ void RoomListWidget::deleteZoneButtonClicked()
     updateZonesListWidget(ui->listWidget_rooms->currentItem());
     qDebug("Leave RoomListWidget::deleteZoneButtonClicked");
 }
+
+

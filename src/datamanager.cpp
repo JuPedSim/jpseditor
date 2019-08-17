@@ -478,7 +478,7 @@ const int &jpsDatamanager::GetRegionCounter() const
 
 void jpsDatamanager::writeXML(QFile &file)
 {
-    qDebug(">> Enter jpsDatamanager::writeXML");
+    qDebug("Enter jpsDatamanager::writeXML");
     auto *stream = new QXmlStreamWriter(&file);
     QList<jpsLineItem* > lines = _mView->get_line_vector(); //lines are all unassign jpsLineItem
 
@@ -510,7 +510,7 @@ void jpsDatamanager::writeXML(QFile &file)
 
     delete stream;
     stream = nullptr;
-    qDebug("<< Leave jpsDatamanager::writeXML");
+    qDebug("Leave jpsDatamanager::writeXML");
 }
 
 
@@ -891,8 +891,7 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem 
 
     for (int i=0; i<crossingList.size(); i++)
     {
-        if (!crossingList[i]->IsExit()
-        && crossingList[i]->get_roomList().size() == 2 // A crossing must between two subrooms or romm and stair
+        if (crossingList[i]->get_roomList().size() == 2 // A crossing must between two subrooms or romm and stair
         && !(crossingList[i]->get_roomList()[0]->getType()==Stair
         && crossingList[i]->get_roomList()[1]->getType()==Stair)) // both sides can't be stair at the same time
         {
@@ -946,7 +945,7 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineIte
 
     for (jpsCrossing* crossing:crossingList)
     {
-        if(crossing->IsExit()) // Only transitions will be wrote here!
+        if(true) // Only transitions will be wrote here!
         {
             stream->writeAttribute("id",QString::number(crossing->get_id()));
             stream->writeAttribute("caption","exit");
@@ -2135,8 +2134,8 @@ void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)
         else
              std::cout << "ERROR: Transition has no rooms!\n";
 
-        exit->SetStatExit(true);
-        crossingList.push_back(exit);
+//        exit->SetStatExit(true);
+//        crossingList.push_back(exit);
     }
     qDebug("Leave jpsDatamanager::parseTransitions");
 }
@@ -2436,7 +2435,7 @@ QString jpsDatamanager::check_printAbility()
     // check crossing
     for (int i=0; i<crossingList.size(); i++)
     {
-        if (!crossingList[i]->IsExit() && crossingList[i]->get_roomList().size() < 2) //crossing
+        if (crossingList[i]->get_roomList().size() < 2) //crossing
         {
             QString string = "There are crossings which are not assigned to a room! Save XML-file not possible!";
             return string;
@@ -2446,7 +2445,7 @@ QString jpsDatamanager::check_printAbility()
     // check transitions
     for (int i=0; i<crossingList.size(); i++)
     {
-        if (crossingList[i]->IsExit() && crossingList[i]->get_roomList().size() < 1) //transitions
+        if ( crossingList[i]->get_roomList().size() < 1) //transitions
         {
             QString string = "There are exits which are not assigned to a room! Save XML-file not possible!";
             return string;
@@ -2661,7 +2660,7 @@ bool jpsDatamanager::ReadLineFile(QFile &file)
                       for (jpsCrossing* crossing:crossingList)
                       {
                           if (crossing->get_cLine()==lineItem)
-                              crossing->SetRoom(this->roomlist.back());
+                              crossing->setRoom(this->roomlist.back());
                       }
                   }
                 }
@@ -3000,8 +2999,8 @@ void jpsDatamanager::writeTrafficXML(QFile &file)
 
     for(jpsCrossing *crossing:crossings)
     {
-        if(crossing->IsExit())
-            doorlist.append(crossing);
+//        if(crossing->IsExit())
+//            doorlist.append(crossing);
     }
 
     stream->setAutoFormatting(true);
@@ -3089,12 +3088,12 @@ void jpsDatamanager::readDoor(QXmlStreamReader &xmlReader)
 
             for(jpsCrossing *door : crossingList)
             {
-                if(door->get_id() == id && door->IsExit())
-                {
-                    door->setState(state);
-                    door->setMaxAgents(max_agents);
-                    door->setOutflow(outflow);
-                }
+//                if(door->get_id() == id && door->IsExit())
+//                {
+//                    door->setState(state);
+//                    door->setMaxAgents(max_agents);
+//                    door->setOutflow(outflow);
+//                }
             }
 
             // now token is end element, readNextStartElement() will return false. Have to use readNext

@@ -27,14 +27,12 @@
 
 #include <iostream>
 #include "jpscrossing.h"
-#include <iostream>
 #include <QDebug>
 
 jpsCrossing::jpsCrossing(jpsLineItem *line)
 {
     cLine=line;
-    _isExit=false;
-
+    _elevation = 0;
 }
 
 QList<JPSZone *> jpsCrossing::get_roomList()
@@ -118,8 +116,9 @@ void jpsCrossing::add_rooms(JPSZone *room1, JPSZone *room2)
     qDebug("Leave jpsCrossing::add_rooms");
 }
 
-void jpsCrossing::SetRoom(JPSZone *room)
+void jpsCrossing::setRoom(JPSZone *room)
 {
+    qDebug("Enter jpsCrossing::setRoom");
     if (roomList.size()==2)
         std::cout << "Hier!" << std::endl;
     if (!roomList.contains(room))
@@ -127,6 +126,8 @@ void jpsCrossing::SetRoom(JPSZone *room)
         roomList.push_back(room);
         room->AddDoor(this);
     }
+    qDebug("Leave jpsCrossing::setRoom");
+
 }
 
 void jpsCrossing::RemoveRoom(JPSZone *room)
@@ -139,16 +140,6 @@ void jpsCrossing::RemoveRoom(JPSZone *room)
             break;
         }
     }
-}
-
-void jpsCrossing::SetStatExit(bool stat)
-{
-    _isExit=stat;
-}
-
-bool jpsCrossing::IsExit()
-{
-    return _isExit;
 }
 float jpsCrossing::get_elevation()
 {

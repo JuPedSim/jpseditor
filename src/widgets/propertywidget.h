@@ -22,12 +22,17 @@ public:
 protected slots:
     void updateWidget(ZoneType type);
     void updateWallListWidget();
+    void updateCrossingListWidget();
 
-    void highlightWall(QListWidgetItem *item);
+    // Crossing tab
+    void addCrossingButtonClicked();
 
     // Wall tab
     void addWallButtonClicked();
     void removeWallButtonClicked();
+    void highlightWall(QListWidgetItem *item);
+
+
 
 private:
     Ui::PropertyWidget *ui;
@@ -35,8 +40,6 @@ private:
     jpsDatamanager *data;
 
     JPSZone *current_zone;
-
-
 };
 
 #endif //JPSEDITOR_PROPERTYWIDGET_H
