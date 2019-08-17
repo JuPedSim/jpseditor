@@ -92,7 +92,7 @@ void PlatformPropertyWidget::receiveJPSZone(JPSZone *zone)
 */
 void PlatformPropertyWidget::updateListWidget()
 {
-    qDebug("Enter PlatformPropertyWidget::updateListWidget");
+    qDebug("Enter PlatformPropertyWidget::updateWallListWidget");
     ui->listWidget_walls->clear();
     ui->listWidget_tracks->clear();
     ui->lineEdit->clear();
@@ -124,7 +124,7 @@ void PlatformPropertyWidget::updateListWidget()
             ui->listWidget_tracks->addItem(string);
         }
     }
-    qDebug("Leave PlatformPropertyWidget::updateListWidget");
+    qDebug("Leave PlatformPropertyWidget::updateWallListWidget");
 }
 
 /*

@@ -193,6 +193,9 @@ MWindow :: MWindow()
     // Right dock widget
     propertyDockWidget = nullptr;
 
+    // Left dock widget
+    listDockWidget = nullptr;
+
     // Object snapping
     objectsnapping = {};
     bool endpoint = false;
@@ -855,7 +858,7 @@ void MWindow::trackButtonClicked()
     propertyDockWidget->setAllowedAreas( Qt::RightDockWidgetArea);
 
     auto *trackPropertyWidget = new TrackPropertyWidget(this, this->dmanager);
-    connect(mview, SIGNAL(tracksChanged()), trackPropertyWidget, SLOT(updateListWidget()));
+    connect(mview, SIGNAL(tracksChanged()), trackPropertyWidget, SLOT(updateWallListWidget()));
 
     addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
     propertyDockWidget->setWidget(trackPropertyWidget);
@@ -1170,16 +1173,6 @@ void MWindow::on_actionZoom_Extents_triggered()
     mview->AutoZoom();
 }
 
-void MWindow::closePropertyDockWidget()
-{
-    if(propertyDockWidget != nullptr)
-    {
-        mview->disable_drawing();
-        propertyDockWidget->close(); //close() has deleted pointer
-        propertyDockWidget = nullptr;
-    }
-}
-
 void MWindow::sourceButtonClicked()
 {
     closePropertyDockWidget();
@@ -1310,47 +1303,90 @@ void MWindow::importBackground()
     create a listDockwidget and propertyDockwidget
  */
 
-void MWindow::closeListDockWidget()
-{
-    if(listDockWidget != nullptr)
-    {
-        listDockWidget->close();
-        listDockWidget = nullptr;
-    }
-}
-
 void MWindow::corridorButtonClicked()
 {
     closeListDockWidget();
     closePropertyDockWidget();
 
-    // left list widget
-    listDockWidget = new QDockWidget(tr("Corridor"), this);
+    addListDockWidget("Corridor");
+}
+
+void MWindow::closePropertyDockWidget()
+{
+    qDebug("Enter MWindow::closePropertyDockWidget");
+    if(propertyDockWidget != nullptr)
+    {
+        propertyDockWidget->close(); //close() has deleted pointer
+        propertyDockWidget = nullptr;
+    }
+    qDebug("Leave MWindow::closePropertyDockWidget");
+}
+
+void MWindow::closeListDockWidget()
+{
+    qDebug("Enter MWindow::closeListDockWidget");
+    if(listDockWidget != nullptr)
+    {
+        listDockWidget->close();
+        listDockWidget = nullptr;
+    }
+    qDebug("Leave MWindow::closeListDockWidget");
+}
+
+void MWindow::addListDockWidget(const QString &type)
+{
+    qDebug("Enter MWindow::addListDockWidget");
+    closeListDockWidget();
+    closePropertyDockWidget();
+
+    // create dock widget
+    listDockWidget = new QDockWidget(type, this);
     listDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     listDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
 
-    auto *corridorListWidget = new RoomListWidget(this, this->dmanager);
-    corridorListWidget->setLabel("Corridor");
+    // create list widget
+    auto *listWidget = new RoomListWidget(this, this->dmanager);
+    listWidget->setLabel(type);
 
+    // add list widget into dock widget
     addDockWidget(Qt::LeftDockWidgetArea, listDockWidget);
-    listDockWidget->setWidget(corridorListWidget);
+    listDockWidget->setWidget(listWidget);
 
-    // right property widget
-    propertyDockWidget = new QDockWidget(tr("Corridor"), this);
+    // add propertyDockWidget
+    connect(listWidget, SIGNAL(zoneSelected(JPSZone *)),
+            this, SLOT(addPropertyDockWidget(JPSZone *)));
+//
+    connect(listWidget, SIGNAL(roomSelected(JPSZone *)),
+            this, SLOT(addPropertyDockWidget(JPSZone *)));
+
+    qDebug("Leave MWindow::addListDockWidget");
+}
+
+void MWindow::addPropertyDockWidget(JPSZone *zone)
+{
+    qDebug("Enter MWindow::addPropertyDockWidget");
+    closePropertyDockWidget();
+
+    propertyDockWidget = new QDockWidget(tr("Property"), this);
     propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     propertyDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
 
-    auto *corridorWidget = new PropertyWidget(this, this->dmanager);
+    auto *propertyWidget = new PropertyWidget(this, this->dmanager,
+                                              zone, mview);
+
     addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
-    propertyDockWidget->setWidget(corridorWidget);
+    propertyDockWidget->setWidget(propertyWidget);
+
+    qDebug("Leave MWindow::addPropertyDockWidget");
 }
+
 
 void MWindow::platformButtonclicked()
 {
     closeListDockWidget();
     closePropertyDockWidget();
 
-    // left list widget
+/*    // left list widget
     listDockWidget = new QDockWidget(tr("Platform"), this);
     listDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     listDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
@@ -1371,6 +1407,5 @@ void MWindow::platformButtonclicked()
     propertyDockWidget->setWidget(platformPropertyWidget);
 
     connect(platformListWidget, SIGNAL(zoneSelected(JPSZone *)),
-            platformPropertyWidget, SLOT(receiveJPSZone(JPSZone *)));
-
+            platformPropertyWidget, SLOT(receiveJPSZone(JPSZone *)));*/
 }

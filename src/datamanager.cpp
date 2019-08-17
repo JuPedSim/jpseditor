@@ -59,7 +59,6 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 
     // For zone
     roomlist = QList<JPSZone *> ();
-
     zone_id = 1;
 
     sourcelist = _mView->getSources();

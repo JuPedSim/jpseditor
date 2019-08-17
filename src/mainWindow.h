@@ -227,9 +227,11 @@ private slots:
     void platformButtonclicked();
 
     //propertyDockWidget
+    void addPropertyDockWidget(JPSZone *zone);
     void closePropertyDockWidget();
 
     //listDockWidget
+    void addListDockWidget(const QString &type);
     void closeListDockWidget();
 
 };
