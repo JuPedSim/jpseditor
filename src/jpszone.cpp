@@ -930,3 +930,13 @@ void JPSZone::addCrossing(QList<jpsLineItem *> crossings)
     }
     qDebug("Leave JPSZone::addCrossing");
 }
+
+void JPSZone::removeCrossing(jpsCrossing *crossing)
+{
+    qDebug("Enter JPSZone::removeCrossing");
+    if(crossing == nullptr)
+        return;
+
+    crossing_list.removeOne(crossing);
+    qDebug("Leave JPSZone::removeCrossing");
+}

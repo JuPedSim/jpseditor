@@ -1893,7 +1893,7 @@ void jpsGraphicsView::delete_marked_lines()
 {
     if (line_tracked!=-1)
     {
-        emit remove_marked_lines();
+        emit remove_marked_lines(); // emit to mainWindow
 
         for (int i=0; i<marked_lines.size(); ++i)
         {
@@ -1913,7 +1913,7 @@ void jpsGraphicsView::delete_marked_lines()
 
         //intersect_point_vector.clear();
         line_tracked=-1;
-        emit lines_deleted();
+        emit lines_deleted(); //emit to propertyWidget
         update();
     }
 

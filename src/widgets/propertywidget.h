@@ -21,11 +21,13 @@ public:
 
 protected slots:
     void updateWidget(ZoneType type);
+    void updateListwidget();
     void updateWallListWidget();
     void updateCrossingListWidget();
 
     // Crossing tab
     void addCrossingButtonClicked();
+    void removeCrossingButtonClicked();
 
     // Wall tab
     void addWallButtonClicked();
