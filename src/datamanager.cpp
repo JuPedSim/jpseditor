@@ -68,7 +68,6 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 jpsDatamanager::~jpsDatamanager()
 {
     qDebug("Enter jpsDatamanager::~jpsDatamanager");
-    //remove_all(); vmiew->delete_all() does this work
     remove_all();
     qDebug("Leave jpsDatamanager::~jpsDatamanager");
 }

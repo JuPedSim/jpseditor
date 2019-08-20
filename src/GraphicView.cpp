@@ -122,7 +122,9 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
 
 jpsGraphicsView::~jpsGraphicsView()
 {
+    qDebug("Enter jpsGraphicsView::~jpsGraphicsView");
     delete_all(true);
+    qDebug("Leave jpsGraphicsView::~jpsGraphicsView");
 }
 
 QGraphicsScene *jpsGraphicsView::GetScene()
@@ -644,9 +646,9 @@ void jpsGraphicsView::delete_all(bool final)
         }
     }
 
-    emit remove_all();
+    emit remove_all(); // emit to mainWindow
 
-    /// Delete all lines
+    // Delete all lines
 
     for (int i=0; i<line_vector.size(); i++)
     {

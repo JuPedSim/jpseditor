@@ -260,8 +260,10 @@ MWindow :: MWindow()
 
 MWindow::~MWindow()
 {
+    qDebug("Enter MWindow::~MWindow");
     delete mview;
     delete dmanager;
+
     delete length_edit;
     delete label1;
     delete label2;
@@ -269,6 +271,7 @@ MWindow::~MWindow()
     delete timer;
     delete _cMapTimer;
     delete drawing_toolbar_;
+    qDebug("Leave MWindow::~MWindow");
 }
 
 void MWindow::setupDrawingToolBar()
@@ -1352,12 +1355,7 @@ void MWindow::addListDockWidget(const QString &type)
     addDockWidget(Qt::LeftDockWidgetArea, listDockWidget);
     listDockWidget->setWidget(listWidget);
 
-    // add propertyDockWidget
-    connect(listWidget, SIGNAL(zoneSelected(JPSZone *)),
-            this, SLOT(addPropertyDockWidget(JPSZone *)));
-//
-    connect(listWidget, SIGNAL(roomSelected(JPSZone *)),
-            this, SLOT(addPropertyDockWidget(JPSZone *)));
+
 
     qDebug("Leave MWindow::addListDockWidget");
 }

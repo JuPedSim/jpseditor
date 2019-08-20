@@ -54,6 +54,9 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
     // Add crossing into room
     connect(ui->pushButton_addCrossing, SIGNAL(clicked()), this, SLOT(addCrossingButtonClicked()));
     connect(ui->pushButton_removeCrossing, SIGNAL(clicked()), this, SLOT(removeCrossingButtonClicked()));
+    connect(ui->listWidget_crossing, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlightWall(QListWidgetItem
+    *)));
+
 }
 
 PropertyWidget::~PropertyWidget()
@@ -67,6 +70,7 @@ void PropertyWidget::updateWidget(ZoneType type)
     {
         case Room:
             ui->tabWidget->removeTab(0); // keep only crossing tab
+            updateCrossingListWidget();
             break;
         case Corridor:
             ui->tabWidget->removeTab(1); // keep only wall tab
@@ -149,16 +153,20 @@ void PropertyWidget::removeWallButtonClicked()
 void PropertyWidget::highlightWall(QListWidgetItem *item)
 {
     qDebug("Enter PropertyWidget::highlightWall");
-    int row = ui->listWidget_walls->currentRow();
+    int wRow = ui->listWidget_walls->currentRow();
+    int cRow = ui->listWidget_crossing->currentRow();
+    int index = ui->tabWidget->currentIndex();
 
-    if(row == -1) // There is no rows in list
+    if(ui->tabWidget->tabText(index) == "Crossing")
     {
-        qDebug("No row is selected. Leave PlatformPropertyWidget::highlightWall");
-        return;
+        auto *line = current_zone->getCrossingList()[cRow];
+        view->select_line(line->get_cLine());
     }
-
-    auto *wall= current_zone->get_listWalls()[row];
-    view->select_line(wall);
+    else if(ui->tabWidget->tabText(index) == "Wall")
+    {
+        auto *line= current_zone->get_listWalls()[wRow];
+        view->select_line(line);
+    }
     qDebug("Leave PropertyWidget::highlightWall");
 }
 
@@ -171,6 +179,7 @@ void PropertyWidget::updateCrossingListWidget()
         return;
 
     QList<jpsCrossing *> crossing_list = current_zone->getCrossingList();
+
     for (int i = 0; i < crossing_list.size(); i++)
     {
         QString string = "";
