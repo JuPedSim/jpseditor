@@ -1550,34 +1550,36 @@ void jpsDatamanager::remove_marked_lines()
             qDebug()<< "jpsDatamanager::remove_marked_lines(): Marked line isn't in obstacle!";
         }
 
-        if (marked_lines[i]->is_Wall()==true && cList.size()>0)
+        // Delete wall
+        if (marked_lines[i]->is_Wall() && cList.size()>0)
         {
             for (int j=0; j<cList.size(); j++)
             {
-                QList<jpsLineItem* > delete_candidates;
-
-                for (int k=0; k<cList[j]->get_listWalls().size(); k++)
+                for (int l=0; l<cList[j]->getCorridorList().size(); l++)
                 {
-                    if (marked_lines[i]==cList[j]->get_listWalls()[k])
+                    for (int k=0; k<cList[j]->getCorridorList()[l]->get_listWalls().size(); k++)
                     {
-                        delete_candidates.push_back(cList[j]->get_listWalls()[k]);
+
+                        if (marked_lines[i]==cList[j]->getCorridorList()[l]->get_listWalls()[k])
+                        {
+                            cList[j]->getCorridorList()[l]->removeWall(marked_lines[i]);
+                        }
                     }
                 }
-                cList[j]->removeWall(delete_candidates);
                 qDebug()<< "jpsDatamanager::remove_marked_lines(): Wall line is deleted!";
             }
             qDebug()<< "jpsDatamanager::remove_marked_lines: marked line is removed" ;
         }
 
-        else if (marked_lines[i]->is_Crossing() || marked_lines[i]->is_Transition())
+        // Delete crossing
+        else if (marked_lines[i]->is_Crossing() && cList.size()>0)
         {
-            QList<jpsCrossing* > cList= this->get_crossingList();
-            for (int j=0; j<cList.size(); j++)
+            foreach(JPSZone* zone, cList)
             {
-                if (marked_lines[i]==cList[j]->get_cLine())
+                foreach(jpsCrossing* crossing, zone->getCrossingList())
                 {
-                    this->remove_crossing(cList[j]);
-                    break;
+                    if(marked_lines[i] == crossing->get_cLine())
+                        zone->removeCrossing(crossing);
                 }
             }
             qDebug()<< "jpsDatamanager::remove_marked_lines(): Crossing line is deleted!";

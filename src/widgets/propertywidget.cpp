@@ -43,6 +43,9 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
     // Change layout depends on type
     updateWidget(zone->getType());
 
+    // Update list widget if line deleted
+    connect(view, SIGNAL(lines_deleted()), this, SLOT(updateListwidget()));
+
     // Add wall into zone
     connect(ui->pushButton_addWall, SIGNAL(clicked()), this, SLOT(addWallButtonClicked()));
     connect(ui->pushButton_removeWall, SIGNAL(clicked()), this, SLOT(removeWallButtonClicked()));
@@ -50,6 +53,7 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
 
     // Add crossing into room
     connect(ui->pushButton_addCrossing, SIGNAL(clicked()), this, SLOT(addCrossingButtonClicked()));
+    connect(ui->pushButton_removeCrossing, SIGNAL(clicked()), this, SLOT(removeCrossingButtonClicked()));
 }
 
 PropertyWidget::~PropertyWidget()
@@ -75,6 +79,14 @@ void PropertyWidget::updateWidget(ZoneType type)
     }
 }
 
+void PropertyWidget::updateListwidget()
+{
+    qDebug("Enter PropertyWidget::updateListwidget");
+    updateWallListWidget();
+    updateCrossingListWidget();
+    qDebug("Leave PropertyWidget::updateListwidget");
+}
+
 void PropertyWidget::updateWallListWidget()
 {
     qDebug("Enter PropertyWidget::updateWallListWidget");
@@ -84,6 +96,7 @@ void PropertyWidget::updateWallListWidget()
         return;
 
     QList<jpsLineItem *> walllist = current_zone->get_listWalls();
+
     for (int i = 0; i < walllist.size(); i++)
     {
         QString string = "";
@@ -189,3 +202,20 @@ void PropertyWidget::addCrossingButtonClicked()
     qDebug("Leave PropertyWidget::addCrossingButtonClicked");
 }
 
+void PropertyWidget::removeCrossingButtonClicked()
+{
+    qDebug("Enter PropertyWidget::removeCrossingButtonClicked");
+    int row = ui->listWidget_crossing->currentRow();
+
+    if(row == -1) // There is no rows in list
+        return;
+
+    auto* crossing = current_zone->getCrossingList()[row];
+
+    current_zone->removeCrossing(crossing);
+
+    ui->listWidget_crossing->setCurrentRow(-1); // Set no focus
+
+    updateCrossingListWidget();
+    qDebug("Leave PropertyWidget::removeCrossingButtonClicked");
+}

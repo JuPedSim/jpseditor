@@ -16,8 +16,6 @@ public:
 
     ~JPSZone(){}
 
-
-
     const QList<jpsCrossing *> &GetDoors() const;
     void removeDoor(jpsCrossing* crossing);
     QString get_name();
@@ -98,7 +96,7 @@ public:
     bool isInCrossingList(jpsCrossing *crossing);
     void addCrossing(jpsLineItem* crossing);
     void addCrossing(QList<jpsLineItem *> crossings);
-
+    void removeCrossing(jpsCrossing* crossing);
 
 
 private:
@@ -115,20 +113,25 @@ private:
     QPointF up_;
     QPointF down_;
 
+    // For subroom
     QList<jpsLineItem *> wall_list;
     QList<JPSTrack *> track_list;
+
+    // For room
     QList<jpsCrossing *> crossing_list;
+    QList<jpsCrossing* > doorList_;
+    QList<JPSZone *> platfrom_list;
+    QList<JPSZone *> corridor_list;
 
     QVector<QLineF> outer_polygon;
     QVector<QVector<QLineF>> inner_polygons;
-    QList<jpsCrossing* > doorList_;
+
     qreal area_;
 
     float elevation_; // this makes only sense for horizontal rooms.
 
     // For room type
-    QList<JPSZone *> platfrom_list;
-    QList<JPSZone *> corridor_list;
+
 
 };
 
