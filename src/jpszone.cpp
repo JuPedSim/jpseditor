@@ -917,7 +917,6 @@ void JPSZone::addCrossing(jpsLineItem *crossing)
 
     if(!isInCrossingList(newcrossing))
         crossing_list.push_back(newcrossing);
-
     qDebug("Leave JPSZone::addCrossing");
 }
 

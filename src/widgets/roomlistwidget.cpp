@@ -37,6 +37,11 @@ RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager)
     data = dmanager;
 
     updateRoomsListWidget();
+
+    // add propertyDockWidget
+    connect(this, SIGNAL(zoneSelected(JPSZone *)), parent, SLOT(addPropertyDockWidget(JPSZone *)));
+
+    connect(this, SIGNAL(roomSelected(JPSZone *)), parent, SLOT(addPropertyDockWidget(JPSZone *)));
     // Add
     connect(ui->pushButton_addRoom, SIGNAL(clicked()), this, SLOT(addRoomButtonClicked()));
     connect(ui->pushButton_addZone, SIGNAL(clicked()), this, SLOT(addZoneButtonClicked()));
