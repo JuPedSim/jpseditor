@@ -18,6 +18,13 @@ public:
 
     ~LayerWidget();
 
+protected slots:
+    void addLayerButtonClicked();
+    void updateLayerListWidget();
+    void renameLayer(QListWidgetItem *item);
+
+    bool isRepeatedName(QString name);
+
 private:
     Ui::LayerWidget *ui;
     jpsGraphicsView *view;

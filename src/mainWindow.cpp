@@ -1390,6 +1390,7 @@ void MWindow::platformButtonclicked()
 void MWindow::layerButtonClicked()
 {
     qDebug("Enter MWindow::layerButtonClicked");
+    closeLeftToolBarArea();
     closeListDockWidget();
     closePropertyDockWidget();
 
