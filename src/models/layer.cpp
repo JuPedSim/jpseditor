@@ -30,8 +30,7 @@
 
 #include "layer.h"
 
-Layer::Layer()
-    : QGraphicsItemGroup(nullptr)
+Layer::Layer() : QGraphicsItemGroup(nullptr)
 {
     name = "Layer";
     isHide = false;
@@ -53,4 +52,22 @@ void Layer::setName(QString layername)
     qDebug("Enter Layer::setName");
     name = layername;
     qDebug("Leave Layer::setName");
+}
+
+void Layer::addToLayer(QGraphicsLineItem *item)
+{
+    qDebug("Enter Layer::addToLayer");
+
+    if(lineItem_list.contains(item) || item == nullptr)
+        return;
+
+    lineItem_list.append(item);
+    addToGroup(item); // Add to group to manage items
+    qDebug("Leave Layer::addToLayer");
+}
+
+QList<QGraphicsLineItem *> Layer::getLineItemList()
+{
+    qDebug("Enter/Leave Layer::getItemLis");
+    return lineItem_list;
 }

@@ -44,7 +44,8 @@ LayerWidget::LayerWidget(QWidget *parent, jpsGraphicsView *mview)
     connect(ui->listWidget_layers, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(renameLayer(QListWidgetItem *)));
     connect(ui->pushButton_deleteLayer, SIGNAL(clicked()), this, SLOT(deleteLayerButtonClicked()));
 
-
+    // Item widget
+    connect(ui->pushButton_addItems, SIGNAL(clicked()), this, SLOT(addItemsButtonClicked()));
 }
 
 LayerWidget::~LayerWidget()
@@ -121,4 +122,50 @@ void LayerWidget::deleteLayerButtonClicked()
 
     updateLayerListWidget();
     qDebug("Leave void LayerWidget::deleteLayerButtonClicked");
+}
+
+void LayerWidget::addItemsButtonClicked()
+{
+    qDebug("Enter LayerWidget::addItemsButtonClicked");
+    if(view->getLayerList()[ui->listWidget_layers->currentRow()] == nullptr)
+        return;
+
+    if(!view->get_markedLines().isEmpty())
+    {
+        // Add Wall into layer
+        foreach(jpsLineItem *line, view->get_markedLines())
+        {
+            view->getLayerList()[ui->listWidget_layers->currentRow()]->addToLayer(line->get_line());
+        }
+    }
+
+    updateItemsListWidget();
+
+    qDebug("Leave LayerWidget::addItemsButtonClicked");
+}
+
+void LayerWidget::updateItemsListWidget()
+{
+    qDebug("Enter LayerWidget::updateItemsListWidget");
+    ui->listWidget_items->clear();
+
+    if(view->getLayerList().isEmpty())
+        return;
+
+    foreach(Layer *layer, view->getLayerList())
+    {
+        // Show QGraphicsLineItem
+        foreach(QGraphicsLineItem *item, layer->getLineItemList())
+        {
+            QString string = "";
+            string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
+                    item->line().x1(),
+                    item->line().x2(),
+                    item->line().y1(),
+                    item->line().y2());
+
+            ui->listWidget_items->addItem(string);
+        }
+    }
+    qDebug("Leave LayerWidget::updateItemsListWidget");
 }

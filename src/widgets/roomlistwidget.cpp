@@ -343,7 +343,6 @@ void RoomListWidget::deleteRoomButtonClicked()
     qDebug("Leave RoomListWidget::deleteRoomButtonClicked");
 }
 
-
 /*
     Purpose: Delete zone from zone list widget
 

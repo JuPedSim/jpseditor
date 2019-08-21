@@ -4,6 +4,7 @@
 #include <QtGui>
 #include <QtWidgets>
 #include "src/GraphicView.h"
+#include "src/models/layer.h"
 
 namespace Ui {
     class LayerWidget;
@@ -23,6 +24,9 @@ protected slots:
     void updateLayerListWidget();
     void renameLayer(QListWidgetItem *item);
     void deleteLayerButtonClicked();
+
+    void addItemsButtonClicked();
+    void updateItemsListWidget();
 
     bool isRepeatedName(QString name);
 
