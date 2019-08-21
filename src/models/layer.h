@@ -15,9 +15,13 @@ public:
     QString getName();
     void setName(QString layername);
 
+    void addToLayer(QGraphicsLineItem *item);
+    QList<QGraphicsLineItem *> getLineItemList();
+
 private:
     QString name;
     bool isHide;
+    QList<QGraphicsLineItem *> lineItem_list; // This is just for show info in item list widget
 };
 
 
