@@ -39,6 +39,8 @@ LayerWidget::LayerWidget(QWidget *parent, jpsGraphicsView *mview)
 
     updateLayerListWidget();
 
+    connect(ui->listWidget_layers, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(checkVisibility(QListWidgetItem*)));
+
     // Layer widget
     connect(ui->pushButton_addLayer, SIGNAL(clicked()), this, SLOT(addLayerButtonClicked()));
     connect(ui->listWidget_layers, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(renameLayer(QListWidgetItem *)));
@@ -46,6 +48,7 @@ LayerWidget::LayerWidget(QWidget *parent, jpsGraphicsView *mview)
 
     // Item widget
     connect(ui->pushButton_addItems, SIGNAL(clicked()), this, SLOT(addItemsButtonClicked()));
+    connect(ui->pushButton_removeItems, SIGNAL(clicked()), this, SLOT(removeItemsButtonClicked()));
 }
 
 LayerWidget::~LayerWidget()
@@ -121,22 +124,33 @@ void LayerWidget::deleteLayerButtonClicked()
     }
 
     updateLayerListWidget();
+    updateItemsListWidget();
     qDebug("Leave void LayerWidget::deleteLayerButtonClicked");
 }
 
 void LayerWidget::addItemsButtonClicked()
 {
     qDebug("Enter LayerWidget::addItemsButtonClicked");
-    if(view->getLayerList()[ui->listWidget_layers->currentRow()] == nullptr)
-        return;
-
-    if(!view->get_markedLines().isEmpty())
+    if(ui->listWidget_layers->currentItem() != nullptr)
     {
-        // Add Wall into layer
-        foreach(jpsLineItem *line, view->get_markedLines())
+        if(view->getLayerList()[ui->listWidget_layers->currentRow()] == nullptr)
+            return;
+
+        if(!view->get_markedLines().isEmpty())
         {
-            view->getLayerList()[ui->listWidget_layers->currentRow()]->addToLayer(line->get_line());
+            // Add Wall into layer
+            foreach(jpsLineItem *line, view->get_markedLines())
+            {
+                view->getLayerList()[ui->listWidget_layers->currentRow()]->addToLayer(line->get_line());
+            }
         }
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Add or select a Layer at first!");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.exec();
     }
 
     updateItemsListWidget();
@@ -149,7 +163,7 @@ void LayerWidget::updateItemsListWidget()
     qDebug("Enter LayerWidget::updateItemsListWidget");
     ui->listWidget_items->clear();
 
-    if(view->getLayerList().isEmpty())
+    if(ui->listWidget_layers->currentItem() == nullptr)
         return;
 
     foreach(Layer *layer, view->getLayerList())
@@ -158,7 +172,7 @@ void LayerWidget::updateItemsListWidget()
         foreach(QGraphicsLineItem *item, layer->getLineItemList())
         {
             QString string = "";
-            string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
+            string.sprintf("Line: [%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
                     item->line().x1(),
                     item->line().x2(),
                     item->line().y1(),
@@ -168,4 +182,39 @@ void LayerWidget::updateItemsListWidget()
         }
     }
     qDebug("Leave LayerWidget::updateItemsListWidget");
+}
+
+void LayerWidget::checkVisibility(QListWidgetItem *item)
+{
+    qDebug("Enter LayerWidget::checkVisibility");
+    if(view->getLayerList()[ui->listWidget_layers->currentRow()]->isHide())
+    {
+        ui->pushButton_showLayer->setDisabled(true);
+        ui->pushButton_hideLayer->setDisabled(false);
+        item->setToolTip("This Layer is already hidden");
+    }
+    else
+    {
+        ui->pushButton_hideLayer->setDisabled(true);
+        ui->pushButton_showLayer->setDisabled(false);
+    }
+    qDebug("Leave LayerWidget::checkVisibility");
+}
+
+void LayerWidget::removeItemsButtonClicked()
+{
+    qDebug("Enter LayerWidget::removeItemsButtonClicked");
+    if(ui->listWidget_items->currentItem() != nullptr)
+    {
+        Layer *layer = view->getLayerList()[ui->listWidget_layers->currentRow()];
+        QListWidgetItem *cItem = ui->listWidget_items->currentItem();
+        if(cItem->text().contains("Line")) // If cItem is Line Item
+        {
+            QGraphicsLineItem *line = layer->getLineItemList()[ui->listWidget_items->currentRow()];
+            layer->removeLineItem(line);
+        }
+    }
+
+    updateItemsListWidget();
+    qDebug("Leave LayerWidget::removeItemsButtonClicked");
 }

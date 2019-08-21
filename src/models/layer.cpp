@@ -25,6 +25,8 @@
  * \section Description
  *
  * Layer class to manage items
+ * Layer can contain QGraphicsLineitem(wall, crossing...), QGraphicsRechItem(Source and Goal) and QGraphicsPixmapItem
+ * (jpsLandmark)
  * Model for layer
 ****************************************************************/
 
@@ -33,7 +35,7 @@
 Layer::Layer() : QGraphicsItemGroup(nullptr)
 {
     name = "Layer";
-    isHide = false;
+    hide = true;
 }
 
 Layer::~Layer()
@@ -70,4 +72,22 @@ QList<QGraphicsLineItem *> Layer::getLineItemList()
 {
     qDebug("Enter/Leave Layer::getItemLis");
     return lineItem_list;
+}
+
+bool Layer::isHide()
+{
+    qDebug("Enter/Leave Layer::isHide");
+    return hide;
+}
+
+void Layer::removeLineItem(QGraphicsLineItem *line)
+{
+    qDebug("Enter Layer::removeLineItem");
+    if(line == nullptr)
+        return;
+
+    removeFromGroup(line);
+    lineItem_list.removeOne(line);
+
+    qDebug("Leave Layer::removeLineItem");
 }

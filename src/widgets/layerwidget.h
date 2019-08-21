@@ -20,6 +20,8 @@ public:
     ~LayerWidget();
 
 protected slots:
+    void checkVisibility(QListWidgetItem *item);
+
     void addLayerButtonClicked();
     void updateLayerListWidget();
     void renameLayer(QListWidgetItem *item);
@@ -27,6 +29,7 @@ protected slots:
 
     void addItemsButtonClicked();
     void updateItemsListWidget();
+    void removeItemsButtonClicked();
 
     bool isRepeatedName(QString name);
 
