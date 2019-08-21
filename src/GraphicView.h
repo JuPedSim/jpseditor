@@ -39,6 +39,7 @@
 #include "jpsgoal.h"
 #include "./UndoFramework/actionstack.h"
 #include "global.h"
+#include "models/layer.h"
 
 using ptrConnection = std::shared_ptr<jpsConnection>;
 using ptrLandmark = std::shared_ptr<jpsLandmark>;
@@ -210,6 +211,11 @@ public slots:
     QList<JPSSource *> getSources();
     QList<JPSGoal *> getGoals();
 
+    // Layer
+    QList<Layer *> getLayerList() const;
+    void addLayer();
+    void deleteLayer();
+
 protected:
     //Mouse events
     void mouseMoveEvent(QMouseEvent * mouseEvent) override;
@@ -314,7 +320,8 @@ private:
     qreal _translationY;
     QString _statgrid;
 
-
+    // Layer
+    QList<Layer *> layer_list;
 
 signals:
     void mouse_moved();
@@ -332,6 +339,8 @@ signals:
     void goalsChanged();
     void transitonsChanged();
     void sendMsgToStatusBar(QString Msg);
+
+
     //void DoubleClick();
 
 };

@@ -185,6 +185,7 @@ set( SRCS
     src/widgets/transitionwidget.cpp
     src/widgets/trackpropertywidget.cpp
     src/widgets/layerwidget.cpp
+    src/models/layer.cpp
         )
 # all header files that should be treated with moc
 set( HDR
@@ -246,6 +247,7 @@ set( HDR
     src/widgets/transitionwidget.h
     src/widgets/trackpropertywidget.h
     src/widgets/layerwidget.h
+    src/models/layer.h
         )
 
 # *.ui files

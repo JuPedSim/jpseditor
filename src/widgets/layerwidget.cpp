@@ -36,6 +36,13 @@ LayerWidget::LayerWidget(QWidget *parent, jpsGraphicsView *mview)
 {
     ui->setupUi(this);
     view = mview;
+
+    updateLayerListWidget();
+
+    // Layer widget
+    connect(ui->pushButton_addLayer, SIGNAL(clicked()), this, SLOT(addLayerButtonClicked()));
+    connect(ui->listWidget_layers, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(renameLayer(QListWidgetItem *)));
+
 }
 
 LayerWidget::~LayerWidget()
@@ -43,3 +50,61 @@ LayerWidget::~LayerWidget()
     delete ui;
 }
 
+void LayerWidget::addLayerButtonClicked()
+{
+    qDebug("Enter LayerWidget::addLayerButtonClicked");
+    view->addLayer();
+    updateLayerListWidget();
+    qDebug("Leave LayerWidget::addLayerButtonClicked");
+}
+
+void LayerWidget::updateLayerListWidget()
+{
+    qDebug("Enter LayerWidget::updateLayerListWidget");
+    ui->listWidget_layers->clear();
+
+    if(view->getLayerList().isEmpty())
+        return;
+
+    QList<Layer *> layer_list = view->getLayerList();
+    foreach(Layer *layer, layer_list)
+    {
+        QString string = layer->getName();
+        ui->listWidget_layers->addItem(string);
+    }
+
+    qDebug("Leave LayerWidget::updateLayerListWidget");
+}
+
+void LayerWidget::renameLayer(QListWidgetItem *item)
+{
+    qDebug("Enter LayerWidget::renameLayer");
+    QString name = QInputDialog::getText(this, tr("Rename"),
+                                         tr("New name:"), QLineEdit::Normal,
+                                         "Floor");
+
+    if(!isRepeatedName(name))
+    {
+        view->getLayerList()[ui->listWidget_layers->currentRow()]->setName(name);
+    } else
+    {
+        QMessageBox::warning(this,"Warning!", "This name is already used, change another?",
+                             QMessageBox::Ok);
+    }
+
+    updateLayerListWidget();
+
+    qDebug("Leave LayerWidget::renameLayer");
+}
+
+bool LayerWidget::isRepeatedName(QString name)
+{
+    qDebug("Enter LayerWidget::isRepeatedName");
+    foreach(Layer *layer, view->getLayerList())
+    {
+        if(name == layer->getName())
+            return true;
+    }
+    qDebug("Leave LayerWidget::isRepeatedName");
+    return false;
+}

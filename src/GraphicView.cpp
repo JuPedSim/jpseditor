@@ -2693,3 +2693,24 @@ void jpsGraphicsView::enableMeasureLengthMode()
         currentPen.setColor(Qt::green);
     }
 }
+
+void jpsGraphicsView::addLayer()
+{
+    qDebug("Enter jpsGraphicsView::addLayer");
+    auto *layer = new Layer();
+    layer_list.append(layer);
+    qDebug("Leave jpsGraphicsView::addLayer");
+}
+
+void jpsGraphicsView::deleteLayer()
+{
+    qDebug("Enter jpsGraphicsView::deleteLayer");
+    qDebug("Leave jpsGraphicsView::deleteLayer");
+}
+
+QList<Layer *> jpsGraphicsView::getLayerList() const
+{
+    qDebug("Enter jpsGraphicsView::getLayerList");
+    return layer_list;
+    qDebug("Leave jpsGraphicsView::getLayerList");
+}
