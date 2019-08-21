@@ -230,8 +230,9 @@ private:
 
     QList<JPSSource *> sourcelist;
     QList<JPSGoal *> goallist;
-    QList<jpsCrossing *> crossingList;
+
     QList<jpsTransition *> transition_list;
+
     QList<jpsLandmark* > _landmarks;
     QList<jpsConnection* > _landmarkConnections;
     QList<jpsLandmark* > _landmarksAfterLoose;
@@ -258,6 +259,9 @@ private:
     std::default_random_engine _generator;
 
     bool isInCrossingList(jpsLineItem *markedLine);
+
+    // Deprecated
+    QList<jpsCrossing *> crossingList;
 
 };
 

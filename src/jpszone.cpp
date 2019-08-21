@@ -51,9 +51,7 @@ JPSZone::JPSZone(int id_zone, JPSZone *father, ZoneType type)
     B_y=0.0;
     C_z=0.0;
     elevation_=0;
-
     visible=true;
-
 }
 
 bool JPSZone::isInWallList(jpsLineItem *wall)

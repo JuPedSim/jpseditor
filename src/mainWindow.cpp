@@ -256,6 +256,9 @@ MWindow :: MWindow()
     connect(actionBackground, SIGNAL(triggered(bool)),this,SLOT(importBackground()));
 
     connect(mview, SIGNAL(sendMsgToStatusBar(QString)), this, SLOT(msgReceived(QString))); /// Get length from mview
+
+    // Layer
+    connect(actionLayer, SIGNAL(triggered(bool)),this, SLOT(layerButtonClicked()));
 }
 
 MWindow::~MWindow()
@@ -1355,8 +1358,6 @@ void MWindow::addListDockWidget(const QString &type)
     addDockWidget(Qt::LeftDockWidgetArea, listDockWidget);
     listDockWidget->setWidget(listWidget);
 
-
-
     qDebug("Leave MWindow::addListDockWidget");
 }
 
@@ -1378,32 +1379,29 @@ void MWindow::addPropertyDockWidget(JPSZone *zone)
     qDebug("Leave MWindow::addPropertyDockWidget");
 }
 
-
 void MWindow::platformButtonclicked()
 {
     closeListDockWidget();
     closePropertyDockWidget();
 
-/*    // left list widget
-    listDockWidget = new QDockWidget(tr("Platform"), this);
+    addListDockWidget("Platform");
+}
+
+void MWindow::layerButtonClicked()
+{
+    qDebug("Enter MWindow::layerButtonClicked");
+    closeListDockWidget();
+    closePropertyDockWidget();
+
+    // create dock widget
+    listDockWidget = new QDockWidget("Layer", this);
     listDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     listDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
 
-    auto *platformListWidget = new RoomListWidget(this, this->dmanager);
-    platformListWidget->setLabel("Platform");
+    auto *layerWidget = new LayerWidget(this, mview);
 
     addDockWidget(Qt::LeftDockWidgetArea, listDockWidget);
-    listDockWidget->setWidget(platformListWidget);
+    listDockWidget->setWidget(layerWidget);
 
-    // right property widget
-    propertyDockWidget = new QDockWidget(tr("Platform"), this);
-    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    propertyDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-
-    auto *platformPropertyWidget = new PlatformPropertyWidget(this, this->dmanager, mview);
-    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
-    propertyDockWidget->setWidget(platformPropertyWidget);
-
-    connect(platformListWidget, SIGNAL(zoneSelected(JPSZone *)),
-            platformPropertyWidget, SLOT(receiveJPSZone(JPSZone *)));*/
+    qDebug("Leave MWindow::layerButtonClicked");
 }

@@ -1,7 +1,3 @@
-//
-// Created by sainho93 on 2019-06-19.
-//
-
 #ifndef JPSEDITOR_ROOMLISTWIDGET_H
 #define JPSEDITOR_ROOMLISTWIDGET_H
 

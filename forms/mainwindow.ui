@@ -145,6 +145,7 @@
    <addaction name="actionDraw"/>
    <addaction name="actionZone"/>
    <addaction name="separator"/>
+   <addaction name="actionLayer"/>
    <addaction name="actionMeasureLength"/>
    <addaction name="actiongridmode"/>
    <addaction name="actionObjectsnap"/>
@@ -952,6 +953,15 @@
    </property>
    <property name="toolTip">
     <string>Draw Track</string>
+   </property>
+  </action>
+  <action name="actionLayer">
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/layers.png</normaloff>:/inAppIcons/Icons/layers.png</iconset>
+   </property>
+   <property name="text">
+    <string>Layer</string>
    </property>
   </action>
  </widget>

@@ -71,5 +71,6 @@
         <file>Icons/stairs.png</file>
         <file>Icons/platform.png</file>
         <file>Icons/track.png</file>
+        <file>Icons/layers.png</file>
     </qresource>
 </RCC>

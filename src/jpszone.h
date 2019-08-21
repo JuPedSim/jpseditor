@@ -106,12 +106,6 @@ private:
     ZoneType zoneType;
     QString name;
     bool highlighted;
-    bool visible;
-    float A_x;
-    float B_y;
-    float C_z;
-    QPointF up_;
-    QPointF down_;
 
     // For subroom
     QList<jpsLineItem *> wall_list;
@@ -122,6 +116,13 @@ private:
     QList<jpsCrossing* > doorList_;
     QList<JPSZone *> platfrom_list;
     QList<JPSZone *> corridor_list;
+
+    bool visible;
+    float A_x;
+    float B_y;
+    float C_z;
+    QPointF up_;
+    QPointF down_;
 
     QVector<QLineF> outer_polygon;
     QVector<QVector<QLineF>> inner_polygons;
