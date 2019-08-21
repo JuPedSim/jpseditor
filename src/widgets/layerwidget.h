@@ -22,6 +22,7 @@ protected slots:
     void addLayerButtonClicked();
     void updateLayerListWidget();
     void renameLayer(QListWidgetItem *item);
+    void deleteLayerButtonClicked();
 
     bool isRepeatedName(QString name);
 

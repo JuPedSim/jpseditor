@@ -214,7 +214,7 @@ public slots:
     // Layer
     QList<Layer *> getLayerList() const;
     void addLayer();
-    void deleteLayer();
+    void deleteLayer(Layer *deletedLayer);
 
 protected:
     //Mouse events

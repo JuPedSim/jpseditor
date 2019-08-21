@@ -2702,9 +2702,10 @@ void jpsGraphicsView::addLayer()
     qDebug("Leave jpsGraphicsView::addLayer");
 }
 
-void jpsGraphicsView::deleteLayer()
+void jpsGraphicsView::deleteLayer(Layer *deletedLayer)
 {
     qDebug("Enter jpsGraphicsView::deleteLayer");
+    layer_list.removeOne(deletedLayer);
     qDebug("Leave jpsGraphicsView::deleteLayer");
 }
 

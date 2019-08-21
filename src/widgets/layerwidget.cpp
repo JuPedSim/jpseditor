@@ -42,6 +42,8 @@ LayerWidget::LayerWidget(QWidget *parent, jpsGraphicsView *mview)
     // Layer widget
     connect(ui->pushButton_addLayer, SIGNAL(clicked()), this, SLOT(addLayerButtonClicked()));
     connect(ui->listWidget_layers, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(renameLayer(QListWidgetItem *)));
+    connect(ui->pushButton_deleteLayer, SIGNAL(clicked()), this, SLOT(deleteLayerButtonClicked()));
+
 
 }
 
@@ -107,4 +109,16 @@ bool LayerWidget::isRepeatedName(QString name)
     }
     qDebug("Leave LayerWidget::isRepeatedName");
     return false;
+}
+
+void LayerWidget::deleteLayerButtonClicked()
+{
+    qDebug("Enter void LayerWidget::deleteLayerButtonClicked");
+    if(ui->listWidget_layers->currentItem() != nullptr)
+    {
+        view->deleteLayer(view->getLayerList()[ui->listWidget_layers->currentRow()]);
+    }
+
+    updateLayerListWidget();
+    qDebug("Leave void LayerWidget::deleteLayerButtonClicked");
 }
