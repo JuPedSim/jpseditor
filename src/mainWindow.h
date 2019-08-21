@@ -54,6 +54,7 @@
 #include "src/widgets/platformpropertywidget.h"
 #include "src/widgets/transitionwidget.h"
 #include "src/widgets/trackpropertywidget.h"
+#include "src/widgets/layerwidget.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 
@@ -112,6 +113,7 @@ private:
     bool _statScale;
 
     QList<bool> objectsnapping;
+
 
 protected slots:
     
@@ -190,17 +192,20 @@ protected slots:
     //quit
     void closeEvent(QCloseEvent *event);
 
-    //ESCAPE
+    // ESCAPE
     void keyPressEvent(QKeyEvent *event);
 
     void showStatusBarMessage(QString msg, int duration);
 
-    //MeasureLength
+    // MeasureLength
     void measureLengthButtonClicked();
     void msgReceived(QString Msg);
 
-    //Background
+    // Background
     void importBackground();
+
+    // Layer
+    void layerButtonClicked();
 
 private slots:
     void on_actionCopy_triggered();

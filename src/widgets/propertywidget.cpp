@@ -69,14 +69,17 @@ void PropertyWidget::updateWidget(ZoneType type)
     switch(type)
     {
         case Room:
-            ui->tabWidget->removeTab(0); // keep only crossing tab
+            ui->tabWidget->removeTab(1); // keep only crossing tab
             updateCrossingListWidget();
             break;
         case Corridor:
-            ui->tabWidget->removeTab(1); // keep only wall tab
+            ui->tabWidget->removeTab(0);
+            ui->tabWidget->removeTab(1);// keep only wall tab
             updateWallListWidget();
             break;
         case Platform:
+            ui->tabWidget->removeTab(0);
+            ui->tabWidget->removeTab(1);// keep only platform tab
             break;
         default:
             return;
