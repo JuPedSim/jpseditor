@@ -42,6 +42,7 @@ protected slots:
     void addTrackButtonClicked();
     void removeTrackButtonClicked();
     void updateType(QListWidgetItem* item);
+    void applyTypeButtonClicked();
 
 private:
     Ui::PropertyWidget *ui;

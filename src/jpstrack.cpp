@@ -47,10 +47,10 @@ int JPSTrack::getType() const
     return type;
 }
 
-void JPSTrack::setType(QString number)
+void JPSTrack::setType(int number)
 {
     qDebug("Enter/Leave JPSTrack::setType");
-    type = number.toInt();
+    type = number;
 }
 
 jpsLineItem *JPSTrack::getLine() const

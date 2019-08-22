@@ -12,7 +12,7 @@ public:
 
     int getType() const;
 
-    void setType(QString number);
+    void setType(int number);
 
     jpsLineItem *getLine() const;
 

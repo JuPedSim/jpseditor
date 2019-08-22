@@ -67,6 +67,7 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
     connect(ui->pushButton_removeTrack, SIGNAL(clicked()), this, SLOT(removeTrackButtonClicked()));
     connect(ui->listWidget_track, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlightWall(QListWidgetItem*)));
     connect(ui->listWidget_track, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(updateType(QListWidgetItem*)));
+    connect(ui->pushButton_applyType, SIGNAL(clicked()), this, SLOT(applyTypeButtonClicked()));
 
 }
 
@@ -102,8 +103,25 @@ void PropertyWidget::updateWidget(ZoneType type)
 void PropertyWidget::updateListwidget()
 {
     qDebug("Enter PropertyWidget::updateListwidget");
-    updateWallListWidget();
-    updateCrossingListWidget();
+    int index = ui->tabWidget->currentIndex();
+    QString tab = ui->tabWidget->tabText(index);
+
+    if(tab == "Wall")
+    {
+        updateWallListWidget();
+    }
+    else if(tab == "Crossing")
+    {
+        updateCrossingListWidget();
+    }
+    else if(tab == "Track")
+    {
+        updateTrackListWidget();
+    }
+    else
+    {
+        return;
+    }
     qDebug("Leave PropertyWidget::updateListwidget");
 }
 
@@ -340,4 +358,13 @@ void PropertyWidget::updateType(QListWidgetItem *item)
     auto *track = current_zone->getTrackList()[ui->listWidget_track->currentRow()];
     ui->lineEdit_Type->setText(QString::number(track->getType()));
     qDebug("Leave PropertyWidget::updateType");
+}
+
+void PropertyWidget::applyTypeButtonClicked()
+{
+    qDebug("Enter PropertyWidget::applyTypeButtonClicked");
+    int type = ui->lineEdit_Type->text().toInt();
+
+    current_zone->getTrackList()[ui->listWidget_track->currentRow()]->setType(type);
+    qDebug("Leave PropertyWidget::applyTypeButtonClicked");
 }
