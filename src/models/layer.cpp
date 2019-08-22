@@ -25,8 +25,7 @@
  * \section Description
  *
  * Layer class to manage items
- * Layer can contain QGraphicsLineitem(wall, crossing...), QGraphicsRechItem(Source and Goal) and QGraphicsPixmapItem
- * (jpsLandmark)
+ * Layer can contain jpsLineitem(wall, crossing...), JPSSource, JPSGoal and jpsLandmark
  * Model for layer
 ****************************************************************/
 
@@ -35,7 +34,7 @@
 Layer::Layer() : QGraphicsItemGroup(nullptr)
 {
     name = "Layer";
-    hide = true;
+    visible = true;
 }
 
 Layer::~Layer()
@@ -63,10 +62,17 @@ QList<jpsLineItem *> Layer::getLineItemList()
     return lineItem_list;
 }
 
-bool Layer::isHide()
+bool Layer::isVisible()
 {
-    qDebug("Enter/Leave Layer::isHide");
-    return hide;
+    qDebug("Enter/Leave Layer::isVisible");
+    return visible;
+}
+
+void Layer::setVisible(bool is_visible)
+{
+    qDebug("Enter Layer::setVisible");
+    visible = is_visible;
+    qDebug("Leave Layer::setVisible");
 }
 
 // For wall, crossing, transition, track, hline

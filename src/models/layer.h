@@ -21,15 +21,16 @@ public:
     void removeLineFromLayer(jpsLineItem *wall);
     QList<jpsLineItem *> getLineItemList();
 
-    // For jpsLandmark
+    // TODO: For jpsLandmark
 
-    // For JPSGoal & JPSSource
+    // TODO: For JPSGoal & JPSSource
 
-    bool isHide();
+    bool isVisible();
+    void setVisible(bool is_visible);
 
 private:
     QString name;
-    bool hide;
+    bool visible;
 
     QList<jpsLineItem *> lineItem_list; // This is just for show info in item list widget
 };
