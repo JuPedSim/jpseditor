@@ -51,6 +51,11 @@ LayerWidget::LayerWidget(QWidget *parent, jpsGraphicsView *mview)
     connect(ui->pushButton_removeItems, SIGNAL(clicked()), this, SLOT(removeItemsButtonClicked()));
     connect(ui->listWidget_items, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT( highLight(QListWidgetItem *)));
 
+    // Hide/Show Layer
+    connect(ui->pushButton_hideLayer, SIGNAL(clicked()), this, SLOT(hideLayerButtonClicked()));
+    connect(ui->pushButton_showLayer, SIGNAL(clicked()), this, SLOT(showLayerButtonClicked()));
+
+
 }
 
 LayerWidget::~LayerWidget()
@@ -187,7 +192,7 @@ void LayerWidget::updateItemsListWidget()
 void LayerWidget::checkVisibility(QListWidgetItem *item)
 {
     qDebug("Enter LayerWidget::checkVisibility");
-    if(view->getLayerList()[ui->listWidget_layers->currentRow()]->isHide())
+    if(view->getLayerList()[ui->listWidget_layers->currentRow()]->isVisible())
     {
         ui->pushButton_showLayer->setDisabled(true);
         ui->pushButton_hideLayer->setDisabled(false);
@@ -237,4 +242,32 @@ void LayerWidget::highLight(QListWidgetItem *item)
     }
 
     qDebug("Leave LayerWidget::highLight");
+}
+
+void LayerWidget::hideLayerButtonClicked()
+{
+    qDebug("Enter LayerWidget::hideLayerButtonClicked");
+    if(ui->listWidget_layers->currentItem() == nullptr)
+        return;
+
+    auto *layer = view->getLayerList()[ui->listWidget_layers->currentRow()];
+
+    view->unmark_all_lines();
+    layer->setVisible(false);
+    layer->hide();
+    qDebug("Leave LayerWidget::hideLayerButtonClicked");
+}
+
+void LayerWidget::showLayerButtonClicked()
+{
+    qDebug("Enter LayerWidget::showLayerButtonClicked");
+    if(ui->listWidget_layers->currentItem() == nullptr)
+        return;
+
+    auto *layer = view->getLayerList()[ui->listWidget_layers->currentRow()];
+
+    view->unmark_all_lines();
+    layer->setVisible(true);
+    layer->show();
+    qDebug("Leave LayerWidget::showLayerButtonClicked");
 }

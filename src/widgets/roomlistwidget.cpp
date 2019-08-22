@@ -40,8 +40,8 @@ RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager)
 
     // add propertyDockWidget
     connect(this, SIGNAL(zoneSelected(JPSZone *)), parent, SLOT(addPropertyDockWidget(JPSZone *)));
-
     connect(this, SIGNAL(roomSelected(JPSZone *)), parent, SLOT(addPropertyDockWidget(JPSZone *)));
+
     // Add
     connect(ui->pushButton_addRoom, SIGNAL(clicked()), this, SLOT(addRoomButtonClicked()));
     connect(ui->pushButton_addZone, SIGNAL(clicked()), this, SLOT(addZoneButtonClicked()));
@@ -52,20 +52,15 @@ RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager)
 
     // Send emit to PropertyWidget
     // click room -> update zone list
-    connect(ui->listWidget_rooms, SIGNAL(itemClicked(QListWidgetItem *)),
-            this, SLOT(updateZonesListWidget(QListWidgetItem *)));
+    connect(ui->listWidget_rooms, SIGNAL(itemClicked(QListWidgetItem *)),this, SLOT(updateZonesListWidget(QListWidgetItem *)));
     // click room -> add room property widget
-    connect(ui->listWidget_rooms, SIGNAL(itemClicked(QListWidgetItem *)),
-            this, SLOT(selectRoom(QListWidgetItem *)));
+    connect(ui->listWidget_rooms, SIGNAL(itemClicked(QListWidgetItem *)),this, SLOT(selectRoom(QListWidgetItem *)));
     // click room -> add zone property widget
-    connect(ui->listWidget_zones, SIGNAL(itemClicked(QListWidgetItem *)),
-            this, SLOT(selectZone(QListWidgetItem *)));
+    connect(ui->listWidget_zones, SIGNAL(itemClicked(QListWidgetItem *)),this, SLOT(selectZone(QListWidgetItem *)));
 
     // Rename items
-    connect(ui->listWidget_rooms, SIGNAL(itemDoubleClicked(QListWidgetItem *)),
-            this, SLOT(renameRoom(QListWidgetItem*)));
-    connect(ui->listWidget_zones, SIGNAL(itemDoubleClicked(QListWidgetItem *)),
-            this, SLOT(renameZone(QListWidgetItem*)));
+    connect(ui->listWidget_rooms, SIGNAL(itemDoubleClicked(QListWidgetItem *)),this, SLOT(renameRoom(QListWidgetItem*)));
+    connect(ui->listWidget_zones, SIGNAL(itemDoubleClicked(QListWidgetItem *)),this, SLOT(renameZone(QListWidgetItem*)));
 }
 
 RoomListWidget::~RoomListWidget()

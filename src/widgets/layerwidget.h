@@ -23,11 +23,12 @@ protected slots:
     void checkVisibility(QListWidgetItem *item);
     void highLight(QListWidgetItem *item);
 
-
     void addLayerButtonClicked();
     void updateLayerListWidget();
     void renameLayer(QListWidgetItem *item);
     void deleteLayerButtonClicked();
+    void hideLayerButtonClicked();
+    void showLayerButtonClicked();
 
     void addItemsButtonClicked();
     void updateItemsListWidget();
