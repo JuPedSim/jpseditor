@@ -56,19 +56,8 @@ void Layer::setName(QString layername)
     qDebug("Leave Layer::setName");
 }
 
-void Layer::addToLayer(QGraphicsLineItem *item)
-{
-    qDebug("Enter Layer::addToLayer");
 
-    if(lineItem_list.contains(item) || item == nullptr)
-        return;
-
-    lineItem_list.append(item);
-    addToGroup(item); // Add to group to manage items
-    qDebug("Leave Layer::addToLayer");
-}
-
-QList<QGraphicsLineItem *> Layer::getLineItemList()
+QList<jpsLineItem *> Layer::getLineItemList()
 {
     qDebug("Enter/Leave Layer::getItemLis");
     return lineItem_list;
@@ -80,14 +69,26 @@ bool Layer::isHide()
     return hide;
 }
 
-void Layer::removeLineItem(QGraphicsLineItem *line)
+// For wall, crossing, transition, track, hline
+void Layer::addLineToLayer(jpsLineItem *wall)
 {
-    qDebug("Enter Layer::removeLineItem");
+    qDebug("Enter Layer::addLineToLayer");
+    if(lineItem_list.contains(wall) || wall == nullptr)
+        return;
+
+    lineItem_list.append(wall);
+    addToGroup(wall->get_line());
+    qDebug("Leave Layer::addLineToLayer");
+}
+
+void Layer::removeLineFromLayer(jpsLineItem *line)
+{
+    qDebug("Enter Layer::removeLineFromLayer");
     if(line == nullptr)
         return;
 
-    removeFromGroup(line);
+    removeFromGroup(line->get_line());
     lineItem_list.removeOne(line);
-
-    qDebug("Leave Layer::removeLineItem");
+    qDebug("Leave Layer::removeLineFromLayer");
 }
+

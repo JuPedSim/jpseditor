@@ -3,6 +3,7 @@
 
 #include <QtWidgets>
 #include <QtGui>
+#include "src/jpsLineItem.h"
 
 class Layer : public QGraphicsItemGroup
 {
@@ -15,15 +16,22 @@ public:
     QString getName();
     void setName(QString layername);
 
-    void addToLayer(QGraphicsLineItem *item);
-    void removeLineItem(QGraphicsLineItem *line);
-    QList<QGraphicsLineItem *> getLineItemList();
+    // For jpsLineItem (wall, crosssing, transition, track, hline)
+    void addLineToLayer(jpsLineItem *wall);
+    void removeLineFromLayer(jpsLineItem *wall);
+    QList<jpsLineItem *> getLineItemList();
+
+    // For jpsLandmark
+
+    // For JPSGoal & JPSSource
+
     bool isHide();
 
 private:
     QString name;
     bool hide;
-    QList<QGraphicsLineItem *> lineItem_list; // This is just for show info in item list widget
+
+    QList<jpsLineItem *> lineItem_list; // This is just for show info in item list widget
 };
 
 

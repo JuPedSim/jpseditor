@@ -49,6 +49,8 @@ LayerWidget::LayerWidget(QWidget *parent, jpsGraphicsView *mview)
     // Item widget
     connect(ui->pushButton_addItems, SIGNAL(clicked()), this, SLOT(addItemsButtonClicked()));
     connect(ui->pushButton_removeItems, SIGNAL(clicked()), this, SLOT(removeItemsButtonClicked()));
+
+
 }
 
 LayerWidget::~LayerWidget()
@@ -133,18 +135,16 @@ void LayerWidget::addItemsButtonClicked()
     qDebug("Enter LayerWidget::addItemsButtonClicked");
     if(ui->listWidget_layers->currentItem() != nullptr)
     {
-        if(view->getLayerList()[ui->listWidget_layers->currentRow()] == nullptr)
-            return;
-
+        // For wall, crossing, transition, track, hline
         if(!view->get_markedLines().isEmpty())
         {
-            // Add Wall into layer
             foreach(jpsLineItem *line, view->get_markedLines())
             {
-                view->getLayerList()[ui->listWidget_layers->currentRow()]->addToLayer(line->get_line());
+                view->getLayerList()[ui->listWidget_layers->currentRow()]->addLineToLayer(line);
             }
         }
     }
+
     else
     {
         QMessageBox msgBox;
@@ -169,14 +169,14 @@ void LayerWidget::updateItemsListWidget()
     foreach(Layer *layer, view->getLayerList())
     {
         // Show QGraphicsLineItem
-        foreach(QGraphicsLineItem *item, layer->getLineItemList())
+        foreach(jpsLineItem *item, layer->getLineItemList())
         {
             QString string = "";
             string.sprintf("Line: [%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
-                    item->line().x1(),
-                    item->line().x2(),
-                    item->line().y1(),
-                    item->line().y2());
+                    item->get_line()->line().x1(),
+                    item->get_line()->line().x2(),
+                    item->get_line()->line().y1(),
+                    item->get_line()->line().y2());
 
             ui->listWidget_items->addItem(string);
         }
@@ -208,10 +208,11 @@ void LayerWidget::removeItemsButtonClicked()
     {
         Layer *layer = view->getLayerList()[ui->listWidget_layers->currentRow()];
         QListWidgetItem *cItem = ui->listWidget_items->currentItem();
-        if(cItem->text().contains("Line")) // If cItem is Line Item
+
+        if(cItem->text().contains("Line")) // If cItem jpsLineItem
         {
-            QGraphicsLineItem *line = layer->getLineItemList()[ui->listWidget_items->currentRow()];
-            layer->removeLineItem(line);
+            jpsLineItem *line = layer->getLineItemList()[ui->listWidget_items->currentRow()];
+            layer->removeLineFromLayer(line);
         }
     }
 
