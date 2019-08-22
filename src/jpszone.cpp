@@ -141,42 +141,10 @@ void JPSZone::removeTrack(JPSTrack *track)
     track_list.removeOne(track);
 }
 
-const QList<jpsCrossing *>& JPSZone::GetDoors() const
-{
-    return doorList_;
-}
-
-void JPSZone::removeDoor(jpsCrossing *crossing)
-{
-    if (doorList_.contains(crossing))
-    {
-        doorList_.removeOne(crossing);
-    }
-     qDebug("Leave JPSZone::removeWall");
-}
-
-QString JPSZone::get_name()
-{
-    return name;
-}
-
-void JPSZone::change_name(QString name)
-{
-    this->name=name;
-}
-
 QList<jpsLineItem *> JPSZone::get_listWalls()
 {
     qDebug("Enter/Leave JPSZone::get_listWalls");
     return wall_list;
-}
-
-void JPSZone::activate()
-{
-    for (signed int i=0; i<wall_list.size(); i++)
-    {
-        wall_list[i]->get_line()->setPen(QPen(Qt::yellow));
-    }
 }
 
 QVector<QPointF> JPSZone::get_vertices() const
@@ -194,7 +162,7 @@ QVector<QPointF> JPSZone::get_vertices() const
             vertices.push_back(wall_list[i]->get_line()->line().p2());
         }
     }
-    for (jpsCrossing* crossing:doorList_)
+    for (jpsCrossing* crossing:crossing_list)
     {
         if (vertices.contains(crossing->get_cLine()->get_line()->line().p1())==false)
         {
@@ -356,17 +324,17 @@ QList<QPointF> JPSZone::GetDoorVertices() const
 
 void JPSZone::AddDoor(jpsCrossing *door)
 {
-    if (!doorList_.contains(door))
-        doorList_.push_back(door);
+    if (!crossing_list.contains(door))
+        crossing_list.push_back(door);
     //outer_polygon.push_back(door->get_cLine()->get_line()->line());
 }
 
 void JPSZone::AddInnerDoor(jpsCrossing *door, int id_polygon)
 {
 
-    if (!doorList_.contains(door))
+    if (!crossing_list.contains(door))
     {
-        doorList_.push_back(door);
+        crossing_list.push_back(door);
         if (id_polygon >= inner_polygons.size())
             inner_polygons.push_back(QVector<QLineF>{});
 
@@ -450,7 +418,7 @@ void JPSZone::IdentifyInnerOuter()
         {
             lines.append(lineItem->get_line()->line());
         }
-        for (jpsCrossing* crossing:doorList_)
+        for (jpsCrossing* crossing:crossing_list)
         {
             lines.append(crossing->get_cLine()->get_line()->line());
         }
@@ -675,7 +643,7 @@ float JPSZone::get_elevation()
 void JPSZone::set_elevation(float elevation)
 {
      if(this->getType() != Stair) // only for horizontal floors
-          for (auto crossing: doorList_)
+          for (auto crossing: crossing_list)
                crossing->set_elevation(elevation);
 
      elevation_ = elevation;
@@ -685,10 +653,10 @@ void JPSZone::correctPlaneCoefficients()
 {
      qDebug("Enter correctPlaneCoefficients");
      qDebug("\t room=<%s> of type=<%s> has %d doors",
-            this->get_name().toStdString().c_str(),
+            this->getName().toStdString().c_str(),
             QString(this->getType()).toStdString().c_str(),
-            (int)doorList_.size());
-    if(doorList_.size() == 0 || this->getType() != Stair)
+            (int)crossing_list.size());
+    if(crossing_list.size() == 0 || this->getType() != Stair)
     {
         this->set_ax(0);
         this->set_by(0);
@@ -699,16 +667,16 @@ void JPSZone::correctPlaneCoefficients()
     QPointF P1(0,0), P2(0,0), P3(0,0); // plane is defined by three non-collinear points
     float elevation_1=0, elevation_2=0;
     // P1 P2 are the points on the first door of a room
-    P1 = doorList_[0]->get_cLine()->get_line()->line().p1();
-    P2 = doorList_[0]->get_cLine()->get_line()->line().p2();
-    elevation_1 = doorList_[0]->get_elevation();
+    P1 = crossing_list[0]->get_cLine()->get_line()->line().p1();
+    P2 = crossing_list[0]->get_cLine()->get_line()->line().p2();
+    elevation_1 = crossing_list[0]->get_elevation();
 
     //from _doortList get one more point on a door with different elevation as P3
-    for (int i=1; i<doorList_.size(); i++)
+    for (int i=1; i < crossing_list.size(); i++)
     {
-      if(doorList_[i]->get_elevation() != doorList_[0]->get_elevation()){
-           P3 = doorList_[i]->get_cLine()->get_line()->line().p1();
-           elevation_2 = doorList_[i]->get_elevation();
+      if(crossing_list[i]->get_elevation() != crossing_list[0]->get_elevation()){
+           P3 = crossing_list[i]->get_cLine()->get_line()->line().p1();
+           elevation_2 = crossing_list[i]->get_elevation();
            break;
       }
     }
@@ -776,7 +744,8 @@ void JPSZone::setFatherRoom(JPSZone *room)
     qDebug("Leave JPSZone::setFatherRoom");
 }
 
-const QString &JPSZone::getName() const {
+QString JPSZone::getName() const
+{
     return name;
 }
 

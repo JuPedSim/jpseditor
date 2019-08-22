@@ -131,7 +131,7 @@ void widgetLandmark::enable_room_selection()
         QList<QString> roomNameList;
         for (int i=0; i<_dmanager->get_roomlist().size(); i++)
         {
-            roomNameList.push_back(_dmanager->get_roomlist()[i]->get_name());
+            roomNameList.push_back(_dmanager->get_roomlist()[i]->getName());
         }
         if (roomNameList.isEmpty()==false)
         {

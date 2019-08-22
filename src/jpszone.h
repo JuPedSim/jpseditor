@@ -16,13 +16,9 @@ public:
 
     ~JPSZone(){}
 
-    const QList<jpsCrossing *> &GetDoors() const;
-    void removeDoor(jpsCrossing* crossing);
-    QString get_name();
-    void change_name(QString name);
+    QString getName() const;
+    void setName(const QString &name);
 
-    void activate();
-    //QVector<QPointF> get_vertices() const;
     void set_id(int id_room);
     void set_ax(float ax);
     void set_by(float by);
@@ -57,23 +53,16 @@ public:
 
     float get_elevation();
     void set_elevation(float elevation);
-    void correctPlaneCoefficients(); /// calculates the coefficients A_x, B_y and C_z for stairs
+    void correctPlaneCoefficients(); // calculates the coefficients A_x, B_y and C_z for stairs
     bool is_highlighted();
     bool isVisible();
     void setVisible(bool visibility);
 
-    // father room can only be JPSZone::Room;
+    // For room, father room can only be JPSZone::Room;
     JPSZone *getFatherRoom() const;
     void setFatherRoom(JPSZone *room);
-
     void addZoneInList(JPSZone *zone);
     void removeZoneFromList(JPSZone *zone);
-
-    const QString &getName() const;
-
-    void setName(const QString &name);
-
-
     const QList<JPSZone *> &getPlatfromList() const;
     const QList<JPSZone *> &getCorridorList() const;
 
@@ -84,7 +73,6 @@ public:
     void addinnerWall(jpsLineItem* newWall, int id_polygon=0);
     void removeWall(QList<jpsLineItem *> wall);
     void removeWall(jpsLineItem *wall);
-
     QList<jpsLineItem *> get_listWalls();
     bool isInWallList(jpsLineItem* wall);
 
@@ -115,9 +103,9 @@ private:
 
     // For room
     QList<jpsCrossing *> crossing_list;
-    QList<jpsCrossing* > doorList_;
-    QList<JPSZone *> platfrom_list;
+
     QList<JPSZone *> corridor_list;
+    QList<JPSZone *> platfrom_list;
 
     bool visible;
     float A_x;
@@ -131,10 +119,8 @@ private:
 
     qreal area_;
 
-    float elevation_; // this makes only sense for horizontal rooms.
-
-    // For room type
-
+    // this makes only sense for horizontal rooms.
+    float elevation_;
 
 };
 

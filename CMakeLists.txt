@@ -181,18 +181,18 @@ set( SRCS
 
     src/widgets/roomlistwidget.cpp
     src/widgets/propertywidget.cpp
-        src/widgets/transitionwidget.cpp
+    src/widgets/transitionwidget.cpp
     src/widgets/trackpropertywidget.cpp
     src/widgets/layerwidget.cpp
     src/models/layer.cpp
         )
 # all header files that should be treated with moc
 set( HDR
-        src/mainWindow.h
+    src/mainWindow.h
     src/GraphicView.h
     src/graphicscene.h
     src/widgets/roomwidget.h
-        src/jpszone.h
+    src/jpszone.h
     src/datamanager.h
     src/jpscrossing.h
     src/jpsLineItem.h
@@ -204,10 +204,10 @@ set( HDR
     src/widgets/widgetsettings.h
     src/jpsconnection.h
     src/jpsregion.h
-        src/widgets/settingdialog.h
+    src/widgets/settingdialog.h
     src/widgets/inifilewidget.h
     src/widgets/snappingoptions.h
-        src/jpssource.h
+    src/jpssource.h
     src/widgets/sourcewidget.h
     src/widgets/goalwidget.h
     src/elementtype.h
@@ -241,8 +241,8 @@ set( HDR
     src/tinyxml/tinyxml.h
 
     src/widgets/roomlistwidget.h
-        src/widgets/propertywidget.h
-        src/widgets/transitionwidget.h
+    src/widgets/propertywidget.h
+    src/widgets/transitionwidget.h
     src/widgets/trackpropertywidget.h
     src/widgets/layerwidget.h
     src/models/layer.h
