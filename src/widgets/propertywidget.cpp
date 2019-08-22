@@ -73,15 +73,19 @@ void PropertyWidget::updateWidget(ZoneType type)
     switch(type)
     {
         case Room:
-            ui->tabWidget->removeTab(1); // Remove wall tab
+            ui->tabWidget->removeTab(0); // Remove wall tab
+            ui->tabWidget->removeTab(0); // Remove track tab
             updateCrossingListWidget();
             break;
         case Corridor:
-            ui->tabWidget->removeTab(0);// Remove crossing tab
+            ui->tabWidget->removeTab(1);// Remove crossing tab
+            ui->tabWidget->removeTab(1);// Remove track tab
             updateWallListWidget();
             break;
         case Platform:
-            ui->tabWidget->removeTab(0);// keep crossing tab
+            ui->tabWidget->removeTab(2);// Remove crossing tab
+            updateWallListWidget();
+            updateTrackListWidget();
             break;
         default:
             return;
@@ -105,6 +109,9 @@ void PropertyWidget::updateWallListWidget()
         return;
 
     QList<jpsLineItem *> walllist = current_zone->get_listWalls();
+
+    if(walllist.isEmpty())
+        return;
 
     for (int i = 0; i < walllist.size(); i++)
     {
@@ -185,6 +192,9 @@ void PropertyWidget::updateCrossingListWidget()
 
     QList<jpsCrossing *> crossing_list = current_zone->getCrossingList();
 
+    if(crossing_list.isEmpty())
+        return;
+
     for (int i = 0; i < crossing_list.size(); i++)
     {
         QString string = "";
@@ -241,4 +251,11 @@ void PropertyWidget::applyElevationButtonClicked()
 
     current_zone->set_elevation(elevation);
     qDebug("Leave PropertyWidget::applyElevationButtonClicked");
+}
+
+void PropertyWidget::updateTrackListWidget()
+{
+    qDebug("Enter PropertyWidget::updateTrackListWidget");
+
+    qDebug("Leave PropertyWidget::updateTrackListWidget");
 }

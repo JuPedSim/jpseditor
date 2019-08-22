@@ -37,6 +37,9 @@ protected slots:
     // Inspector Tab
     void applyElevationButtonClicked();
 
+    // Track tab
+    void updateTrackListWidget();
+
 private:
     Ui::PropertyWidget *ui;
     jpsGraphicsView *view;

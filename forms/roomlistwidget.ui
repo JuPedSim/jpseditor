@@ -50,16 +50,16 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QPushButton" name="pushButton_addRoom">
+         <widget class="QPushButton" name="pushButton_deleteRoom">
           <property name="text">
-           <string>Add</string>
+           <string>Delete</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_deleteRoom">
+         <widget class="QPushButton" name="pushButton_addRoom">
           <property name="text">
-           <string>Delete</string>
+           <string>Add</string>
           </property>
          </widget>
         </item>
@@ -82,16 +82,16 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QPushButton" name="pushButton_addZone">
+         <widget class="QPushButton" name="pushButton_deleteZone">
           <property name="text">
-           <string>Add</string>
+           <string>Delete</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_deleteZone">
+         <widget class="QPushButton" name="pushButton_addZone">
           <property name="text">
-           <string>Delete</string>
+           <string>Add</string>
           </property>
          </widget>
         </item>
