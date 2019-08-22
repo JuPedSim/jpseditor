@@ -82,7 +82,7 @@ void RoomListWidget::updateRoomsListWidget()
 
     foreach(JPSZone *room, roomslist)
     {
-        ui->listWidget_rooms->addItem(room->get_name());
+        ui->listWidget_rooms->addItem(room->getName());
     }
 
     qDebug("Leave RoomListWidget::updateRoomsListWidget");
@@ -116,7 +116,7 @@ void RoomListWidget::updateZonesListWidget(QListWidgetItem *item)
     // Show zones
     foreach(JPSZone *zone, zoneslist)
     {
-        ui->listWidget_zones->addItem(zone->get_name());
+        ui->listWidget_zones->addItem(zone->getName());
     }
     qDebug("Leave RoomListWidget::updateZonesListWidget");
 }

@@ -31,7 +31,7 @@ jpsObstacle::jpsObstacle(int id): JPSZone(id, nullptr, NotAssigned)
 {
     QString string="Obstacle ";
     string.append(QString::number(id));
-    JPSZone::change_name(string);
+    JPSZone::setName(string);
     _room = nullptr;
 }
 

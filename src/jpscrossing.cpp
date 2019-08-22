@@ -33,6 +33,8 @@ jpsCrossing::jpsCrossing(jpsLineItem *line)
 {
     cLine=line;
     _elevation = 0;
+    subroom1 = nullptr;
+    subroom2 = nullptr;
 }
 
 QList<JPSZone *> jpsCrossing::get_roomList()
@@ -89,29 +91,29 @@ void jpsCrossing::setOutflow(QString outflow) {
     jpsCrossing::outflow = outflow;
 }
 
-void jpsCrossing::add_rooms(JPSZone *room1, JPSZone *room2)
+void jpsCrossing::add_rooms(JPSZone *subroom1, JPSZone *subroom2)
 {
      qDebug("Enter jpsCrossing::add_rooms");
-     qDebug("\t room1 = <%s> of type <%s>", 
-            room1->get_name().toStdString().c_str(),
-            QString(room1->getType()).toStdString().c_str());
+     qDebug("\t room1 = <%s> of type <%s>",
+            subroom1->getName().toStdString().c_str(),
+            QString(subroom1->getType()).toStdString().c_str());
+
     roomList.clear();
-    roomList.push_back(room1);
-    room1->AddDoor(this);
+    roomList.push_back(subroom1);
+    subroom1->AddDoor(this);
 
-    if(room1->getType() != Stair)  // assuming a crossing can
-                                               //  not separate two stairs
-         this->set_elevation(room1->get_elevation());
+    if(subroom1->getType() != Stair)  // assuming a crossing can not separate two stairs
+         this->set_elevation(subroom1->get_elevation());
 
-    if (room2!=nullptr)
+    if (subroom2 != nullptr)
     {
-         qDebug("\t room2 = <%s> of type <%s>", 
-                room2->get_name().toStdString().c_str(),
-                QString(room2->getType()).toStdString().c_str());
-         if(room2->getType() != Stair)
-              this->set_elevation(room2->get_elevation());
-        roomList.push_back(room2);
-        room2->AddDoor(this);
+         qDebug("\t room2 = <%s> of type <%s>",
+                subroom2->getName().toStdString().c_str(),
+                QString(subroom2->getType()).toStdString().c_str());
+         if(subroom2->getType() != Stair)
+              this->set_elevation(subroom2->get_elevation());
+        roomList.push_back(subroom2);
+        subroom2->AddDoor(this);
     }
     qDebug("Leave jpsCrossing::add_rooms");
 }

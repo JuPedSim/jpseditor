@@ -92,7 +92,7 @@ void RoomDefinition::SetUpRoomsAndDoors()
     {
         room->set_id(idCounter);
         idCounter++;
-        room->change_name("Room "+QString::number(room->get_id()));
+        room->setName("Room "+QString::number(room->get_id()));
     }
 
 
@@ -130,7 +130,7 @@ void RoomDefinition::RemoveRoomsWithoutDoors()
 {
     for (JPSZone* room:_dManager->get_roomlist())
     {
-        if (room->GetDoors().empty())
+        if (room->getCrossingList().empty())
             _dManager->remove_room(room);
     }
 }

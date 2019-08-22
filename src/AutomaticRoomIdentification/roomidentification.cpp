@@ -35,7 +35,7 @@ void RoomIdentification::IdentifyRooms()
         else
             ratioBBox=bBox.height()/bBox.width();
 
-        int numberDoors = room->GetDoors().size();
+        int numberDoors = room->getCrossingList().size();
 
 
         double penalty_common=0.0;
@@ -85,7 +85,7 @@ void RoomIdentification::GatherData()
         room->IdentifyInnerOuter();
         double area= room->GetArea();
         QRectF bBox = room->CalculateBoundingBox();
-        int numberDoors = room->GetDoors().size();
+        int numberDoors = room->getCrossingList().size();
 
         double ratioBBox=0.0;
         if (bBox.width()<bBox.height())
@@ -94,7 +94,7 @@ void RoomIdentification::GatherData()
             ratioBBox=bBox.height()/bBox.width();
 
         int numberGreatDoors = 0; // number of doors greater than 1.25 meters
-        for (jpsCrossing* door:room->GetDoors())
+        for (jpsCrossing* door : room->getCrossingList())
         {
             if (door->get_cLine()->get_line()->line().length()>1.25)
             {

@@ -243,6 +243,7 @@ MWindow :: MWindow()
     connect(actionCorridor, SIGNAL(triggered(bool)),this, SLOT(corridorButtonClicked()));
     connect(actionPlatform, SIGNAL(triggered(bool)),this, SLOT(platformButtonclicked()));
 
+
     // Assemble actions group
     zoneActionGroup = new QActionGroup(this);
     zoneActionGroup->addAction(actionCorridor);

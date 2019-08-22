@@ -42,27 +42,23 @@ public:
     void set_id(int id);
     jpsLineItem *get_cLine();
     void change_name(QString name);
-    void add_rooms(JPSZone* room1, JPSZone* room2=0L);
+    void add_rooms(JPSZone* subroom1, JPSZone* subroom2=0L);
     void setRoom(JPSZone* room);
     void RemoveRoom(JPSZone* room);
     float get_elevation();
     void set_elevation(float elevation);
-
     QString getMaxAgents() const;
-
     void setMaxAgents(QString maxAgents);
 
     QString getOutflow() const;
-
     void setOutflow(QString outflow);
 
     bool isState() const;
-
     void setState(bool state);
-
 
 private:
     QList<JPSZone *> roomList;
+
     QString cName;
     jpsLineItem *cLine;
     int cId;
@@ -70,6 +66,9 @@ private:
     bool state;
     QString max_agents;
     QString outflow;
+
+    JPSZone *subroom1;
+    JPSZone *subroom2;
 };
 
 #endif // JPSCROSSING_H

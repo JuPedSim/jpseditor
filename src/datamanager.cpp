@@ -135,7 +135,7 @@ void jpsDatamanager::remove_room(JPSZone *room)
 void jpsDatamanager::change_roomName(JPSZone* room, QString name)
 {
      qDebug("Enter jpsDatamanager::change_roomName with name=<%s>", name.toStdString().c_str());
-    room->change_name(name);
+    room->setName(name);
     qDebug("Leave jpsDatamanager::change_roomName");
 }
 
@@ -201,7 +201,7 @@ void jpsDatamanager::remove_obstacle(jpsObstacle *obs)
 void jpsDatamanager::change_obstacleName(jpsObstacle* obs, QString name)
 {
      qDebug("Enter jpsDatamanager::change_obstacleName with name=<%s>", name.toStdString().c_str());
-    obs->change_name(name);
+    obs->setName(name);
     qDebug("Leave jpsDatamanager::change_obstacleName");
 }
 
@@ -277,14 +277,13 @@ bool jpsDatamanager::isInCrossingList(jpsLineItem *markedLine)
 void jpsDatamanager::remove_crossing(jpsCrossing *crossing)
 {
      qDebug("Enter jpsDatamanager::remove_crossing. crossingList.size() = %d", crossingList.size());
-    if (crossingList.size()>0)
+    if (roomlist.size()>0)
     {
-        for (JPSZone * room:roomlist)
+        for (JPSZone *room : roomlist)
         {
             // door will only be removed if belongs to room (see method removeDoor of JPSZone)
-            room->removeDoor(crossing);
+            room->removeCrossing(crossing);
         }
-        crossingList.removeOne(crossing);
         delete crossing;
     }
     qDebug("Leave jpsDatamanager::remove_crossing. crossingList.size() = %d", crossingList.size());
@@ -826,7 +825,7 @@ void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, JPSZone *room, QList
 {
     stream->writeStartElement("subroom");
     stream->writeAttribute("id",QString::number(room->get_id()));
-    stream->writeAttribute("caption",room->get_name());
+    stream->writeAttribute("caption",room->getName());
     stream->writeAttribute("class", QString(room->getType()));
     room->correctPlaneCoefficients();
     stream->writeAttribute("A_x",QString::number(room->get_ax()));
@@ -1004,7 +1003,7 @@ void jpsDatamanager::writeObstacles(QXmlStreamWriter *stream, jpsObstacle* obs, 
 {
     stream->writeStartElement("obstacle");
     stream->writeAttribute("id",QString::number(obs->get_id()));
-    stream->writeAttribute("caption",obs->get_name());
+    stream->writeAttribute("caption",obs->getName());
     stream->writeAttribute("closed","1");
     //stream->writeAttribute("height","1.0");  // height not implemented yet!
 
@@ -1882,7 +1881,7 @@ void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
     roomlist.last()->set_elevation(elevation);
 
     /* We'll add it to the room. */
-    roomlist.last()->change_name(attributes.value("caption").toString());
+    roomlist.last()->setName(attributes.value("caption").toString());
     if(attributes.hasAttribute("class"))
     {
         if (attributes.value("class").toString()=="subroom")
@@ -2155,7 +2154,7 @@ void jpsDatamanager::parseObstacles(QXmlStreamReader &xmlReader, JPSZone *room)
             QString caption = xmlReader.attributes().value("caption").toString();
 
             jpsObstacle* obs = new jpsObstacle(id);
-            obs->change_name(caption);
+            obs->setName(caption);
             obs->set_room(room);
 
            // while (xmlReader.name()=="obstacle")
@@ -2671,7 +2670,7 @@ bool jpsDatamanager::ReadLineFile(QFile &file)
 
     //for (JPSZone* room:this->roomlist)
     //{
-    //    _mView->show_hide_roomCaption(room->get_name(),room->get_center().x(),room->get_center().y());
+    //    _mView->show_hide_roomCaption(room->getName(),room->get_center().x(),room->get_center().y());
     //}
 
     return true;
