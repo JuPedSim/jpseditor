@@ -51,8 +51,7 @@
 #include "src/XML/goalreader.h"
 #include "src/XML/sourcereader.h"
 #include "src/widgets/propertywidget.h"
-#include "src/widgets/platformpropertywidget.h"
-#include "src/widgets/transitionwidget.h"
+#include "src/widgets/transitionwidget.h" 
 #include "src/widgets/trackpropertywidget.h"
 #include "src/widgets/layerwidget.h"
 

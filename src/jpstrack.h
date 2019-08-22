@@ -10,15 +10,15 @@ public:
 
     ~JPSTrack();
 
-    QString getNumber() const;
+    int getType() const;
 
-    void setNumber(QString number);
+    void setType(QString number);
 
     jpsLineItem *getLine() const;
 
 private:
     jpsLineItem *line;
-    QString number;
+    int type ;
 };
 
 

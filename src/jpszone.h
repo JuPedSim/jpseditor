@@ -73,31 +73,33 @@ public:
 
     void setName(const QString &name);
 
-    void addTrack(jpsLineItem *line, QString number);
-    const QList<JPSTrack *> &getTrackList() const;
-    bool isInTrackList(JPSTrack *track);
 
     const QList<JPSZone *> &getPlatfromList() const;
-    const QList<JPSZone *> & getCorridorList() const;
+    const QList<JPSZone *> &getCorridorList() const;
 
-    //Wall
+    // Wall
     void addWall(QList<jpsLineItem *> newWalls);
     void addWall(jpsLineItem* newWall);
     void addinnerWall(QList<jpsLineItem *> newWalls, int id_polygon=0);
     void addinnerWall(jpsLineItem* newWall, int id_polygon=0);
     void removeWall(QList<jpsLineItem *> wall);
     void removeWall(jpsLineItem *wall);
-    void removeTrack(JPSTrack *track);
+
     QList<jpsLineItem *> get_listWalls();
     bool isInWallList(jpsLineItem* wall);
 
-    //Crossing
-    const QList<jpsCrossing *> &getCrossingList() const;
+    // Crossing
+    QList<jpsCrossing *> getCrossingList() const;
     bool isInCrossingList(jpsCrossing *crossing);
     void addCrossing(jpsLineItem* crossing);
     void addCrossing(QList<jpsLineItem *> crossings);
     void removeCrossing(jpsCrossing* crossing);
 
+    // Track
+    void addTrack(jpsLineItem *line, QString number);
+    void removeTrack(JPSTrack *track);
+    QList<JPSTrack *> getTrackList() const;
+    bool isInTrackList(JPSTrack *track);
 
 private:
     int id;

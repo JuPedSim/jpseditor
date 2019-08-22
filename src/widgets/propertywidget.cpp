@@ -46,12 +46,15 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
     // Update list widget if line deleted
     connect(view, SIGNAL(lines_deleted()), this, SLOT(updateListwidget()));
 
-    // Add wall into zone
+    // Set-up elevation
+    ui->lineEdit_elevation->setText(QString::number(current_zone->get_elevation()));
+
+    // For wall tab
     connect(ui->pushButton_addWall, SIGNAL(clicked()), this, SLOT(addWallButtonClicked()));
     connect(ui->pushButton_removeWall, SIGNAL(clicked()), this, SLOT(removeWallButtonClicked()));
     connect(ui->listWidget_walls, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlightWall(QListWidgetItem *)));
 
-    // Add crossing into room
+    // For crossing tab
     connect(ui->pushButton_addCrossing, SIGNAL(clicked()), this, SLOT(addCrossingButtonClicked()));
     connect(ui->pushButton_removeCrossing, SIGNAL(clicked()), this, SLOT(removeCrossingButtonClicked()));
     connect(ui->listWidget_crossing, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlightWall(QListWidgetItem*)));
@@ -59,8 +62,12 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
     // For inspector tab
     connect(ui->pushButton_applyElevation, SIGNAL(clicked()), this, SLOT(applyElevationButtonClicked()));
 
-    // Set-up elevation
-    ui->lineEdit_elevation->setText(QString::number(current_zone->get_elevation()));
+    // For track tab
+    connect(ui->pushButton_addTrack, SIGNAL(clicked()), this, SLOT(addTrackButtonClicked()));
+    connect(ui->pushButton_removeTrack, SIGNAL(clicked()), this, SLOT(removeTrackButtonClicked()));
+    connect(ui->listWidget_track, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlightWall(QListWidgetItem*)));
+    connect(ui->listWidget_track, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(updateType(QListWidgetItem*)));
+
 }
 
 PropertyWidget::~PropertyWidget()
@@ -83,8 +90,8 @@ void PropertyWidget::updateWidget(ZoneType type)
             updateWallListWidget();
             break;
         case Platform:
-            ui->tabWidget->removeTab(2);// Remove crossing tab
-            updateWallListWidget();
+            ui->tabWidget->removeTab(0);// Remove wall tab
+            ui->tabWidget->removeTab(1);// Remove crossing tab
             updateTrackListWidget();
             break;
         default:
@@ -167,6 +174,7 @@ void PropertyWidget::highlightWall(QListWidgetItem *item)
     qDebug("Enter PropertyWidget::highlightWall");
     int wRow = ui->listWidget_walls->currentRow();
     int cRow = ui->listWidget_crossing->currentRow();
+    int tRow = ui->listWidget_track->currentRow();
     int index = ui->tabWidget->currentIndex();
 
     if(ui->tabWidget->tabText(index) == "Crossing")
@@ -178,6 +186,11 @@ void PropertyWidget::highlightWall(QListWidgetItem *item)
     {
         auto *line= current_zone->get_listWalls()[wRow];
         view->select_line(line);
+    }
+    else if(ui->tabWidget->tabText(index) == "Track")
+    {
+        auto *line = current_zone->getTrackList()[tRow];
+        view->select_line(line->getLine());
     }
     qDebug("Leave PropertyWidget::highlightWall");
 }
@@ -256,6 +269,75 @@ void PropertyWidget::applyElevationButtonClicked()
 void PropertyWidget::updateTrackListWidget()
 {
     qDebug("Enter PropertyWidget::updateTrackListWidget");
+    ui->listWidget_track->clear();
 
+    if(current_zone == nullptr)
+        return;
+
+    QList<JPSTrack *> track_list = current_zone->getTrackList();
+
+    if(track_list.isEmpty())
+        return;
+
+    for (int i = 0; i < track_list.size(); i++)
+    {
+        QString string = "";
+        string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
+                       track_list[i]->getLine()->get_line()->line().x1(),
+                       track_list[i]->getLine()->get_line()->line().x2(),
+                       track_list[i]->getLine()->get_line()->line().y1(),
+                       track_list[i]->getLine()->get_line()->line().y2());
+
+        ui->listWidget_track->addItem(string);
+    }
     qDebug("Leave PropertyWidget::updateTrackListWidget");
+}
+
+void PropertyWidget::addTrackButtonClicked()
+{
+    qDebug("Enter PropertyWidget::addTrackButtonClicked");
+    if(!view->get_markedLines().isEmpty())
+    {
+        foreach(jpsLineItem *line, view->get_markedLines())
+        {
+            if(line->getType() == "track")
+                current_zone->addTrack(line, ui->lineEdit_Type->text());
+        }
+    }
+
+    updateTrackListWidget();
+    qDebug("Leave PropertyWidget::addTrackButtonClicked");
+}
+
+void PropertyWidget::removeTrackButtonClicked()
+{
+    qDebug("Enter PropertyWidget::removeTrackButtonClicked");
+    if(ui->listWidget_track->currentItem() == nullptr)
+    {
+        return;
+    }
+    else
+    {
+        int row = ui->listWidget_track->currentRow();
+        auto *track = current_zone->getTrackList()[row];
+        current_zone->removeTrack(track);
+
+        ui->listWidget_track->setCurrentRow(-1);
+
+        updateTrackListWidget();
+    }
+    qDebug("Leave PropertyWidget::removeTrackButtonClicked");
+}
+
+void PropertyWidget::updateType(QListWidgetItem *item)
+{
+    qDebug("Enter PropertyWidget::updateType");
+    ui->lineEdit_Type->clear();
+
+    if(current_zone == nullptr || item == nullptr)
+        return;
+
+    auto *track = current_zone->getTrackList()[ui->listWidget_track->currentRow()];
+    ui->lineEdit_Type->setText(QString::number(track->getType()));
+    qDebug("Leave PropertyWidget::updateType");
 }
