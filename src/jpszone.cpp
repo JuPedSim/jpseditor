@@ -799,7 +799,7 @@ void JPSZone::addTrack(jpsLineItem *line, QString number)
         return;
 
     auto *track = new JPSTrack(line);
-    track->setType(number);
+    track->setType(number.toInt());
 
     if(!isInTrackList(track))
     {
