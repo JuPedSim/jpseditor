@@ -30,8 +30,8 @@
 #include "jpstrack.h"
 
 JPSTrack::JPSTrack(jpsLineItem *lineItem)
-    : line(nullptr), number("0")
 {
+    type = 0;
     line = lineItem;
 }
 
@@ -40,14 +40,21 @@ JPSTrack::~JPSTrack()
 
 }
 
-QString JPSTrack::getNumber() const {
-    return number;
+int JPSTrack::getType() const
+{
+    qDebug("Enter/Leave JPSTrack::getType");
+    qDebug("Type is %d", type);
+    return type;
 }
 
-void JPSTrack::setNumber(QString number) {
-    JPSTrack::number = number;
+void JPSTrack::setType(QString number)
+{
+    qDebug("Enter/Leave JPSTrack::setType");
+    type = number.toInt();
 }
 
-jpsLineItem *JPSTrack::getLine() const {
+jpsLineItem *JPSTrack::getLine() const
+{
+    qDebug("Enter/Leave JPSTrack::getLine");
     return line;
 }

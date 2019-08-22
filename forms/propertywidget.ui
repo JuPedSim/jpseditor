@@ -35,7 +35,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="wall">
     <attribute name="title">
@@ -94,7 +94,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
-       <widget class="QListWidget" name="listWidget"/>
+       <widget class="QListWidget" name="listWidget_track"/>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -113,6 +113,39 @@
          </widget>
         </item>
        </layout>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>260</y>
+       <width>251</width>
+       <height>33</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Type:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_Type">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_applyType">
+        <property name="text">
+         <string>Apply</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

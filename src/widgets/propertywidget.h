@@ -39,6 +39,9 @@ protected slots:
 
     // Track tab
     void updateTrackListWidget();
+    void addTrackButtonClicked();
+    void removeTrackButtonClicked();
+    void updateType(QListWidgetItem* item);
 
 private:
     Ui::PropertyWidget *ui;

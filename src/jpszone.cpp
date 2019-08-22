@@ -137,6 +137,7 @@ void JPSZone::removeWall(jpsLineItem *wall)
 
 void JPSZone::removeTrack(JPSTrack *track)
 {
+    qDebug("Enter/Leave JPSZone::removeTrack");
     track_list.removeOne(track);
 }
 
@@ -505,8 +506,6 @@ void JPSZone::IdentifyInnerOuter()
                     break;
                 }
             }
-
-
         }
     }
     qreal maxArea=0.0;
@@ -787,7 +786,9 @@ void JPSZone::setName(const QString &name) {
     qDebug("Name changed. Leave JPSZone::setName");
 }
 
-const QList<JPSTrack *> &JPSZone::getTrackList() const {
+QList<JPSTrack *> JPSZone::getTrackList() const
+{
+    qDebug("Enter/Leave JPSZone::getTrackList");
     return track_list;
 }
 
@@ -798,7 +799,7 @@ void JPSZone::addTrack(jpsLineItem *line, QString number)
         return;
 
     auto *track = new JPSTrack(line);
-    track->setNumber(number);
+    track->setType(number);
 
     if(!isInTrackList(track))
     {
@@ -882,9 +883,8 @@ const QList<JPSZone*> &JPSZone::getCorridorList() const
     return corridor_list;
 }
 
-
 // Crossing
-const QList<jpsCrossing*> &JPSZone::getCrossingList() const
+QList<jpsCrossing*> JPSZone::getCrossingList() const
 {
     qDebug("Enter/Leave JPSZone::getCrossingList");
     return crossing_list;

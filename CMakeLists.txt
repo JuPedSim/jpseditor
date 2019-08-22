@@ -181,8 +181,7 @@ set( SRCS
 
     src/widgets/roomlistwidget.cpp
     src/widgets/propertywidget.cpp
-    src/widgets/platformpropertywidget.cpp
-    src/widgets/transitionwidget.cpp
+        src/widgets/transitionwidget.cpp
     src/widgets/trackpropertywidget.cpp
     src/widgets/layerwidget.cpp
     src/models/layer.cpp
@@ -243,8 +242,7 @@ set( HDR
 
     src/widgets/roomlistwidget.h
         src/widgets/propertywidget.h
-    src/widgets/platformpropertywidget.h
-    src/widgets/transitionwidget.h
+        src/widgets/transitionwidget.h
     src/widgets/trackpropertywidget.h
     src/widgets/layerwidget.h
     src/models/layer.h
@@ -263,7 +261,6 @@ set( UIS
     forms/goalwidget.ui
     forms/roomlistwidget.ui
     forms/propertywidget.ui
-    forms/platformpropertywidget.ui
     forms/transitionwidget.ui
     forms/trackpropertywidget.ui
     forms/layerwidget.ui
