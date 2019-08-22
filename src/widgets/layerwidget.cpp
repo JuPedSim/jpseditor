@@ -49,7 +49,7 @@ LayerWidget::LayerWidget(QWidget *parent, jpsGraphicsView *mview)
     // Item widget
     connect(ui->pushButton_addItems, SIGNAL(clicked()), this, SLOT(addItemsButtonClicked()));
     connect(ui->pushButton_removeItems, SIGNAL(clicked()), this, SLOT(removeItemsButtonClicked()));
-
+    connect(ui->listWidget_items, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT( highLight(QListWidgetItem *)));
 
 }
 
@@ -218,4 +218,23 @@ void LayerWidget::removeItemsButtonClicked()
 
     updateItemsListWidget();
     qDebug("Leave LayerWidget::removeItemsButtonClicked");
+}
+
+void LayerWidget::highLight(QListWidgetItem *item)
+{
+    qDebug("Enter LayerWidget::highLight");
+    if(ui->listWidget_layers->currentItem() == nullptr)
+        return;
+
+    auto *layer = view->getLayerList()[ui->listWidget_layers->currentRow()];
+    QString text = item->text();
+
+    if(text.contains("Line"))
+    {
+        // For wall, crossing, transition, track, hline
+        auto *line = layer->getLineItemList()[ui->listWidget_items->currentRow()];
+        view->select_line(line);
+    }
+
+    qDebug("Leave LayerWidget::highLight");
 }
