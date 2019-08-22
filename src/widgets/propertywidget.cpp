@@ -54,9 +54,13 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
     // Add crossing into room
     connect(ui->pushButton_addCrossing, SIGNAL(clicked()), this, SLOT(addCrossingButtonClicked()));
     connect(ui->pushButton_removeCrossing, SIGNAL(clicked()), this, SLOT(removeCrossingButtonClicked()));
-    connect(ui->listWidget_crossing, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlightWall(QListWidgetItem
-    *)));
+    connect(ui->listWidget_crossing, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlightWall(QListWidgetItem*)));
 
+    // For inspector tab
+    connect(ui->pushButton_applyElevation, SIGNAL(clicked()), this, SLOT(applyElevationButtonClicked()));
+
+    // Set-up elevation
+    ui->lineEdit_elevation->setText(QString::number(current_zone->get_elevation()));
 }
 
 PropertyWidget::~PropertyWidget()
@@ -69,17 +73,15 @@ void PropertyWidget::updateWidget(ZoneType type)
     switch(type)
     {
         case Room:
-            ui->tabWidget->removeTab(1); // keep only crossing tab
+            ui->tabWidget->removeTab(1); // Remove wall tab
             updateCrossingListWidget();
             break;
         case Corridor:
-            ui->tabWidget->removeTab(0);
-            ui->tabWidget->removeTab(1);// keep only wall tab
+            ui->tabWidget->removeTab(0);// Remove crossing tab
             updateWallListWidget();
             break;
         case Platform:
-            ui->tabWidget->removeTab(0);
-            ui->tabWidget->removeTab(1);// keep only platform tab
+            ui->tabWidget->removeTab(0);// keep crossing tab
             break;
         default:
             return;
@@ -230,4 +232,13 @@ void PropertyWidget::removeCrossingButtonClicked()
 
     updateCrossingListWidget();
     qDebug("Leave PropertyWidget::removeCrossingButtonClicked");
+}
+
+void PropertyWidget::applyElevationButtonClicked()
+{
+    qDebug("Enter PropertyWidget::applyElevationButtonClicked");
+    float elevation = ui->lineEdit_elevation->text().toFloat();
+
+    current_zone->set_elevation(elevation);
+    qDebug("Leave PropertyWidget::applyElevationButtonClicked");
 }

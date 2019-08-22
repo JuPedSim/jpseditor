@@ -34,7 +34,8 @@ protected slots:
     void removeWallButtonClicked();
     void highlightWall(QListWidgetItem *item);
 
-
+    // Inspector Tab
+    void applyElevationButtonClicked();
 
 private:
     Ui::PropertyWidget *ui;
