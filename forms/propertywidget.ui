@@ -37,36 +37,40 @@
    <property name="currentIndex">
     <number>2</number>
    </property>
-   <widget class="QWidget" name="Inspector_Room">
+   <widget class="QWidget" name="crossing">
     <attribute name="title">
-     <string>Inspector</string>
+     <string>Crossing</string>
     </attribute>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget_crossing">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
-       <width>253</width>
-       <height>33</height>
+       <y>10</y>
+       <width>251</width>
+       <height>261</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_Elevation">
+     <layout class="QVBoxLayout" name="verticalLayout_9">
       <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Elevation</string>
-        </property>
-       </widget>
+       <widget class="QListWidget" name="listWidget_crossing"/>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string>Apply</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QPushButton" name="pushButton_addCrossing">
+          <property name="text">
+           <string>Add</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_removeCrossing">
+          <property name="text">
+           <string>Remove</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -113,40 +117,36 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QWidget" name="crossing">
+   <widget class="QWidget" name="Inspector_Room">
     <attribute name="title">
-     <string>Crossing</string>
+     <string>Inspector</string>
     </attribute>
-    <widget class="QWidget" name="layoutWidget_crossing">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
-       <width>251</width>
-       <height>261</height>
+       <y>30</y>
+       <width>253</width>
+       <height>33</height>
       </rect>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_9">
+     <layout class="QHBoxLayout" name="horizontalLayout_Elevation">
       <item>
-       <widget class="QListWidget" name="listWidget_crossing"/>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Elevation</string>
+        </property>
+       </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <widget class="QPushButton" name="pushButton_addCrossing">
-          <property name="text">
-           <string>Add</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_removeCrossing">
-          <property name="text">
-           <string>Remove</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QLineEdit" name="lineEdit_elevation"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_applyElevation">
+        <property name="text">
+         <string>Apply</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
