@@ -182,8 +182,7 @@ set( SRCS
     src/widgets/roomlistwidget.cpp
     src/widgets/propertywidget.cpp
     src/widgets/transitionwidget.cpp
-    src/widgets/trackpropertywidget.cpp
-    src/widgets/layerwidget.cpp
+        src/widgets/layerwidget.cpp
     src/models/layer.cpp
         )
 # all header files that should be treated with moc
@@ -243,7 +242,6 @@ set( HDR
     src/widgets/roomlistwidget.h
     src/widgets/propertywidget.h
     src/widgets/transitionwidget.h
-    src/widgets/trackpropertywidget.h
     src/widgets/layerwidget.h
     src/models/layer.h
         )
@@ -262,7 +260,6 @@ set( UIS
     forms/roomlistwidget.ui
     forms/propertywidget.ui
     forms/transitionwidget.ui
-    forms/trackpropertywidget.ui
     forms/layerwidget.ui
   )
 

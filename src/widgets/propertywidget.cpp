@@ -44,7 +44,7 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
     updateWidget(zone->getType());
 
     // Update list widget if line deleted
-    connect(view, SIGNAL(lines_deleted()), this, SLOT(updateListwidget()));
+    connect(view, SIGNAL(markedLineDeleted()), this, SLOT(updateListwidget()));
 
     // Set-up elevation
     ui->lineEdit_elevation->setText(QString::number(current_zone->get_elevation()));
@@ -68,7 +68,6 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
     connect(ui->listWidget_track, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlightWall(QListWidgetItem*)));
     connect(ui->listWidget_track, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(updateType(QListWidgetItem*)));
     connect(ui->pushButton_applyType, SIGNAL(clicked()), this, SLOT(applyTypeButtonClicked()));
-
 }
 
 PropertyWidget::~PropertyWidget()
@@ -83,17 +82,17 @@ void PropertyWidget::updateWidget(ZoneType type)
         case Room:
             ui->tabWidget->removeTab(0); // Remove wall tab
             ui->tabWidget->removeTab(0); // Remove track tab
-            updateCrossingListWidget();
+            ui->tabWidget->removeTab(0); // Remove crossing tab
             break;
         case Corridor:
-            ui->tabWidget->removeTab(1);// Remove crossing tab
-            ui->tabWidget->removeTab(1);// Remove track tab
+            ui->tabWidget->removeTab(1); // Remove track tab
             updateWallListWidget();
+            updateCrossingListWidget();
             break;
         case Platform:
-            ui->tabWidget->removeTab(0);// Remove wall tab
-            ui->tabWidget->removeTab(1);// Remove crossing tab
+            ui->tabWidget->removeTab(0); // Remove wall tab
             updateTrackListWidget();
+            updateCrossingListWidget();
             break;
         default:
             return;
@@ -103,6 +102,7 @@ void PropertyWidget::updateWidget(ZoneType type)
 void PropertyWidget::updateListwidget()
 {
     qDebug("Enter PropertyWidget::updateListwidget");
+
     int index = ui->tabWidget->currentIndex();
     QString tab = ui->tabWidget->tabText(index);
 
@@ -197,7 +197,7 @@ void PropertyWidget::highlightWall(QListWidgetItem *item)
 
     if(ui->tabWidget->tabText(index) == "Crossing")
     {
-        auto *line = current_zone->getCrossingList()[cRow];
+        auto *line = current_zone->getEnterAndExitList()[cRow];
         view->select_line(line->get_cLine());
     }
     else if(ui->tabWidget->tabText(index) == "Wall")
@@ -221,7 +221,7 @@ void PropertyWidget::updateCrossingListWidget()
     if(current_zone == nullptr)
         return;
 
-    QList<jpsCrossing *> crossing_list = current_zone->getCrossingList();
+    QList<jpsCrossing *> crossing_list = current_zone->getEnterAndExitList();
 
     if(crossing_list.isEmpty())
         return;
@@ -248,8 +248,20 @@ void PropertyWidget::addCrossingButtonClicked()
     {
         foreach(jpsLineItem *line, view->get_markedLines())
         {
-            if(line->getType() == "crossing")
-                current_zone->addCrossing(line);
+            if(line->getType() == "crossing" || current_zone->getFatherRoom() != nullptr)
+            {
+                if(current_zone->getFatherRoom()->getCrossingFromList(line) == nullptr)
+                {
+                    auto *crossing = new jpsCrossing(line);
+                    current_zone->getFatherRoom()->addCrossing(crossing); // add into crossing list of the room
+                    current_zone->addInEnterAndExitList(crossing); // add as enter of exit of the subroom
+                }
+                else
+                {
+                    auto *crossing = current_zone->getFatherRoom()->getCrossingFromList(line);
+                    current_zone->addInEnterAndExitList(crossing); // add as enter of exit of the subroom
+                }
+            }
         }
     }
 
@@ -265,11 +277,15 @@ void PropertyWidget::removeCrossingButtonClicked()
     if(row == -1) // There is no rows in list
         return;
 
-    auto* crossing = current_zone->getCrossingList()[row];
+    if(current_zone != nullptr && current_zone->getFatherRoom() != nullptr)
+    {
+        auto* crossing = current_zone->getEnterAndExitList()[row];
 
-    current_zone->removeCrossing(crossing);
+        current_zone->removeEnterOrExit(crossing); // Remove from enter or exit list of subroom
+        current_zone->getFatherRoom()->removeCrossing(crossing); // Remove from crossing list of room
 
-    ui->listWidget_crossing->setCurrentRow(-1); // Set no focus
+        ui->listWidget_crossing->setCurrentRow(-1); // Set no focus
+    }
 
     updateCrossingListWidget();
     qDebug("Leave PropertyWidget::removeCrossingButtonClicked");

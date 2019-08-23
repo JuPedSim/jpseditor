@@ -26,15 +26,15 @@
  **/
 
 #include <iostream>
-#include "jpscrossing.h"
+#include "src/jpscrossing.h"
 #include <QDebug>
+#include <QMessageBox>
 
-jpsCrossing::jpsCrossing(jpsLineItem *line)
+jpsCrossing::jpsCrossing(jpsLineItem *line) : roomList(QList<JPSZone *>())
 {
+    cId = 0;
     cLine=line;
     _elevation = 0;
-    subroom1 = nullptr;
-    subroom2 = nullptr;
 }
 
 QList<JPSZone *> jpsCrossing::get_roomList()
@@ -118,23 +118,19 @@ void jpsCrossing::add_rooms(JPSZone *subroom1, JPSZone *subroom2)
     qDebug("Leave jpsCrossing::add_rooms");
 }
 
-void jpsCrossing::setRoom(JPSZone *room)
+void jpsCrossing::setSubroom(JPSZone *subroom)
 {
-    qDebug("Enter jpsCrossing::setRoom");
-    if (roomList.size()==2)
-        std::cout << "Hier!" << std::endl;
-    if (!roomList.contains(room))
-    {
-        roomList.push_back(room);
-        room->AddDoor(this);
-    }
-    qDebug("Leave jpsCrossing::setRoom");
+    qDebug("Enter jpsCrossing::setSubroom");
+    if(!roomList.contains(subroom))
+        roomList.append(subroom);
+    qDebug("Leave jpsCrossing::setSubroom");
 
 }
 
 void jpsCrossing::RemoveRoom(JPSZone *room)
 {
-    for (JPSZone* myRoom:roomList)
+    qDebug("Enter jpsCrossing::RemoveRoom");
+    for (JPSZone* myRoom : roomList)
     {
         if (room==myRoom)
         {
@@ -142,6 +138,7 @@ void jpsCrossing::RemoveRoom(JPSZone *room)
             break;
         }
     }
+    qDebug("Leave jpsCrossing::RemoveRoom");
 }
 float jpsCrossing::get_elevation()
 {

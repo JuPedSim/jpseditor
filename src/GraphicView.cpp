@@ -1915,7 +1915,7 @@ void jpsGraphicsView::delete_marked_lines()
 
         //intersect_point_vector.clear();
         line_tracked=-1;
-        emit lines_deleted(); //emit to propertyWidget
+        emit markedLineDeleted(); //emit to propertyWidget
         update();
     }
 

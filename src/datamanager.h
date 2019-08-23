@@ -70,13 +70,7 @@ public:
     void remove_obstacle(jpsObstacle* obs);
     void change_obstacleName(jpsObstacle* obs, QString name);
     void remove_all_obstacles();
-    ///Crossing
-    QList<jpsCrossing *> get_crossingList();
-    void new_crossing(QList<jpsLineItem *> newCrossing);
-    void new_crossing(jpsLineItem* newCrossing);
-    void remove_crossing(jpsCrossing* crossing);
-    void change_crossingName(jpsCrossing* crossing, QString name);
-    void remove_all_crossings();
+
     ///Transition
     QList<jpsTransition *> getTransitionList();
     void new_exit(QList<jpsLineItem *> newExits);
@@ -214,11 +208,20 @@ public:
     void removeRoom(JPSZone *room);
     void removeZone(JPSZone *room, JPSZone *zone);
 
+    // Deprecated! datamanager doesn't control crossing anymore
+    QList<jpsCrossing *> get_crossingList();
+    void new_crossing(QList<jpsLineItem *> newCrossing);
+    void new_crossing(jpsLineItem* newCrossing);
+    void remove_crossing(jpsCrossing* crossing);
+    void change_crossingName(jpsCrossing* crossing, QString name);
+    void remove_all_crossings();
 
-//    //Show Cognitive Map
-//    void ShowCMapFrame(const int& frame) const;
-//    const double& GetCMapFrameRate() const;
-//    const int& GetLastCMapFrame() const;
+/*
+    //Show Cognitive Map
+    void ShowCMapFrame(const int& frame) const;
+    const double& GetCMapFrameRate() const;
+    const int& GetLastCMapFrame() const;
+*/
 
 private:
     //Geometry

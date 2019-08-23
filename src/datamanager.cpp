@@ -1577,7 +1577,15 @@ void jpsDatamanager::remove_marked_lines()
                 foreach(jpsCrossing* crossing, zone->getCrossingList())
                 {
                     if(marked_lines[i] == crossing->get_cLine())
-                        zone->removeCrossing(crossing);
+                    {
+                        zone->removeCrossing(crossing); // remove crossing from room
+
+                        foreach(JPSZone* subroom, crossing->get_roomList())
+                        {
+                            subroom->removeEnterOrExit(crossing); // remove crossing from subroom
+                        }
+                    }
+
                 }
             }
             qDebug()<< "jpsDatamanager::remove_marked_lines(): Crossing line is deleted!";
@@ -2660,7 +2668,7 @@ bool jpsDatamanager::ReadLineFile(QFile &file)
                       for (jpsCrossing* crossing:crossingList)
                       {
                           if (crossing->get_cLine()==lineItem)
-                              crossing->setRoom(this->roomlist.back());
+                              crossing->setSubroom(this->roomlist.back());
                       }
                   }
                 }

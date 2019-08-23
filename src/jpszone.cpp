@@ -37,6 +37,7 @@
 #include "jpsLineItem.h"
 
 JPSZone::JPSZone(int id_zone, JPSZone *father, ZoneType type)
+    : enterAndExitList(QList<jpsCrossing *>()), track_list(QList<JPSTrack *>()), wall_list(QList<jpsLineItem *>())
 {
     id=id_zone;
     zoneType = type;
@@ -153,27 +154,26 @@ QVector<QPointF> JPSZone::get_vertices() const
 
     for (int i=0; i<wall_list.size(); i++)
     {
-        if (vertices.contains(wall_list[i]->get_line()->line().p1())==false)
+        if (!vertices.contains(wall_list[i]->get_line()->line().p1()))
         {
             vertices.push_back(wall_list[i]->get_line()->line().p1());
         }
-        if (vertices.contains(wall_list[i]->get_line()->line().p2())==false)
+        if (!vertices.contains(wall_list[i]->get_line()->line().p2()))
         {
             vertices.push_back(wall_list[i]->get_line()->line().p2());
         }
     }
     for (jpsCrossing* crossing:crossing_list)
     {
-        if (vertices.contains(crossing->get_cLine()->get_line()->line().p1())==false)
+        if (!vertices.contains(crossing->get_cLine()->get_line()->line().p1()))
         {
             vertices.push_back(crossing->get_cLine()->get_line()->line().p1());
         }
 
-        if (vertices.contains(crossing->get_cLine()->get_line()->line().p1())==false)
+        if (!vertices.contains(crossing->get_cLine()->get_line()->line().p1()))
         {
             vertices.push_back(crossing->get_cLine()->get_line()->line().p1());
         }
-
     }
 
     return vertices;
@@ -184,7 +184,8 @@ QPointF JPSZone::get_center()
     qDebug() << "Enter JPSZone::get_center";
     IdentifyInnerOuter(); // write outer_polygon
 
-    if(outer_polygon.size()==0){
+    if(outer_polygon.isEmpty())
+    {
         QPointF  origin(0,0);
         return origin;
     }
@@ -406,7 +407,6 @@ qreal JPSZone::GetArea() const
     return area_;
 }
 
-
 void JPSZone::IdentifyInnerOuter()
 {
     qDebug() << "Enter JPSZone::IdentifyInnerOuter";
@@ -426,7 +426,6 @@ void JPSZone::IdentifyInnerOuter()
         outer_polygon = {};
         return;
     }
-
 
     QVector<QVector<QLineF>> polygons;
 
@@ -656,7 +655,7 @@ void JPSZone::correctPlaneCoefficients()
             this->getName().toStdString().c_str(),
             QString(this->getType()).toStdString().c_str(),
             (int)crossing_list.size());
-    if(crossing_list.size() == 0 || this->getType() != Stair)
+    if(crossing_list.isEmpty() || this->getType() != Stair)
     {
         this->set_ax(0);
         this->set_by(0);
@@ -730,11 +729,10 @@ void JPSZone::setVisible(bool visibility)
     visible = visibility;
 }
 
-JPSZone *JPSZone::getFatherRoom() const
+JPSZone *JPSZone::getFatherRoom()
 {
-    qDebug("Enter JPSZone::getFatherRoom");
+    qDebug("Enter/Leave JPSZone::getFatherRoom");
     return father_room;
-    qDebug("Leave JPSZone::getFatherRoom");
 }
 
 void JPSZone::setFatherRoom(JPSZone *room)
@@ -853,7 +851,7 @@ const QList<JPSZone*> &JPSZone::getCorridorList() const
 }
 
 // Crossing
-QList<jpsCrossing*> JPSZone::getCrossingList() const
+QList<jpsCrossing*> JPSZone::getCrossingList()
 {
     qDebug("Enter/Leave JPSZone::getCrossingList");
     return crossing_list;
@@ -874,26 +872,15 @@ bool JPSZone::isInCrossingList(jpsCrossing *crossing)
     return false;
 }
 
-void JPSZone::addCrossing(jpsLineItem *crossing)
+// Add crossing in room(crossing list)
+void JPSZone::addCrossing(jpsCrossing *crossing)
 {
     qDebug("Enter JPSZone::addCrossing");
     if(crossing == nullptr)
         return;
 
-    auto *newcrossing = new jpsCrossing(crossing);
-
-    if(!isInCrossingList(newcrossing))
-        crossing_list.push_back(newcrossing);
-    qDebug("Leave JPSZone::addCrossing");
-}
-
-void JPSZone::addCrossing(QList<jpsLineItem *> crossings)
-{
-    qDebug("Enter JPSZone::addCrossing");
-    foreach(jpsLineItem *crossing, crossings)
-    {
-        addCrossing(crossing);
-    }
+    if(!isInCrossingList(crossing))
+        crossing_list.push_back(crossing);
     qDebug("Leave JPSZone::addCrossing");
 }
 
@@ -905,4 +892,94 @@ void JPSZone::removeCrossing(jpsCrossing *crossing)
 
     crossing_list.removeOne(crossing);
     qDebug("Leave JPSZone::removeCrossing");
+}
+
+void JPSZone::addInEnterAndExitList(jpsCrossing *crossing)
+{
+    qDebug("Enter JPSZone::addInEnterAndExitList");
+    if(crossing != nullptr && !isInEnterAndExitList(crossing) && crossing->get_roomList().size() < 2)
+    {
+        enterAndExitList.append(crossing);
+        crossing->setSubroom(this); // Set this subroom as one side of crossing;
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText("The crossing has been added for two subrooms.");
+        msgBox.setInformativeText("Remove it from one subroom at first");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Cancel);
+
+        int ret = msgBox.exec();
+
+        switch (ret)
+        {
+            case QMessageBox::Ok:
+                // Ok was clicked
+                break;
+            default:
+                // should never be reached
+                break;
+        }
+        qDebug("Crossing is problematic, Leave JPSZone::addInEnterAndExitList");
+        return;
+    }
+
+    qDebug("Leave JPSZone::addInEnterAndExitList");
+}
+
+void JPSZone::removeEnterOrExit(jpsCrossing *crossing)
+{
+    qDebug("Enter JPSZone::removeEnterOrExit");
+    if(crossing != nullptr && isInEnterAndExitList(crossing))
+    {
+        enterAndExitList.removeOne(crossing);
+    }
+    else
+    {
+        qDebug("Crossing is problematic, Leave JPSZone::addInEnterAndExitList");
+        return;
+    }
+    qDebug("Leave JPSZone::removeEnterOrExit");
+}
+
+QList<jpsCrossing *> JPSZone::getEnterAndExitList()
+{
+    qDebug("Enter/Leave JPSZone::getEnterAndExitList()");
+    return enterAndExitList;
+}
+
+bool JPSZone::isInEnterAndExitList(jpsCrossing *crossing)
+{
+    qDebug("Enter JPSZone::isInEnterAndExitList");
+    if(crossing == nullptr)
+        return false;
+
+    foreach(jpsCrossing *crossing_inList, enterAndExitList)
+    {
+        if(crossing->get_cLine() == crossing_inList->get_cLine())
+            return true;
+    }
+    qDebug("Leave JPSZone::isInEnterAndExitList");
+    return false;
+}
+
+jpsCrossing *JPSZone::getCrossingFromList(jpsLineItem *line)
+{
+    // If jpsLineItem is already added into a room, it should be in crossing_list
+    qDebug("Enter JPSZone::getCrossingFromList");
+    foreach(jpsCrossing *crossing, crossing_list)
+    {
+        if(line == crossing->get_cLine())
+        {
+            qDebug("Leave JPSZone::getCrossingFromList");
+            return crossing;
+        } else
+        {
+            qDebug("Not in list, Leave JPSZone::getCrossingFromList");
+            return nullptr;
+        }
+    }
+
+    return nullptr;
 }

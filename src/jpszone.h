@@ -59,7 +59,7 @@ public:
     void setVisible(bool visibility);
 
     // For room, father room can only be JPSZone::Room;
-    JPSZone *getFatherRoom() const;
+    JPSZone *getFatherRoom();
     void setFatherRoom(JPSZone *room);
     void addZoneInList(JPSZone *zone);
     void removeZoneFromList(JPSZone *zone);
@@ -77,11 +77,15 @@ public:
     bool isInWallList(jpsLineItem* wall);
 
     // Crossing
-    QList<jpsCrossing *> getCrossingList() const;
+    QList<jpsCrossing *> getCrossingList();
     bool isInCrossingList(jpsCrossing *crossing);
-    void addCrossing(jpsLineItem* crossing);
-    void addCrossing(QList<jpsLineItem *> crossings);
+    void addCrossing(jpsCrossing *crossing);
     void removeCrossing(jpsCrossing* crossing);
+    void addInEnterAndExitList(jpsCrossing *crossing);
+    void removeEnterOrExit(jpsCrossing *crossing);
+    QList<jpsCrossing *> getEnterAndExitList();
+    bool isInEnterAndExitList(jpsCrossing *crossing);
+    jpsCrossing * getCrossingFromList(jpsLineItem *line);
 
     // Track
     void addTrack(jpsLineItem *line, QString number);
@@ -100,12 +104,12 @@ private:
     // For subroom
     QList<jpsLineItem *> wall_list;
     QList<JPSTrack *> track_list;
+    QList<jpsCrossing *> enterAndExitList; // Contains only crossing for the subroom
 
     // For room
-    QList<jpsCrossing *> crossing_list;
-
     QList<JPSZone *> corridor_list;
     QList<JPSZone *> platfrom_list;
+    QList<jpsCrossing *> crossing_list;
 
     bool visible;
     float A_x;
