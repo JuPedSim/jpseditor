@@ -327,6 +327,7 @@ signals:
     void mouse_moved();
     void set_focus_textedit();
     void lines_deleted();
+    void markedLineDeleted();
     void no_drawing();
     void remove_marked_lines();
     void remove_all();

@@ -27,7 +27,10 @@
 #ifndef JPSCROSSING_H
 #define JPSCROSSING_H
 
-#include "jpszone.h"
+#include <QtWidgets>
+#include <QtGui>
+#include "src/jpsLineItem.h"
+#include "src/jpszone.h"
 
 class jpsCrossing
 {
@@ -37,14 +40,15 @@ public:
     ~jpsCrossing(){}
 
     QList<JPSZone *> get_roomList();
+    void add_rooms(JPSZone* subroom1, JPSZone* subroom2 = nullptr);
+    void setSubroom(JPSZone* subroom);
+    void RemoveRoom(JPSZone* room);
+
     QString get_name();
+    void change_name(QString name);
     int get_id();
     void set_id(int id);
     jpsLineItem *get_cLine();
-    void change_name(QString name);
-    void add_rooms(JPSZone* subroom1, JPSZone* subroom2=0L);
-    void setRoom(JPSZone* room);
-    void RemoveRoom(JPSZone* room);
     float get_elevation();
     void set_elevation(float elevation);
     QString getMaxAgents() const;
@@ -57,8 +61,7 @@ public:
     void setState(bool state);
 
 private:
-    QList<JPSZone *> roomList;
-
+    QList<JPSZone *> roomList; // rooms that are relevant to the crossing, size can't more than 2!
     QString cName;
     jpsLineItem *cLine;
     int cId;
@@ -66,9 +69,6 @@ private:
     bool state;
     QString max_agents;
     QString outflow;
-
-    JPSZone *subroom1;
-    JPSZone *subroom2;
 };
 
 #endif // JPSCROSSING_H

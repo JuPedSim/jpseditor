@@ -101,8 +101,22 @@ void LayerWidget::renameLayer(QListWidgetItem *item)
         view->getLayerList()[ui->listWidget_layers->currentRow()]->setName(name);
     } else
     {
-        QMessageBox::warning(this,"Warning!", "This name is already used, change another?",
-                             QMessageBox::Ok);
+        QMessageBox msgBox;
+        msgBox.setText("This name is already used, change another?");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+
+        int ret = msgBox.exec();
+
+        switch (ret)
+        {
+            case QMessageBox::Ok:
+                // Ok was clicked
+                break;
+            default:
+                // should never be reached
+                break;
+        }
     }
 
     updateLayerListWidget();

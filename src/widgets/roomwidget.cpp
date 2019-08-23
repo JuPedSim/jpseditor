@@ -474,7 +474,7 @@ void roomWidget::add_rooms_to_crossing()
 
             if (ui->roomBox_to->currentText()=="OUTSIDE") // This door is a transition
             {
-                datamanager->get_crossingList()[cCrossingRow]->add_rooms(datamanager->get_roomlist()[cRoomRow1]);
+//                datamanager->get_crossingList()[cCrossingRow]->add_rooms(datamanager->get_roomlist()[cRoomRow1]);
                 datamanager->get_crossingList()[cCrossingRow]->get_cLine()->setCrossing();
             }
 
@@ -986,7 +986,7 @@ void roomWidget::autoAssignCrossing(jpsCrossing * crossing)
          qDebug("\t pointCounter = %d, roomCounter = %d", pointCounter, roomCounter);
          if (pointCounter>=2 && roomCounter==0)
          {
-              crossing->add_rooms(room);
+//              crossing->add_rooms(room);
               roomCounter++;
               int index = datamanager->get_roomlist().indexOf(room);
               ui->roomBox_from->setCurrentIndex(index);

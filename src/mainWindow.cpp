@@ -242,6 +242,7 @@ MWindow :: MWindow()
     // Zone toolbar
     connect(actionCorridor, SIGNAL(triggered(bool)),this, SLOT(corridorButtonClicked()));
     connect(actionPlatform, SIGNAL(triggered(bool)),this, SLOT(platformButtonclicked()));
+    //TODO: Buttons for Lobby, Office, Entrance, Stair
 
 
     // Assemble actions group

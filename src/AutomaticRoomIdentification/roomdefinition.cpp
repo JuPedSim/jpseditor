@@ -70,7 +70,7 @@ void RoomDefinition::SetUpRoomsAndDoors()
                 {
                     if (crossing->get_cLine()==cLineItem)
                     {
-                        crossing->setRoom(cRoom);
+                        crossing->setSubroom(cRoom);
                     }
                 }
             }
@@ -121,7 +121,6 @@ void RoomDefinition::RemoveOutside()
             maxArea=room->GetArea();
         }
     }
-
     _dManager->remove_room(roomWithMaxArea);
 
 }
