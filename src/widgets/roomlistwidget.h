@@ -45,6 +45,8 @@ public slots:
 signals:
     void zoneSelected(JPSZone *);
     void roomSelected(JPSZone *);
+    void zoneDeleted();
+    void roomDeleted();
 private:
     Ui::RoomListWidget *ui;
     jpsDatamanager *data;
