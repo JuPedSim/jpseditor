@@ -204,6 +204,7 @@ public:
     void addPlatform(JPSZone *father_room);
     void addCorridor(JPSZone *father_room);
     void addLobby(JPSZone *father_room);
+    void addOffice(JPSZone *father_room);
 
     // delete zones
     void removeRoom(JPSZone *room);

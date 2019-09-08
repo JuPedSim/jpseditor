@@ -818,6 +818,8 @@ void JPSZone::addZoneInList(JPSZone *zone)
             break;
         case Lobby:
             lobby_list.append(zone);
+        case Office:
+            office_list.append(zone);
         default:
             break;
     }
@@ -843,6 +845,11 @@ void JPSZone::removeZoneFromList(JPSZone *zone)
             break;
         case Lobby:
             lobby_list.removeOne(zone);
+            delete zone;
+            zone = nullptr;
+            break;
+        case Office:
+            office_list.removeOne(zone);
             delete zone;
             zone = nullptr;
             break;
@@ -997,4 +1004,11 @@ const QList<JPSZone*> & JPSZone::getLobbyList() const
     qDebug("Enter JPSZone::getLobbyList()");
     return lobby_list;
     qDebug("Leave JPSZone::getLobbyList()");
+}
+
+const QList<JPSZone*> & JPSZone::getOfficeList() const
+{
+    qDebug("Enter JPSZone::getOfficeList()");
+    return office_list;
+    qDebug("Leave JPSZone::getOfficeList()");
 }

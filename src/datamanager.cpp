@@ -125,6 +125,19 @@ void jpsDatamanager::addLobby(JPSZone *father_room)
     qDebug("Leave jpsDatamanager::addLobby");
 }
 
+void jpsDatamanager::addOffice(JPSZone *father_room)
+{
+    qDebug("Enter jpsDatamanager::addOffice");
+    auto *new_Office = new JPSZone(zone_id, father_room, Office);// Corridor belongs to the father room and
+    // saving in father room, rather than datamanger;
+
+    if(father_room != nullptr)
+        father_room->addZoneInList(new_Office);
+
+    zone_id += 1;
+    qDebug("Leave jpsDatamanager::addOffice");
+}
+
 void jpsDatamanager::remove_room(JPSZone *room)
 {
     qDebug("Enter jpsDatamanager::remove_room. zone_id = %d", zone_id);

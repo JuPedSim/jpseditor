@@ -99,6 +99,10 @@ void PropertyWidget::updateWidget(ZoneType type)
             updateWallListWidget();
             updateCrossingListWidget();
             break;
+        case Office:
+            ui->tabWidget->removeTab(1); // Remove track tab
+            updateWallListWidget();
+            updateCrossingListWidget();
         default:
             return;
     }

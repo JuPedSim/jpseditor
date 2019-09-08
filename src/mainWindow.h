@@ -229,6 +229,7 @@ private slots:
     void corridorButtonClicked();
     void platformButtonClicked();
     void lobbyButtonClicked();
+    void officeButtonClicked();
 
     //propertyDockWidget
     void addPropertyDockWidget(JPSZone *zone);
