@@ -243,7 +243,8 @@ MWindow :: MWindow()
     connect(actionCorridor, SIGNAL(triggered(bool)),this, SLOT(corridorButtonClicked()));
     connect(actionPlatform, SIGNAL(triggered(bool)),this, SLOT(platformButtonClicked()));
     connect(actionLobby, SIGNAL(triggered(bool)),this, SLOT(lobbyButtonClicked()));
-    //TODO: Buttons for Lobby, Office, Entrance, Stair
+    connect(actionOffice, SIGNAL(triggered(bool)),this, SLOT(officeButtonClicked()));
+    //TODO: Buttons for Stair
 
 
     // Assemble actions group
@@ -251,7 +252,7 @@ MWindow :: MWindow()
     zoneActionGroup->addAction(actionCorridor);
     zoneActionGroup->addAction(actionLobby);
     zoneActionGroup->addAction(actionOffice);
-    zoneActionGroup->addAction(actionEntrance);
+//    zoneActionGroup->addAction(actionEntrance);
     zoneActionGroup->addAction(actionStairs);
     zoneActionGroup->addAction(actionPlatform);
 
@@ -1418,4 +1419,14 @@ void MWindow::lobbyButtonClicked()
 
     addListDockWidget("Lobby");
     qDebug("Leave MWindow::lobbyButtonClicked");
+}
+
+void MWindow::officeButtonClicked()
+{
+    qDebug("Enter MWindow::officeButtonClicked");
+    closeListDockWidget();
+    closePropertyDockWidget();
+
+    addListDockWidget("Office");
+    qDebug("Leave MWindow::officeButtonClicked");
 }
