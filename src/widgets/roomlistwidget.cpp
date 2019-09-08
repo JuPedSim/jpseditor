@@ -41,6 +41,8 @@ RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager)
     // add propertyDockWidget
     connect(this, SIGNAL(zoneSelected(JPSZone *)), parent, SLOT(addPropertyDockWidget(JPSZone *)));
     connect(this, SIGNAL(roomSelected(JPSZone *)), parent, SLOT(addPropertyDockWidget(JPSZone *)));
+    connect(this, SIGNAL(zoneDeleted()), parent, SLOT(closePropertyDockWidget()));
+    connect(this, SIGNAL(roomDeleted()), parent, SLOT(closePropertyDockWidget()));
 
     // Add
     connect(ui->pushButton_addRoom, SIGNAL(clicked()), this, SLOT(addRoomButtonClicked()));
@@ -372,7 +374,7 @@ void RoomListWidget::deleteRoomButtonClicked()
     {
         data->removeRoom(getCurrentRoom(ui->listWidget_rooms->currentItem())); // removing opreation in datamanager
     }
-
+    emit roomDeleted();
     updateRoomsListWidget();
     qDebug("Leave RoomListWidget::deleteRoomButtonClicked");
 }
@@ -391,9 +393,9 @@ void RoomListWidget::deleteZoneButtonClicked()
         data->removeZone(getCurrentRoom(ui->listWidget_rooms->currentItem()),
                 getCurrentZone(ui->listWidget_zones->currentItem()));
     }
+    emit zoneDeleted();
 
     updateZonesListWidget(ui->listWidget_rooms->currentItem());
-
     qDebug("Leave RoomListWidget::deleteZoneButtonClicked");
 }
 
