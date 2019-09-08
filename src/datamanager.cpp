@@ -115,7 +115,7 @@ void jpsDatamanager::addCorridor(JPSZone *father_room)
 void jpsDatamanager::addLobby(JPSZone *father_room)
 {
     qDebug("Enter jpsDatamanager::addLobby");
-    auto *new_Lobby = new JPSZone(zone_id, father_room, Lobby);// Corridor belongs to the father room and
+    auto *new_Lobby = new JPSZone(zone_id, father_room, Lobby);// Lobby belongs to the father room and
     // saving in father room, rather than datamanger;
 
     if(father_room != nullptr)
@@ -128,7 +128,7 @@ void jpsDatamanager::addLobby(JPSZone *father_room)
 void jpsDatamanager::addOffice(JPSZone *father_room)
 {
     qDebug("Enter jpsDatamanager::addOffice");
-    auto *new_Office = new JPSZone(zone_id, father_room, Office);// Corridor belongs to the father room and
+    auto *new_Office = new JPSZone(zone_id, father_room, Office);// Office belongs to the father room and
     // saving in father room, rather than datamanger;
 
     if(father_room != nullptr)
@@ -136,6 +136,19 @@ void jpsDatamanager::addOffice(JPSZone *father_room)
 
     zone_id += 1;
     qDebug("Leave jpsDatamanager::addOffice");
+}
+
+void jpsDatamanager::addStair(JPSZone *father_room)
+{
+    qDebug("Enter jpsDatamanager::addStair");
+    auto *new_Stair = new JPSZone(zone_id, father_room, Stair);// Corridor belongs to the father room and
+    // saving in father room, rather than datamanger;
+
+    if(father_room != nullptr)
+        father_room->addZoneInList(new_Stair);
+
+    zone_id += 1;
+    qDebug("Leave jpsDatamanager::addStair");
 }
 
 void jpsDatamanager::remove_room(JPSZone *room)

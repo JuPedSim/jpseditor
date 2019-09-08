@@ -67,6 +67,7 @@ public:
     const QList<JPSZone *> &getCorridorList() const;
     const QList<JPSZone *> &getLobbyList() const;
     const QList<JPSZone *> &getOfficeList() const;
+    const QList<JPSZone *> &getStairList() const;
 
     // Wall
     void addWall(QList<jpsLineItem *> newWalls);
@@ -114,6 +115,7 @@ private:
     QList<jpsCrossing *> crossing_list; // Contains all crossing in all subrooms
     QList<JPSZone *> lobby_list;
     QList<JPSZone *> office_list;
+    QList<JPSZone *> stair_list;
 
     bool visible;
     float A_x;

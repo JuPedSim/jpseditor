@@ -107,6 +107,10 @@ void PropertyWidget::updateWidget(ZoneType type)
             ui->tabWidget->removeTab(1); // Remove track tab
             updateWallListWidget();
             updateCrossingListWidget();
+        case Stair:
+            ui->tabWidget->removeTab(1); // Remove track tab
+            updateWallListWidget();
+            updateCrossingListWidget();
         default:
             return;
     }

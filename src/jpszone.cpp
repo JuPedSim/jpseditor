@@ -818,8 +818,13 @@ void JPSZone::addZoneInList(JPSZone *zone)
             break;
         case Lobby:
             lobby_list.append(zone);
+            break;
         case Office:
             office_list.append(zone);
+            break;
+        case Stair:
+            stair_list.append(zone);
+            break;
         default:
             break;
     }
@@ -850,6 +855,11 @@ void JPSZone::removeZoneFromList(JPSZone *zone)
             break;
         case Office:
             office_list.removeOne(zone);
+            delete zone;
+            zone = nullptr;
+            break;
+        case Stair:
+            stair_list.removeOne(zone);
             delete zone;
             zone = nullptr;
             break;
@@ -1003,14 +1013,18 @@ jpsCrossing *JPSZone::getCrossingFromList(jpsLineItem *line)
 
 const QList<JPSZone*> & JPSZone::getLobbyList() const
 {
-    qDebug("Enter JPSZone::getLobbyList()");
+    qDebug("Enter/Leave JPSZone::getLobbyList");
     return lobby_list;
-    qDebug("Leave JPSZone::getLobbyList()");
 }
 
 const QList<JPSZone*> & JPSZone::getOfficeList() const
 {
-    qDebug("Enter JPSZone::getOfficeList()");
+    qDebug("Enter/Leave JPSZone::getOfficeList");
     return office_list;
-    qDebug("Leave JPSZone::getOfficeList()");
+}
+
+const QList<JPSZone *> &JPSZone::getStairList() const
+{
+    qDebug("Enter/Leave JPSZone::getStairList");
+    return stair_list;
 }
