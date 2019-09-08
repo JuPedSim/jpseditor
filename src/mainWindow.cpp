@@ -244,7 +244,7 @@ MWindow :: MWindow()
     connect(actionPlatform, SIGNAL(triggered(bool)),this, SLOT(platformButtonClicked()));
     connect(actionLobby, SIGNAL(triggered(bool)),this, SLOT(lobbyButtonClicked()));
     connect(actionOffice, SIGNAL(triggered(bool)),this, SLOT(officeButtonClicked()));
-    //TODO: Buttons for Stair
+    connect(actionStairs, SIGNAL(triggered(bool)),this, SLOT(stairButtonClicked()));
 
 
     // Assemble actions group
@@ -1429,4 +1429,14 @@ void MWindow::officeButtonClicked()
 
     addListDockWidget("Office");
     qDebug("Leave MWindow::officeButtonClicked");
+}
+
+void MWindow::stairButtonClicked()
+{
+    qDebug("Enter MWindow::stairButtonClicked");
+    closeListDockWidget();
+    closePropertyDockWidget();
+
+    addListDockWidget("Stair");
+    qDebug("Leave MWindow::stairButtonClicked");
 }

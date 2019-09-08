@@ -58,6 +58,10 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
     connect(ui->pushButton_addCrossing, SIGNAL(clicked()), this, SLOT(addCrossingButtonClicked()));
     connect(ui->pushButton_removeCrossing, SIGNAL(clicked()), this, SLOT(removeCrossingButtonClicked()));
     connect(ui->listWidget_crossing, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlightWall(QListWidgetItem*)));
+    connect(ui->pushButton_applyOutflow, SIGNAL(clicked()), this, SLOT(applyOutflowButtonClicked()));
+    connect(ui->pushButton_applyMaxAgents, SIGNAL(clicked()), this, SLOT(applyMaxagentsButtonClicked()));
+    connect(ui->listWidget_crossing, SIGNAL(itemClicked(QListWidgetItem *)),
+            this, SLOT(updateCrossingInfo(QListWidgetItem*)));
 
     // For inspector tab
     connect(ui->pushButton_applyElevation, SIGNAL(clicked()), this, SLOT(applyElevationButtonClicked()));
@@ -250,6 +254,8 @@ void PropertyWidget::updateCrossingListWidget()
         ui->listWidget_crossing->addItem(string);
     }
 
+
+
     qDebug("Leave PropertyWidget::updateCrossingListWidget");
 }
 
@@ -270,6 +276,7 @@ void PropertyWidget::addCrossingButtonClicked()
                 }
                 else
                 {
+                    // this line is already for creating crossing, use existing crossing to add
                     auto *crossing = current_zone->getFatherRoom()->getCrossingFromList(line);
                     current_zone->addInEnterAndExitList(crossing); // add as enter of exit of the subroom
                 }
@@ -393,6 +400,43 @@ void PropertyWidget::applyTypeButtonClicked()
     qDebug("Enter PropertyWidget::applyTypeButtonClicked");
     int type = ui->lineEdit_Type->text().toInt();
 
-    current_zone->getTrackList()[ui->listWidget_track->currentRow()]->setType(type);
+    if(current_zone != nullptr)
+        current_zone->getTrackList()[ui->listWidget_track->currentRow()]->setType(type);
     qDebug("Leave PropertyWidget::applyTypeButtonClicked");
+}
+
+void PropertyWidget::applyOutflowButtonClicked()
+{
+    qDebug("Enter PropertyWidget::applyOutflowButtonClicked");
+    QString outflow = ui->lineEdit_outflow->text();
+
+    if(current_zone != nullptr)
+        current_zone->getEnterAndExitList()[ui->listWidget_crossing->currentRow()]->setOutflow(outflow);
+
+    qDebug("Leave PropertyWidget::applyOutflowButtonClicked");
+}
+
+void PropertyWidget::applyMaxagentsButtonClicked()
+{
+    qDebug("Enter PropertyWidget::applyMaxagentsButtonClicked");
+    QString maxagents = ui->lineEdit_maxAgents->text();
+
+    if(current_zone != nullptr)
+        current_zone->getEnterAndExitList()[ui->listWidget_crossing->currentRow()]->setMaxAgents(maxagents);
+    qDebug("Leave PropertyWidget::applyMaxagentsButtonClicked");
+}
+
+void PropertyWidget::updateCrossingInfo(QListWidgetItem *item)
+{
+    qDebug("Enter PropertyWidget::updateCrossingInfo");
+    ui->lineEdit_outflow->clear();
+    ui->lineEdit_maxAgents->clear();
+
+    if(current_zone == nullptr || item == nullptr)
+        return;
+
+    auto *crossing = current_zone->getEnterAndExitList()[ui->listWidget_crossing->currentRow()];
+    ui->lineEdit_outflow->setText(crossing->getOutflow());
+    ui->lineEdit_maxAgents->setText(crossing->getMaxAgents());
+    qDebug("Leave PropertyWidget::updateCrossingInfo");
 }

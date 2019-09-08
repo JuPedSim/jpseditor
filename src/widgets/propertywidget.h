@@ -22,14 +22,17 @@ public:
 protected slots:
     void updateWidget(ZoneType type);
     void updateListwidget();
-    void updateWallListWidget();
-    void updateCrossingListWidget();
 
     // Crossing tab
+    void updateCrossingListWidget();
     void addCrossingButtonClicked();
     void removeCrossingButtonClicked();
+    void applyOutflowButtonClicked();
+    void applyMaxagentsButtonClicked();
+    void updateCrossingInfo(QListWidgetItem* item);
 
     // Wall tab
+    void updateWallListWidget();
     void addWallButtonClicked();
     void removeWallButtonClicked();
     void highlightWall(QListWidgetItem *item);
