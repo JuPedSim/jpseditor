@@ -90,7 +90,10 @@ void jpsDatamanager::addPlatform(JPSZone *father_room)
 {
     qDebug("Enter jpsDatamanager::addPlatform");
     auto *new_Platform = new JPSZone(zone_id, father_room, Platform);
-    father_room->addZoneInList(new_Platform); // Platform belongs to the father room and saving in father room,
+
+    if(father_room != nullptr)
+        father_room->addZoneInList(new_Platform); // Platform belongs to the father room and saving in father room,
+
     // rather than datamanger;
     zone_id += 1;
     qDebug("Leave jpsDatamanager::addPlatform");
@@ -101,9 +104,25 @@ void jpsDatamanager::addCorridor(JPSZone *father_room)
     qDebug("Enter jpsDatamanager::addCorridor");
     auto *new_Corridor = new JPSZone(zone_id, father_room, Corridor);// Corridor belongs to the father room and
     // saving in father room, rather than datamanger;
-    father_room->addZoneInList(new_Corridor);
+
+    if(father_room != nullptr)
+        father_room->addZoneInList(new_Corridor);
+
     zone_id += 1;
     qDebug("Leave jpsDatamanager::addCorridor");
+}
+
+void jpsDatamanager::addLobby(JPSZone *father_room)
+{
+    qDebug("Enter jpsDatamanager::addLobby");
+    auto *new_Lobby = new JPSZone(zone_id, father_room, Lobby);// Corridor belongs to the father room and
+    // saving in father room, rather than datamanger;
+
+    if(father_room != nullptr)
+        father_room->addZoneInList(new_Lobby);
+
+    zone_id += 1;
+    qDebug("Leave jpsDatamanager::addLobby");
 }
 
 void jpsDatamanager::remove_room(JPSZone *room)
@@ -3197,3 +3216,4 @@ void jpsDatamanager::removeZone(JPSZone *room, JPSZone *zone)
     }
     qDebug("Leave jpsDatamanager::removeZone");
 }
+

@@ -241,7 +241,8 @@ MWindow :: MWindow()
 
     // Zone toolbar
     connect(actionCorridor, SIGNAL(triggered(bool)),this, SLOT(corridorButtonClicked()));
-    connect(actionPlatform, SIGNAL(triggered(bool)),this, SLOT(platformButtonclicked()));
+    connect(actionPlatform, SIGNAL(triggered(bool)),this, SLOT(platformButtonClicked()));
+    connect(actionLobby, SIGNAL(triggered(bool)),this, SLOT(lobbyButtonClicked()));
     //TODO: Buttons for Lobby, Office, Entrance, Stair
 
 
@@ -1381,7 +1382,7 @@ void MWindow::addPropertyDockWidget(JPSZone *zone)
     qDebug("Leave MWindow::addPropertyDockWidget");
 }
 
-void MWindow::platformButtonclicked()
+void MWindow::platformButtonClicked()
 {
     closeListDockWidget();
     closePropertyDockWidget();
@@ -1407,4 +1408,14 @@ void MWindow::layerButtonClicked()
     listDockWidget->setWidget(layerWidget);
 
     qDebug("Leave MWindow::layerButtonClicked");
+}
+
+void MWindow::lobbyButtonClicked()
+{
+    qDebug("Enter MWindow::lobbyButtonClicked");
+    closeListDockWidget();
+    closePropertyDockWidget();
+
+    addListDockWidget("Lobby");
+    qDebug("Leave MWindow::lobbyButtonClicked");
 }

@@ -37,7 +37,8 @@
 #include "jpsLineItem.h"
 
 JPSZone::JPSZone(int id_zone, JPSZone *father, ZoneType type)
-    : enterAndExitList(QList<jpsCrossing *>()), track_list(QList<JPSTrack *>()), wall_list(QList<jpsLineItem *>())
+    : enterAndExitList(QList<jpsCrossing *>()), track_list(QList<JPSTrack *>()), wall_list(QList<jpsLineItem *>()),
+    lobby_list(QList<JPSZone *>())
 {
     id=id_zone;
     zoneType = type;
@@ -815,6 +816,8 @@ void JPSZone::addZoneInList(JPSZone *zone)
         case Platform:
             platfrom_list.append(zone);
             break;
+        case Lobby:
+            lobby_list.append(zone);
         default:
             break;
     }
@@ -835,6 +838,11 @@ void JPSZone::removeZoneFromList(JPSZone *zone)
             break;
         case Platform:
             platfrom_list.removeOne(zone);
+            delete zone;
+            zone = nullptr;
+            break;
+        case Lobby:
+            lobby_list.removeOne(zone);
             delete zone;
             zone = nullptr;
             break;
@@ -982,4 +990,11 @@ jpsCrossing *JPSZone::getCrossingFromList(jpsLineItem *line)
     }
 
     return nullptr;
+}
+
+const QList<JPSZone*> & JPSZone::getLobbyList() const
+{
+    qDebug("Enter JPSZone::getLobbyList()");
+    return lobby_list;
+    qDebug("Leave JPSZone::getLobbyList()");
 }
