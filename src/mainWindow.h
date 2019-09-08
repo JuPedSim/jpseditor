@@ -227,7 +227,8 @@ private slots:
     //Zone ToolBar
     void setupZoneToolBar();
     void corridorButtonClicked();
-    void platformButtonclicked();
+    void platformButtonClicked();
+    void lobbyButtonClicked();
 
     //propertyDockWidget
     void addPropertyDockWidget(JPSZone *zone);

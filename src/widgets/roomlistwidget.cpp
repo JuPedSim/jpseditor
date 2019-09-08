@@ -109,6 +109,8 @@ void RoomListWidget::updateZonesListWidget(QListWidgetItem *item)
         case Platform:
             zoneslist = getCurrentRoom(item)->getPlatfromList();
             break;
+        case Lobby:
+            zoneslist = getCurrentRoom(item)->getLobbyList();
         default:
             break;
     }
@@ -143,6 +145,9 @@ void RoomListWidget::addZoneButtonClicked()
                 break;
             case Platform:
                 data->addPlatform(getCurrentRoom(ui->listWidget_rooms->currentItem()));
+                break;
+            case Lobby:
+                data->addLobby(getCurrentRoom(ui->listWidget_rooms->currentItem()));
                 break;
             default:
                 break;
@@ -198,6 +203,9 @@ JPSZone *RoomListWidget::getCurrentZone(QListWidgetItem *item)
             break;
         case Platform:
             zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getPlatfromList();
+            break;
+        case Lobby:
+            zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getLobbyList();
             break;
         default:
             return nullptr;
@@ -334,6 +342,9 @@ bool RoomListWidget::isRepeatedZoneName(QString name)
         case Platform:
             zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getPlatfromList();
             break;
+        case Lobby:
+            zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getLobbyList();
+            break;
         default:
             return false;
     }
@@ -382,6 +393,7 @@ void RoomListWidget::deleteZoneButtonClicked()
     }
 
     updateZonesListWidget(ui->listWidget_rooms->currentItem());
+
     qDebug("Leave RoomListWidget::deleteZoneButtonClicked");
 }
 

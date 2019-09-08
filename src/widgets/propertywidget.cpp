@@ -94,6 +94,11 @@ void PropertyWidget::updateWidget(ZoneType type)
             updateTrackListWidget();
             updateCrossingListWidget();
             break;
+        case Lobby:
+            ui->tabWidget->removeTab(1); // Remove track tab
+            updateWallListWidget();
+            updateCrossingListWidget();
+            break;
         default:
             return;
     }
@@ -198,16 +203,19 @@ void PropertyWidget::highlightWall(QListWidgetItem *item)
     if(ui->tabWidget->tabText(index) == "Crossing")
     {
         auto *line = current_zone->getEnterAndExitList()[cRow];
+        view->unmark_all_lines();
         view->select_line(line->get_cLine());
     }
     else if(ui->tabWidget->tabText(index) == "Wall")
     {
         auto *line= current_zone->get_listWalls()[wRow];
+        view->unmark_all_lines();
         view->select_line(line);
     }
     else if(ui->tabWidget->tabText(index) == "Track")
     {
         auto *line = current_zone->getTrackList()[tRow];
+        view->unmark_all_lines();
         view->select_line(line->getLine());
     }
     qDebug("Leave PropertyWidget::highlightWall");
@@ -248,7 +256,7 @@ void PropertyWidget::addCrossingButtonClicked()
     {
         foreach(jpsLineItem *line, view->get_markedLines())
         {
-            if(line->getType() == "crossing" || current_zone->getFatherRoom() != nullptr)
+            if(line->getType() == "crossing" && current_zone->getFatherRoom() != nullptr)
             {
                 if(current_zone->getFatherRoom()->getCrossingFromList(line) == nullptr)
                 {

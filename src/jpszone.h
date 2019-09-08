@@ -65,6 +65,7 @@ public:
     void removeZoneFromList(JPSZone *zone);
     const QList<JPSZone *> &getPlatfromList() const;
     const QList<JPSZone *> &getCorridorList() const;
+    const QList<JPSZone*> & getLobbyList() const;
 
     // Wall
     void addWall(QList<jpsLineItem *> newWalls);
@@ -104,12 +105,13 @@ private:
     // For subroom
     QList<jpsLineItem *> wall_list;
     QList<JPSTrack *> track_list;
-    QList<jpsCrossing *> enterAndExitList; // Contains only crossing for the subroom
+    QList<jpsCrossing *> enterAndExitList; // Contains only crossing for this subroom
 
     // For room
     QList<JPSZone *> corridor_list;
     QList<JPSZone *> platfrom_list;
-    QList<jpsCrossing *> crossing_list;
+    QList<jpsCrossing *> crossing_list; // Contains all crossing in all subrooms
+    QList<JPSZone *> lobby_list;
 
     bool visible;
     float A_x;
