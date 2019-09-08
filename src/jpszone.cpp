@@ -912,7 +912,10 @@ void JPSZone::removeCrossing(jpsCrossing *crossing)
 void JPSZone::addInEnterAndExitList(jpsCrossing *crossing)
 {
     qDebug("Enter JPSZone::addInEnterAndExitList");
-    if(crossing != nullptr && !isInEnterAndExitList(crossing) && crossing->get_roomList().size() < 2)
+    if(crossing == nullptr || isInEnterAndExitList(crossing))
+        return;
+
+    if(crossing->get_roomList().size() < 2)
     {
         enterAndExitList.append(crossing);
         crossing->setSubroom(this); // Set this subroom as one side of crossing;
@@ -939,7 +942,6 @@ void JPSZone::addInEnterAndExitList(jpsCrossing *crossing)
         qDebug("Crossing is problematic, Leave JPSZone::addInEnterAndExitList");
         return;
     }
-
     qDebug("Leave JPSZone::addInEnterAndExitList");
 }
 

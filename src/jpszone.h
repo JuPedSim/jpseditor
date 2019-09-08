@@ -65,8 +65,8 @@ public:
     void removeZoneFromList(JPSZone *zone);
     const QList<JPSZone *> &getPlatfromList() const;
     const QList<JPSZone *> &getCorridorList() const;
-    const QList<JPSZone*> & getLobbyList() const;
-    const QList<JPSZone*> & getOfficeList() const;
+    const QList<JPSZone *> &getLobbyList() const;
+    const QList<JPSZone *> &getOfficeList() const;
 
     // Wall
     void addWall(QList<jpsLineItem *> newWalls);
