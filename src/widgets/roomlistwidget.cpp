@@ -117,6 +117,9 @@ void RoomListWidget::updateZonesListWidget(QListWidgetItem *item)
         case Office:
             zoneslist = getCurrentRoom(item)->getOfficeList();
             break;
+        case Stair:
+            zoneslist = getCurrentRoom(item)->getStairList();
+            break;
         default:
             break;
     }
@@ -157,6 +160,9 @@ void RoomListWidget::addZoneButtonClicked()
                 break;
             case Office:
                 data->addOffice(getCurrentRoom(ui->listWidget_rooms->currentItem()));
+                break;
+            case Stair:
+                data->addStair(getCurrentRoom(ui->listWidget_rooms->currentItem()));
                 break;
             default:
                 break;
@@ -218,6 +224,9 @@ JPSZone *RoomListWidget::getCurrentZone(QListWidgetItem *item)
             break;
         case Office:
             zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getOfficeList();
+            break;
+        case Stair:
+            zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getStairList();
             break;
         default:
             return nullptr;
@@ -359,6 +368,10 @@ bool RoomListWidget::isRepeatedZoneName(QString name)
             break;
         case Office:
             zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getOfficeList();
+            break;
+        case Stair:
+            zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getStairList();
+            break;
         default:
             return false;
     }
