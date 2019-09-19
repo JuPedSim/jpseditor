@@ -69,7 +69,7 @@ QString jpsLineItem::getType()
         case track:
             return "track";
         case transition:
-            return "exit";
+            return "transition";
         case hline:
             return "hline";
         case undefined:

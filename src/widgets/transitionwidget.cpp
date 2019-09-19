@@ -31,14 +31,21 @@
 #include "transitionwidget.h"
 #include "ui_transitionwidget.h"
 
-TransitionWidget::TransitionWidget(QWidget *parent, jpsDatamanager *dmanager)
+TransitionWidget::TransitionWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsView *mview)
     : QWidget(parent), ui(new Ui::TransitionWidget)
 {
     ui->setupUi(this);
 
     data = dmanager;
+    view = mview;
 
     updateListWidget();
+
+    connect(ui->listWidget_transitions,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showRoomsinButton()));
+    connect(ui->pushButton_apply, SIGNAL(clicked()),this,SLOT(applyRooms()));
+
+    connect(view, SIGNAL(transitonsChanged()), this, SLOT(updateListWidget()));
+    connect(view, SIGNAL(markedLineDeleted()), this, SLOT(updateListWidget()));
 }
 
 TransitionWidget::~TransitionWidget()
@@ -53,6 +60,9 @@ void TransitionWidget::updateListWidget()
 
     QList<jpsTransition *> transition_list = data->getTransitionList();
 
+    if(transition_list.isEmpty())
+        return;
+
     for (int i=0; i<transition_list.size(); i++)
     {
         QString string = "";
@@ -65,4 +75,59 @@ void TransitionWidget::updateListWidget()
         ui->listWidget_transitions->addItem(string);
     }
     qDebug("Leave TransitionWidget::updateWallListWidget");
+}
+
+void TransitionWidget::applyRooms()
+{
+    qDebug("Enter applyRooms");
+    if(ui->listWidget_transitions->currentItem() == nullptr)
+        return;
+
+    int cRow = ui->listWidget_transitions->currentRow();
+    jpsTransition *cTran = data->getTransitionList()[cRow];
+
+    JPSZone *room1 = nullptr;
+    JPSZone *room2 = nullptr;
+
+    for(JPSZone * room : data->getRoomlist())
+    {
+        for(QList<JPSZone *> list : room->getZoneList())
+        {
+            for(JPSZone *subroom : list)
+            {
+                if(subroom->getName() == ui->comboBox_from->currentText())
+                    room1 = subroom;
+
+                if(subroom->getName() == ui->comboBox_to->currentText())
+                    room2 = subroom;
+            }
+        }
+    }
+
+    cTran->set_rooms(room1, room2);
+
+    qDebug("Leave applyRooms");
+}
+
+void TransitionWidget::showRoomsinButton()
+{
+    qDebug("Enter TransitionWidget::showRoomsinButton");
+    ui->comboBox_from->clear();
+    ui->comboBox_to->clear();
+    ui->comboBox_from->addItem("Outside");
+    ui->comboBox_to->addItem("Outside");
+
+    for(JPSZone *zone : data->getRoomlist())
+    {
+        for(QList<JPSZone *> list : zone->getZoneList())
+        {
+            for(JPSZone *subroom : list)
+            {
+                ui->comboBox_from->addItem(subroom->getName());
+                ui->comboBox_to->addItem(subroom->getName());
+            }
+        }
+    }
+
+    qDebug("Leave TransitionWidget::showRoomsinButton");
 }

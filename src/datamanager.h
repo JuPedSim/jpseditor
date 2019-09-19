@@ -79,6 +79,7 @@ public:
     void remove_exit(jpsTransition* exit);
     void change_exitName(jpsTransition* exit, QString name);
     void remove_all_exits();
+
     ///Landmark
     QList<jpsLandmark *> get_landmarks();
     void new_landmark(jpsLandmark * newlandmark);
@@ -232,6 +233,8 @@ private:
     QList<JPSZone *> roomlist; // zontType is room
 
     int zone_id; // For identify zone
+
+    int transition_id; // for identiy transition
 
     QList<jpsObstacle *> obstaclelist;
 
