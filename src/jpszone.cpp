@@ -991,19 +991,19 @@ bool JPSZone::isInEnterAndExitList(jpsCrossing *crossing)
     return false;
 }
 
-jpsCrossing *JPSZone::getCrossingFromList(jpsLineItem *line)
+jpsCrossing *JPSZone::getExitedCrossing(jpsLineItem *line)
 {
     // If jpsLineItem is already added into a room, it should be in crossing_list
-    qDebug("Enter JPSZone::getCrossingFromList");
+    qDebug("Enter JPSZone::getExitedCrossing");
     foreach(jpsCrossing *crossing, crossing_list)
     {
         if(line == crossing->get_cLine())
         {
-            qDebug("Leave JPSZone::getCrossingFromList");
+            qDebug("Leave JPSZone::getExitedCrossing");
             return crossing;
         } else
         {
-            qDebug("Not in list, Leave JPSZone::getCrossingFromList");
+            qDebug("Not in list, Leave JPSZone::getExitedCrossing");
             return nullptr;
         }
     }

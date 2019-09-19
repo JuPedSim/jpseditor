@@ -91,7 +91,7 @@ public:
     void removeEnterOrExit(jpsCrossing *crossing);
     QList<jpsCrossing *> getEnterAndExitList();
     bool isInEnterAndExitList(jpsCrossing *crossing);
-    jpsCrossing * getCrossingFromList(jpsLineItem *line);
+    jpsCrossing * getExitedCrossing(jpsLineItem *line);
 
     // Track
     void addTrack(jpsLineItem *line, QString number);
