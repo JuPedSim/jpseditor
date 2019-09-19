@@ -36,6 +36,7 @@ public:
     void highlight(const QString &color="random");
     void switchVisibility();
     ZoneType getType() const;
+    QString getTypeInString() const;
     void setType(const ZoneType &type);
     QList<QPointF> GetDoorVertices() const;
 
@@ -63,6 +64,8 @@ public:
     void setFatherRoom(JPSZone *room);
     void addZoneInList(JPSZone *zone);
     void removeZoneFromList(JPSZone *zone);
+
+    const QList<QList<JPSZone *>> &getZoneList();
     const QList<JPSZone *> &getPlatfromList() const;
     const QList<JPSZone *> &getCorridorList() const;
     const QList<JPSZone *> &getLobbyList() const;
@@ -112,10 +115,13 @@ private:
     // For room
     QList<JPSZone *> corridor_list;
     QList<JPSZone *> platfrom_list;
-    QList<jpsCrossing *> crossing_list; // Contains all crossing in all subrooms
     QList<JPSZone *> lobby_list;
     QList<JPSZone *> office_list;
     QList<JPSZone *> stair_list;
+
+    QList<QList<JPSZone *>> zone_list;
+
+    QList<jpsCrossing *> crossing_list; // Contains all crossing in all subrooms
 
     bool visible;
     float A_x;

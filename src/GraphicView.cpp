@@ -1068,19 +1068,19 @@ void jpsGraphicsView::drawLine()
         current_line->setVisible(false);
         //current_line->translate(translation_x,translation_y);
         current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
-        emit set_focus_textedit();
 
+        emit set_focus_textedit();
     }
 
     // if the mouse was pressed secondly of two times
     else
     {
-        jpsLineItem* lineItem= new jpsLineItem(current_line);
+        auto* lineItem= new jpsLineItem(current_line);
         lineItem->set_id(id_counter);
         id_counter++;
 
         // if there is already a drawn line
-        if (line_vector.size()>=1)
+        if (!line_vector.isEmpty())
         {
             // Searching for intersection of the current line with all already drawn lines
             for (int i=0; i<line_vector.size(); i++)

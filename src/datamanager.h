@@ -31,9 +31,11 @@
 #define DATAMANAGER_H
 
 #include <QtGui>
+#include <QVariant>
 #include <QApplication>
 #include <QGraphicsView>
 #include <QMessageBox>
+#include <random>
 #include "jpszone.h"
 #include "jpscrossing.h"
 #include "jpsLineItem.h"
@@ -43,7 +45,6 @@
 #include "jpsconnection.h"
 #include "jpsregion.h"
 #include "jpssource.h"
-#include <random>
 #include "src/global.h"
 
 #include "../dxflib/src/dl_creationadapter.h"

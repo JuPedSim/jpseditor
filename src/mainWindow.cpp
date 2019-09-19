@@ -711,35 +711,35 @@ void MWindow::saveAsXML(){
         //Save geometry
         dmanager->writeXML(file);
 
-        //Save routing (hlines)
-        QString fileNameRouting=fileName.split(".").first()+"_routing.xml";
-        QFile routingFile(fileNameRouting);
-        if (routingFile.open(QIODevice::WriteOnly|QIODevice::Text))
-            dmanager->writeRoutingXML(routingFile);
-
-        //Save sources
-        QString fileNameSource=fileName.split(".").first()+"_sources.xml";
-        QFile sourcesFile(fileNameSource);
-        if(sourcesFile.open(QIODevice::WriteOnly|QIODevice::Text))
-            dmanager->writeSourceXML(sourcesFile);
-
-        //Save goals
-        QString fileNameGoal=fileName.split(".").first()+"_goals.xml";
-        QFile goalsFile(fileNameGoal);
-        if(goalsFile.open(QIODevice::WriteOnly|QIODevice::Text))
-            dmanager->writeGoalXML(goalsFile);
-
-        //Save traffic
-        QString fileNameTraffic = fileName.split(".").first()+"_traffic.xml";
-        QFile trafficFile(fileNameTraffic);
-        if(trafficFile.open(QIODevice::WriteOnly|QIODevice::Text))
-            dmanager->writeTrafficXML(trafficFile);
-
-        //Save transitions
-        QString fileNameTransition=fileName.split(".").first()+"_transitions.xml";
-        QFile transitionFile(fileNameTransition);
-        if(transitionFile.open(QIODevice::WriteOnly|QIODevice::Text))
-            dmanager->writeTransitionXML(transitionFile);
+//        //Save routing (hlines)
+//        QString fileNameRouting=fileName.split(".").first()+"_routing.xml";
+//        QFile routingFile(fileNameRouting);
+//        if (routingFile.open(QIODevice::WriteOnly|QIODevice::Text))
+//            dmanager->writeRoutingXML(routingFile);
+//
+//        //Save sources
+//        QString fileNameSource=fileName.split(".").first()+"_sources.xml";
+//        QFile sourcesFile(fileNameSource);
+//        if(sourcesFile.open(QIODevice::WriteOnly|QIODevice::Text))
+//            dmanager->writeSourceXML(sourcesFile);
+//
+//        //Save goals
+//        QString fileNameGoal=fileName.split(".").first()+"_goals.xml";
+//        QFile goalsFile(fileNameGoal);
+//        if(goalsFile.open(QIODevice::WriteOnly|QIODevice::Text))
+//            dmanager->writeGoalXML(goalsFile);
+//
+//        //Save traffic
+//        QString fileNameTraffic = fileName.split(".").first()+"_traffic.xml";
+//        QFile trafficFile(fileNameTraffic);
+//        if(trafficFile.open(QIODevice::WriteOnly|QIODevice::Text))
+//            dmanager->writeTrafficXML(trafficFile);
+//
+//        //Save transitions
+//        QString fileNameTransition=fileName.split(".").first()+"_transitions.xml";
+//        QFile transitionFile(fileNameTransition);
+//        if(transitionFile.open(QIODevice::WriteOnly|QIODevice::Text))
+//            dmanager->writeTransitionXML(transitionFile);
 
         statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
     }
