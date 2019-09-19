@@ -546,17 +546,18 @@ void jpsDatamanager::writeXML(QFile &file)
         writeTransitions(stream,lines);
         stream->writeEndElement();// End transitions
     }
-//    // write unassignd lines
-//    stream->writeStartElement("Undefine");
-//    writeNotAssignedLines(stream, lines);
-//    stream->writeEndElement(); // Undefine
-//
-//    stream->writeEndElement();//geometry
-//
-//    stream->writeEndDocument();
-//
-//    delete stream;
-//    stream = nullptr;
+    // write unassignd lines
+
+    stream->writeStartElement("Undefine");
+    writeNotAssignedLines(stream, lines);
+    stream->writeEndElement(); // Undefine
+
+    stream->writeEndElement();//geometry
+
+    stream->writeEndDocument();
+
+    delete stream;
+    stream = nullptr;
     qDebug("Leave jpsDatamanager::writeXML");
 }
 
@@ -1081,28 +1082,20 @@ void jpsDatamanager::writeNotAssignedLines(QXmlStreamWriter *stream, QList<jpsLi
      qDebug("Enter jpsDatamanager::writeNotAssignedLines");
 
     /// save lines which are not assigned to a room yet
-    QList<jpsLineItem *> walls;
-
-    for (jpsLineItem* line:lines) //lines
-    {
-        if (line->is_Wall())
-        {
-            walls.push_back(line);
-        }
-    }
-    if (walls.isEmpty())
-        return;
-
-    stream->writeStartElement("subroom");
+    stream->writeStartElement("Room");
 
     stream->writeAttribute("id",QString::number(-1));
     stream->writeAttribute("caption","not assigned lines");
     stream->writeAttribute("class","container");
 
-    for (jpsLineItem* line:walls)
+    stream->writeStartElement("subroom");
+
+    stream->writeAttribute("id",QString::number(-1));
+
+    for (jpsLineItem* line:lines)
     {
         stream->writeStartElement("polygon");
-        stream->writeAttribute("caption","wall");
+        stream->writeAttribute("caption",line->getType());
 
         stream->writeStartElement("vertex");
         stream->writeAttribute("px",QString::number(line->get_line()->line().x1()));
@@ -1118,7 +1111,8 @@ void jpsDatamanager::writeNotAssignedLines(QXmlStreamWriter *stream, QList<jpsLi
 
         lines.removeOne(line);
     }
-    stream->writeEndElement();//subroom
+    stream->writeEndElement(); //subroom
+    stream->writeEndElement(); //room
     qDebug("Leave jpsDatamanager::writeNotAssignedLines");
 }
 
