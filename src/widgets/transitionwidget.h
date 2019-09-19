@@ -1,10 +1,5 @@
-//
-// Created by sainho93 on 2019-06-26.
-//
-
 #ifndef JPSEDITOR_TRANSITIONWIDGET_H
 #define JPSEDITOR_TRANSITIONWIDGET_H
-
 
 #include <QtGui>
 #include <QtWidgets>
@@ -19,17 +14,21 @@ class TransitionWidget : public QWidget
 Q_OBJECT;
 
 public:
-    explicit TransitionWidget(QWidget *parent = nullptr, jpsDatamanager *dmanager = nullptr);
+    explicit TransitionWidget(QWidget *parent = nullptr, jpsDatamanager *dmanager = nullptr, jpsGraphicsView *mview =
+    nullptr);
 
     ~TransitionWidget();
 
-public slots:
+protected slots:
     void updateListWidget();
+    void applyRooms();
+    void showRoomsinButton();
 
 private:
     Ui::TransitionWidget *ui;
     
     jpsDatamanager *data;
+    jpsGraphicsView *view;
 };
 
 

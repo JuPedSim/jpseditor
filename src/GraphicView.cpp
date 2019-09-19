@@ -1897,16 +1897,13 @@ void jpsGraphicsView::delete_marked_lines()
     {
         emit remove_marked_lines(); // emit to mainWindow
 
-        for (int i=0; i<marked_lines.size(); ++i)
+        for(int i=0; i<marked_lines.size(); ++i)
         {
-
             RecordUndoLineAction("LineDeleted", marked_lines[i]->getType(),marked_lines[i]->get_id(),marked_lines[i]->get_line()->line());
 
             RemoveIntersections(marked_lines[i]);
 
             delete marked_lines[i]->get_line();
-            qDebug()<< "jpsGraphicsView::delete_marked_lines(): Delete undefined line!";
-            //marked_lines[i]->set_line(nullptr);
             delete marked_lines[i];
             line_vector.removeOne(marked_lines[i]);
         }
@@ -1916,9 +1913,9 @@ void jpsGraphicsView::delete_marked_lines()
         //intersect_point_vector.clear();
         line_tracked=-1;
         emit markedLineDeleted(); //emit to propertyWidget
+
         update();
     }
-
 }
 
 void jpsGraphicsView::RemoveLineItem(jpsLineItem *mline)

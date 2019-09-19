@@ -27,7 +27,6 @@
  * This class is for corridor, office, lobby, entrance property widget
 ****************************************************************/
 
-
 #include "propertywidget.h"
 #include "ui_propertywidget.h"
 

@@ -849,8 +849,8 @@ void MWindow::transitionButtonClicked()
     propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     propertyDockWidget->setAllowedAreas( Qt::RightDockWidgetArea);
 
-    auto *transitionWidget = new TransitionWidget(this, this->dmanager);
-    connect(mview, SIGNAL(transitonsChanged()), transitionWidget, SLOT(updateListWidget()));
+    auto *transitionWidget = new TransitionWidget(this, this->dmanager, mview);
+
 
     addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
     propertyDockWidget->setWidget(transitionWidget);

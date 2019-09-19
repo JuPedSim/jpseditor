@@ -390,10 +390,12 @@ void roomWidget::enable_roomSelectionCrossings()
         ui->roomBox_from->clear();
         ui->roomBox_to->clear();
         QList<QString> roomNameList;
+
         for (int i=0; i<datamanager->get_roomlist().size(); i++)
         {
             roomNameList.push_back(datamanager->get_roomlist()[i]->getName());
         }
+
         if (!roomNameList.isEmpty())
         {
             ui->roomBox_from->addItems(roomNameList);
@@ -406,6 +408,7 @@ void roomWidget::enable_roomSelectionCrossings()
             if (cCrossingRow!=-1) // -1 means there is no current item
             {
                 QList<JPSZone*> cRoomlist = datamanager->get_crossingList()[cCrossingRow]->get_roomList();
+
                 if (cRoomlist.size()>1)
                 {
                     int index = datamanager->get_roomlist().indexOf(cRoomlist[0]);
