@@ -734,12 +734,12 @@ void MWindow::saveAsXML(){
         QFile trafficFile(fileNameTraffic);
         if(trafficFile.open(QIODevice::WriteOnly|QIODevice::Text))
             dmanager->writeTrafficXML(trafficFile);
-//
-//        //Save transitions
-//        QString fileNameTransition=fileName.split(".").first()+"_transitions.xml";
-//        QFile transitionFile(fileNameTransition);
-//        if(transitionFile.open(QIODevice::WriteOnly|QIODevice::Text))
-//            dmanager->writeTransitionXML(transitionFile);
+
+        //Save transitions
+        QString fileNameTransition=fileName.split(".").first()+"_transitions.xml";
+        QFile transitionFile(fileNameTransition);
+        if(transitionFile.open(QIODevice::WriteOnly|QIODevice::Text))
+            dmanager->writeTransitionXML(transitionFile);
 
         statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
     }

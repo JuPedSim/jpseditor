@@ -2912,8 +2912,7 @@ void jpsDatamanager::writeTransitionXML(QFile &file)
 
     stream->writeStartElement("JPScore");
     stream->writeStartElement("transitions");
-    writeTransitions(stream,lines);
-    transition_list.clear();
+    writeTransitions(stream, lines);
     stream->writeEndElement();//transitions
 
     stream->writeEndDocument();
