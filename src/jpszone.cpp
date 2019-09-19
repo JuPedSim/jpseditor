@@ -1028,3 +1028,37 @@ const QList<JPSZone *> &JPSZone::getStairList() const
     qDebug("Enter/Leave JPSZone::getStairList");
     return stair_list;
 }
+
+const QList<QList<JPSZone *>> &JPSZone::getZoneList()
+{
+    zone_list.clear();
+
+    zone_list.append(corridor_list);
+    zone_list.append(lobby_list);
+    zone_list.append(office_list);
+    zone_list.append(stair_list);
+    zone_list.append(platfrom_list);
+
+    qDebug("Enter/Leave JPSZone::getZoneList");
+
+    return zone_list;
+}
+
+QString JPSZone::getTypeInString() const
+{
+    switch (zoneType)
+    {
+        case Corridor:
+            return "Corridor";
+        case Lobby:
+            return "Lobby";
+        case Office:
+            return "Office";
+        case Stair:
+            return "Stair";
+        case Platform:
+            return "Platform";
+        default:
+            return "";
+    }
+}
