@@ -2947,15 +2947,18 @@ const QList<JPSGoal *> &jpsDatamanager::getGoallist()
 
 void jpsDatamanager::writeTrafficXML(QFile &file)
 {
-    QXmlStreamWriter *stream = new QXmlStreamWriter(&file);
-    QList<jpsCrossing *> crossings =get_crossingList();
+    auto *stream = new QXmlStreamWriter(&file);
+
     QList<jpsCrossing *> doorlist;
 
-    for(jpsCrossing *crossing:crossings)
+    for(JPSZone *room : roomlist)
     {
-//        if(crossing->IsExit())
-//            doorlist.append(crossing);
+        for(jpsCrossing *door : room->getCrossingList())
+        {
+            doorlist.append(door);
+        }
     }
+
 
     stream->setAutoFormatting(true);
 
@@ -2969,9 +2972,8 @@ void jpsDatamanager::writeTrafficXML(QFile &file)
     stream->writeStartElement("traffic_constrains");
     stream->writeStartElement("doors");
     writeTraffics(stream, doorlist);
-    doorlist.clear();
-    stream->writeEndElement(); //end doors
 
+    stream->writeEndElement(); //end doors
     stream->writeEndDocument();
 
     delete stream;
