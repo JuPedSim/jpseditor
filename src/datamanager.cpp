@@ -833,7 +833,7 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
 
         writeSubRoom(stream,room,lines);
 
-        writeCrossings(stream,lines);
+        writeCrossings(stream, room, lines);
 
         stream->writeEndElement();//room
     }
@@ -943,53 +943,40 @@ void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, JPSZone *room, QList
     qDebug("Leave jpsDatamanager::writeSubRoom");
 }
 
-void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
+void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, JPSZone *room, QList<jpsLineItem *> &lines)
 {
     qDebug("Enter jpsDatamanager::writeCrossings");
     stream->writeStartElement("crossings");
 
-    for (int i=0; i<crossingList.size(); i++)
+    if(room == nullptr)
+        return;
+
+    for (jpsCrossing *crossing : room->getCrossingList())
     {
-        if (crossingList[i]->get_roomList().size() == 2 // A crossing must between two subrooms or romm and stair
-        && !(crossingList[i]->get_roomList()[0]->getType()==Stair
-        && crossingList[i]->get_roomList()[1]->getType()==Stair)) // both sides can't be stair at the same time
+        if (crossing->get_roomList().size() == 2 // A crossing must between two subrooms or romm and stair
+            && !(crossing->get_roomList()[0]->getType()==Stair
+            && crossing->get_roomList()[1]->getType()==Stair)) // both sides can't be stair at the same time
         {
             stream->writeStartElement("crossing");
-            stream->writeAttribute("id",QString::number(i));
+            stream->writeAttribute("id", QString::number(crossing->get_id()));
 
-            stream->writeAttribute("subroom1_id",QString::number(crossingList[i]->get_roomList()[0]->get_id()));
-            stream->writeAttribute("subroom2_id",QString::number(crossingList[i]->get_roomList()[1]->get_id()));
+            stream->writeAttribute("subroom1_id",QString::number(crossing->get_roomList()[0]->get_id()));
+            stream->writeAttribute("subroom2_id",QString::number(crossing->get_roomList()[1]->get_id()));
 
             stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(crossingList[i]->get_cLine()->get_line()->line().x1()));
-            stream->writeAttribute("py",QString::number(crossingList[i]->get_cLine()->get_line()->line().y1()));
+            stream->writeAttribute("px",QString::number(crossing->get_cLine()->get_line()->line().x1()));
+            stream->writeAttribute("py",QString::number(crossing->get_cLine()->get_line()->line().y1()));
             stream->writeEndElement(); //vertex
 
             stream->writeStartElement("vertex");
-            stream->writeAttribute("px",QString::number(crossingList[i]->get_cLine()->get_line()->line().x2()));
-            stream->writeAttribute("py",QString::number(crossingList[i]->get_cLine()->get_line()->line().y2()));
+            stream->writeAttribute("px",QString::number(crossing->get_cLine()->get_line()->line().x2()));
+            stream->writeAttribute("py",QString::number(crossing->get_cLine()->get_line()->line().y2()));
             stream->writeEndElement(); //vertex
 
             stream->writeEndElement(); //crossing
 
-            lines.removeOne(crossingList[i]->get_cLine());
+            lines.removeOne(crossing->get_cLine());
         }
-        else
-        {
-            //TODO: Exception handling, error return to event log
-//            this->newTransition(crossingList[i]->get_cLine());
-//            if (crossingList[i]->get_roomList().size()>1)
-//            {
-//                // mention stair id first
-//                if (crossingList[i]->get_roomList()[0]->getType()=="Stair")
-//                    exitList.back()->set_rooms(crossingList[i]->get_roomList()[0], crossingList[i]->get_roomList()[1]);
-//                else
-//                    exitList.back()->set_rooms(crossingList[i]->get_roomList()[1], crossingList[i]->get_roomList()[0]);
-//            }
-//            else
-//                exitList.back()->set_rooms(crossingList[i]->get_roomList()[0]);
-        }
-
     }
 
     stream->writeEndElement();//crossings

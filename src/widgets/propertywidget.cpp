@@ -272,7 +272,7 @@ void PropertyWidget::addCrossingButtonClicked()
         {
             if(line->getType() == "crossing" && current_zone->getFatherRoom() != nullptr)
             {
-                if(current_zone->getFatherRoom()->getCrossingFromList(line) == nullptr)
+                if(current_zone->getFatherRoom()->getExitedCrossing(line) == nullptr)
                 {
                     auto *crossing = new jpsCrossing(line);
                     current_zone->getFatherRoom()->addCrossing(crossing); // add into crossing list of the room
@@ -281,7 +281,7 @@ void PropertyWidget::addCrossingButtonClicked()
                 else
                 {
                     // this line is already for creating crossing, use existing crossing to add
-                    auto *crossing = current_zone->getFatherRoom()->getCrossingFromList(line);
+                    auto *crossing = current_zone->getFatherRoom()->getExitedCrossing(line);
                     current_zone->addInEnterAndExitList(crossing); // add as enter of exit of the subroom
                 }
             }
