@@ -482,11 +482,9 @@ void MWindow::openFileDXF(){
  */
 void MWindow::openFileXML()
 {
-    if(rwidget!=nullptr)
-    {
-        rwidget->close();
-        rwidget=nullptr;
-    }
+    closeLeftToolBarArea();
+    closeListDockWidget();
+    closePropertyDockWidget();
 
     QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
 

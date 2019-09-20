@@ -414,15 +414,13 @@ void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
 
     stream->writeStartElement("agents_distribution");
 
-    for(int i = 0; i < ui->tableWidget_groups_1->rowCount()-1; i++)
+    for(int i = 0; i < ui->tableWidget_groups_1->rowCount(); i++)
     {
         stream->writeStartElement("group");
 
         // item(0,0) isn't a nullptr ever！
         if(!ui->tableWidget_groups_1->item(i,0)->text().isEmpty())
-        {
             stream->writeAttribute("group_id", ui->tableWidget_groups_1->item(i,0)->text());
-        }
 
         if(ui->tableWidget_groups_1->item(i,1) != nullptr)
             stream->writeAttribute("agent_parameter_id", ui->tableWidget_groups_1->item(i,1)->text());
@@ -755,7 +753,7 @@ void InifileWidget::writeModelKrauData(QXmlStreamWriter *stream, QFile &file)
 
 void InifileWidget::writeAgentParameters(QXmlStreamWriter *stream, QFile &file)
 {
-    for(int i = 0; i < ui->tableWidget_agents->rowCount()-1; i++) // // start agent_parameters
+    for(int i = 0; i < ui->tableWidget_agents->rowCount(); i++) // // start agent_parameters
     {
         stream->writeStartElement("agent_parameters");
         if(ui->tableWidget_agents->item(i,0) != nullptr)
