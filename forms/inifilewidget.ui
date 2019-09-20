@@ -35,7 +35,7 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab_general">
     <attribute name="title">
@@ -131,7 +131,7 @@
              <string/>
             </property>
             <property name="text">
-             <string/>
+             <string>JPS-Project</string>
             </property>
            </widget>
           </item>
@@ -227,7 +227,7 @@
           <item>
            <widget class="QLineEdit" name="lineEdit_general_06">
             <property name="text">
-             <string/>
+             <string>50</string>
             </property>
            </widget>
           </item>
@@ -440,7 +440,7 @@
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>trajectories.xml</string>
      </property>
     </widget>
     <widget class="QComboBox" name="comboBox_general_02">
@@ -2832,6 +2832,9 @@
      </property>
      <property name="text">
       <string>ff global shortest</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QCheckBox" name="checkBox_global">

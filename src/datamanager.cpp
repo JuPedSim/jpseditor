@@ -1656,7 +1656,7 @@ jpsGraphicsView * jpsDatamanager::get_view()
 
 bool jpsDatamanager::readXML(QFile &file)
 {
-
+    qDebug("Enter jpsDatamanager::readXML");
     QXmlStreamReader xmlReader(&file);
 
     // skip header
@@ -1727,6 +1727,7 @@ bool jpsDatamanager::readXML(QFile &file)
      * and resets its internal state to the initial state. */
     xmlReader.clear();
 
+    qDebug("Leave jpsDatamanager::readXML");
     return true;
 }
 
