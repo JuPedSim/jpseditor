@@ -564,6 +564,8 @@ QString MWindow::openGeometry(QString fileName)
     }
     else
     {
+        this->setWindowTitle(fileName);
+
         QString error = ""; // file is loaded successful!
         return error;
     }
