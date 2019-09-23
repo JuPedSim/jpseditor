@@ -246,7 +246,6 @@ MWindow :: MWindow()
     connect(actionOffice, SIGNAL(triggered(bool)),this, SLOT(officeButtonClicked()));
     connect(actionStairs, SIGNAL(triggered(bool)),this, SLOT(stairButtonClicked()));
 
-
     // Assemble actions group
     zoneActionGroup = new QActionGroup(this);
     zoneActionGroup->addAction(actionCorridor);
@@ -263,6 +262,9 @@ MWindow :: MWindow()
 
     // Layer
     connect(actionLayer, SIGNAL(triggered(bool)),this, SLOT(layerButtonClicked()));
+
+    //inifile widget
+    inifileWidget = nullptr;
 }
 
 MWindow::~MWindow()
@@ -1158,11 +1160,6 @@ QMap<QString, QString> MWindow::loadSettings()
 void MWindow::on_actionNew_Inifile_triggered()
 {
     inifileWidget = new InifileWidget(this, dmanager);
-
-    // status bar
-    connect(inifileWidget, SIGNAL(inifileLoaded(QString, int)),
-            this, SLOT(showStatusBarMessage(QString, int)));
-
     inifileWidget->show();
     qDebug()<< "MWindow::on_actionNew_Inifile_triggered(): inifile widget is showed!";
 }

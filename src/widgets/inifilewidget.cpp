@@ -31,9 +31,9 @@
 #include <QFile>
 #include <QtWidgets>
 
-
 #include "inifilewidget.h"
 #include "ui_inifilewidget.h"
+
 #include "src/tinyxml/tinyxml.h"
 
 InifileWidget::InifileWidget(QWidget *parent, jpsDatamanager *dmanager) :
@@ -42,10 +42,10 @@ InifileWidget::InifileWidget(QWidget *parent, jpsDatamanager *dmanager) :
 {
     ui->setupUi(this);
 
-    dataManager = dmanager;
-
     // set InifileWidget as a Window
     setWindowFlag(Qt::Dialog);
+
+    dataManager = dmanager;
 
     // Set model gompertz invisivle
     ui->tabWidget->removeTab(3);
@@ -65,6 +65,10 @@ InifileWidget::InifileWidget(QWidget *parent, jpsDatamanager *dmanager) :
     ui->lineEdit_SourceFile->setReadOnly(true);
     ui->lineEdit_TrafficFile->setReadOnly(true);
 
+    connect(this, SIGNAL(inifileLoaded(QString, int)), parent, SLOT(showStatusBarMessage(QString, int)));
+
+    connect(ui->pushButton_chooseTemplate, SIGNAL(clicked(bool)), this, SLOT(pushButton_chooseTemplateClicked()));
+
     connect(ui->pushButton_Geometry, SIGNAL(clicked(bool)), this, SLOT(pushButton_GeomeryClicked()));
     connect(ui->pushButton_Goal, SIGNAL(clicked(bool)), this, SLOT(pushButton_GoalClicked()));
     connect(ui->pushButton_Source, SIGNAL(clicked(bool)), this, SLOT(pushButton_SourceClicked()));
@@ -75,8 +79,11 @@ InifileWidget::InifileWidget(QWidget *parent, jpsDatamanager *dmanager) :
     connect(ui->pushButton_deleteGroupRow, SIGNAL(clicked(bool)), this, SLOT(pushButton_deleteGrouprowClicked()));
     connect(ui->pushButton_addAgentRow, SIGNAL(clicked(bool)), this, SLOT(pushButton_addAgentRowClicked()));
     connect(ui->pushButton_deleteAgentRow, SIGNAL(clicked(bool)), this, SLOT(pushButton_deleteAgentRowClicked()));
-}
 
+    // template widget
+    templateWidget = nullptr;
+
+}
 InifileWidget::~InifileWidget()
 {
     delete ui;
@@ -1010,6 +1017,34 @@ bool InifileWidget::readInifile(QXmlStreamReader *reader)
 
     return true;
 //    return reader->error();
+}
+
+void InifileWidget::readFromTemplate(QString name) {
+    qDebug("Enter InifileWidget::readFromTemplate");
+    QString fileName = ":/inifile_templates/" + name + ".xml";
+
+    QFile file(fileName);
+
+    auto reader = new QXmlStreamReader(&file);
+
+    if (!file.open(QIODevice::ReadOnly|QIODevice::Text))
+    {
+        QMessageBox::warning(this, tr("JPSeditor"),
+                             tr("Cannot read file %1:\n%2.")
+                                     .arg(QDir::toNativeSeparators(fileName),
+                                          file.errorString()));
+        return;
+    }
+
+    if (!readInifile(reader)) {
+        QMessageBox::warning(this, tr("JPSeditor"),
+                             tr("Parse error in file %1:\n\n%2")
+                                     .arg(QDir::toNativeSeparators(fileName),
+                                          errorString(reader)));
+    } else {
+        emit inifileLoaded(tr("inifile loaded"), 2000);
+    }
+    qDebug("Leave InifileWidget::readFromTemplate");
 }
 
 QString InifileWidget::errorString(QXmlStreamReader *reader) const
@@ -2179,4 +2214,11 @@ void InifileWidget::pushButton_RoutingClicked()
             ,tr("XML-Files (*.xml)"));
 
     ui->lineEdit_global_navi->setText(fileName);
+}
+
+void InifileWidget::pushButton_chooseTemplateClicked() {
+    qDebug("Enter InifileWidget::pushButton_chooseTemplateClicked");
+    templateWidget = new TemplateWidget(this);
+    templateWidget->show();
+    qDebug("Leave InifileWidget::pushButton_chooseTemplateClicked");
 }

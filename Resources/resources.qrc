@@ -73,4 +73,7 @@
         <file>Icons/track.png</file>
         <file>Icons/layers.png</file>
     </qresource>
+    <qresource prefix="/">
+        <file>inifile_templates/test_1.xml</file>
+    </qresource>
 </RCC>
