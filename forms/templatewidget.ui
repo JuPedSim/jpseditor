@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TemplateWidget</class>
+ <widget class="QWidget" name="TemplateWidget">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>280</width>
+    <height>478</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Choose Template</string>
+  </property>
+  <widget class="QScrollArea" name="scrollArea">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>261</width>
+     <height>421</height>
+    </rect>
+   </property>
+   <property name="widgetResizable">
+    <bool>true</bool>
+   </property>
+   <widget class="QWidget" name="scrollAreaWidgetContents">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>259</width>
+      <height>419</height>
+     </rect>
+    </property>
+    <widget class="QTreeWidget" name="treeWidget">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>261</width>
+       <height>421</height>
+      </rect>
+     </property>
+     <column>
+      <property name="text">
+       <string>Template</string>
+      </property>
+     </column>
+     <item>
+      <property name="text">
+       <string>Demos</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>scenario_1_corridor</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>scenario_2_bottleneck</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>scenario_3_corner</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>scenario_4_stairs</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>scenario_5_ship</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>scenario_6_cognitive_map</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>scenario_7_floorfield</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>scenario_10_big_room</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>scenario_11_sources</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>scenario_12_waiting_area</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>scenario_13_schedule</string>
+       </property>
+      </item>
+     </item>
+     <item>
+      <property name="text">
+       <string>Utest</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>juelichtests</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>test_1</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_2</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_3</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_4</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_5</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_6</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_7</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_8</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_9</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_10</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_11</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_12</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_13</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_14</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_15</string>
+        </property>
+       </item>
+      </item>
+     </item>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>440</y>
+     <width>261</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QPushButton" name="pushButton_cancel">
+      <property name="text">
+       <string>Cancel</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton_choose">
+      <property name="text">
+       <string>Choose</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

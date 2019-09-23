@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "src/tinyxml/tinyxml.h"
 #include "src/datamanager.h"
+#include "src/widgets/templatewidget.h"
 
 namespace Ui {
 class InifileWidget;
@@ -36,6 +37,8 @@ public slots:
     void pushButton_deleteGrouprowClicked();
     void pushButton_addAgentRowClicked();
     void pushButton_deleteAgentRowClicked();
+    void pushButton_chooseTemplateClicked();
+    void readFromTemplate(QString name);
 
     //Read inifile
     bool readInifile(QXmlStreamReader *reader);
@@ -98,6 +101,8 @@ private:
     Ui::InifileWidget *ui;
 
     jpsDatamanager *dataManager;
+
+    TemplateWidget *templateWidget;
 
     void writeHeaderData(QXmlStreamWriter *stream, QFile &file);
     void writeRoutingData(QXmlStreamWriter *stream, QFile &file);

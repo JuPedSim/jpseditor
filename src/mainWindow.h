@@ -53,6 +53,7 @@
 #include "src/widgets/propertywidget.h"
 #include "src/widgets/transitionwidget.h"
 #include "src/widgets/layerwidget.h"
+#include "src/widgets/templatewidget.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 
