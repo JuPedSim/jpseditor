@@ -805,7 +805,6 @@ void MWindow::saveAsXML(){
     qDebug("Leave MWindow::saveAsXML");
 }
 
-
 void MWindow::saveAsDXF()
 {
     qDebug("Enter MWindow::saveAsDXF");

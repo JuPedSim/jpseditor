@@ -36,9 +36,6 @@
 #    endif
 #endif
 
-#include "mainWindow.h"
-
-#define LOG_FILE_KEEP_NUM 30
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
@@ -160,6 +157,3 @@ int main(int argc, char* argv[])
 
     return app.exec();
 }
-
-
-
