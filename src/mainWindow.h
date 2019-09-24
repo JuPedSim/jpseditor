@@ -54,6 +54,7 @@
 #include "src/widgets/transitionwidget.h"
 #include "src/widgets/layerwidget.h"
 #include "src/widgets/templatewidget.h"
+#include "src/widgets/runningwidget.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
 
@@ -69,6 +70,7 @@ private:
     widgetLandmark *lwidget;
     InifileWidget *inifileWidget;
 
+    QDockWidget *bottomDockWidget;
     QDockWidget *propertyDockWidget;
     QDockWidget *listDockWidget;
 
@@ -205,6 +207,9 @@ protected slots:
 
     // Layer
     void layerButtonClicked();
+
+    // Running widget
+    void runSimulationButtonClicked();
 
 private slots:
     void on_actionCopy_triggered();

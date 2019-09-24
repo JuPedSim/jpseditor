@@ -264,8 +264,12 @@ MWindow :: MWindow()
     // Layer
     connect(actionLayer, SIGNAL(triggered(bool)),this, SLOT(layerButtonClicked()));
 
-    //inifile widget
+    // Inifile widget
     inifileWidget = nullptr;
+
+    // Running widget
+    bottomDockWidget = nullptr;
+    connect(actionRunSimulation, SIGNAL(triggered(bool)),this,SLOT(runSimulationButtonClicked()));
     qDebug("Leave MWindow :: MWindow");
 }
 
@@ -554,7 +558,7 @@ void MWindow::openFileXML()
         msgBox.setDetailedText(error);
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.exec();
-        
+
     } else
     {
         statusBar()->showMessage(tr("All files successfully loaded!"),10000);
@@ -1581,4 +1585,21 @@ void MWindow::stairButtonClicked()
 
     addListDockWidget("Stair");
     qDebug("Leave MWindow::stairButtonClicked");
+}
+
+void MWindow::runSimulationButtonClicked()
+{
+    closeLeftToolBarArea();
+    closeListDockWidget();
+    closePropertyDockWidget();
+
+    qDebug("Enter MWindow::runSimulationButtonClicked");
+    bottomDockWidget = new QDockWidget("Run Simulation", this);
+    bottomDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    bottomDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+
+    auto *runningWidget = new RunningWidget(this);
+    addDockWidget(Qt::BottomDockWidgetArea, bottomDockWidget);
+    bottomDockWidget->setWidget(runningWidget);
+    qDebug("Leave MWindow::runSimulationButtonClicked");
 }
