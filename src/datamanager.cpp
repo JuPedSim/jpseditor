@@ -2067,7 +2067,7 @@ void jpsDatamanager::parseHline(QXmlStreamReader &xmlReader)
 
 void jpsDatamanager::parseCrossings(const QDomElement &element)
 {
-    qDebug("Leave jpsDatamanager::parseCrossings");  
+    qDebug("Leave jpsDatamanager::parseCrossings");
     QDomNodeList crossings = element.elementsByTagName("crossing");
 
     for (int i = 0; i < crossings.length(); i++)

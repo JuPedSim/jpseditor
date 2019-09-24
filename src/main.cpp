@@ -36,9 +36,6 @@
 #    endif
 #endif
 
-#include "mainWindow.h"
-
-#define LOG_FILE_KEEP_NUM 30
 
 
 #include "mainWindow.h"
@@ -166,6 +163,3 @@ int main(int argc, char* argv[])
 
     return app.exec();
 }
-
-
-
