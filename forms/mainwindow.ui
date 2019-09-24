@@ -64,6 +64,7 @@
     <addaction name="actionLandmarkWidget"/>
     <addaction name="actionNew_Inifile"/>
     <addaction name="actionBackground"/>
+    <addaction name="actionRunSimulation"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -962,6 +963,11 @@
    </property>
    <property name="text">
     <string>Layer</string>
+   </property>
+  </action>
+  <action name="actionRunSimulation">
+   <property name="text">
+    <string>Run Simulation</string>
    </property>
   </action>
  </widget>

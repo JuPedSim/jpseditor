@@ -186,6 +186,7 @@ set( SRCS
     src/widgets/layerwidget.cpp
     src/models/layer.cpp
     src/widgets/templatewidget.cpp
+    src/widgets/runningwidget.cpp
         )
 # all header files that should be treated with moc
 set( HDR
@@ -247,6 +248,7 @@ set( HDR
     src/widgets/layerwidget.h
     src/models/layer.h
     src/widgets/templatewidget.h
+    src/widgets/runningwidget.h
         )
 
 # *.ui files
@@ -265,6 +267,7 @@ set( UIS
     forms/transitionwidget.ui
     forms/layerwidget.ui
     forms/templatewidget.ui
+    forms/runningwidget.ui
   )
 
 # and finally a resource file
