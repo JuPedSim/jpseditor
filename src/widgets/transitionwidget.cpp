@@ -41,7 +41,8 @@ TransitionWidget::TransitionWidget(QWidget *parent, jpsDatamanager *dmanager, jp
 
     updateListWidget();
 
-    connect(ui->listWidget_transitions,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showRoomsinButton()));
+    connect(ui->listWidget_transitions, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlightWall(QListWidgetItem *)));
+    connect(ui->listWidget_transitions,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showRoomsinButton(QListWidgetItem*)));
     connect(ui->pushButton_apply, SIGNAL(clicked()),this,SLOT(applyRooms()));
 
     connect(view, SIGNAL(transitonsChanged()), this, SLOT(updateListWidget()));
@@ -109,7 +110,7 @@ void TransitionWidget::applyRooms()
     qDebug("Leave applyRooms");
 }
 
-void TransitionWidget::showRoomsinButton()
+void TransitionWidget::showRoomsinButton(QListWidgetItem *item)
 {
     qDebug("Enter TransitionWidget::showRoomsinButton");
     ui->comboBox_from->clear();
@@ -129,5 +130,38 @@ void TransitionWidget::showRoomsinButton()
         }
     }
 
+    int cRow = ui->listWidget_transitions->currentRow();
+    auto *transition = data->getTransitionList()[cRow];
+    if(!transition->get_roomList().isEmpty())
+    {
+        if(transition->get_roomList()[0] == nullptr)
+        {
+            ui->comboBox_from->setCurrentText("Outside");
+        } else
+        {
+            ui->comboBox_from->setCurrentText(transition->get_roomList()[0]->getName());
+        }
+
+        if(transition->get_roomList()[1] == nullptr)
+        {
+            ui->comboBox_to->setCurrentText("Outside");
+        } else
+        {
+            ui->comboBox_to->setCurrentText(transition->get_roomList()[1]->getName());
+        }
+    }
+
     qDebug("Leave TransitionWidget::showRoomsinButton");
+}
+
+void TransitionWidget::highlightWall(QListWidgetItem *item)
+{
+    qDebug("Enter PropertyWidget::highlightWall");
+    int cRow = ui->listWidget_transitions->currentRow();
+
+    auto *line = data->getTransitionList()[cRow];
+    view->unmark_all_lines();
+    view->select_line(line->get_cLine());
+
+    qDebug("Leave PropertyWidget::highlightWall");
 }

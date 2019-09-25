@@ -324,31 +324,6 @@ QList<QPointF> JPSZone::GetDoorVertices() const
     return vertices;
 }
 
-void JPSZone::AddDoor(jpsCrossing *door)
-{
-    if (!crossing_list.contains(door))
-        crossing_list.push_back(door);
-    //outer_polygon.push_back(door->get_cLine()->get_line()->line());
-}
-
-void JPSZone::AddInnerDoor(jpsCrossing *door, int id_polygon)
-{
-
-    if (!crossing_list.contains(door))
-    {
-        crossing_list.push_back(door);
-        if (id_polygon >= inner_polygons.size())
-            inner_polygons.push_back(QVector<QLineF>{});
-
-        inner_polygons[id_polygon].push_back(door->get_cLine()->get_line()->line());
-    }
-}
-
-//QPolygonF JPSZone::RoomAsPolygon() const
-//{
-//    return QPolygonF(get_vertices());
-//}
-
 QVector<QPointF> JPSZone::RoomAsSortedPolygon(const QVector<QLineF>& lines) const
 {
      qDebug("Enter JPSZone::RoomAsSortedPolygon");
@@ -1042,6 +1017,44 @@ const QList<QList<JPSZone *>> &JPSZone::getZoneList()
     qDebug("Enter/Leave JPSZone::getZoneList");
 
     return zone_list;
+}
+
+JPSZone *JPSZone::getSubroomWithID(QString room_id, QString subroom_id)
+{
+    qDebug("Enter JPSZone::getSubroomWithID");
+    for(JPSZone *corridor : corridor_list)
+    {
+        if(corridor->getFatherRoom()->get_id() == room_id.toInt() || corridor->get_id() == subroom_id)
+            return corridor;
+    }
+
+    for(JPSZone *lobby : lobby_list)
+    {
+        if(lobby->getFatherRoom()->get_id() == room_id.toInt() || lobby->get_id() == subroom_id)
+            return lobby;
+    }
+
+    for(JPSZone *office : office_list)
+    {
+        if(office->getFatherRoom()->get_id() == room_id.toInt() || office->get_id() == subroom_id)
+            return office;
+    }
+
+    for(JPSZone *stair : stair_list)
+    {
+        if(stair->getFatherRoom()->get_id() == room_id.toInt() || stair->get_id() == subroom_id)
+            return stair;
+    }
+
+    for(JPSZone *platfrom : platfrom_list)
+    {
+        if(platfrom->getFatherRoom()->get_id() == room_id.toInt() || platfrom->get_id() == subroom_id)
+            return platfrom;
+    }
+
+    return nullptr;
+
+    qDebug("Leave JPSZone::getSubroomWithID");
 }
 
 QString JPSZone::getTypeInString() const

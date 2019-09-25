@@ -80,14 +80,4 @@ void jpsTransition::set_rooms(JPSZone *room1, JPSZone *room2)
     roomList.clear();
     roomList.push_back(room1);
     roomList.push_back(room2);
-//    if (room1 != nullptr)
-//    {
-//        roomList.push_back(room1);
-//    }
-//
-//    roomList.push_back(room1);
-//    if (room2 != nullptr)
-//    {
-//        roomList.push_back(room2);
-//    }
 }

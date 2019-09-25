@@ -144,8 +144,6 @@ public:
 
     void parseTransitions(QXmlStreamReader &xmlReader);
     void parseObstacles(QXmlStreamReader &xmlReader, JPSZone *room);
-    QPointF parseUp(QXmlStreamReader &xmlReader); /// stair's up point
-    QPointF parseDown(QXmlStreamReader &xmlReader); /// stair's down point
 
     // Write XML
     void writeXML(QFile &file);
