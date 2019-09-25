@@ -1259,15 +1259,15 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
     newLine->set_id(id_counter);
     id_counter++;
 
-    if (type=="Crossing")
+    if (type=="crossing")
     {
         newLine->setCrossing();
     }
-    else if (type=="Exit")
+    else if (type=="transition")
     {
         newLine->setCrossing();
     }
-    else if (type=="Hline")
+    else if (type=="hline")
     {
         newLine->setHline();
     }

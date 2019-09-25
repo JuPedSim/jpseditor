@@ -136,8 +136,7 @@ public:
     void parseRoom(const QDomElement &element);
     void parseSubRoom(const QDomElement &element);
     void parseCrossings(const QDomElement &element);
-    void parseWalls(const QDomElement &element, JPSZone* subroom);
-//    void parseWalls(const QDomElement &element, jpsObstacle* subroom);
+
 
     bool readRoutingXML(QFile &file);
     void parseHline(QXmlStreamReader &xmlReader);
