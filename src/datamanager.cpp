@@ -1657,78 +1657,199 @@ jpsGraphicsView * jpsDatamanager::get_view()
 bool jpsDatamanager::readXML(QFile &file)
 {
     qDebug("Enter jpsDatamanager::readXML");
-    QXmlStreamReader xmlReader(&file);
+    QString errorStr;
+    int errorLine;
+    int errorColumn;
 
-    // skip header
-    xmlReader.readNext();
-    xmlReader.readNext();
+    QDomDocument doc;
 
-    // see if file starts with geometry
-    if (xmlReader.name() != "geometry")
-        return false;
-
-    while(!xmlReader.atEnd() && !xmlReader.hasError())
-    {
-        /* Read next element.*/
-        QXmlStreamReader::TokenType token = xmlReader.readNext();
-        /* If token is just StartDocument, we'll go to next.*/
-        if(token == QXmlStreamReader::StartDocument)
-        {
-            continue;
-        }
-
-        /* If token is StartElement, we'll see if we can read it.*/
-        if(token == QXmlStreamReader::StartElement)
-        {
-            /* If it's named rooms, we'll go to the next.*/
-            if(xmlReader.name() == "rooms")
-            {
-                continue;
-            }
-            /* If it's named room, we'll dig the information from there.*/
-            if(xmlReader.name() == "room")
-            {
-                continue;
-            }
-            if(xmlReader.name() == "crossings")
-            {
-                continue;
-            }
-            if(xmlReader.name() == "transitions")
-            {
-                continue;
-            }
-            if(xmlReader.name() == "subroom")
-            {
-                this->parseSubRoom(xmlReader);
-            }
-            if(xmlReader.name() == "crossing")
-            {
-                this->parseCrossings(xmlReader);
-            }
-            if(xmlReader.name() == "transition")
-            {
-                this->parseTransitions(xmlReader);
-            }
-        }
-
-    }
-
-    /* Error handling. */
-    if(xmlReader.hasError())
-    {
-        QMessageBox::critical(_mView,
-                              "QXSRExample::parseXML",
-                              xmlReader.errorString(),
-                              QMessageBox::Ok);
+    if (!doc.setContent(&file, false, &errorStr, &errorLine,
+                        &errorColumn)) {
+        std::cerr << "Error: Parse error at line " << errorLine << ", "
+                  << "column " << errorColumn << ": "
+                  << qPrintable(errorStr) << std::endl;
         return false;
     }
-    /* Removes any device() or data from the reader
-     * and resets its internal state to the initial state. */
-    xmlReader.clear();
+
+    QDomElement root = doc.documentElement();
+    if (root.tagName() != "geometry") {
+        std::cerr << "Error: Not a geometry file" << std::endl;
+        return false;
+    }
+
+    parseGeometry(root);
 
     qDebug("Leave jpsDatamanager::readXML");
     return true;
+}
+
+void jpsDatamanager::parseGeometry(const QDomElement &element)
+{
+    qDebug("Enter jpsDatamanager::parseGeometry");
+    QDomNode child = element.firstChild();
+    while (!child.isNull())
+    {
+        if (child.toElement().tagName() == "rooms")
+        {
+            parseRooms(child.toElement());
+        }
+        else if (child.toElement().tagName() == "transitions")
+        {
+            parseTransitions(child.toElement());
+        }
+        else if (child.toElement().tagName() == "undefine")
+        {
+            parseUndefine(child.toElement());
+        }
+        child = child.nextSibling();
+    }
+    qDebug("Leave jpsDatamanager::parseGeometry");
+}
+
+void jpsDatamanager::parseRooms(const QDomElement &element)
+{
+    qDebug("Enter jpsDatamanager::parseRooms");
+    QDomNode child = element.firstChild();
+
+    while (!child.isNull())
+    {
+        if (child.toElement().tagName() == "room")
+        {
+            parseRoom(child.toElement());
+        }
+
+
+        child = child.nextSibling();
+    }
+    qDebug("Leave jpsDatamanager::parseRooms");
+}
+
+void jpsDatamanager::parseTransitions(const QDomElement &element)
+{
+    qDebug("Enter jpsDatamanager::parseTransitions");
+    QDomNode child = element.firstChild();
+
+    while (!child.isNull())
+    {
+        if (child.toElement().tagName() == "transitions")
+        {
+
+        }
+
+        child = child.nextSibling();
+    }
+    qDebug("Leave jpsDatamanager::parseTransitions");
+}
+
+void jpsDatamanager::parseUndefine(const QDomElement &element)
+{
+    qDebug("Enter jpsDatamanager::parseUndefine");
+    QDomNode child = element.firstChild();
+
+    while (!child.isNull())
+    {
+        if (child.toElement().tagName() == "room")
+            parseRoom(child.toElement());
+
+        child = child.nextSibling();
+    }
+    qDebug("Leave jpsDatamanager::parseUndefine");
+}
+
+void jpsDatamanager::parseRoom(const QDomElement &element)
+{
+    qDebug("Enter jpsDatamanager::parseRoom");
+    addRoom();
+    roomlist.last()->set_id(element.attribute("id").toInt());
+    roomlist.last()->setName(element.attribute("caption"));
+    qDebug("%s", roomlist.last()->getName().toStdString().data());
+
+    QDomNode child = element.firstChild();
+
+    while (!child.isNull()) {
+        if (child.toElement().tagName() == "subroom")
+        {
+            parseSubRoom(child.toElement());
+        }
+        else if (child.toElement().tagName() == "crossing")
+        {
+            parseCrossings(child.toElement());
+        }
+        child = child.nextSibling();
+    }
+    qDebug("Leave jpsDatamanager::parseRoom");
+}
+
+
+void jpsDatamanager::parseSubRoom(const QDomElement &element)
+{
+    qDebug("Enter jpsDatamanager::parseSubRoom");
+    // Create subroom
+    JPSZone *current_subroom = nullptr;
+
+    if(element.attribute("class") == "corridor" || element.attribute("class") == "subroom")
+    {
+        addCorridor(roomlist.last());
+        current_subroom = roomlist.last()->getCorridorList().last();
+    }else if(element.attribute("class") == "platform")
+    {
+        addPlatform(roomlist.last());
+        current_subroom = roomlist.last()->getPlatfromList().last();
+    }else if(element.attribute("class") == "lobby")
+    {
+        addLobby(roomlist.last());
+        current_subroom = roomlist.last()->getLobbyList().last();
+    }else if(element.attribute("class") == "office")
+    {
+        addOffice(roomlist.last());
+        current_subroom = roomlist.last()->getOfficeList().last();
+    }else if(element.attribute("class") == "stair")
+    {
+        addStair(roomlist.last());
+        current_subroom = roomlist.last()->getStairList().last();
+    } else{
+        qDebug("Not vaild subroom type");
+        return;
+    }
+
+    current_subroom->set_id(element.attribute("id").toInt());
+    current_subroom->setName(element.attribute("caption"));
+
+    if(element.hasAttribute("A_x"))
+        current_subroom->set_ax(element.attribute("A_x").toFloat());
+    else
+        current_subroom->set_ax(0.0);
+
+    if(element.hasAttribute("B_y"))
+        current_subroom->set_by(element.attribute("B_y").toFloat());
+    else
+        current_subroom->set_by(0.0);
+
+    auto elevation = element.attribute("C_z").toFloat();
+
+    current_subroom->set_cz(elevation);
+    current_subroom->set_elevation(elevation);
+
+    QDomElement polygon = element.firstChildElement("polygon")
+
+
+    QDomNode child = element.firstChild();
+
+    while (!child.isNull())
+    {
+        if (child.toElement().tagName() == "polygon")
+        {
+
+
+            parseWalls(child.toElement(), current_subroom);
+        }
+        else if (child.toElement().tagName() == "obstacle")
+        {
+            //TODO: Read obstacle
+        }
+        child = child.nextSibling();
+    }
+    qDebug("Leave jpsDatamanager::parseSubRoom");
 }
 
 bool jpsDatamanager::readRoutingXML(QFile &file)
@@ -1814,49 +1935,24 @@ void jpsDatamanager::parseHline(QXmlStreamReader &xmlReader)
     }
 }
 
-void jpsDatamanager::parseSubRoom(QXmlStreamReader &xmlReader)
+void jpsDatamanager::parseWalls(const QDomElement &element, JPSZone *room)
 {
-    // new subroom
-    this->addRoom();
-    /* Let's get the attributes for subroom */
-    QXmlStreamAttributes attributes = xmlReader.attributes();
-    /* Let's check that subroom has id attribute. */
+    qDebug("Enter jpsDatamanager::parseWalls");
 
-    /* We'll add it to the room. */
-    roomlist.last()->set_id(attributes.value("id").toString().toInt());
-    if(attributes.hasAttribute("A_x"))
-        roomlist.last()->set_ax(attributes.value("A_x").toString().toFloat());
-    else
-        roomlist.last()->set_ax(0.0);
+    if(element.tagName() != "wall")
+        return;
 
-    roomlist.last()->set_by(attributes.value("B_y").toString().toFloat());
-    auto elevation = attributes.value("C_z").toString().toFloat();
-    
-    roomlist.last()->set_cz(elevation);
-    roomlist.last()->set_elevation(elevation);
+    QDomNode child = element.firstChild(); //vertex
 
-    /* We'll add it to the room. */
-    roomlist.last()->setName(attributes.value("caption").toString());
-    if(attributes.hasAttribute("class"))
+    while (!child.isNull())
     {
-        if (attributes.value("class").toString()=="subroom")
-            roomlist.last()->setType(Corridor);
-        else
-            roomlist.last()->setType(convertToZoneType(attributes.value("class").toString()));
+        if (child.toElement().tagName() == "vertex")
+        {
+            float px = child.toElement().attribute("px").toFloat();
+            float py = child.toElement().attribute("py").toFloat();
+        }
+        child = child.nextSibling();
     }
-    this->parseWalls(xmlReader,roomlist.last());
-    this->parseObstacles(xmlReader,roomlist.last());
-
-    /* if room is container for not assigned lines */
-
-    if (roomlist.last()->get_id()==-1)
-    {
-        remove_room(roomlist.last());
-    }
-}
-
-void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, JPSZone *room)
-{
 
     while(!(xmlReader.tokenType() == QXmlStreamReader::EndElement &&
                 xmlReader.name() == "subroom"))
@@ -1905,49 +2001,48 @@ void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, JPSZone *room)
              roomlist.last()->set_down(down);
         }
     } // while  subroom
-
+    qDebug("Leave jpsDatamanager::parseWalls");
 }
 
+//void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, jpsObstacle *room)
+//{
+//
+//    while(!(xmlReader.tokenType() == QXmlStreamReader::EndElement &&
+//                xmlReader.name() == "obstacle"))
+//    {
+//
+//        xmlReader.readNext();
+//
+//        if(xmlReader.name() == "polygon")
+//        {
+//            continue;
+//        }
+//        else if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
+//                 xmlReader.name() == "vertex")
+//        {
+//
+//            // get coords from vertices
+//            qreal x1=xmlReader.attributes().value("px").toString().toFloat();
+//            qreal y1=xmlReader.attributes().value("py").toString().toFloat();
+//
+//            // go to next vertex
+//            xmlReader.readNext();
+//            xmlReader.readNext();
+//            xmlReader.readNext();
+//
+//            qreal x2=xmlReader.attributes().value("px").toString().toFloat();
+//            qreal y2=xmlReader.attributes().value("py").toString().toFloat();
+//            // add Line to graphview
+//            jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"Wall");
+//
+//            room->addWall(lineItem);
+//
+//        }
+//    }
+//}
 
-void jpsDatamanager::parseWalls(QXmlStreamReader &xmlReader, jpsObstacle *room)
-{
 
-    while(!(xmlReader.tokenType() == QXmlStreamReader::EndElement &&
-                xmlReader.name() == "obstacle"))
-    {
-
-        xmlReader.readNext();
-
-        if(xmlReader.name() == "polygon")
-        {
-            continue;
-        }
-        else if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
-                 xmlReader.name() == "vertex")
-        {
-
-            // get coords from vertices
-            qreal x1=xmlReader.attributes().value("px").toString().toFloat();
-            qreal y1=xmlReader.attributes().value("py").toString().toFloat();
-
-            // go to next vertex
-            xmlReader.readNext();
-            xmlReader.readNext();
-            xmlReader.readNext();
-
-            qreal x2=xmlReader.attributes().value("px").toString().toFloat();
-            qreal y2=xmlReader.attributes().value("py").toString().toFloat();
-            // add Line to graphview
-            jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"Wall");
-
-            room->addWall(lineItem);
-
-        }
-    }
-}
-
-
-void jpsDatamanager::parseCrossings(QXmlStreamReader &xmlReader)
+void jpsDatamanager::parseCrossings(const QDomElement &element)
 {
      qDebug("Enter jpsDatamanager::parseCrossings");
     int id = xmlReader.attributes().value("id").toString().toInt();

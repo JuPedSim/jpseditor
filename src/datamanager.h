@@ -36,6 +36,8 @@
 #include <QGraphicsView>
 #include <QMessageBox>
 #include <random>
+#include <QtXml>
+
 #include "jpszone.h"
 #include "jpscrossing.h"
 #include "jpsLineItem.h"
@@ -127,12 +129,20 @@ public:
 
     // Read XML
     bool readXML(QFile &file);
+    void parseGeometry(const QDomElement &element);
+    void parseRooms(const QDomElement &element);
+    void parseTransitions(const QDomElement &element);
+    void parseUndefine(const QDomElement &element);
+    void parseRoom(const QDomElement &element);
+    void parseSubRoom(const QDomElement &element);
+    void parseCrossings(const QDomElement &element);
+    void parseWalls(const QDomElement &element, JPSZone* subroom);
+//    void parseWalls(const QDomElement &element, jpsObstacle* subroom);
+
     bool readRoutingXML(QFile &file);
     void parseHline(QXmlStreamReader &xmlReader);
-    void parseSubRoom(QXmlStreamReader &xmlReader);
-    void parseWalls(QXmlStreamReader &xmlReader,JPSZone* room);
-    void parseWalls(QXmlStreamReader &xmlReader,jpsObstacle* room);
-    void parseCrossings(QXmlStreamReader &xmlReader);
+
+
     void parseTransitions(QXmlStreamReader &xmlReader);
     void parseObstacles(QXmlStreamReader &xmlReader, JPSZone *room);
     QPointF parseUp(QXmlStreamReader &xmlReader); /// stair's up point
