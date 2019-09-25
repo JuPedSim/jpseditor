@@ -36,7 +36,7 @@ set(README_FILE "${CMAKE_SOURCE_DIR}/README.md")
 set(CMAKE_COLOR_MAKEFILE ON)
 set(JPSEDITOR_MAJOR_VERSION 0)
 set(JPSEDITOR_MINOR_VERSION 8)
-set(JPSEDITOR_PATCH_VERSION 7)
+set(JPSEDITOR_PATCH_VERSION 9)
 set(JPSEDITOR_VERSION
         ${JPSEDITOR_MAJOR_VERSION}.${JPSEDITOR_MINOR_VERSION}.${JPSEDITOR_PATCH_VERSION})
 
@@ -107,6 +107,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/bin")
 # Debug messages
+message( STATUS "CMAKE_BINARY_DIR .............................. " ${CMAKE_BINARY_DIR} )
 message( STATUS "CMAKE_BINARY_DIR .............................. " ${CMAKE_BINARY_DIR} )
 message( STATUS "CMAKE_SOURCE_DIR .............................. " ${CMAKE_SOURCE_DIR} )
 message( STATUS "CMAKE_CURRENT_SOURCE_DIR ...................... " ${CMAKE_CURRENT_SOURCE_DIR} )
@@ -271,7 +272,6 @@ set( RCS
         Resources/resources.qrc
   )
 
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Instruct CMake to run moc automatically when needed.
@@ -299,6 +299,7 @@ if("${DESIRED_QT_VERSION}" STREQUAL "5")
   FIND_PACKAGE(Qt5Xml REQUIRED)
   #-----------------------------------------------------
   set(QT5_INSTALLED TRUE)
+  set(QT_USE_QTXML TRUE)
   set(QTVERSION 5)
   MESSAGE(STATUS "Found Qt version .............................. ${Qt5Core_VERSION_STRING}")
 
@@ -365,7 +366,7 @@ elseif( ${QT5_INSTALLED})
   ${RCS}
   )
  qt5_use_modules(${PROJECT_NAME} Widgets)
- target_link_libraries(${PROJECT_NAME} ${Qt5Widgets_LIBRARIES})
+ target_link_libraries(${PROJECT_NAME} ${Qt5Widgets_LIBRARIES} Qt5::Xml)
 else()
   message(FATAL_ERROR "QT NOT FOUND - ABORT")
 endif()
