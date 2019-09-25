@@ -1727,16 +1727,35 @@ void jpsDatamanager::parseRooms(const QDomElement &element)
 void jpsDatamanager::parseTransitions(const QDomElement &element)
 {
     qDebug("Enter jpsDatamanager::parseTransitions");
-    QDomNode child = element.firstChild();
+    QDomNodeList xTransitionsList=element.elementsByTagName("transition");
 
-    while (!child.isNull())
-    {
-        if (child.toElement().tagName() == "transitions")
-        {
+    for (int i = 0; i < xTransitionsList.length(); i++) {
+        QDomElement xTransition = xTransitionsList.item(i).toElement();
+        QDomNodeList xVertices=xTransition.elementsByTagName("vertex");
 
-        }
+        double x1=xVertices.item(0).toElement().attribute("px", "0").toDouble();
+        double y1=xVertices.item(0).toElement().attribute("py", "0").toDouble();
 
-        child = child.nextSibling();
+        double x2=xVertices.item(1).toElement().attribute("px", "0").toDouble();
+        double y2=xVertices.item(1).toElement().attribute("py", "0").toDouble();
+
+        jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"Exit");
+        auto *transition = new jpsTransition(lineItem);
+
+        transition->set_id(xTransition.attribute("id").toInt());
+        transition->set_type(xTransition.attribute("type"));
+
+        QString room1_id = xTransition.attribute("room1_id");
+        QString room2_id = xTransition.attribute("room2_id");
+        QString subroom1_id = xTransition.attribute("subroom1_id");
+        QString subroom2_id = xTransition.attribute("subroom2_id");
+
+        JPSZone *subroom1 = roomlist.last()->getSubroomWithID(room1_id, subroom1_id);
+        JPSZone *subroom2 = roomlist.last()->getSubroomWithID(room2_id, subroom2_id);
+
+        transition->set_rooms(subroom1,subroom2);
+
+        transition_list.append(transition);
     }
     qDebug("Leave jpsDatamanager::parseTransitions");
 }
@@ -1744,22 +1763,24 @@ void jpsDatamanager::parseTransitions(const QDomElement &element)
 void jpsDatamanager::parseUndefine(const QDomElement &element)
 {
     qDebug("Enter jpsDatamanager::parseUndefine");
-    QDomNode child = element.firstChild();
 
-    while (!child.isNull())
+    QDomNodeList polygons = element.elementsByTagName("polygon");
+
+    for (int i=0; i<polygons.size();i++)
     {
-        if (child.toElement().tagName() == "room")
-            parseRoom(child.toElement());
-
-        child = child.nextSibling();
+        QDomElement vex = polygons.item(i).firstChildElement("vertex");
+        //TODO:read undefine ;
     }
+
+
     qDebug("Leave jpsDatamanager::parseUndefine");
 }
 
 void jpsDatamanager::parseRoom(const QDomElement &element)
 {
     qDebug("Enter jpsDatamanager::parseRoom");
-    addRoom();
+    addRoom(); // Create room
+
     roomlist.last()->set_id(element.attribute("id").toInt());
     roomlist.last()->setName(element.attribute("caption"));
     qDebug("%s", roomlist.last()->getName().toStdString().data());
@@ -1771,7 +1792,7 @@ void jpsDatamanager::parseRoom(const QDomElement &element)
         {
             parseSubRoom(child.toElement());
         }
-        else if (child.toElement().tagName() == "crossing")
+        else if (child.toElement().tagName() == "crossings")
         {
             parseCrossings(child.toElement());
         }
@@ -1779,7 +1800,6 @@ void jpsDatamanager::parseRoom(const QDomElement &element)
     }
     qDebug("Leave jpsDatamanager::parseRoom");
 }
-
 
 void jpsDatamanager::parseSubRoom(const QDomElement &element)
 {
@@ -1858,6 +1878,29 @@ void jpsDatamanager::parseSubRoom(const QDomElement &element)
         }
         polygon = polygon.nextSiblingElement("polygon");
     }
+
+    // Parse up and down for stairs
+    if(current_subroom->getType() == Stair)
+    {
+        QDomNode child = element.firstChild();
+        while (!child.isNull())
+        {
+            if (child.toElement().tagName() == "up")
+            {
+                double px = child.toElement().attribute("px").toDouble();
+                double py = child.toElement().attribute("py").toDouble();
+                current_subroom->set_up(QPointF(px, py));
+            }
+            else if (child.toElement().tagName() == "down")
+            {
+                double px = child.toElement().attribute("px").toDouble();
+                double py = child.toElement().attribute("py").toDouble();
+                current_subroom->set_down(QPointF(px, py));
+            }
+
+            child = child.nextSibling();
+        }
+    }
     qDebug("Leave jpsDatamanager::parseSubRoom");
 }
 
@@ -1924,7 +1967,6 @@ void jpsDatamanager::parseHline(QXmlStreamReader &xmlReader)
         if (xmlReader.tokenType()==QXmlStreamReader::StartElement &&
                          xmlReader.name() == "vertex")
         {
-
             // get coords from vertices
             qreal x1=xmlReader.attributes().value("px").toString().toFloat();
             qreal y1=xmlReader.attributes().value("py").toString().toFloat();
@@ -1939,87 +1981,41 @@ void jpsDatamanager::parseHline(QXmlStreamReader &xmlReader)
             // add Line to graphview
             _mView->addLineItem(x1,y1,x2,y2,"HLine");
         }
-
     }
 }
 
 void jpsDatamanager::parseCrossings(const QDomElement &element)
 {
-//    qDebug("Enter jpsDatamanager::parseCrossings");
-//    int id = xmlReader.attributes().value("id").toString().toInt();
-//    int room_id1 = xmlReader.attributes().value("subroom1_id").toString().toInt();
-//    int room_id2 = xmlReader.attributes().value("subroom2_id").toString().toInt();
-//    qDebug("\t id = %d, room_id1 %d, room_id2  %d,", id, room_id1, room_id2);
-//
-//    // go to first vertex
-//    while(xmlReader.name() != "vertex")
-//    {
-//        xmlReader.readNext();
-//    }
-//
-//    qreal x1=xmlReader.attributes().value("px").toString().toFloat();
-//    qreal y1=xmlReader.attributes().value("py").toString().toFloat();
-//
-//    // go to next vertex
-//    xmlReader.readNext();
-//    xmlReader.readNext();
-//    xmlReader.readNext();
-//
-//    qreal x2=xmlReader.attributes().value("px").toString().toFloat();
-//    qreal y2=xmlReader.attributes().value("py").toString().toFloat();
-//    qDebug("\t x1 = %.2f, y1 = %.2f, x2 = %.2f y2 = %.2f", x1, y1, x2, y2);
-//    jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"Crossing");
-//
-//    if (id!=-2)
-//    {
-//        jpsCrossing* crossing = new jpsCrossing(lineItem);
-//        crossing->set_id(id);
-//
-//        JPSZone* room1 = nullptr;
-//        JPSZone* room2 = nullptr;
-//
-//        ///find rooms which belong to crossing
-//        for (int i=0; i<roomlist.size(); i++)
-//        {
-//            if (roomlist[i]->get_id()==room_id1)
-//            {
-//                room1 = roomlist[i];
-//
-//            }
-//            else if (roomlist[i]->get_id()==room_id2)
-//            {
-//                room2 = roomlist[i];
-//            }
-//        }
-//        if (room1!=nullptr && room2!=nullptr){
-//            crossing->add_rooms(room1,room2);
-//            qDebug("\t added two rooms");
-//        }
-//        crossingList.push_back(crossing);
-//    }
+    QDomNodeList crossings = element.elementsByTagName("crossing");
+
+    for (int i = 0; i < crossings.length(); i++)
+    {
+        QDomElement xCrossing = crossings.item(i).toElement();
+
+        QDomNodeList xVertices=xCrossing.elementsByTagName("vertex");
+
+        QString id= xCrossing.attribute("id","-1");
+
+        double x1=xVertices.item(0).toElement().attribute("px", "0").toDouble();
+        double y1=xVertices.item(0).toElement().attribute("py", "0").toDouble();
+
+        double x2=xVertices.item(1).toElement().attribute("px", "0").toDouble();
+        double y2=xVertices.item(1).toElement().attribute("py", "0").toDouble();
+
+        jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"Crossing");
+        auto *crossing = new jpsCrossing(lineItem);
+
+        QString subroom1_id = xCrossing.attribute("subroom1_id");
+        QString subroom2_id = xCrossing.attribute("subroom2_id");
+
+        JPSZone *subroom1 = roomlist.last()->getSubroomWithID(QString::number(roomlist.last()->get_id()), subroom1_id);
+        JPSZone *subroom2 = roomlist.last()->getSubroomWithID(QString::number(roomlist.last()->get_id()), subroom2_id);
+
+        crossing->add_rooms(subroom1, subroom2);
+
+        roomlist.last()->addCrossing(crossing);
+    }
     qDebug("Leave jpsDatamanager::parseCrossings");
-}
-QPointF jpsDatamanager::parseUp(QXmlStreamReader &xmlReader)
-{
-     // find <up>
-    while(xmlReader.name() != "up")
-    {
-        xmlReader.readNext();
-    }
-    qreal x1=xmlReader.attributes().value("px").toString().toFloat();
-    qreal y1=xmlReader.attributes().value("py").toString().toFloat();
-    return QPointF(x1, y1); 
-}
-QPointF jpsDatamanager::parseDown(QXmlStreamReader &xmlReader)
-{
-     // find <down>
-    while(xmlReader.name() != "down")
-    {
-        xmlReader.readNext();
-    }
-    qreal x1=xmlReader.attributes().value("px").toString().toFloat();
-    qreal y1=xmlReader.attributes().value("py").toString().toFloat();
-    return QPointF(x1, y1); 
 }
 
 void jpsDatamanager::parseTransitions(QXmlStreamReader &xmlReader)

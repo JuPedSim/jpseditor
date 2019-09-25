@@ -40,7 +40,6 @@ JPSZone::JPSZone(int id_zone, JPSZone *father, ZoneType type)
     : enterAndExitList(QList<jpsCrossing *>()), track_list(QList<JPSTrack *>()), wall_list(QList<jpsLineItem *>()),
     lobby_list(QList<JPSZone *>())
 {
-    qDebug("Enter JPSZone::JPSZone");
     id=id_zone;
     zoneType = type;
     father_room = father; // Room hasn't father room, subroom must have a room as father room
@@ -55,7 +54,6 @@ JPSZone::JPSZone(int id_zone, JPSZone *father, ZoneType type)
     C_z=0.0;
     elevation_=0;
     visible=true;
-    qDebug("Return JPSZone::JPSZone");
 }
 
 bool JPSZone::isInWallList(jpsLineItem *wall)
@@ -98,17 +96,14 @@ void JPSZone::addWall(jpsLineItem *newWall)
 
 void JPSZone::addinnerWall(QList<jpsLineItem *> newWalls, int id_polygon)
 {
-    qDebug("Enter JPSZone::addinnerWall");
     for (int i=0; i<newWalls.size(); ++i)
     {
         addinnerWall(newWalls[i],id_polygon);
     }
-    qDebug("Leave JPSZone::addinnerWall");
 }
 
 void JPSZone::addinnerWall(jpsLineItem *newWall, int id_polygon)
 {
-    qDebug("Enter JPSZone::addinnerWall");
     if (newWall->is_Wall() && !wall_list.contains(newWall))
     {
         if (id_polygon >= inner_polygons.size())
@@ -117,7 +112,6 @@ void JPSZone::addinnerWall(jpsLineItem *newWall, int id_polygon)
         wall_list.push_back(newWall);
         inner_polygons[id_polygon].push_back(newWall->get_line()->line());
     }
-    qDebug("Leave JPSZone::addinnerWall");
 }
 
 void JPSZone::removeWall(QList <jpsLineItem *> wall)
@@ -137,32 +131,26 @@ void JPSZone::removeWall(QList <jpsLineItem *> wall)
 */
 void JPSZone::removeWall(jpsLineItem *wall)
 {
-    qDebug("Enter JPSZone::removeWall");
     if (wall == nullptr)
-        qDebug("Var wall is nullptr");
-        qDebug("Leave JPSZone::removeWall");
         return;
 
     wall_list.removeOne(wall);
-    qDebug("Leave JPSZone::removeWall");
 }
 
 void JPSZone::removeTrack(JPSTrack *track)
 {
-    qDebug("Enter JPSZone::removeTrack");
+    qDebug("Enter/Leave JPSZone::removeTrack");
     track_list.removeOne(track);
-    qDebug("Leave JPSZone::removeTrack");
 }
 
 QList<jpsLineItem *> JPSZone::get_listWalls()
 {
-    qDebug("Enter/Return JPSZone::get_listWalls");
+    qDebug("Enter/Leave JPSZone::get_listWalls");
     return wall_list;
 }
 
 QVector<QPointF> JPSZone::get_vertices() const
 {
-    qDebug("Enter JPSZone::get_vertices");
     QVector<QPointF> vertices;
 
     for (int i=0; i<wall_list.size(); i++)
@@ -188,7 +176,7 @@ QVector<QPointF> JPSZone::get_vertices() const
             vertices.push_back(crossing->get_cLine()->get_line()->line().p1());
         }
     }
-    qDebug("Leave JPSZone::get_vertices");
+
     return vertices;
 }
 
@@ -288,20 +276,16 @@ void JPSZone::switchVisibility()
 
 ZoneType JPSZone::getType() const
 {
-    qDebug("Enter/Return ZoneType JPSZone::getType");
     return zoneType;
 }
 
 void JPSZone::setType(const ZoneType &type)
 {
-    qDebug("Enter JPSZone::setType");
     zoneType=type;
-    qDebug("Leave JPSZone::setType");
 }
 
 QList<QPointF> JPSZone::GetDoorVertices() const
 {
-    qDebug("Enter JPSZone::GetDoorVertices");
     QList<QPointF> vertices;
 
     for (int i=0; i<wall_list.size(); i++)
@@ -336,37 +320,9 @@ QList<QPointF> JPSZone::GetDoorVertices() const
             vertices.push_back(wall_list[i]->get_line()->line().p2());
         }
     }
-    qDebug("Leave JPSZone::GetDoorVertices");
+
     return vertices;
 }
-
-void JPSZone::AddDoor(jpsCrossing *door)
-{
-    qDebug("Enter JPSZone::AddDoor");
-    if (!crossing_list.contains(door))
-        crossing_list.push_back(door);
-    //outer_polygon.push_back(door->get_cLine()->get_line()->line());
-    qDebug("Leave JPSZone::AddDoor");
-}
-
-void JPSZone::AddInnerDoor(jpsCrossing *door, int id_polygon)
-{
-    qDebug("Enter JPSZone::AddInnerDoor");
-    if (!crossing_list.contains(door))
-    {
-        crossing_list.push_back(door);
-        if (id_polygon >= inner_polygons.size())
-            inner_polygons.push_back(QVector<QLineF>{});
-
-        inner_polygons[id_polygon].push_back(door->get_cLine()->get_line()->line());
-    }
-    qDebug("Leave JPSZone::AddInnerDoor");
-}
-
-//QPolygonF JPSZone::RoomAsPolygon() const
-//{
-//    return QPolygonF(get_vertices());
-//}
 
 QVector<QPointF> JPSZone::RoomAsSortedPolygon(const QVector<QLineF>& lines) const
 {
@@ -419,13 +375,11 @@ QVector<QPointF> JPSZone::RoomAsSortedPolygon(const QVector<QLineF>& lines) cons
 
 const QVector<QLineF> &JPSZone::GetOuterPolygon() const
 {
-    qDebug("Enter/Return JPSZone::GetOuterPolygon");
     return outer_polygon;
 }
 
 qreal JPSZone::GetArea() const
 {
-    qDebug("Enter/Return JPSZone::GetArea");
     return area_;
 }
 
@@ -527,7 +481,6 @@ void JPSZone::IdentifyInnerOuter()
 
 QRectF JPSZone::CalculateBoundingBox() const
 {
-    qDebug("Enter JPSZone::CalculateBoundingBox");
     if (outer_polygon.empty())
         return QRectF();
 
@@ -550,13 +503,12 @@ QRectF JPSZone::CalculateBoundingBox() const
     }
 
     //std::cout << x_min << x_max << y_min << y_max << std::endl;
-    qDebug("Leave JPSZone::CalculateBoundingBox");
+
     return QRectF(QPointF(x_min,y_min),QPointF(x_max,y_max));
 }
 
 qreal JPSZone::CalculateArea(const QVector<QLineF>& poly) const
 {
-    qDebug("Enter JPSZone::CalculateArea");
     if (poly.isEmpty())
         return 0.0;
 
@@ -572,73 +524,57 @@ qreal JPSZone::CalculateArea(const QVector<QLineF>& poly) const
     }
 
     area=std::fabs(area*0.5);
-    qDebug("Leave JPSZone::CalculateArea");
+
     return area;
 }
 
 
 void JPSZone::set_id(int id_room)
 {
-    qDebug("Enter JPSZone::set_id");
     id=id_room;
-    qDebug("Leave JPSZone::set_id");
 }
 
 int JPSZone::get_id()
 {
-    qDebug("Enter/Return JPSZone::get_id");
     return id;
 }
 float JPSZone::get_ax()
 {
-    qDebug("Enter/Return JPSZone::get_ax");
      return A_x;
 }
 void JPSZone::set_ax(float AX)
 {
-    qDebug("Enter JPSZone::set_ax");
      A_x=AX;
 }
 
 float JPSZone::get_by()
 {
-    qDebug("Enter/Return JPSZone::get_by");
      return B_y;
 }
 void JPSZone::set_by(float BY)
 {
-    qDebug("Enter JPSZone::set_by");
-    B_y=BY;
-    qDebug("Leave JPSZone::set_by");
+     B_y=BY;
 }
 
 float JPSZone::get_cz()
 {
-    qDebug("Enter/Retrun JPSZone::get_cz");
      return C_z;
 }
 void JPSZone::set_cz(float CZ)
 {
-    qDebug("Enter JPSZone::set_cz");
      C_z=CZ;
-     qDebug("Leave JPSZone::set_cz");
 }
 
 
 bool EqualsPoint(const QPointF& point1, const QPointF& point2, double eps)
 {
-    qDebug("Enter EqualsPoint");
-    if (std::fabs(point1.x()-point2.x())<eps && std::fabs(point1.y()-point2.y())<eps){
-        qDebug("Leave EqualsPoint");
+    if (std::fabs(point1.x()-point2.x())<eps && std::fabs(point1.y()-point2.y())<eps)
         return true;
-    }
     else
-        qDebug("Leave EqualsPoint");
         return false;
 }
 
 inline QColor rndColors(int seed){
-    qDebug("Enter rndColors");
     QColor color;
     float currentHue = 0.0;
     for (int i = 0; i < seed; i++){
@@ -646,59 +582,46 @@ inline QColor rndColors(int seed){
         currentHue += 0.618033988749895f;
         currentHue = std::fmod(currentHue, 1.0f);
     }
-    qDebug("Leave rndColors");
     return color;
 }
 
 QPointF JPSZone::get_up()
 {
-    qDebug("Enter/Return JPSZone::get_up");
      return up_;
 }
 
 void JPSZone::set_up(QPointF up)
 {
-    qDebug("Enter JPSZone::set_up");
      up_ = up;
-     qDebug("Leave JPSZone::set_up");
 }
 
 QPointF JPSZone::get_down()
 {
-    qDebug("Enter JPSZone::get_down");
      return down_;
-     qDebug("Leave JPSZone::get_down");
 }
 
 void JPSZone::set_down(QPointF down)
 {
-    qDebug("Enter JPSZone::set_down");
      down_ = down;
-     qDebug("Leave JPSZone::set_down");
 }
 
 void JPSZone::switchHighlight()
 {
-    qDebug("Enter JPSZone::switchHighlight");
     highlighted = !highlighted;
-    qDebug("Leave JPSZone::switchHighlight");
 }
 
 float JPSZone::get_elevation()
 {
-    qDebug("Enter/Return JPSZone::get_elevation");
      return elevation_;
 }
 
 void JPSZone::set_elevation(float elevation)
 {
-    qDebug("Enter JPSZone::set_elevation");
      if(this->getType() != Stair) // only for horizontal floors
           for (auto crossing: crossing_list)
                crossing->set_elevation(elevation);
 
      elevation_ = elevation;
-     qDebug("Leave JPSZone::set_elevation");
 }
 
 void JPSZone::correctPlaneCoefficients()
@@ -769,26 +692,22 @@ void JPSZone::correctPlaneCoefficients()
 
 bool JPSZone::is_highlighted()
 {
-    qDebug("Enter/Return JPSZone::is_highlighted");
      return highlighted;
 }
 
 bool JPSZone::isVisible()
 {
-    qDebug("Enter/Return JPSZone::isVisible");
     return visible;
 }
 
 void JPSZone::setVisible(bool visibility)
 {
-    qDebug("Enter JPSZone::setVisible");
     visible = visibility;
-    qDebug("Leave JPSZone::setVisible");
 }
 
 JPSZone *JPSZone::getFatherRoom()
 {
-    qDebug("Enter/Return JPSZone::getFatherRoom");
+    qDebug("Enter/Leave JPSZone::getFatherRoom");
     return father_room;
 }
 
@@ -801,7 +720,6 @@ void JPSZone::setFatherRoom(JPSZone *room)
 
 QString JPSZone::getName() const
 {
-    qDebug("Enter/Return JPSZone::getName");
     return name;
 }
 
@@ -813,7 +731,7 @@ void JPSZone::setName(const QString &name) {
 
 QList<JPSTrack *> JPSZone::getTrackList() const
 {
-    qDebug("Enter/Return JPSZone::getTrackList");
+    qDebug("Enter/Leave JPSZone::getTrackList");
     return track_list;
 }
 
@@ -821,8 +739,6 @@ void JPSZone::addTrack(jpsLineItem *line, QString number)
 {
     qDebug("Enter JPSZone::addTrack");
     if(line == nullptr)
-        qDebug("var line ist nullptr");
-        qDebug("Leave JPSZone::addTrack");
         return;
 
     auto *track = new JPSTrack(line);
@@ -844,8 +760,6 @@ void JPSZone::addTrack(jpsLineItem *line, QString number)
 bool JPSZone::isInTrackList(JPSTrack *track) {
     qDebug("Enter JPSZone::isInTrackList");
     if(track == nullptr)
-        qDebug("var track is nullptr");
-        qDebug("Leave JPSZone::isInTrackList");
         return false;
 
     foreach(JPSTrack *track_inList, track_list)
@@ -854,13 +768,13 @@ bool JPSZone::isInTrackList(JPSTrack *track) {
             return true;
     }
 
-    qDebug("Leave JPSZone::isInTrackList(false)");
+    qDebug("Leave JPSZone::isInTrackList");
     return false;
 }
 
 const QList<JPSZone *> &JPSZone::getPlatfromList() const
 {
-    qDebug("Enter/Retrun JPSZone::getPlatfromList");
+    qDebug("Enter/Leave JPSZone::getPlatfromList");
     return platfrom_list;
 }
 
@@ -932,14 +846,14 @@ void JPSZone::removeZoneFromList(JPSZone *zone)
 
 const QList<JPSZone*> &JPSZone::getCorridorList() const
 {
-    qDebug("Enter/Return JPSZone::getCorridorList");
+    qDebug("Enter/Leave JPSZone::getCorridorList");
     return corridor_list;
 }
 
 // Crossing
 QList<jpsCrossing*> JPSZone::getCrossingList()
 {
-    qDebug("Enter/Return JPSZone::getCrossingList");
+    qDebug("Enter/Leave JPSZone::getCrossingList");
     return crossing_list;
 }
 
@@ -947,8 +861,6 @@ bool JPSZone::isInCrossingList(jpsCrossing *crossing)
 {
     qDebug("Enter JPSZone::isInCrossingList");
     if(crossing == nullptr)
-        qDebug("var crossing is nullptr");
-        qDebug("Leave JPSZone::isInCrossingList");
         return false;
 
     foreach(jpsCrossing *crossing_inList, crossing_list)
@@ -956,7 +868,7 @@ bool JPSZone::isInCrossingList(jpsCrossing *crossing)
         if(crossing->get_cLine() == crossing_inList->get_cLine())
             return true;
     }
-    qDebug("Leave JPSZone::isInCrossingList(false)");
+    qDebug("Leave JPSZone::isInCrossingList");
     return false;
 }
 
@@ -1035,7 +947,7 @@ void JPSZone::removeEnterOrExit(jpsCrossing *crossing)
 
 QList<jpsCrossing *> JPSZone::getEnterAndExitList()
 {
-    qDebug("Enter/Return JPSZone::getEnterAndExitList()");
+    qDebug("Enter/Leave JPSZone::getEnterAndExitList()");
     return enterAndExitList;
 }
 
@@ -1076,25 +988,24 @@ jpsCrossing *JPSZone::getExitedCrossing(jpsLineItem *line)
 
 const QList<JPSZone*> & JPSZone::getLobbyList() const
 {
-    qDebug("Enter/Return JPSZone::getLobbyList");
+    qDebug("Enter/Leave JPSZone::getLobbyList");
     return lobby_list;
 }
 
 const QList<JPSZone*> & JPSZone::getOfficeList() const
 {
-    qDebug("Enter/Return JPSZone::getOfficeList");
+    qDebug("Enter/Leave JPSZone::getOfficeList");
     return office_list;
 }
 
 const QList<JPSZone *> &JPSZone::getStairList() const
 {
-    qDebug("Enter/Return JPSZone::getStairList");
+    qDebug("Enter/Leave JPSZone::getStairList");
     return stair_list;
 }
 
 const QList<QList<JPSZone *>> &JPSZone::getZoneList()
 {
-    qDebug("Enter JPSZone::getZoneList");
     zone_list.clear();
 
     zone_list.append(corridor_list);
@@ -1103,14 +1014,51 @@ const QList<QList<JPSZone *>> &JPSZone::getZoneList()
     zone_list.append(stair_list);
     zone_list.append(platfrom_list);
 
-    qDebug("Leave JPSZone::getZoneList");
+    qDebug("Enter/Leave JPSZone::getZoneList");
 
     return zone_list;
 }
 
+JPSZone *JPSZone::getSubroomWithID(QString room_id, QString subroom_id)
+{
+    qDebug("Enter JPSZone::getSubroomWithID");
+    for(JPSZone *corridor : corridor_list)
+    {
+        if(corridor->getFatherRoom()->get_id() == room_id.toInt() || corridor->get_id() == subroom_id)
+            return corridor;
+    }
+
+    for(JPSZone *lobby : lobby_list)
+    {
+        if(lobby->getFatherRoom()->get_id() == room_id.toInt() || lobby->get_id() == subroom_id)
+            return lobby;
+    }
+
+    for(JPSZone *office : office_list)
+    {
+        if(office->getFatherRoom()->get_id() == room_id.toInt() || office->get_id() == subroom_id)
+            return office;
+    }
+
+    for(JPSZone *stair : stair_list)
+    {
+        if(stair->getFatherRoom()->get_id() == room_id.toInt() || stair->get_id() == subroom_id)
+            return stair;
+    }
+
+    for(JPSZone *platfrom : platfrom_list)
+    {
+        if(platfrom->getFatherRoom()->get_id() == room_id.toInt() || platfrom->get_id() == subroom_id)
+            return platfrom;
+    }
+
+    return nullptr;
+
+    qDebug("Leave JPSZone::getSubroomWithID");
+}
+
 QString JPSZone::getTypeInString() const
 {
-    qDebug("Enter JPSZone::getZoneList");
     switch (zoneType)
     {
         case Corridor:

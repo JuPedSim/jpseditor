@@ -1265,15 +1265,23 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
     }
     else if (type=="transition")
     {
-        newLine->setCrossing();
+        newLine->setTransition();
     }
     else if (type=="hline")
     {
         newLine->setHline();
     }
-    else
+    else if (type=="track")
+    {
+        newLine->setTrack();
+    }
+    else if (type=="wall")
     {
         newLine->setWall();
+    }
+    else
+    {
+
     }
 
     pen.setColor(newLine->get_defaultColor());

@@ -113,16 +113,20 @@ void jpsCrossing::setOutflow(QString outflow) {
 void jpsCrossing::add_rooms(JPSZone *subroom1, JPSZone *subroom2)
 {
      qDebug("Enter jpsCrossing::add_rooms");
-     qDebug("\t room1 = <%s> of type <%s>",
-            subroom1->getName().toStdString().c_str(),
-            QString(subroom1->getType()).toStdString().c_str());
+     roomList.clear();
 
-    roomList.clear();
-    roomList.push_back(subroom1);
-    subroom1->AddDoor(this);
+     if(subroom1 != nullptr)
+     {
+         qDebug("\t room1 = <%s> of type <%s>",
+                subroom1->getName().toStdString().c_str(),
+                QString(subroom1->getType()).toStdString().c_str());
 
-    if(subroom1->getType() != Stair)  // assuming a crossing can not separate two stairs
-         this->set_elevation(subroom1->get_elevation());
+         if(subroom1->getType() != Stair)  // assuming a crossing can not separate two stairs
+             this->set_elevation(subroom1->get_elevation());
+
+         roomList.push_back(subroom1);
+         subroom1->addInEnterAndExitList(this);
+     }
 
     if (subroom2 != nullptr)
     {
@@ -132,7 +136,7 @@ void jpsCrossing::add_rooms(JPSZone *subroom1, JPSZone *subroom2)
          if(subroom2->getType() != Stair)
               this->set_elevation(subroom2->get_elevation());
         roomList.push_back(subroom2);
-        subroom2->AddDoor(this);
+        subroom2->addInEnterAndExitList(this);
     }
     qDebug("Leave jpsCrossing::add_rooms");
 }
@@ -143,7 +147,6 @@ void jpsCrossing::setSubroom(JPSZone *subroom)
     if(!roomList.contains(subroom))
         roomList.append(subroom);
     qDebug("Leave jpsCrossing::setSubroom");
-
 }
 
 void jpsCrossing::RemoveRoom(JPSZone *room)
