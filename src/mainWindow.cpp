@@ -283,6 +283,7 @@ MWindow::~MWindow()
     delete _cMapTimer;
     delete drawing_toolbar_;
     qDebug("Leave MWindow::~MWindow");
+//    qDebug("This run is ended \n");
 }
 
 void MWindow::setupDrawingToolBar()
