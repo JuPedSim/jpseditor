@@ -32,51 +32,66 @@
 
 jpsTransition::jpsTransition(jpsLineItem *line)
 {
+    qDebug("Enter jpsTransition::jpsTransition");
     cLine=line;
+    qDebug("Leave jpsTransition::jpsTransition");
 }
 
 QList<JPSZone *> jpsTransition::get_roomList()
 {
+    qDebug("Enter/Return jpsTransition::get_roomList");
     return roomList;
 }
 
 QString jpsTransition::get_name()
+
 {
+    qDebug("Enter/Return jpsTransition::get_name");
     return cName;
 }
 
 jpsLineItem *jpsTransition::get_cLine()
 {
+    qDebug("Enter/Return jpsTransition::get_cLine");
     return cLine;
 }
 
 void jpsTransition::change_name(QString name)
 {
+    qDebug("Enter jpsTransition::change_name");
     cName=name;
+    qDebug("Leave jpsTransition::change_name");
 }
 
 QString jpsTransition::get_type()
 {
+    qDebug("Enter/Return");
     return _type;
 }
 
 int jpsTransition::get_id()
 {
+    qDebug("Enter/Return jpsTransition::get_id");
     return _id;
 }
 
 void jpsTransition::set_id(int id)
 {
+    qDebug("Enter jpsTransition::set_id");
     _id=id;
+    qDebug("Leave jpsTransition::set_id");
 }
 
 void jpsTransition::set_type(QString type)
 {
+    qDebug("Enter jpsTransition::set_type");
     _type=type;
+    qDebug("Leave jpsTransition::set_type");
 }
 
 void jpsTransition::set_rooms(JPSZone *room1, JPSZone *room2)
 {
+    qDebug("Enter jpsTransition::set_rooms");
     roomList.clear();
     roomList.push_back(room1);
     roomList.push_back(room2);
@@ -90,4 +105,5 @@ void jpsTransition::set_rooms(JPSZone *room1, JPSZone *room2)
 //    {
 //        roomList.push_back(room2);
 //    }
+    qDebug("Leave jpsTransition::set_rooms");
 }

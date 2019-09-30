@@ -31,8 +31,10 @@
 
 JPSTrack::JPSTrack(jpsLineItem *lineItem)
 {
+    qDebug("Enter JPSTrack::JPSTrack");
     type = 0;
     line = lineItem;
+    qDebug("Leave JPSTrack::JPSTrack");
 }
 
 JPSTrack::~JPSTrack()
@@ -42,19 +44,20 @@ JPSTrack::~JPSTrack()
 
 int JPSTrack::getType() const
 {
-    qDebug("Enter/Leave JPSTrack::getType");
+    qDebug("Enter/Return JPSTrack::getType");
     qDebug("Type is %d", type);
     return type;
 }
 
 void JPSTrack::setType(int number)
 {
-    qDebug("Enter/Leave JPSTrack::setType");
+    qDebug("Enter JPSTrack::setType");
     type = number;
+    qDebug("Leave JPSTrack::setType");
 }
 
 jpsLineItem *JPSTrack::getLine() const
 {
-    qDebug("Enter/Leave JPSTrack::getLine");
+    qDebug("Enter/Return JPSTrack::getLine");
     return line;
 }

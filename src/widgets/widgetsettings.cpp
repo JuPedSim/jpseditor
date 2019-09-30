@@ -29,21 +29,25 @@ WidgetSettings::WidgetSettings(QWidget *parent, jpsGraphicsView *view) :
     QTabWidget(parent),
     ui(new Ui::WidgetSettings)
 {
+    qDebug("Enter WidgetSettings::WidgetSettings");
     ui->setupUi(this);
     _view=view;
     connect(ui->pushButtoncloseSettings,SIGNAL(clicked(bool)),QTabWidget::parent(),SLOT(Settings()));
     connect(ui->en_lineGrid,SIGNAL(toggled(bool)),this,SLOT(changeGridRadio(bool)));
     connect(ui->en_pointGrid,SIGNAL(toggled(bool)),this,SLOT(changeGridRadio(bool)));
-
+    qDebug("Leave WidgetSettings::WidgetSettings");
 }
 
 WidgetSettings::~WidgetSettings()
 {
+    qDebug("Enter WidgetSettings::~WidgetSettings");
     delete ui;
+    qDebug("Leave WidgetSettings::~WidgetSettings");
 }
 
 void WidgetSettings::changeGridRadio(bool status)
 {
+    qDebug("Enter WidgetSettings::changeGridRadio");
     if (status)
     {
         if (ui->en_lineGrid->isChecked())
@@ -52,4 +56,5 @@ void WidgetSettings::changeGridRadio(bool status)
         else
             _view->ActivatePointGrid();
     }
+    qDebug("Leave WidgetSettings::changeGridRadio");
 }

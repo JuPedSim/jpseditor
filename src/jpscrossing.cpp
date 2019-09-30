@@ -32,63 +32,82 @@
 
 jpsCrossing::jpsCrossing(jpsLineItem *line) : roomList(QList<JPSZone *>())
 {
+    qDebug("Enter jpsCrossing::jpsCrossing");
     cId = 0;
     cLine=line;
     _elevation = 0;
+    qDebug("Leave jpsCrossing::jpsCrossing");
 }
 
 QList<JPSZone *> jpsCrossing::get_roomList()
 {
+    qDebug("Enter/Return jpsCrossing::get_roomList");
     return roomList;
 }
 
 QString jpsCrossing::get_name()
 {
+    qDebug("Enter/Retrun jpsCrossing::get_name");
     return cName;
 }
 
 int jpsCrossing::get_id()
 {
+    qDebug("Enter/Return jpsCrossing::get_id");
     return cId;
 }
 
 void jpsCrossing::set_id(int id)
 {
+    qDebug("Enter jpsCrossing::set_id");
     cId=id;
+    qDebug("Leave jpsCrossing::set_id");
 }
 
 jpsLineItem *jpsCrossing::get_cLine()
 {
+    qDebug("Enter/Return jpsCrossing::get_cLine");
     return cLine;
 }
 
 void jpsCrossing::change_name(QString name)
 {
+    qDebug("Enter jpsCrossing::change_name");
     cName=name;
+    qDebug("Leave jpsCrossing::change_name");
 }
 
 bool jpsCrossing::isState() const {
+    qDebug("Enter/Return jpsCrossing::isState");
     return state;
 }
 
 void jpsCrossing::setState(bool state) {
+    qDebug("Enter jpsCrossing::setState");
     jpsCrossing::state = state;
+    qDebug("Leave jpsCrossing::setState");
 }
 
 QString jpsCrossing::getMaxAgents() const {
+    qDebug("Enter/Return jpsCrossing::getMaxAgents");
     return max_agents;
 }
 
 void jpsCrossing::setMaxAgents(QString maxAgents) {
+    qDebug("Enter jpsCrossing::setMaxAgents");
     max_agents = maxAgents;
+    qDebug("Leave jpsCrossing::setMaxAgents");
 }
 
 QString jpsCrossing::getOutflow() const {
+    qDebug("Enter/Return jpsCrossing::getOutflow");
     return outflow;
 }
 
 void jpsCrossing::setOutflow(QString outflow) {
+    qDebug("Enter jpsCrossing::setOutflow");
     jpsCrossing::outflow = outflow;
+    qDebug("Leave jpsCrossing::setOutflow");
 }
 
 void jpsCrossing::add_rooms(JPSZone *subroom1, JPSZone *subroom2)
@@ -142,10 +161,12 @@ void jpsCrossing::RemoveRoom(JPSZone *room)
 }
 float jpsCrossing::get_elevation()
 {
+    qDebug("Enter/Return jpsCrossing::get_elevation");
      return _elevation;
 }
 
 void jpsCrossing::set_elevation(float elevation)
 {
+    qDebug("Enter/Retrun jpsCrossing::get_elevation");
      _elevation = elevation;
 }
