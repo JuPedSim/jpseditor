@@ -54,13 +54,11 @@
 
 using ptrConnection = std::shared_ptr<jpsConnection>;
 
-
-
 class jpsDatamanager: public DL_CreationAdapter
 {
 public:
-    jpsDatamanager(QWidget* parent=nullptr, jpsGraphicsView* view=nullptr);
-    ~jpsDatamanager();
+    explicit jpsDatamanager(QWidget* parent=nullptr, jpsGraphicsView* view=nullptr);
+    ~jpsDatamanager() override;
 
     ///Zone
     QList<JPSZone *> get_roomlist();
@@ -129,7 +127,7 @@ public:
     jpsGraphicsView* get_view();
 
 
-    // Read XML
+    // Read geometry XML
     bool readXML(QFile &file);
     void parseGeometry(const QDomElement &element);
     void parseRooms(const QDomElement &element);
@@ -155,7 +153,6 @@ public:
     QString RoomIDHLine(jpsLineItem* lineItem);
     void writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeSubRoom(QXmlStreamWriter *stream, JPSZone* room, QList<jpsLineItem* >& lines);
-    void AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeCrossings(QXmlStreamWriter *stream, JPSZone *room, QList<jpsLineItem *> &lines);
     void writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeObstacles(QXmlStreamWriter *stream, jpsObstacle *obs, QList<jpsLineItem *> &lines);
@@ -191,7 +188,7 @@ public:
 
     // Read DXF
     bool readDXF(std::string filename);
-    virtual void addLine(const DL_LineData& d);
+    void addLine(const DL_LineData& d) override;
 
     // write DXF
     void writeDXF(std::string filename);
