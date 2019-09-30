@@ -491,6 +491,7 @@ void MWindow::openFileXML()
 
     QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
 
+    // Open geometry
     QString error_geometry = openGeometry(fileName);
 
     // if load geometry file failed, stop read others files
@@ -513,6 +514,7 @@ void MWindow::openFileXML()
 
     if(!error_goal.isEmpty() or !error_routing.isEmpty() or !error_source.isEmpty() or !error_traffic.isEmpty())
     {
+        // Show error information when some files are lacked
         QString error = "";
         QMessageBox msgBox;
         msgBox.setText("Geometry is loaded, but some files aren't loaded.");
@@ -533,13 +535,12 @@ void MWindow::openFileXML()
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.exec();
 
-        return;
     } else
     {
-        statusBar()->showMessage(tr("Files successfully loaded!"),10000);
-        //AutoZoom to drawing
-        mview->AutoZoom();
+        statusBar()->showMessage(tr("All files successfully loaded!"),10000);
     }
+    //AutoZoom to drawing
+    mview->AutoZoom();
 
 }
 
@@ -569,7 +570,7 @@ QString MWindow::openGeometry(QString fileName)
     {
         this->setWindowTitle(fileName);
 
-        QString error = ""; // file is loaded successful!
+        QString error = ""; // The empty error string means file is loaded successful!
         return error;
     }
 }

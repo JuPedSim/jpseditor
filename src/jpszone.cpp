@@ -1019,43 +1019,7 @@ const QList<QList<JPSZone *>> &JPSZone::getZoneList()
     return zone_list;
 }
 
-JPSZone *JPSZone::getSubroomWithID(QString room_id, QString subroom_id)
-{
-    qDebug("Enter JPSZone::getSubroomWithID");
-    for(JPSZone *corridor : corridor_list)
-    {
-        if(corridor->getFatherRoom()->get_id() == room_id.toInt() || corridor->get_id() == subroom_id)
-            return corridor;
-    }
 
-    for(JPSZone *lobby : lobby_list)
-    {
-        if(lobby->getFatherRoom()->get_id() == room_id.toInt() || lobby->get_id() == subroom_id)
-            return lobby;
-    }
-
-    for(JPSZone *office : office_list)
-    {
-        if(office->getFatherRoom()->get_id() == room_id.toInt() || office->get_id() == subroom_id)
-            return office;
-    }
-
-    for(JPSZone *stair : stair_list)
-    {
-        if(stair->getFatherRoom()->get_id() == room_id.toInt() || stair->get_id() == subroom_id)
-            return stair;
-    }
-
-    for(JPSZone *platfrom : platfrom_list)
-    {
-        if(platfrom->getFatherRoom()->get_id() == room_id.toInt() || platfrom->get_id() == subroom_id)
-            return platfrom;
-    }
-
-    return nullptr;
-
-    qDebug("Leave JPSZone::getSubroomWithID");
-}
 
 QString JPSZone::getTypeInString() const
 {

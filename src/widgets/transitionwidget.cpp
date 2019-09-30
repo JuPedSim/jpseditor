@@ -132,6 +132,7 @@ void TransitionWidget::showRoomsinButton(QListWidgetItem *item)
 
     int cRow = ui->listWidget_transitions->currentRow();
     auto *transition = data->getTransitionList()[cRow];
+
     if(!transition->get_roomList().isEmpty())
     {
         if(transition->get_roomList()[0] == nullptr)

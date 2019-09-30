@@ -40,9 +40,9 @@ public:
     ~jpsCrossing(){}
 
     QList<JPSZone *> get_roomList();
-    void add_rooms(JPSZone* subroom1, JPSZone* subroom2 = nullptr);
+    void addSubrooms(JPSZone* subroom1, JPSZone* subroom2 = nullptr);
     void setSubroom(JPSZone* subroom);
-    void RemoveRoom(JPSZone* room);
+    void removeSubRoom(JPSZone* subroom);
 
     QString get_name();
     void change_name(QString name);
@@ -61,7 +61,7 @@ public:
     void setState(bool state);
 
 private:
-    QList<JPSZone *> roomList; // rooms that are relevant to the crossing, size can't more than 2!
+    QList<JPSZone *> relativeSubroom_list; // rooms that are relevant to the crossing, size can't more than 2!
     QString cName;
     jpsLineItem *cLine;
     int cId;
