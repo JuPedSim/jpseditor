@@ -33,6 +33,7 @@
 RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager)
     : QWidget(parent), ui(new Ui::RoomListWidget)
 {
+    qDebug("Enter RoomListWidget::RoomListWidget");
     ui->setupUi(this);
     data = dmanager;
 
@@ -63,16 +64,21 @@ RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager)
     // Rename items
     connect(ui->listWidget_rooms, SIGNAL(itemDoubleClicked(QListWidgetItem *)),this, SLOT(renameRoom(QListWidgetItem*)));
     connect(ui->listWidget_zones, SIGNAL(itemDoubleClicked(QListWidgetItem *)),this, SLOT(renameZone(QListWidgetItem*)));
+    qDebug("Leave RoomListWidget::RoomListWidget");
 }
 
 RoomListWidget::~RoomListWidget()
 {
+    qDebug("Enter RoomListWidget::~RoomListWidget");
     delete ui;
+    qDebug("Leave RoomListWidget::~RoomListWidget");
 }
 
 void RoomListWidget::setLabel(QString name)
 {
+    qDebug("Enter RoomListWidget::setLabel");
     ui->label_zone->setText(name);
+    qDebug("Leave RoomListWidget::setLabel");
 }
 
 void RoomListWidget::updateRoomsListWidget()

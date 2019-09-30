@@ -44,6 +44,7 @@
 
 MWindow :: MWindow()
 {
+    qDebug("Enter MWindow :: MWindow");
     setupUi(this);
 
     //WindowTitle
@@ -265,6 +266,7 @@ MWindow :: MWindow()
 
     //inifile widget
     inifileWidget = nullptr;
+    qDebug("Leave MWindow :: MWindow");
 }
 
 MWindow::~MWindow()
@@ -285,6 +287,7 @@ MWindow::~MWindow()
 
 void MWindow::setupDrawingToolBar()
 {
+    qDebug("Enter MWindow::setupDrawingToolBar");
     closeLeftToolBarArea(); // close running toolbar at first
     closeListDockWidget();
     closePropertyDockWidget();
@@ -297,10 +300,12 @@ void MWindow::setupDrawingToolBar()
 
     // drawing actions group
     drawing_toolbar_->addActions(drawingActionGroup->actions());
+    qDebug("Leave MWindow::setupDrawingToolBar");
 }
 
 void MWindow::setupZoneToolBar()
 {
+    qDebug("Enter MWindow::setupZoneToolBar");
     closeLeftToolBarArea();
     closeListDockWidget();
     closePropertyDockWidget();
@@ -313,11 +318,13 @@ void MWindow::setupZoneToolBar()
     zone_toolbar_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
     zone_toolbar_->addActions(zoneActionGroup->actions());
+    qDebug("Leave MWindow::setupZoneToolBar");
 
 }
 
 void MWindow::closeLeftToolBarArea()
 {
+    qDebug("Enter MWindow::closeLeftToolBarArea");
     if(drawing_toolbar_ != nullptr)
     {
         drawing_toolbar_->close();
@@ -329,10 +336,12 @@ void MWindow::closeLeftToolBarArea()
         zone_toolbar_->close();
         zone_toolbar_ = nullptr;
     }
+    qDebug("Leave MWindow::closeLeftToolBarArea");
 }
 
 void MWindow::AutoSave()
 {
+    qDebug("Enter MWindow::AutoSave");
     QMap<QString, QString> settingsmap = loadSettings();
     QString backupfolder = settingsmap["backupfolder"];
 
@@ -376,10 +385,12 @@ void MWindow::AutoSave()
 
         statusBar()->showMessage(tr("Backup file generated!"), 10000);
     }
+    qDebug("Leave MWindow::AutoSave");
 }
 
 void MWindow::GatherData()
 {
+    qDebug("Enter MWindow::GatherData");
     if (rwidget==nullptr)
     {
         rwidget = new roomWidget(this,this->dmanager,this->mview);
@@ -398,6 +409,7 @@ void MWindow::GatherData()
     }
 
     statusBar()->showMessage(tr("Data gathered"),10000);
+    qDebug("Leave MWindow::GatherData");
 }
 
 
@@ -430,6 +442,7 @@ void MWindow::GatherData()
 
 void MWindow::Settings()
 {
+    qDebug("Enter MWindow::Settings");
     settingDialog = new SettingDialog;
 
 //    QString backupfolder = settings.value("backupfolder").toString();
@@ -449,14 +462,18 @@ void MWindow::Settings()
 
     settingDialog->setModal(true);
     settingDialog->exec();
+    qDebug("Leave MWindow::Settings");
 }
 
 void MWindow::ShowOrigin()
 {
+    qDebug("Enter MWindow::ShowOrigin");
     mview->ShowOrigin();
+    qDebug("Leave MWindow::ShowOrigin");
 }
 
 void MWindow::openFileDXF(){
+    qDebug("Enter MWindow::openFileDXF");
 
     QString fileName=QFileDialog::getOpenFileName(this,tr("Open DXF"),"",tr("DXF-Drawings (*.dxf)"));
     //QFile file(fileName);
@@ -475,6 +492,7 @@ void MWindow::openFileDXF(){
 
         statusBar()->showMessage("DXF-File successfully loaded!",10000);
     }
+    qDebug("Leave MWindow::openFileDXF");
 }
 
 /*
@@ -484,6 +502,7 @@ void MWindow::openFileDXF(){
  */
 void MWindow::openFileXML()
 {
+    qDebug("Enter MWindow::openFileXML");
     closeLeftToolBarArea();
     closeListDockWidget();
     closePropertyDockWidget();
@@ -499,6 +518,7 @@ void MWindow::openFileXML()
                               "Open XML",
                               error_geometry,
                               QMessageBox::Ok);
+        qDebug("Leave MWindow::openFileXML");
         return;
     }
 
@@ -532,6 +552,7 @@ void MWindow::openFileXML()
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.exec();
 
+        qDebug("Leave MWindow::openFileXML");
         return;
     } else
     {
@@ -539,16 +560,19 @@ void MWindow::openFileXML()
         //AutoZoom to drawing
         mview->AutoZoom();
     }
+    qDebug("Leave MWindow::openFileXML");
 
 }
 
 QString MWindow::openGeometry(QString fileName)
 {
+    qDebug("Enter MWindow::openGeometry");
     QFile file(fileName);
 
     if(fileName.isEmpty())
     {
         QString error = "Geometry file isn't found!";
+        qDebug("Leave MWindow::openGeometry, returned error!");
         return error;
     }
 
@@ -556,12 +580,14 @@ QString MWindow::openGeometry(QString fileName)
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QString error = "Format error, open geometry file failed!";
+        qDebug("Leave MWindow::openGeometry, returned Format error!");
         return error;
     }
 
     if (!dmanager->readXML(file))
     {
         QString error = "Content error, read geometry file failed";
+        qDebug("Leave MWindow::openGeometry, returned Content error!");
         return error;
     }
     else
@@ -569,12 +595,15 @@ QString MWindow::openGeometry(QString fileName)
         this->setWindowTitle(fileName);
 
         QString error = ""; // file is loaded successful!
+        qDebug("Leave MWindow::openGeometry, file is loaded successfully!");
         return error;
     }
+    qDebug("Leave MWindow::openGeometry");
 }
 
 QString MWindow::openRouting(QString fileName)
 {
+    qDebug("Enter MWindow::openRouting");
     QString fileNameRouting= fileName.split(".").first()+"_routing.xml";
     QFile fileRouting(fileNameRouting);
 
@@ -582,6 +611,7 @@ QString MWindow::openRouting(QString fileName)
     if (!fileRouting.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QString error = "Routing file isn't found!";
+        qDebug("Leave MWindow::openRouting, Routing file is not found!");
         return error;
     }
 
@@ -589,23 +619,28 @@ QString MWindow::openRouting(QString fileName)
     if (!dmanager->readRoutingXML(fileRouting))
     {
         QString error = "Content error, read routing file failed!";
+        qDebug("Leave MWindow::openRouting, read routing file failed!");
         return error;
     }
     else
     {
         QString error = ""; // file is loaded successful!
+        qDebug("Leave MWindow::openRouting");
         return error;
     }
+    qDebug("Leave MWindow::openRouting");
 }
 
 QString MWindow::openSource(QString fileName)
 {
+    qDebug("Enter MWindow::openSource");
     QString fileNameSource= fileName.split(".").first()+"_sources.xml";
     QFile fileSource(fileNameSource);
 
     if(!fileSource.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QString error = "Source file isn't found!";
+        qDebug("Leave MWindow::openSource, source file isn't found!");
         return error;
     }
 
@@ -614,22 +649,27 @@ QString MWindow::openSource(QString fileName)
     if(!sourceReader.read(&fileSource))
     {
         QString error = "Content error, read source file failed";
+        qDebug("Leave MWindow::openSource, read source file failed");
         return error;
     } else
     {
         QString error = ""; // file is loaded successful!
+        qDebug("Leave MWindow::openSource");
         return error;
     }
+    qDebug("Leave MWindow::openSource");
 }
 
 QString MWindow::openGoal(QString fileName)
 {
+    qDebug("Enter QString MWindow::openGoal");
     QString fileNameGoal= fileName.split(".").first()+"_goals.xml";
     QFile fileGoal(fileNameGoal);
 
     if(!fileGoal.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QString error = "Goal file isn't found!";
+        qDebug("Leave QString MWindow::openGoal, goal file isn't found!");
         return error;
     }
 
@@ -638,16 +678,20 @@ QString MWindow::openGoal(QString fileName)
     if(!goalReader.read(&fileGoal))
     {
         QString error = "Content error, read source file failed";
+        qDebug("Leave QString MWindow::openGoal, read source file failed");
         return error;
     } else
     {
         QString error = ""; // file is loaded successful!
+        qDebug("Leave QString MWindow::openGoal");
         return error;
     }
+    qDebug("Leave QString MWindow::openGoal");
 }
 
 void MWindow::openFileCogMap()
 {
+    qDebug("Enter MWindow::openFileCogMap");
     QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
     QFile file(fileName);
 
@@ -657,6 +701,7 @@ void MWindow::openFileCogMap()
                               "OpenFileXML",
                               "Couldn't open xml-file",
                               QMessageBox::Ok);
+        qDebug("Leave MWindow::openFileCogMap");
         return;
     }
 
@@ -672,16 +717,19 @@ void MWindow::openFileCogMap()
         statusBar()->showMessage("Cognitive map successfully loaded!",10000);
     }
     file.close();
+    qDebug("Leave MWindow::openFileCogMap");
 }
 
 void MWindow::OpenLineFile()
 {
+    qDebug("Enter MWindow::OpenLineFile");
     QString fileName=QFileDialog::getOpenFileName(this,tr("Open Lines"),"",tr("txt-File (*.txt)"));
     QFile file(fileName);
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         statusBar()->showMessage("Line-File could not be opened!",10000);
+        qDebug("Leave MWindow::OpenLineFile, open Line-File failed!");
         return;
 
     }
@@ -689,6 +737,7 @@ void MWindow::OpenLineFile()
     if (!dmanager->ReadLineFile(file))
     {
         statusBar()->showMessage("Line-File could not be parsed!",10000);
+        qDebug("Leave MWindow::OpenLineFile, parsing Line-File failed!");
     }
     //if(file.open(QIODevice::ReadOnly|QIODevice::Text)) {
       //  textEdit->setPlainText(QString::fromUtf8(file.readAll()));
@@ -698,11 +747,14 @@ void MWindow::OpenLineFile()
     {
 
         statusBar()->showMessage("Line-File successfully loaded!",10000);
+        qDebug("Leave MWindow::OpenLineFile");
     }
     file.close();
+    qDebug("Leave MWindow::OpenLineFile");
 }
 
 void MWindow::saveAsXML(){
+    qDebug("Enter MWindow::saveAsXML");
     QString fileName = QFileDialog::getSaveFileName(this,tr("Save XML"),"",tr("XML-Files (*.xml)"));
     _filename=fileName;
     if (fileName.isEmpty()) return;
@@ -745,11 +797,13 @@ void MWindow::saveAsXML(){
 
         statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
     }
+    qDebug("Leave MWindow::saveAsXML");
 }
 
 
 void MWindow::saveAsDXF()
 {
+    qDebug("Enter MWindow::saveAsDXF");
     QString fileName = QFileDialog::getSaveFileName(this,tr("Save DXF"),"",tr("DXF-Drawings (*.dxf)"));
     if (fileName.isEmpty()) return;
     QFile file(fileName);
@@ -762,10 +816,12 @@ void MWindow::saveAsDXF()
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("DXF-File successfully saved!"),10000);
     }
+    qDebug("Leave MWindow::saveAsDXF");
 }
 
 void MWindow::SaveCogMapXML()
 {
+    qDebug("Enter MWindow::SaveCogMapXML");
     QString fileName = QFileDialog::getSaveFileName(this,tr("Save CognitiveMap XML"),"",tr("XML-Files (*.xml)"));
     if (fileName.isEmpty()) return;
     QFile file(fileName);
@@ -776,11 +832,13 @@ void MWindow::SaveCogMapXML()
         //file.write(coord_string.toUtf8());//textEdit->toPlainText().toUtf8());
         statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
     }
+    qDebug("Leave MWindow::SaveCogMapXML");
 }
 
 
 void MWindow::info()
 {
+    qDebug("Enter MWindow::info");
     QString gittext = QMessageBox::tr(
             "<h1><p style=\"line-height:0.7\">JPSeditor</p></h1><p style=\"line-height:1.4\" style=\"color:Gray;"
             "\"><small><i>Version %1</i></small></p>"
@@ -806,43 +864,55 @@ void MWindow::info()
     msg.setFont(font);
 //msg.setStandardButtons(0);
     msg.exec();
+    qDebug("Leave MWindow::info");
 }
 
 void MWindow::anglesnap()
 {
+    qDebug("Enter MWindow::anglesnap");
    mview->change_stat_anglesnap();
+   qDebug("Leave MWindow::anglesnap");
 }
 
 void MWindow::en_disableWall()
 {
+    qDebug("Enter MWindow::en_disableWall");
     closePropertyDockWidget();
 
     mview->en_disableWall();
+    qDebug("Leave MWindow::en_disableWall");
 }
 
 void MWindow::en_disableCrossing()
 {
+    qDebug("Enter MWindow::en_disableCrossing");
     closePropertyDockWidget();
 
     mview->en_disableCrossing();
+    qDebug("Leave MWindow::en_disableCrossing");
 }
 
 void MWindow::en_disableLandmark()
 {
+    qDebug("Enter MWindow::en_disableLandmark");
     closePropertyDockWidget();
 
     mview->en_disableLandmark();
+    qDebug("Leave MWindow::en_disableLandmark");
 }
 
 void MWindow::en_disableHLine()
 {
+    qDebug("Enter MWindow::en_disableHLine");
     closePropertyDockWidget();
 
     mview->en_disableHLine();
+    qDebug("Leave MWindow::en_disableHLine");
 }
 
 void MWindow::transitionButtonClicked()
 {
+    qDebug("Enter MWindow::transitionButtonClicked");
     closePropertyDockWidget();
 
     mview->enableTransition();
@@ -856,10 +926,12 @@ void MWindow::transitionButtonClicked()
 
     addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
     propertyDockWidget->setWidget(transitionWidget);
+    qDebug("Leave MWindow::transitionButtonClicked");
 }
 
 void MWindow::trackButtonClicked()
 {
+    qDebug("Enter MWindow::trackButtonClicked");
     closePropertyDockWidget();
 
     mview->enableTrack();
@@ -875,10 +947,12 @@ void MWindow::trackButtonClicked()
     addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
     propertyDockWidget->setWidget(trackPropertyWidget);
 */
+    qDebug("Leave MWindow::trackButtonClicked");
 }
 
 void MWindow::objectsnap()
 {
+    qDebug("Enter MWindow::objectsnap");
     if(snappingOptions==nullptr)
     {
         snappingOptions = new SnappingOptions(this);
@@ -900,47 +974,58 @@ void MWindow::objectsnap()
         snappingOptions=nullptr;
         actionObjectsnap->setChecked(false);
     }
+    qDebug("Leave MWindow::objectsnap");
 }
 
 void MWindow::gridmode()
 {
+    qDebug("Enter MWindow::gridmode");
     mview->change_gridmode();
+    qDebug("Leave MWindow::gridmode");
 }
 
 void MWindow::show_coords()
 {
+    qDebug("Enter MWindow::show_coords");
     QPointF point = mview->return_Pos();
     QString string = "";
     string.sprintf("(%.2f, %5.2f)", point.x(), point.y());
     infoLabel->setText(string);
+    qDebug("Leave MWindow::show_coords");
 }
 
 void MWindow::delete_lines()
 {
+    qDebug("Enter MWindow::delete_lines");
     mview->delete_all();
     statusBar()->showMessage(tr("All lines are deleted!"),10000);
+    qDebug("Leave MWindow::delete_lines");
 }
 
 void MWindow::delete_marked_lines()
 {
+    qDebug("Enter MWindow::delete_marked_lines");
     mview->delete_marked_lines();
     mview->delete_landmark();
     statusBar()->showMessage(tr("Marked lines are deleted!"),10000);
+    qDebug("Leave MWindow::delete_marked_lines");
 }
 
 void MWindow::send_length()
 {
-
+    qDebug("Enter MWindow::send_length");
     qreal length = length_edit->text().toDouble();
     if(length != 0)
     {
          mview->take_l_from_lineEdit(length);
     }
     length_edit->clear();
+    qDebug("Leave MWindow::send_length");
 }
 
 void MWindow::send_xy()
 {
+    qDebug("Enter MWindow::send_xy");
     qreal x = x_edit->text().toDouble();
     qreal y = y_edit->text().toDouble();
 
@@ -951,12 +1036,13 @@ void MWindow::send_xy()
     mview->take_endpoint_from_xyEdit(endpoint);
 
     x_edit->clear();
+    qDebug("Leave MWindow::send_xy");
 }
 
 
 void MWindow::define_room()
 {
-
+    qDebug("Enter MWindow::define_room");
     if (rwidget==nullptr)
     {
         rwidget = new roomWidget(this,this->dmanager,this->mview);
@@ -970,11 +1056,12 @@ void MWindow::define_room()
         rwidget=nullptr;
         actionRoom->setChecked(false);
     }
-
+    qDebug("Leave MWindow::define_room");
 }
 
 void MWindow::autoDefine_room()
 {
+    qDebug("Enter autoDefine_room");
     if (rwidget==nullptr)
     {
         rwidget = new roomWidget(this,this->dmanager,this->mview);
@@ -993,10 +1080,12 @@ void MWindow::autoDefine_room()
     }
 
     statusBar()->showMessage(tr("Rooms and doors are set."),10000);
+    qDebug("Leave autoDefine_room");
 }
 
 void MWindow::define_landmark()
 {
+    qDebug("Enter MWindow::define_landmark");
     if (lwidget==nullptr)
     {
         lwidget = new widgetLandmark(this,this->dmanager,this->mview);
@@ -1010,10 +1099,12 @@ void MWindow::define_landmark()
         lwidget=nullptr;
         actionLandmarkWidget->setChecked(false);
     }
+    qDebug("Leave MWindow::define_landmark");
 }
 
 void MWindow::en_selectMode()
 {
+    qDebug("Enter MWindow::en_selectMode");
     mview->disable_drawing();
     length_edit->clearFocus();
 
@@ -1022,10 +1113,12 @@ void MWindow::en_selectMode()
         drawing_toolbar_->close();
         drawing_toolbar_ = nullptr;
     }
+    qDebug("Leave MWindow::en_selectMode");
 }
 
 void MWindow::dis_selectMode()
 {
+    qDebug("Enter MWindow::dis_selectMode");
 /*    if (actionWall->isChecked()==true || actionCrossing->isChecked()==true || actionExit->isChecked()==true
             || actionLandmark->isChecked()==true)
     {
@@ -1034,26 +1127,34 @@ void MWindow::dis_selectMode()
 
     if(drawingActionGroup->checkedAction() != actionSelect_Mode)
         actionSelect_Mode->setChecked(false);
+    qDebug("Leave MWindow::dis_selectMode");
 }
 
 void MWindow::lines_deleted()
 {
+    qDebug("Enter MWindow::lines_deleted");
     dmanager->remove_marked_lines();
+    qDebug("Leave MWindow::lines_deleted");
 }
 
 void MWindow::remove_all_lines()
 {
+    qDebug("Enter MWindow::remove_all_lines");
     dmanager->remove_all();
+    qDebug("Leave MWindow::remove_all_lines");
 }
 
 void MWindow::ShowLineLength()
 {
+    qDebug("Enter MWindow::ShowLineLength");
     length_edit->setText(QString::number(mview->ReturnLineLength()));
     length_edit->selectAll();
+    qDebug("Leave MWindow::ShowLineLength");
 }
 
 void MWindow::ScaleLines()
 {
+    qDebug("Enter MWindow::ScaleLines");
     if (_statScale)
     {
         qreal factor = length_edit->text().toDouble();
@@ -1061,20 +1162,25 @@ void MWindow::ScaleLines()
         length_edit->clear();
         _statScale=false;
     }
+    qDebug("Leave MWindow::ScaleLines");
 }
 
 void MWindow::enableScale()
 {
+    qDebug("Enter MWindow::enableScale");
     _statScale=true;
+    qDebug("Leave MWindow::enableScale");
 }
 
 void MWindow::rotate()
-{
+{   qDebug("Enter MWindow::rotate");
     mview->rotate(-90);
+    qDebug("Leave MWindow::rotate");
 }
 
 void MWindow::closeEvent(QCloseEvent *event)
 {
+    qDebug("Enter MWindow::closeEvent");
     int ret = QMessageBox::warning(
                 this, "Quit?",
                 "Do you really want to quit?",
@@ -1088,23 +1194,29 @@ void MWindow::closeEvent(QCloseEvent *event)
     {
         event->ignore();
     }
+    qDebug("Leave MWindow::closeEvent");
 }
 
 
 void MWindow::on_actionCopy_triggered()
 {
+    qDebug("Enter on_actionCopy_triggered");
     actionCopy->setChecked(true);
     mview->start_Copy_function();
+    qDebug("Leave on_actionCopy_triggered");
 }
 
 void MWindow::on_actionOnline_Help_triggered()
 {
+    qDebug("Enter MWindow::on_actionOnline_Help_triggered");
     QString JPSeditor = "http://www.jupedsim.org/jpseditor/";
     QDesktopServices::openUrl(QUrl(JPSeditor));
+    qDebug("Leave MWindow::on_actionOnline_Help_triggered");
 }
 
 void MWindow::on_actionClear_all_Rooms_and_Doors_triggered()
 {
+    qDebug("Enter MWindow::on_actionClear_all_Rooms_and_Doors_triggered");
     dmanager->remove_all();
 
     if(rwidget!= nullptr){
@@ -1115,10 +1227,12 @@ void MWindow::on_actionClear_all_Rooms_and_Doors_triggered()
     }
 
     statusBar()->showMessage(tr("All rooms and doors are cleared!"),10000);
+    qDebug("Leave MWindow::on_actionClear_all_Rooms_and_Doors_triggered");
 }
 
 void MWindow::keyPressEvent(QKeyEvent *event)
 {
+    qDebug("Enter MWindow::keyPressEvent");
     switch(event->key())
     {
         case Qt::Key_Escape:
@@ -1128,6 +1242,7 @@ void MWindow::keyPressEvent(QKeyEvent *event)
         default:
             QWidget::keyPressEvent(event);
     }
+    qDebug("Leave MWindow::keyPressEvent");
 }
 
 // Default settings
@@ -1143,6 +1258,7 @@ void MWindow::saveSettings(QMap<QString, QString> settingsmap)
 
 QMap<QString, QString> MWindow::loadSettings()
 {
+    qDebug("Enter MWindow::loadSettings");
     QSettings settings("FZJ","JPSeditor");
 
     settings.beginGroup("backup");
@@ -1154,34 +1270,44 @@ QMap<QString, QString> MWindow::loadSettings()
     settingsmap["backupfolder"] = value;
     settingsmap["interval"] = interval;
 
+    qDebug("Leave MWindow::loadSettings");
     return settingsmap;
 }
 
 void MWindow::on_actionNew_Inifile_triggered()
 {
+    qDebug("Enter MWindow::on_actionNew_Inifile_triggered");
     inifileWidget = new InifileWidget(this, dmanager);
     inifileWidget->show();
     qDebug()<< "MWindow::on_actionNew_Inifile_triggered(): inifile widget is showed!";
+    qDebug("Leave MWindow::on_actionNew_Inifile_triggered");
 }
 
 void MWindow::on_actionBack_to_Origin_triggered()
 {
+    qDebug("Enter MWindow::on_actionBack_to_Origin_triggered");
     mview->centerOn(QPointF(0.0,0.0));
+    qDebug("Leave MWindow::on_actionBack_to_Origin_triggered");
 }
 
 void MWindow::on_actionZoom_Windows_triggered()
 {
+    qDebug("Enter MWindow::on_actionZoom_Windows_triggered");
     en_selectMode();
     mview->selectedWindows();
+    qDebug("Leave MWindow::on_actionZoom_Windows_triggered");
 }
 
 void MWindow::on_actionZoom_Extents_triggered()
 {
+    qDebug("Enter MWindow::on_actionZoom_Extents_triggered");
     mview->AutoZoom();
+    qDebug("Leave MWindow::on_actionZoom_Extents_triggered");
 }
 
 void MWindow::sourceButtonClicked()
 {
+    qDebug("Enter MWindow::sourceButtonClicked");
     closePropertyDockWidget();
 
     //source widget off, dockwidget off -> open source widget
@@ -1194,6 +1320,7 @@ void MWindow::sourceButtonClicked()
     auto *sourceWidget = new SourceWidget(this, mview, this->dmanager);
     addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
     propertyDockWidget->setWidget(sourceWidget);
+    qDebug("Leave MWindow::sourceButtonClicked");
 
 }
 
@@ -1206,6 +1333,7 @@ void MWindow::sourceButtonClicked()
 
 void MWindow::goalButtionClicked()
 {
+    qDebug("Enter MWindow::goalButtionClicked");
     closePropertyDockWidget();
 
     mview->enableGoalMode();
@@ -1218,6 +1346,7 @@ void MWindow::goalButtionClicked()
     addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
     propertyDockWidget->setWidget(goalWidget);
 
+    qDebug("Leave MWindow::goalButtionClicked");
 }
 
 /*
@@ -1228,24 +1357,29 @@ void MWindow::goalButtionClicked()
 
 QString MWindow::openTraffic(QString fileName)
 {
+    qDebug("Enter MWindow::openTraffic");
     QString fileNameTraffic = fileName.split(".").first() + "_traffic.xml";
     QFile fileTraffic(fileNameTraffic);
 
     if (!fileTraffic.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QString error = "Traffic file isn't found!";
+        qDebug("Leave MWindow::openTraffic, traffic file isn't found!");
         return error;
     }
 
     if(!dmanager->readTrafficXML(fileTraffic))
     {
         QString error = "Content error, read traffic file failed";
+        qDebug("Leave MWindow::openTraffic, read traffic file failed!");
         return error;
     } else
     {
         QString error = ""; // file is loaded successful!
+        qDebug("Leave MWindow::openTraffic");
         return error;
     }
+    qDebug("Leave MWindow::openTraffic");
 }
 
 /*
@@ -1255,7 +1389,9 @@ QString MWindow::openTraffic(QString fileName)
  */
 void MWindow::showStatusBarMessage(QString msg, int duration)
 {
+    qDebug("Enter MWindow::showStatusBarMessage");
     statusBar()->showMessage(tr(msg.toStdString().data()), duration);
+    qDebug("Leave MWindow::showStatusBarMessage");
 }
 
 /*
@@ -1266,12 +1402,14 @@ void MWindow::showStatusBarMessage(QString msg, int duration)
 
 void MWindow::measureLengthButtonClicked()
 {
+    qDebug("Enter MWindow::measureLengthButtonClicked");
     // open snapping widget
 
     if(snappingOptions==nullptr)
         this->objectsnap();
 
     mview->enableMeasureLengthMode();
+    qDebug("Leave MWindow::measureLengthButtonClicked");
 }
 
 /*
@@ -1282,7 +1420,9 @@ void MWindow::measureLengthButtonClicked()
 
 void MWindow::msgReceived(QString Msg)
 {
+    qDebug("Enter MWindow::msgReceived");
     statusBar()->showMessage(Msg, 10000);
+    qDebug("Leave MWindow::msgReceived");
 }
 
 
@@ -1294,6 +1434,7 @@ void MWindow::msgReceived(QString Msg)
 
 void MWindow::importBackground()
 {
+    qDebug("Enter MWindow::importBackground");
     auto image = new QImage();
     QString fileName = QFileDialog::getOpenFileName(
             this, "open image file",
@@ -1302,6 +1443,7 @@ void MWindow::importBackground()
     image->load(fileName);
     QPixmap bkgnd(QPixmap::fromImage(*image));
     mscene->addPixmap(bkgnd);
+    qDebug("Leave MWindow::importBackground");
 }
 
 /*
@@ -1312,10 +1454,12 @@ void MWindow::importBackground()
 
 void MWindow::corridorButtonClicked()
 {
+    qDebug("Enter MWindow::corridorButtonClicked");
     closeListDockWidget();
     closePropertyDockWidget();
 
     addListDockWidget("Corridor");
+    qDebug("Leave MWindow::corridorButtonClicked");
 }
 
 void MWindow::closePropertyDockWidget()
@@ -1382,10 +1526,12 @@ void MWindow::addPropertyDockWidget(JPSZone *zone)
 
 void MWindow::platformButtonClicked()
 {
+    qDebug("Enter MWindow::platformButtonClicked");
     closeListDockWidget();
     closePropertyDockWidget();
 
     addListDockWidget("Platform");
+    qDebug("Leave MWindow::platformButtonClicked");
 }
 
 void MWindow::layerButtonClicked()

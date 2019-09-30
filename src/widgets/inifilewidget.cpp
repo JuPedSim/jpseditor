@@ -40,6 +40,7 @@ InifileWidget::InifileWidget(QWidget *parent, jpsDatamanager *dmanager) :
     QWidget(parent),
     ui(new Ui::InifileWidget)
 {
+    qDebug("Enter InifileWidget::InifileWidget");
     ui->setupUi(this);
 
     // set InifileWidget as a Window
@@ -82,16 +83,20 @@ InifileWidget::InifileWidget(QWidget *parent, jpsDatamanager *dmanager) :
 
     // template widget
     templateWidget = nullptr;
+    qDebug("Leave InifileWidget::InifileWidget");
 
 }
 InifileWidget::~InifileWidget()
 {
+    qDebug("Enter InifileWidget::~InifileWidget");
     delete ui;
+    qDebug("Leave InifileWidget::~InifileWidget");
 }
 
 // Set models and agents visible or invisible
 void InifileWidget::on_comboBox_groups_1_currentIndexChanged(int index)
 {
+    qDebug("Enter InifileWidget::on_comboBox_groups_1_currentIndexChanged");
     // Set gcfm visible
     if (index+1 == 1)
     {
@@ -126,12 +131,14 @@ void InifileWidget::on_comboBox_groups_1_currentIndexChanged(int index)
         ui->tabWidget->removeTab(2);
         ui->tabWidget->insertTab(2, ui->tab_model_krausz, "Model Krausz");
     }
+    qDebug("Leave InifileWidget::on_comboBox_groups_1_currentIndexChanged");
 }
 
 
 // Create ini.xml on button push
 void InifileWidget::on_pushButton_write_clicked()
 {
+    qDebug("Enter InifileWidget::on_pushButton_write_clicked");
     //save to file
     QString file_name = QFileDialog::getSaveFileName(this,
                                                      tr("Create ini"),
@@ -195,30 +202,39 @@ void InifileWidget::on_pushButton_write_clicked()
         stream = nullptr;
     }
     file.close();
+    qDebug("Leave InifileWidget::on_pushButton_write_clicked");
 }
 
 void InifileWidget::pushButton_addGroupRowClicked()
 {
+    qDebug("Enter InifileWidget::pushButton_addGroupRowClicked");
     int row = ui->tableWidget_groups_1->rowCount();
     ui->tableWidget_groups_1->setRowCount(row+1);
+    qDebug("Leave InifileWidget::pushButton_addGroupRowClicked");
 }
 
 void InifileWidget::pushButton_deleteGrouprowClicked()
 {
+    qDebug("Enter InifileWidget::pushButton_deleteGrouprowClicked");
     int current_row = ui->tableWidget_groups_1->currentRow();
     ui->tableWidget_groups_1->removeRow(current_row);
+    qDebug("Leaev InifileWidget::pushButton_deleteGrouprowClicked");
 }
 
 void InifileWidget::pushButton_addAgentRowClicked()
 {
+    qDebug("Enter InifileWidget::pushButton_addAgentRowClicked");
     int row = ui->tableWidget_agents->rowCount();
     ui->tableWidget_agents->setRowCount(row+1);
+    qDebug("Leave InifileWidget::pushButton_addAgentRowClicked");
 }
 
 void InifileWidget::pushButton_deleteAgentRowClicked()
 {
+    qDebug("Enter InifileWidget::pushButton_deleteAgentRowClicked");
     int current_row = ui->tableWidget_agents->currentRow();
     ui->tableWidget_agents->removeRow(current_row);
+    qDebug("Leave InifileWidget::pushButton_deleteAgentRowClicked");
 }
 
 /*
@@ -242,6 +258,7 @@ void InifileWidget::pushButton_deleteAgentRowClicked()
 
 void InifileWidget::writeHeaderData(QXmlStreamWriter *stream, QFile &file)
 {
+    qDebug("Enter InifileWidget::writeHeaderData");
     stream->writeComment("number of cores used");
     stream->writeStartElement("num_threads");
     if(!ui->lineEdit_general_03->text().isEmpty())
@@ -291,10 +308,12 @@ void InifileWidget::writeHeaderData(QXmlStreamWriter *stream, QFile &file)
     if(!ui->comboBox_general_01->currentText().isEmpty())
         stream->writeCharacters(ui->comboBox_general_01->currentText());
     stream->writeEndElement();
+    qDebug("Leave InifileWidget::writeHeaderData");
 }
 
 void InifileWidget::writeFire(QXmlStreamWriter *stream, QFile &file)
 {
+    qDebug("Enter InifileWidget::writeFire");
     stream->writeStartElement("JPSfire");
 
     if(ui->checkBox_A->isChecked())
@@ -333,6 +352,7 @@ void InifileWidget::writeFire(QXmlStreamWriter *stream, QFile &file)
         stream->writeEndElement(); //end toxicity
     }
     stream->writeEndElement(); //end JPSfire
+    qDebug("Leave InifileWidget::writeFire");
 
 }
 
@@ -357,6 +377,7 @@ void InifileWidget::writeFire(QXmlStreamWriter *stream, QFile &file)
 
 void InifileWidget::writeRoutingData(QXmlStreamWriter *stream, QFile &file)
 {
+    qDebug("Enter InifileWidget::writeRoutingData");
     stream->writeComment("routing");
     stream->writeStartElement("routing");
 
@@ -373,6 +394,7 @@ void InifileWidget::writeRoutingData(QXmlStreamWriter *stream, QFile &file)
     stream->writeEndElement(); //end files
     stream->writeEndElement(); //end goals
     stream->writeEndElement(); //end routing
+    qDebug("Leave InifileWidget::writeRoutingData");
 }
 
 /*
@@ -388,6 +410,7 @@ void InifileWidget::writeRoutingData(QXmlStreamWriter *stream, QFile &file)
 
 void InifileWidget::writeTrafficData(QXmlStreamWriter *stream, QFile &file)
 {
+    qDebug("Enter InifileWidget::writeTrafficData");
     stream->writeComment("traffic information: e.g closed doors or smoked rooms");
     stream->writeStartElement("traffic_constraints");
 
@@ -411,10 +434,12 @@ void InifileWidget::writeTrafficData(QXmlStreamWriter *stream, QFile &file)
     stream->writeEndElement(); //end files
     stream->writeEndElement(); //end doors
     stream->writeEndElement(); //end traffic_constraints
+    qDebug("Leave InifileWidget::writeTrafficData");
 }
 
 void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
 {
+    qDebug("Enter InifileWidget::writeAgentData");
     stream->writeComment("persons information and distribution");
     stream->writeStartElement("agents");
     stream->writeAttribute("operational_model_id", QString::number(ui->comboBox_groups_1->currentIndex() + 1));
@@ -492,11 +517,13 @@ void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
 
     stream->writeEndElement(); //end agents_sources
     stream->writeEndElement(); //end agents
+    qDebug("Leave InifileWidget::writeAgentData");
 
 }
 
 void InifileWidget::writeModelGcfmData(QXmlStreamWriter *stream, QFile &file)
 {
+    qDebug("Enter InifileWidget::writeModelGcfmData");
     //operational model and agent parameters - gcfm
     stream->writeComment("operational models");
     stream->writeStartElement("operational_models");
@@ -551,10 +578,12 @@ void InifileWidget::writeModelGcfmData(QXmlStreamWriter *stream, QFile &file)
 
     stream->writeEndElement(); //end model
     stream->writeEndElement(); //end operational model
+    qDebug("Leave InifileWidget::writeModelGcfmData");
 }
 
 void InifileWidget::writeModelGompData(QXmlStreamWriter *stream, QFile &file)
 {
+    qDebug("Enter InifileWidget::writeModelGompData");
     //operational model and agent parameters - gcfm
     stream->writeComment("operational model");
     stream->writeStartElement("operational_models");
@@ -604,10 +633,12 @@ void InifileWidget::writeModelGompData(QXmlStreamWriter *stream, QFile &file)
 
     stream->writeEndElement(); //end model
     stream->writeEndElement(); //end operational model
+    qDebug("Leave InifileWidget::writeModelGompData");
 }
 
 void InifileWidget::writeModelTordData(QXmlStreamWriter *stream, QFile &file)
 {
+    qDebug("Enter InifileWidget::writeModelTordData");
     //operational model and agent parameters - gcfm
     stream->writeComment("operational model");
     stream->writeStartElement("operational_models");
@@ -654,10 +685,12 @@ void InifileWidget::writeModelTordData(QXmlStreamWriter *stream, QFile &file)
     stream->writeEndElement(); //end model
 
     stream->writeEndElement(); //end operational model
+    qDebug("Leave InifileWidget::writeModelTordData");
 }
 
 void InifileWidget::writeModelGradData(QXmlStreamWriter *stream, QFile &file)
 {
+    qDebug("Enter InifileWidget::writeModelGradData");
     //operational model and agent parameters - gcfm
     stream->writeComment("operational model");
     stream->writeStartElement("operational_models");
@@ -722,10 +755,12 @@ void InifileWidget::writeModelGradData(QXmlStreamWriter *stream, QFile &file)
     stream->writeEndElement(); //end model
 
     stream->writeEndElement(); //end operational model
+    qDebug("Leave InifileWidget::writeModelGradData");
 }
 
 void InifileWidget::writeModelKrauData(QXmlStreamWriter *stream, QFile &file)
 {
+    qDebug("Enter InifileWidget::writeModelKrauData");
     //operational model and agent parameters - gcfm
     stream->writeComment("operational model");
     stream->writeStartElement("operational_models");
@@ -756,10 +791,12 @@ void InifileWidget::writeModelKrauData(QXmlStreamWriter *stream, QFile &file)
     stream->writeEndElement(); //end model
 
     stream->writeEndElement(); //end operational model
+    qDebug("Leave InifileWidget::writeModelKrauData");
 }
 
 void InifileWidget::writeAgentParameters(QXmlStreamWriter *stream, QFile &file)
 {
+    qDebug("Enter InifileWidget::writeAgentParameters");
     for(int i = 0; i < ui->tableWidget_agents->rowCount(); i++) // // start agent_parameters
     {
         stream->writeStartElement("agent_parameters");
@@ -891,11 +928,13 @@ void InifileWidget::writeAgentParameters(QXmlStreamWriter *stream, QFile &file)
 
         stream->writeEndElement(); // end agent_parameters
     }
+    qDebug("Leave InifileWidget::writeAgentParameters");
 
 }
 
 void InifileWidget::writeRouteChoiceData(QXmlStreamWriter *stream, QFile &file)
 {
+    qDebug("Enter InifileWidget::writeRouteChoiceData");
 
     stream->writeComment("route chice model");
 
@@ -918,10 +957,12 @@ void InifileWidget::writeRouteChoiceData(QXmlStreamWriter *stream, QFile &file)
 
     stream->writeEndElement();
 
+    qDebug("Leave InifileWidget::writeRouteChoiceData");
 }
 
 void InifileWidget::writeFFGlobalShortestRoute(QXmlStreamWriter *stream, QFile &file)
 {
+    qDebug("Enter InifileWidget::writeFFGlobalShortestRoute");
     stream->writeStartElement("router");
     stream->writeAttribute("router_id", ui->lineEdit_ff_global_ID->text());
     stream->writeAttribute("description","ff_global_shortest");
@@ -932,10 +973,12 @@ void InifileWidget::writeFFGlobalShortestRoute(QXmlStreamWriter *stream, QFile &
         stream->writeTextElement("write_VTK_files", "false");
 
     stream->writeEndElement();
+    qDebug("Leave InifileWidget::writeFFGlobalShortestRoute");
 }
 
 void InifileWidget::writeGlobalShortestRoute(QXmlStreamWriter *stream, QFile &file)
 {
+    qDebug("Enter InifileWidget::writeGlobalShortestRoute");
     stream->writeStartElement("router");
     stream->writeAttribute("router_id", ui->lineEdit_global_ID->text());
     stream->writeAttribute("description","global_shortest");
@@ -946,10 +989,12 @@ void InifileWidget::writeGlobalShortestRoute(QXmlStreamWriter *stream, QFile &fi
     stream->writeEndElement(); //end navigation lines
     stream->writeEndElement(); //end patameters
     stream->writeEndElement(); //end router
+    qDebug("Leave InifileWidget::writeGlobalShortestRoute");
 }
 
 void InifileWidget::writeCognitiveMap(QXmlStreamWriter *stream, QFile &file)
 {
+    qDebug("Enter InifileWidget::writeCognitiveMap");
 //    stream->writeStartElement("router");
 //    stream->writeAttribute("router_id", ui->lineEdit_ID->text());
 //    stream->writeAttribute("description","cognitive_map");
@@ -960,19 +1005,24 @@ void InifileWidget::writeCognitiveMap(QXmlStreamWriter *stream, QFile &file)
 //    stream->writeAttribute("status", "complete");
 //    stream->writeEndElement(); //end cognitive map
 //    stream->writeEndElement(); //router
+    qDebug("Leave InifileWidget::writeCognitiveMap");
 }
+
 
 void InifileWidget::writeTripsRoute(QXmlStreamWriter *stream, QFile &file)
 {
+    qDebug("Enter InifileWidget::writeTripsRoute");
     stream->writeStartElement("router");
     stream->writeAttribute("router_id", ui->lineEdit_trips_ID->text());
     stream->writeAttribute("description","ff_global_shortest_trips");
     stream->writeEndElement(); //end router
+    qDebug("Leave InifileWidget::writeTripsRoute");
 }
 
 // Read ini.xml on button push
 void InifileWidget::on_pushButton_read_clicked()
 {
+    qDebug("Enter InifileWidget::on_pushButton_read_clicked");
     QString fileName = QFileDialog::getOpenFileName(this,tr("Read ini"),"",tr("XML-Files (*.xml)"));
 
     if (fileName.isEmpty())
@@ -998,10 +1048,12 @@ void InifileWidget::on_pushButton_read_clicked()
     } else {
         emit inifileLoaded(tr("inifile loaded"), 2000);
     }
+    qDebug("Leave InifileWidget::on_pushButton_read_clicked");
 }
 
 bool InifileWidget::readInifile(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readInifile");
     if (reader->readNextStartElement())
     {
         if (reader->name() == QLatin1String("JuPedSim")
@@ -1010,11 +1062,12 @@ bool InifileWidget::readInifile(QXmlStreamReader *reader)
             readJuPedSim(reader);
         }
         else {
+            qDebug("InifileWidget::readInifile");
             return false;
 //            reader->raiseError(QObject::tr("The file is not an JuPedSim version 0.8 file."));
         }
     }
-
+    qDebug("Leave InifileWidget::readInifile");
     return true;
 //    return reader->error();
 }
@@ -1049,6 +1102,7 @@ void InifileWidget::readFromTemplate(QString name) {
 
 QString InifileWidget::errorString(QXmlStreamReader *reader) const
 {
+    qDebug("Enter/Retrun InifileWidget::errorString");
     return QObject::tr("%1\nLine %2, column %3")
             .arg(reader->errorString())
             .arg(reader->lineNumber())
@@ -1057,6 +1111,7 @@ QString InifileWidget::errorString(QXmlStreamReader *reader) const
 
 void InifileWidget::readJuPedSim(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readJuPedSim");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("JuPedSim"));
 
     QString project = reader->attributes().value("project").toString();
@@ -1093,42 +1148,52 @@ void InifileWidget::readJuPedSim(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readJuPedSim");
 }
 
 void InifileWidget::readSeed(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readSeed");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("seed"));
 
     QString title = reader->readElementText();
     ui->lineEdit_general_05->setText(title);
+    qDebug("Leave InifileWidget::readSeed");
 }
 
 void InifileWidget::readThread(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readThread");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("num_threads"));
 
     QString title = reader->readElementText();
     ui->lineEdit_general_03->setText(title);
+    qDebug("Leave InifileWidget::readThread");
 }
 
 void InifileWidget::readGeometry(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readGeometry");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("geometry"));
 
     QString title = reader->readElementText();
     ui->lineEdit_general_07->setText(title);
+    qDebug("Leave InifileWidget::readGeometry");
 }
 
 void InifileWidget::readMaxSimTime(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readMaxSimTime");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("max_sim_time"));
 
     QString title = reader->readElementText();
     ui->lineEdit_general_06->setText(title);
+    qDebug("Leave InifileWidget::readMaxSimTime");
 }
 
 void InifileWidget::readTrajectories(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readTrajectories");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("trajectories"));
 
     QString format = reader->attributes().value("format").toString();
@@ -1145,24 +1210,29 @@ void InifileWidget::readTrajectories(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readTrajectories");
 }
 
 void InifileWidget::readTrajectoriesFile(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readTrajectoriesFile");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("file"));
 
     QString file = reader->attributes().value("location").toString();
     ui->lineEdit_general_12->setText(file);
 
     reader->readElementText(); //move current token to end element, so that readNextStartElement can work fine.
+    qDebug("Leave InifileWidget::readTrajectoriesFile");
 }
 
 void InifileWidget::readLogfile(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readLogfile");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("logfile"));
 
     QString logtxt = reader->readElementText();
     ui->lineEdit_general_08->setText(logtxt);
+    qDebug("Leave InifileWidget::readLogfile");
 }
 
 /*
@@ -1175,6 +1245,7 @@ void InifileWidget::readLogfile(QXmlStreamReader *reader)
 
 void InifileWidget::readFire(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readFire");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("JPSfire"));
 
     while (reader->readNextStartElement()) {
@@ -1187,10 +1258,12 @@ void InifileWidget::readFire(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readFire");
 }
 
 void InifileWidget::readSmoke(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readSmoke");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("A_smoke_sensor"));
 
     ui->checkBox_A->setChecked(true);
@@ -1204,10 +1277,12 @@ void InifileWidget::readSmoke(QXmlStreamReader *reader)
     ui->lineEdit_A_final->setText(final_time);
 
     reader->readNext();//now is attribute element, move to end element
+    qDebug("Leave InifileWidget::readSmoke");
 }
 
 void InifileWidget::readWalking(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readWalking");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("B_walking_speed"));
 
     ui->checkBox_B->setChecked(true);
@@ -1221,10 +1296,12 @@ void InifileWidget::readWalking(QXmlStreamReader *reader)
     ui->lineEdit_B_final->setText(final_time);
 
     reader->readNext();//now is attribute element, move to end element
+    qDebug("Leave InifileWidget::readWalking");
 }
 
 void InifileWidget::readToxicity(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readToxicity");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("C_toxicity_analysis"));
 
     ui->checkBox_C->setChecked(true);
@@ -1238,6 +1315,7 @@ void InifileWidget::readToxicity(QXmlStreamReader *reader)
     ui->lineEdit_C_final->setText(final_time);
 
     reader->readNext();//now is attribute element, move to end element
+    qDebug("Leave InifileWidget::readToxicity");
 }
 
 /*
@@ -1250,6 +1328,7 @@ void InifileWidget::readToxicity(QXmlStreamReader *reader)
 */
 void InifileWidget::readTrafficConstraints(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readTrafficConstraints");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("traffic_constraints"));
 
     while (reader->readNextStartElement()) {
@@ -1258,14 +1337,17 @@ void InifileWidget::readTrafficConstraints(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readTrafficConstraints");
 }
 
 void InifileWidget::readTrafficFile(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readTrafficFile");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("file"));
 
     QString file = reader->readElementText();
     ui->lineEdit_TrafficFile->setText(file);
+    qDebug("Leave InifileWidget::readTrafficFile");
 }
 
 /*
@@ -1284,6 +1366,7 @@ void InifileWidget::readTrafficFile(QXmlStreamReader *reader)
 
 void InifileWidget::readRouting(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readRouting");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("routing"));
 
     while (reader->readNextStartElement()) {
@@ -1292,14 +1375,17 @@ void InifileWidget::readRouting(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readRouting");
 }
 
 void InifileWidget::readRoutingFile(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readRoutingFile");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("file"));
 
     QString file = reader->readElementText();
     ui->lineEdit_GoalFile->setText(file);
+    qDebug("Leave InifileWidget::readRoutingFile");
 }
 
 /*
@@ -1319,6 +1405,7 @@ void InifileWidget::readRoutingFile(QXmlStreamReader *reader)
 
 void InifileWidget::readAgents(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readRoutingFile");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("agents"));
 
     while (reader->readNextStartElement()) {
@@ -1329,10 +1416,12 @@ void InifileWidget::readAgents(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readRoutingFile");
 }
 
 void InifileWidget::readAgentsDistribution(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readAgentsDistribution");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("agents_distribution"));
 
     while (reader->readNextStartElement())
@@ -1342,10 +1431,12 @@ void InifileWidget::readAgentsDistribution(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readAgentsDistribution");
 }
 
 void InifileWidget::readGroup(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readGroup");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("group"));
 
     int row = ui->tableWidget_groups_1->rowCount();
@@ -1393,10 +1484,12 @@ void InifileWidget::readGroup(QXmlStreamReader *reader)
     ui->tableWidget_groups_1->setRowCount(row+1); // add line for next group
 
     reader->readElementText();
+    qDebug("Leave InifileWidget::readGroup");
 }
 
 void InifileWidget::readAgentsSources(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readAgentsSources");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("agents_sources"));
 
 
@@ -1406,13 +1499,16 @@ void InifileWidget::readAgentsSources(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readAgentsSources");
 }
 
 void InifileWidget::readSourceFile(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readSourceFile");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("file"));
     QString file = reader->readElementText();
     ui->lineEdit_SourceFile->setText(file);
+    qDebug("Leave InifileWidget::readSourceFile");
 }
 
 /*
@@ -1441,6 +1537,7 @@ void InifileWidget::readSourceFile(QXmlStreamReader *reader)
 
 void InifileWidget::readModels(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readModels");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("operational_models"));
 
     while (reader->readNextStartElement()) {
@@ -1449,10 +1546,12 @@ void InifileWidget::readModels(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readModels");
 }
 
 void InifileWidget::readModel(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readModel");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("model"));
 
     int id = reader->attributes().value("operational_model_id").toInt();
@@ -1470,10 +1569,12 @@ void InifileWidget::readModel(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readModel");
 }
 
 void InifileWidget::readModelParameters(QXmlStreamReader *reader, int modelindex)
 {
+    qDebug("Enter InifileWidget::readModelParameters");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("model_parameters"));
 
     while (reader->readNextStartElement()) {
@@ -1498,10 +1599,12 @@ void InifileWidget::readModelParameters(QXmlStreamReader *reader, int modelindex
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readModelParameters");
 }
 
 void InifileWidget::readSlover(QXmlStreamReader *reader, int modelindex)
 {
+    qDebug("Enter InifileWidget::readSlover");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("solver"));
     QString solver = reader->readElementText();
 
@@ -1525,10 +1628,12 @@ void InifileWidget::readSlover(QXmlStreamReader *reader, int modelindex)
         default:
             break;
     }
+    qDebug("Leave InifileWidget::readSlover");
 }
 
 void InifileWidget::readStepsize(QXmlStreamReader *reader, int modelindex)
 {
+    qDebug("Enter InifileWidget::readStepsize");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("stepsize"));
     QString stepsize = reader->readElementText();
 
@@ -1552,10 +1657,12 @@ void InifileWidget::readStepsize(QXmlStreamReader *reader, int modelindex)
         default:
             break;
     }
+    qDebug("Leave InifileWidget::readStepsize");
 }
 
 void InifileWidget::readExit(QXmlStreamReader *reader, int modelindex)
 {
+    qDebug("Enter InifileWidget::readExit");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("exit_crossing_strategy"));
     QString exit = reader->readElementText();
 
@@ -1579,10 +1686,12 @@ void InifileWidget::readExit(QXmlStreamReader *reader, int modelindex)
         default:
             break;
     }
+    qDebug("Leave InifileWidget::readExit");
 }
 
 void InifileWidget::readPeriodic(QXmlStreamReader *reader, int modelindex)
 {
+    qDebug("Enter InifileWidget::readPeriodic");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("periodic"));
     QString periodic = reader->readElementText();
 
@@ -1606,10 +1715,12 @@ void InifileWidget::readPeriodic(QXmlStreamReader *reader, int modelindex)
         default:
             break;
     }
+    qDebug("Leave InifileWidget::readPeriodic");
 }
 
 void InifileWidget::readLinkedcells(QXmlStreamReader *reader, int modelindex)
 {
+    qDebug("Enter InifileWidget::readLinkedcells");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("linkedcells"));
 
     QString enabled = reader->attributes().value("enabled").toString();
@@ -1654,10 +1765,12 @@ void InifileWidget::readLinkedcells(QXmlStreamReader *reader, int modelindex)
     }
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readLinkedcells");
 }
 
 void InifileWidget::readForcePed(QXmlStreamReader *reader, int modelindex)
 {
+    qDebug("Enter InifileWidget::readForcePed");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("force_ped"));
 
     switch(modelindex)
@@ -1721,10 +1834,12 @@ void InifileWidget::readForcePed(QXmlStreamReader *reader, int modelindex)
     }
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readForcePed");
 }
 
 void InifileWidget::readForceWall(QXmlStreamReader *reader, int modelindex)
 {
+    qDebug("Enter InifileWidget::readForceWall");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("force_wall"));
 
     switch(modelindex)
@@ -1786,22 +1901,26 @@ void InifileWidget::readForceWall(QXmlStreamReader *reader, int modelindex)
             break;
         }
     }
+    qDebug("Leave InifileWidget::readForceWall");
 
     reader->readNext();
 }
 
 void InifileWidget::readAntiClipping(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readAntiClipping");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("anti_clipping"));
 
     QString distance = reader->attributes().value("slow_down_distance").toString();
     ui->lineEdit_model_gradnav_09->setText(distance);
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readAntiClipping");
 }
 
 void InifileWidget::readFloorfield(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readFloorfield");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("floorfield"));
 
     QString delta = reader->attributes().value("delta_h").toString();
@@ -1813,10 +1932,12 @@ void InifileWidget::readFloorfield(QXmlStreamReader *reader)
     ui->lineEdit_model_gradnav_08->setText(avoidance);
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readFloorfield");
 }
 
 void InifileWidget::readAgentParamaters(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readAgentParamaters");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("agent_parameters"));
 
     QString id = reader->attributes().value("agent_parameter_id").toString();
@@ -1860,10 +1981,12 @@ void InifileWidget::readAgentParamaters(QXmlStreamReader *reader)
     ui->tableWidget_agents->setRowCount(row+1);
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readAgentParamaters");
 }
 
 void InifileWidget::readV0(QXmlStreamReader *reader)
 {
+    qDebug("Leave InifileWidget::readV0");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("v0"));
 
     int row_index = ui->tableWidget_agents->rowCount()-1;
@@ -1878,10 +2001,12 @@ void InifileWidget::readV0(QXmlStreamReader *reader)
     ui->tableWidget_agents->setItem(row_index,2, v0_sigma);
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readV0");
 }
 
 void InifileWidget::readV0Upstairs(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readV0Upstairs");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("v0_upstairs"));
 
     int row_index = ui->tableWidget_agents->rowCount()-1;
@@ -1896,10 +2021,12 @@ void InifileWidget::readV0Upstairs(QXmlStreamReader *reader)
     ui->tableWidget_agents->setItem(row_index,4, v0_sigma);
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readV0Upstairs");
 }
 
 void InifileWidget::readV0Downstars(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readV0Downstars");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("v0_downstairs"));
 
     int row_index = ui->tableWidget_agents->rowCount()-1;
@@ -1914,10 +2041,12 @@ void InifileWidget::readV0Downstars(QXmlStreamReader *reader)
     ui->tableWidget_agents->setItem(row_index,6, v0_sigma);
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readV0Downstars");
 }
 
 void InifileWidget::readV0IdleUpstairs(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readV0IdleUpstairs");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("v0_idle_escalator_upstairs"));
 
     int row_index = ui->tableWidget_agents->rowCount()-1;
@@ -1932,10 +2061,12 @@ void InifileWidget::readV0IdleUpstairs(QXmlStreamReader *reader)
     ui->tableWidget_agents->setItem(row_index,8, v0_sigma);
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readV0IdleUpstairs");
 }
 
 void InifileWidget::readV0Idledownstairs(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readV0Idledownstairs");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("v0_idle_escalator_downstairs"));
 
     int row_index = ui->tableWidget_agents->rowCount()-1;
@@ -1950,10 +2081,12 @@ void InifileWidget::readV0Idledownstairs(QXmlStreamReader *reader)
     ui->tableWidget_agents->setItem(row_index,10, v0_sigma);
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readV0Idledownstairs");
 }
 
 void InifileWidget::readBmax(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readBmax");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("bmax"));
 
     int row_index = ui->tableWidget_agents->rowCount()-1;
@@ -1968,10 +2101,12 @@ void InifileWidget::readBmax(QXmlStreamReader *reader)
     ui->tableWidget_agents->setItem(row_index,12, bmax_sigma);
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readBmax");
 }
 
 void InifileWidget::readBmin(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readBmax");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("bmin"));
 
     int row_index = ui->tableWidget_agents->rowCount()-1;
@@ -1986,11 +2121,13 @@ void InifileWidget::readBmin(QXmlStreamReader *reader)
     ui->tableWidget_agents->setItem(row_index,14, bmin_sigma);
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readBmax");
 
 }
 
 void InifileWidget::readAmin(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readAmin");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("amin"));
 
     int row_index = ui->tableWidget_agents->rowCount()-1;
@@ -2005,11 +2142,13 @@ void InifileWidget::readAmin(QXmlStreamReader *reader)
     ui->tableWidget_agents->setItem(row_index,16, amin_sigma);
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readAmin");
 
 }
 
 void InifileWidget::readTau(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readTau");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("tau"));
 
     int row_index = ui->tableWidget_agents->rowCount()-1;
@@ -2024,11 +2163,13 @@ void InifileWidget::readTau(QXmlStreamReader *reader)
     ui->tableWidget_agents->setItem(row_index,18, tau_sigma);
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readTau");
 
 }
 
 void InifileWidget::readAtou(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readAtou");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("atau"));
 
     int row_index = ui->tableWidget_agents->rowCount()-1;
@@ -2044,11 +2185,13 @@ void InifileWidget::readAtou(QXmlStreamReader *reader)
 
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readAtou");
 
 }
 
 void InifileWidget::readT(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readT");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("T"));
 
     int row_index = ui->tableWidget_agents->rowCount()-1;
@@ -2063,10 +2206,12 @@ void InifileWidget::readT(QXmlStreamReader *reader)
     ui->tableWidget_agents->setItem(row_index,22, t_sigma);
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readT");
 }
 
 void InifileWidget::readSway(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readSway");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("sway"));
 
     int row_index = ui->tableWidget_agents->rowCount()-1;
@@ -2087,10 +2232,12 @@ void InifileWidget::readSway(QXmlStreamReader *reader)
     ui->tableWidget_agents->setItem(row_index,27, sway_freqB);
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readSway");
 }
 
 void InifileWidget::readRouteChoiceModels(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readRouteChoiceModels");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("route_choice_models"));
 
     while (reader->readNextStartElement()) {
@@ -2099,10 +2246,12 @@ void InifileWidget::readRouteChoiceModels(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readRouteChoiceModels");
 }
 
 void InifileWidget::readRouter(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readRouter");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("router"));
 
     QString router_id = reader->attributes().value("router_id").toString();
@@ -2131,11 +2280,13 @@ void InifileWidget::readRouter(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readRouter");
 }
 
 
 void InifileWidget::readRouterParameters(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readRouterParameters");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("parameters"));
 
     while (reader->readNextStartElement())
@@ -2149,26 +2300,31 @@ void InifileWidget::readRouterParameters(QXmlStreamReader *reader)
     }
 
     reader->readElementText();
+    qDebug("Leave InifileWidget::readRouterParameters");
 }
 
 void InifileWidget::readNavigationLines(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readNavigationLines");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("navigation_lines"));
 
     QString file = reader->attributes().value("file").toString();
     ui->lineEdit_global_navi->setText(file);
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readNavigationLines");
 }
 
 void InifileWidget::readVTK(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readVTK");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("write_VTK_files"));
 
     QString status = reader->attributes().value("write_VTK_files").toString();
     ui->comboBox_ff_global->setCurrentText(status);
 
     reader->readNext();
+    qDebug("Leave InifileWidget::readVTK");
 }
 
 /*
@@ -2178,42 +2334,52 @@ void InifileWidget::readVTK(QXmlStreamReader *reader)
 
 void InifileWidget::pushButton_GeomeryClicked()
 {
+    qDebug("Enter InifileWidget::pushButton_GeomeryClicked");
     QString fileName=QFileDialog::getOpenFileName(this,tr("Choose Geometry"),""
             ,tr("XML-Files (*.xml)"));
 
     ui->lineEdit_general_07->setText(fileName);
+    qDebug("Leave InifileWidget::pushButton_GeomeryClicked");
 }
 
 void InifileWidget::pushButton_GoalClicked()
 {
+    qDebug("Enter InifileWidget::pushButton_GoalClicked");
     QString fileName=QFileDialog::getOpenFileName(this,tr("Choose goals"),""
             ,tr("XML-Files (*.xml)"));
 
     ui->lineEdit_GoalFile->setText(fileName);
+    qDebug("Leave InifileWidget::pushButton_GoalClicked");
 }
 
 void InifileWidget::pushButton_SourceClicked()
 {
+    qDebug("Enter InifileWidget::pushButton_SourceClicked");
     QString fileName=QFileDialog::getOpenFileName(this,tr("Choose sources"),""
             ,tr("XML-Files (*.xml)"));
 
     ui->lineEdit_SourceFile->setText(fileName);
+    qDebug("Leave InifileWidget::pushButton_SourceClicked");
 }
 
 void InifileWidget::pushButton_TrafficClicked()
 {
+    qDebug("Enter InifileWidget::pushButton_TrafficClicked");
     QString fileName=QFileDialog::getOpenFileName(this,tr("Choose trffic"),""
             ,tr("XML-Files (*.xml)"));
 
     ui->lineEdit_TrafficFile->setText(fileName);
+    qDebug("Leave InifileWidget::pushButton_TrafficClicked");
 }
 
 void InifileWidget::pushButton_RoutingClicked()
 {
+    qDebug("Enter InifileWidget::pushButton_RoutingClicked");
     QString fileName=QFileDialog::getOpenFileName(this,tr("Choose Routing"),""
             ,tr("XML-Files (*.xml)"));
 
     ui->lineEdit_global_navi->setText(fileName);
+    qDebug("Leave InifileWidget::pushButton_RoutingClicked");
 }
 
 void InifileWidget::pushButton_chooseTemplateClicked() {

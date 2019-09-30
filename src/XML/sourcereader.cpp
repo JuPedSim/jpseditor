@@ -31,11 +31,14 @@
 
 SourceReader::SourceReader(jpsGraphicsView *view)
 {
+    qDebug("Enter SourceReader::SourceReader");
     currentView = view;
+    qDebug("Leave SourceReader::SourceReader");
 }
 
 bool SourceReader::read(QIODevice *device)
 {
+    qDebug("Enter SourceReader::read");
     xml.setDevice(device);
 
     if(xml.readNextStartElement())
@@ -48,12 +51,13 @@ bool SourceReader::read(QIODevice *device)
             xml.raiseError(QObject::tr("The file is not an version 0.8 file."));
         }
     }
-
+    qDebug("Return SourceReader::read");
     return !xml.error();
 }
 
 void SourceReader::readJPScore()
 {
+    qDebug("Enter SourceReader::readJPScore");
     while (xml.readNextStartElement())
     {
         if(xml.name() == QLatin1String("agents_sources"))
@@ -61,10 +65,12 @@ void SourceReader::readJPScore()
         else
             xml.skipCurrentElement();
     }
+    qDebug("Leave SourceReader::readJPScore");
 }
 
 void SourceReader::readSources()
 {
+    qDebug("Enter SourceReader::readSources");
     while (xml.readNextStartElement())
     {
         if(xml.name() == QLatin1String("source"))
@@ -74,10 +80,12 @@ void SourceReader::readSources()
         else
             xml.skipCurrentElement();
     }
+    qDebug("Leave SourceReader::readSources");
 }
 
 void SourceReader::readSource()
 {
+    qDebug("Enter SourceReader::readSource");
     QPen currentPen;
     currentPen.setColor(Qt::darkRed);
     currentPen.setCosmetic(true);
@@ -126,4 +134,5 @@ void SourceReader::readSource()
     currentView->scene()->addItem(source);
 
     xml.readNext(); //now token is end element, skip it
+    qDebug("Leave SourceReader::readSource");
 }

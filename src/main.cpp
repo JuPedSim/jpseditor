@@ -41,12 +41,15 @@
 #include "mainWindow.h"
 #include "GraphicView.h"
 #include <QApplication>
+#include <QDebug>
 
 int main(int argc, char* argv[])
 {
+    qDebug("Enter main");
     QApplication app(argc,argv);
     MWindow mywindow;
     mywindow.show();
+    qDebug("Leave main");
     return app.exec();
 }
 

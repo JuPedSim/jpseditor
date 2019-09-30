@@ -29,19 +29,24 @@
 
 jpsObstacle::jpsObstacle(int id): JPSZone(id, nullptr, Obstacle)
 {
+    qDebug("enter jpsObstacle::jpsObstacle");
     QString string="Obstacle ";
     string.append(QString::number(id));
     JPSZone::setName(string);
     _room = nullptr;
+    qDebug("Leave jpsObstacle::jpsObstacle");
 }
 
 void jpsObstacle::set_room(JPSZone *room)
 {
+    qDebug("Enter jpsObstacle::set_room");
     _room=room;
+    qDebug("Leave jpsObstacle::set_room");
 }
 
 JPSZone* jpsObstacle::get_room()
 {
+    qDebug("Enter/Leave jpsObstacle::get_room");
     return _room;
 }
 

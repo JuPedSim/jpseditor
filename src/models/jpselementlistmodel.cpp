@@ -69,9 +69,10 @@ JPSElementListModel::~JPSElementListModel()
 
 int JPSElementListModel::rowCount(const QModelIndex &parent) const
 {
+    qDebug("Enter JPSElementListModel::rowCount");
     if(parent.isValid())
         return 0;
-
+    qDebug("Leave JPSElementListModel::rowCount");
     return lst.count();
 }
 
