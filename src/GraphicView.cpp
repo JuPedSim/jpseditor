@@ -1286,8 +1286,8 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
 
     pen.setColor(newLine->get_defaultColor());
     newLine->get_line()->setPen(pen);
-    // if line has already been added before (from another room)
 
+    // if line has already been added before (from another room)
     for (int i=0; i<line_vector.size(); i++)
     {
         if (newLine->get_line()->line()==line_vector[i]->get_line()->line())

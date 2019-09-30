@@ -97,8 +97,6 @@ public:
     QList<JPSTrack *> getTrackList() const;
     bool isInTrackList(JPSTrack *track);
 
-    JPSZone *getSubroomWithID(QString room_id, QString subroom_id);
-
 private:
     int id;
     JPSZone *father_room;
