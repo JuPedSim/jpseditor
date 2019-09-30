@@ -1019,23 +1019,21 @@ const QList<QList<JPSZone *>> &JPSZone::getZoneList()
     return zone_list;
 }
 
-
-
 QString JPSZone::getTypeInString() const
 {
     switch (zoneType)
     {
         case Corridor:
-            return "Corridor";
+            return "corridor";
         case Lobby:
-            return "Lobby";
+            return "lobby";
         case Office:
-            return "Office";
+            return "office";
         case Stair:
-            return "Stair";
+            return "stair";
         case Platform:
-            return "Platform";
+            return "platform";
         default:
-            return "";
+            return "subroom";
     }
 }
