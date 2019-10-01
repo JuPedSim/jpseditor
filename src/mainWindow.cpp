@@ -514,7 +514,7 @@ void MWindow::openFileXML()
 
     if(!error_goal.isEmpty() or !error_routing.isEmpty() or !error_source.isEmpty() or !error_traffic.isEmpty())
     {
-        // Show error information when some files are lacked
+        // Show error information when some files are locked
         QString error = "";
         QMessageBox msgBox;
         msgBox.setText("Geometry is loaded, but some files aren't loaded.");
