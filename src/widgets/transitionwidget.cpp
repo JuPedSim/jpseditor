@@ -34,6 +34,7 @@
 TransitionWidget::TransitionWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsView *mview)
     : QWidget(parent), ui(new Ui::TransitionWidget)
 {
+    qDebug("Enter TransitionWidget::TransitionWidget");
     ui->setupUi(this);
 
     data = dmanager;
@@ -47,11 +48,14 @@ TransitionWidget::TransitionWidget(QWidget *parent, jpsDatamanager *dmanager, jp
 
     connect(view, SIGNAL(transitonsChanged()), this, SLOT(updateListWidget()));
     connect(view, SIGNAL(markedLineDeleted()), this, SLOT(updateListWidget()));
+    qDebug("Leave TransitionWidget::TransitionWidget");
 }
 
 TransitionWidget::~TransitionWidget()
 {
+    qDebug("Enter TransitionWidget::~TransitionWidget");
     delete ui;
+    qDebug("Leave TransitionWidget::~TransitionWidget");
 }
 
 void TransitionWidget::updateListWidget()

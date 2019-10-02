@@ -32,11 +32,13 @@
 
 GraphicScene::GraphicScene(QObject *parent) : QGraphicsScene(parent)
 {
+    qDebug("Enter GraphicScene::GraphicScene");
     _translationX=0.0;
     _translationY=0.0;
     _gridmode=false;
     _statgrid="Line";
     _gridSize=1.0;
+    qDebug("Leave GraphicScene::GraphicScene");
 }
 
 GraphicScene::~GraphicScene()
@@ -46,32 +48,39 @@ GraphicScene::~GraphicScene()
 
 void GraphicScene::ChangeGridmode(const bool &stat)
 {
+    qDebug("Enter/Return ChangeGridmode");
     _gridmode=stat;
 }
 
 bool GraphicScene::GetGridmode() const
 {
+    qDebug("Enter/Return GraphicScene::GetGridmode");
     return _gridmode;
 }
 
 void GraphicScene::ChangeTranslation(qreal x, qreal y)
 {
+    qDebug("Enter GraphicScene::ChangeTranslation");
     _translationX=x;
     _translationY=y;
+    qDebug("Leave GraphicScene::ChangeTranslation");
 }
 
 void GraphicScene::SetGrid(QString grid)
 {
+    qDebug("Enter/Return GraphicScene::SetGrid");
     _statgrid=grid;
 }
 
 void GraphicScene::ChangeGridSize(const qreal &gridSize)
 {
+    qDebug("Enter/Return GraphicScene::ChangeGridSize");
     _gridSize=gridSize;
 }
 
 void GraphicScene::drawBackground(QPainter *painter, const QRectF &rect)
 {
+    qDebug("Enter GraphicScene::drawBackground");
     if (_gridmode)
     {
         if (_statgrid=="Line")
@@ -79,10 +88,12 @@ void GraphicScene::drawBackground(QPainter *painter, const QRectF &rect)
         else
             DrawPointGrid(painter,rect);
     }
+    qDebug("Leave GraphicScene::drawBackground");
 }
 
 void GraphicScene::DrawLineGrid(QPainter *painter, const QRectF &rect)
 {
+    qDebug("Enter GraphicScene::DrawLineGrid");
     //gridSize=1.0;
     qreal left = int(rect.left()-_translationX) - std::fmod(int(rect.left()-_translationX), _gridSize);
     qreal top = int(rect.top()-_translationY)- std::fmod(int(rect.top()-_translationY) , _gridSize);
@@ -108,11 +119,12 @@ void GraphicScene::DrawLineGrid(QPainter *painter, const QRectF &rect)
 //    painter->fillRect(origin, Qt::red);
 //    painter->drawLine(xaxis);
 //    painter->drawLine(yaxis);
+    qDebug("Leave GraphicScene::DrawLineGrid");
 }
 
 void GraphicScene::DrawPointGrid(QPainter *painter, const QRectF &rect)
 {
-
+    qDebug("Enter GraphicScene::DrawPointGrid");
 
     qreal left = int(rect.left()-_translationX) - std::fmod(int(rect.left()-_translationX), _gridSize);
     qreal top = int(rect.top()-_translationY)- std::fmod(int(rect.top()-_translationY) , _gridSize);
@@ -129,4 +141,5 @@ void GraphicScene::DrawPointGrid(QPainter *painter, const QRectF &rect)
     //qDebug() << lines.size();
     painter->setPen(QPen(Qt::black,0));
     painter->drawPoints(points.data(), points.size());
+    qDebug("Leave GraphicScene::DrawPointGrid");
 }

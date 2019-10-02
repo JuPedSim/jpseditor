@@ -34,6 +34,7 @@
 LayerWidget::LayerWidget(QWidget *parent, jpsGraphicsView *mview)
         : QWidget(parent), ui(new Ui::LayerWidget)
 {
+    qDebug("Enter LayerWidget::LayerWidget");
     ui->setupUi(this);
     view = mview;
 
@@ -55,12 +56,14 @@ LayerWidget::LayerWidget(QWidget *parent, jpsGraphicsView *mview)
     connect(ui->pushButton_hideLayer, SIGNAL(clicked()), this, SLOT(hideLayerButtonClicked()));
     connect(ui->pushButton_showLayer, SIGNAL(clicked()), this, SLOT(showLayerButtonClicked()));
 
-
+    qDebug("Leave LayerWidget::LayerWidget");
 }
 
 LayerWidget::~LayerWidget()
 {
+    qDebug("Enter LayerWidget::~LayerWidget");
     delete ui;
+    qDebug("Leave LayerWidget::~LayerWidget");
 }
 
 void LayerWidget::addLayerButtonClicked()

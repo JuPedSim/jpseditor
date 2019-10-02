@@ -33,8 +33,10 @@
 
 Layer::Layer() : QGraphicsItemGroup(nullptr)
 {
+    qDebug("Enter Layer::Layer");
     name = "Layer";
     visible = true;
+    qDebug("Leave Layer::Layer");
 }
 
 Layer::~Layer()

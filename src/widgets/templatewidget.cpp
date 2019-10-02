@@ -33,6 +33,7 @@
 TemplateWidget::TemplateWidget(QWidget *parent) :
     QWidget(parent), ui(new Ui::TemplateWidget)
 {
+    qDebug("Enter TemplateWidget::TemplateWidget");
     ui->setupUi(this);
     setWindowFlag(Qt::Dialog);
 
@@ -40,11 +41,14 @@ TemplateWidget::TemplateWidget(QWidget *parent) :
 
     connect(ui->pushButton_choose, SIGNAL(clicked(bool)), this, SLOT(pushButton_chooseClicked()));
     connect(ui->pushButton_cancel, SIGNAL(clicked(bool)), this, SLOT(pushButton_cancelClicked()));
+    qDebug("Leave TemplateWidget::TemplateWidget");
 }
 
 TemplateWidget::~TemplateWidget()
 {
+    qDebug("Enter TemplateWidget::~TemplateWidget");
     delete ui;
+    qDebug("Leave TemplateWidget::~TemplateWidget");
 }
 
 void TemplateWidget::pushButton_chooseClicked()

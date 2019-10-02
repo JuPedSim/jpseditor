@@ -40,6 +40,12 @@
 
 #define LOG_FILE_KEEP_NUM 30
 
+
+#include "mainWindow.h"
+#include "GraphicView.h"
+#include <QApplication>
+#include <QDebug>
+
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     // Add log dir if there is no

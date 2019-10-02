@@ -62,12 +62,18 @@ JPSGoalListModel::JPSGoalListModel(QList<JPSGoal *> &lst, QObject *parent)
 */
 
 QVariant JPSGoalListModel::data(const QModelIndex &index, int role) const {
-    if (index.row() < 0 || index.row() >= lst.size())
+    qDebug("Enter QVariant JPSGoalListModel::data");
+    if (index.row() < 0 || index.row() >= lst.size()){
+        qDebug("Leave QVariant JPSGoalListModel::data");
         return QVariant();
+    }
 
-    if (role == Qt::DisplayRole)
+    if (role == Qt::DisplayRole){
+        qDebug("Leave QVariant JPSGoalListModel::data");
         return lst.at(index.row())->getCaption();
+    }
 
+    qDebug("Leave QVariant JPSGoalListModel::data");
     return QVariant();
 }
 
@@ -87,9 +93,13 @@ QVariant JPSGoalListModel::data(const QModelIndex &index, int role) const {
 
 int JPSGoalListModel::rowCount(const QModelIndex &parent) const
 {
-    if(parent.isValid())
+    qDebug("Enter JPSGoalListModel::rowCount");
+    if(parent.isValid()){
+        qDebug("Leave JPSGoalListModel::rowCount");
         return 0;
+    }
 
+    qDebug("Leave JPSGoalListModel::rowCount");
     return lst.count();
 }
 
@@ -107,20 +117,24 @@ int JPSGoalListModel::rowCount(const QModelIndex &parent) const
 */
 
 bool JPSGoalListModel::setData(const QModelIndex &index, const QVariant &value, int role) {
+    qDebug("Enter JPSGoalListModel::setData");
 
     if (index.row() >= 0 && index.row() < lst.size()
         && (role == Qt::EditRole || role == Qt::DisplayRole))
     {
         const QString valueString = value.toString();
 
-        if (lst.at(index.row())->getCaption() == valueString)
+        if (lst.at(index.row())->getCaption() == valueString){
+            qDebug("Leave JPSGoalListModel::setData");
             return true;
+        }
 
         lst.at(index.row())->setCaption(valueString);
         emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+        qDebug("Leave JPSGoalListModel::setData");
         return true;
     }
-
+    qDebug("Leave JPSGoalListModel::setData");
     return false;
 }
 
@@ -133,9 +147,13 @@ bool JPSGoalListModel::setData(const QModelIndex &index, const QVariant &value, 
 
 Qt::ItemFlags JPSGoalListModel::flags(const QModelIndex &index) const
 {
-    if (!index.isValid())
+    qDebug("Enter JPSGoalListModel::flags");
+    if (!index.isValid()){
+        qDebug("Leave JPSGoalListModel::flags");
         return JPSElementListModel::flags(index) | Qt::ItemIsDropEnabled;
+    }
 
+    qDebug("Leave JPSGoalListModel::flags");
     return JPSElementListModel::flags(index) | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 }
 
@@ -146,9 +164,11 @@ Qt::ItemFlags JPSGoalListModel::flags(const QModelIndex &index) const
 
 void JPSGoalListModel::setGoalsList(QList<JPSGoal *> Goals)
 {
+    qDebug("Enter JPSGoalListModel::setGoalsList");
     beginResetModel();
     lst = Goals;
     endResetModel();
+    qDebug("Leave JPSGoalListModel::setGoalsList");
 }
 
 /*!
@@ -157,5 +177,6 @@ void JPSGoalListModel::setGoalsList(QList<JPSGoal *> Goals)
 
 QList<JPSGoal *> JPSGoalListModel::goalsList()
 {
+    qDebug("Enter/Return JPSGoalListModel::goalsList");
     return lst;
 }

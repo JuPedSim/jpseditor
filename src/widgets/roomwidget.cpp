@@ -38,6 +38,7 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     QTabWidget(parent),
     ui(new Ui::roomWidget)
 {
+    qDebug("Enter roomWidget::roomWidget");
     ui->setupUi(this);
 
     datamanager=dmanager;
@@ -116,11 +117,14 @@ roomWidget::roomWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
 //    connect(ui->auto_assign_obstacle,SIGNAL(clicked(bool)),this,SLOT(autoAssigneObstacles()));
     //lines in graphview deleted
     connect(graphview,SIGNAL(lines_deleted()),this,SLOT(show_all()));
+    qDebug("Leave roomWidget::roomWidget");
 }
 
 roomWidget::~roomWidget()
 {
+    qDebug("Enter roomWidget::~roomWidget");
     delete ui;
+    qDebug("Leave roomWidget::~roomWidget");
 }
 
 void roomWidget::show_rooms()
@@ -170,6 +174,7 @@ void roomWidget::show_crossings()
 
 void roomWidget::show_exits()
 {
+//    qDebug("Enter roomWidget::show_exits")
 //    ui->exitList->clear();
 
 //    QList<jpsTransition *> exitList=datamanager->getTransitionList();
@@ -185,6 +190,7 @@ void roomWidget::show_exits()
 
 //    }
 //    ui->exitList->setCurrentRow(exitList.size()-1);
+//    qDebug("Leave roomWidget::show_exits")
 }
 
 void roomWidget::show_obstacles()
@@ -494,6 +500,7 @@ void roomWidget::add_rooms_to_crossing()
 
 void roomWidget::delete_crossing()
 {
+    qDebug("Enter roomWidget::delete_crossing");
     if (ui->crossingList->currentItem()!=nullptr)
     {
         int index = ui->crossingList->currentRow();
@@ -501,10 +508,12 @@ void roomWidget::delete_crossing()
         ui->crossingList->setCurrentRow(-1);
         this->show_crossings();
     }
+    qDebug("Leave roomWidget::delete_crossing");
 }
 
 void roomWidget::select_crossing()
 {
+    qDebug("Enter roomWidget::select_crossing");
     if (ui->crossingList->currentItem()!=0L)
     {
         if (graphview->get_markedLines().size()>0)
@@ -514,19 +523,23 @@ void roomWidget::select_crossing()
         int cCrossRow=ui->crossingList->currentRow();
         graphview->select_line(datamanager->get_crossingList()[cCrossRow]->get_cLine());
     }
+    qDebug("Leave roomWidget::select_crossing");
 }
 
 void roomWidget::new_exit()
 {
+    qDebug("Enter roomWidget::new_exit");
     if (graphview->get_markedLines().size()>0)
     {
         datamanager->new_exit(graphview->get_markedLines());
     }
     show_exits();
+    qDebug("Leave roomWidget::new_exit");
 }
 
 void roomWidget::enable_roomSelectionExits()
 {
+//    qDebug("Enter roomWidget::enable_roomSelectionExits");
 //    if (datamanager->getTransitionList().size()>0)
 //    {
 //        //ui->roomBox_exits->setEnabled(true);
@@ -564,22 +577,25 @@ void roomWidget::enable_roomSelectionExits()
 //    {
 //        disable_roomSelectionExits();
 //    }
+//    qDebug("Leave roomWidget::enable_roomSelectionExits");
 
 }
 
 void roomWidget::disable_roomSelectionExits()
 {
+//    qDebug("enter roomWidget::disable_roomSelectionExits);
 //    ui->roomBox_exits->setEnabled(false);
 
 //    ui->exit_from->setEnabled(false);
 //    ui->to_label->setEnabled(false);
 //    ui->outside->setEnabled(false);
+//    qDebug("Leave roomWidget::disable_roomSelectionExits);
 
 }
 
 void roomWidget::add_rooms_to_exit()
 {
-
+//    qDebug("Enter roomWidget::add_rooms_to_exit);
 //    if (ui->exitList->currentItem()!=0L)
 //    {
 //        int cExitRow=ui->exitList->currentRow();
@@ -589,11 +605,13 @@ void roomWidget::add_rooms_to_exit()
 //            datamanager->getTransitionList()[cExitRow]->addSubrooms(datamanager->get_roomlist()[cRoomRow]);
 //        }
 //    }
+//    qDebug("Leave roomWidget::add_rooms_to_exit);
 
 }
 
 void roomWidget::delete_exit()
 {
+//    Qdebug("Enter roomWidget::delete_exit);
 //    if (ui->exitList->currentItem()!=0L)
 //    {
 //        int index = ui->exitList->currentRow();
@@ -602,10 +620,12 @@ void roomWidget::delete_exit()
 //        this->show_exits();
 
 //    }
+//    qDebug("Leave roomWidget::delete_exit);
 }
 
 void roomWidget::select_exit()
 {
+//    qDebgu("Enter roomWidget::select_exit)"
 //    if (ui->exitList->currentItem()!=0L)
 //    {
 //        if (graphview->get_markedLines().size()>0)
@@ -618,10 +638,12 @@ void roomWidget::select_exit()
 //        graphview->select_line(datamanager->getTransitionList()[cExitRow]->get_cLine());
 
 //    }
+//    qDebug("Leave roomWidget::select_exit);
 }
 
 void roomWidget::show_all()
 {
+    qDebug("Enter roomWidget::show_all");
     show_rooms();
     showLayersInfo();
     show_crossings();
@@ -629,17 +651,21 @@ void roomWidget::show_all()
     show_obstacles();
     showWallsAndType();
     showWallsObs();
+    qDebug("Leave roomWidget::show_all");
 }
 
 
 void roomWidget::new_obstacle()
 {
+    qDebug("Enter roomWidget::new_obstacle");
     datamanager->new_obstacle();
     this->show_obstacles();
+    qDebug("Leave roomWidget::new_obstacle");
 }
 
 void roomWidget::delete_obstacle()
 {
+    qDebug("Enter roomWidget::delete_obstacle");
     if (ui->list_obstacles->currentItem()!=nullptr)
     {
         int cRow=ui->list_obstacles->currentRow();
@@ -648,10 +674,12 @@ void roomWidget::delete_obstacle()
         ui->list_obstacles->setCurrentRow(-1);
         this->show_obstacles();
     }
+    qDebug("Leave roomWidget::delete_obstacle");
 }
 
 void roomWidget::change_obsName()
 {
+    qDebug("Enter roomWidget::change_obsName");
     if (ui->list_obstacles->currentItem()!=nullptr)
     {
         int crow=ui->list_obstacles->currentRow();
@@ -659,10 +687,12 @@ void roomWidget::change_obsName()
         qDebug()<< "Name of Obs is changed";
         this->show_obstacles();
     }
+    qDebug("Leave roomWidget::change_obsName");
 }
 
 void roomWidget::addWallObs()
 {
+    qDebug("Enter roomWidget::addWallObs");
     if (graphview->get_markedLines().size()>0)
     {
 
@@ -676,10 +706,12 @@ void roomWidget::addWallObs()
             this->showWallsObs();
         }
     }
+    qDebug("Leave roomWidget::addWallObs");
 }
 
 void roomWidget::removeWallObs()
 {
+    qDebug("Enter roomWidget::removeWallOb");
     if (graphview->get_markedLines().size()>0)
     {
         if (ui->list_obstacles->currentItem()!=0L)
@@ -691,11 +723,12 @@ void roomWidget::removeWallObs()
             this->showWallsObs();
         }
     }
-
+    qDebug("Leave roomWidget::removeWallOb");
 }
 
 void roomWidget::showWallsObs()
 {
+    qDebug("Enter roomWidget::showWallsObs");
     ui->listWallsObs->clear();
     if (ui->list_obstacles->currentItem()!=nullptr)
     {
@@ -734,10 +767,12 @@ void roomWidget::showWallsObs()
             }
         }
     }
+    qDebug("Leave roomWidget::showWallsObs");
 }
 
 void roomWidget::selectWallObs()
 {
+    qDebug("Enter roomWidget::selectWallObs");
     if (ui->listWallsObs->currentItem()!=0L)
     {
         if (graphview->get_markedLines().size()>0)
@@ -750,10 +785,12 @@ void roomWidget::selectWallObs()
         graphview->select_line(datamanager->get_obstaclelist()[cObsRow]->get_listWalls()[cWallRow]);
 
     }
+    qDebug("Leave roomWidget::selectWallObs");
 }
 
 void roomWidget::add_room_to_obs()
 {
+    qDebug("Enter roomWidget::add_room_to_obs");
     if (ui->list_obstacles->currentItem()!=0L)
     {
         int cObsRow=ui->list_obstacles->currentRow();
@@ -763,6 +800,7 @@ void roomWidget::add_room_to_obs()
             datamanager->get_obstaclelist()[cObsRow]->set_room(datamanager->get_roomlist()[cRoomRow]);
         }
     }
+    qDebug("Leave roomWidget::add_room_to_obs");
 
 }
 
@@ -927,6 +965,7 @@ void roomWidget::highlight_obs()
 
 void roomWidget::autoAssigneObstacles()
 {
+    qDebug("Enter roomWidget::autoAssigneObstacles");
     for (JPSZone* room: datamanager->get_roomlist())
     {
         QVector<QLineF> lines = room->GetOuterPolygon();
@@ -946,10 +985,12 @@ void roomWidget::autoAssigneObstacles()
              }
         }
     }
+    qDebug("Leave roomWidget::autoAssigneObstacles");
 }
 
 void roomWidget::autoAssignObstacle(jpsObstacle * obstacle)
 {
+    qDebug("Enter roomWidget::autoAssignObstacle");
     for (JPSZone* room: datamanager->get_roomlist())
     {
         QVector<QLineF> lines = room->GetOuterPolygon();
@@ -965,6 +1006,7 @@ void roomWidget::autoAssignObstacle(jpsObstacle * obstacle)
              obstacle->set_room(room);
         }
     }
+    qDebug("Leave roomWidget::autoAssignObstacle");
 }
 void roomWidget::autoAssignCrossing(jpsCrossing * crossing)
 {
@@ -1044,7 +1086,7 @@ void roomWidget::ChangeRoomType()
 
 void roomWidget::StartAutoDef()
 {
-
+    qDebug("Enter  roomWidget::StartAutoDef");
     _roomDef = new RoomDefinition(graphview->get_line_vector(),datamanager);
     _roomDef->SetUpRoomsAndDoors();
     delete _roomDef;
@@ -1061,15 +1103,17 @@ void roomWidget::StartAutoDef()
     // show_rooms();
     // show_crossings();
 
-
+    qDebug("Leave  roomWidget::StartAutoDef");
 }
 
 void roomWidget::GatherRTData()
 {
+    qDebug("Enter roomWidget::GatherRTData");
     _roomIdent = new RoomIdentification(datamanager->get_roomlist());
     _roomIdent->GatherData();
     delete _roomIdent;
     _roomIdent=nullptr;
+    qDebug("Leave roomWidget::GatherRTData");
 
 }
 
@@ -1144,6 +1188,7 @@ void roomWidget::highlight_obs(JPSZone * room)
 
 void roomWidget::on_hideButton_clicked()
 {
+    qDebug("Enter roomWidget::on_hideButton_clicked");
     QList<JPSZone*> roomlist=datamanager->get_roomlist();
     QListIterator<JPSZone*> i(roomlist);
 
@@ -1161,10 +1206,12 @@ void roomWidget::on_hideButton_clicked()
     }
 
     show_hideLayer();
+    qDebug("Leave roomWidget::on_hideButton_clicked");
 }
 
 void roomWidget::on_showButton_clicked()
 {
+    qDebug("Enter roomWidget::on_showButton_clicked");
     QList<JPSZone*> roomlist=datamanager->get_roomlist();
     QListIterator<JPSZone*> i(roomlist);
 
@@ -1182,20 +1229,24 @@ void roomWidget::on_showButton_clicked()
     }
 
     show_hideLayer();
+    qDebug("Leave roomWidget::on_showButton_clicked");
 
 }
 
 void roomWidget::show_hideLayer()
 {
+    qDebug("Enter roomWidget::show_hideLayer");
     for (JPSZone* room:datamanager->get_roomlist())
     {
         room->switchVisibility();
         room->switchHighlight();
     }
+    qDebug("Leave roomWidget::show_hideLayer");
 }
 
 void roomWidget::showLayersInfo()
 {
+    qDebug("Enter roomWidget::showLayersInfo");
     ui->layerListWidget->clear();
 
     QList<QString> elevationlist=datamanager->getElevationList();
@@ -1208,6 +1259,7 @@ void roomWidget::showLayersInfo()
         ui->layerListWidget->addItem(layerinfo);
     }
     qDebug("Layer ListWidget is updated!");
+    qDebug("Leave roomWidget::showLayersInfo");
 }
 
 /*

@@ -34,6 +34,7 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
                                JPSZone *zone, jpsGraphicsView *gview)
     : QWidget(parent), ui(new Ui::PropertyWidget)
 {
+    qDebug("Enter PropertyWidget::PropertyWidget");
     ui->setupUi(this);
     view = gview;
     data = dmanager;
@@ -71,15 +72,19 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
     connect(ui->listWidget_track, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlightWall(QListWidgetItem*)));
     connect(ui->listWidget_track, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(updateType(QListWidgetItem*)));
     connect(ui->pushButton_applyType, SIGNAL(clicked()), this, SLOT(applyTypeButtonClicked()));
+    qDebug("Leave PropertyWidget::PropertyWidget");
 }
 
 PropertyWidget::~PropertyWidget()
 {
+    qDebug("Enter PropertyWidget::~PropertyWidget");
     delete ui;
+    qDebug("Leave PropertyWidget::~PropertyWidget");
 }
 
 void PropertyWidget::updateWidget(ZoneType type)
 {
+    qDebug("Enter PropertyWidget::updateWidget");
     switch(type)
     {
         case Room:
@@ -111,8 +116,10 @@ void PropertyWidget::updateWidget(ZoneType type)
             updateWallListWidget();
             updateCrossingListWidget();
         default:
+            qDebug("Leave PropertyWidget::updateWidget");
             return;
     }
+    qDebug("Leave PropertyWidget::updateWidget");
 }
 
 void PropertyWidget::updateListwidget()
