@@ -987,12 +987,10 @@ void MWindow::gridmode()
 
 void MWindow::show_coords()
 {
-    qDebug("Enter MWindow::show_coords");
     QPointF point = mview->return_Pos();
     QString string = "";
     string.sprintf("(%.2f, %5.2f)", point.x(), point.y());
     infoLabel->setText(string);
-    qDebug("Leave MWindow::show_coords");
 }
 
 void MWindow::delete_lines()
@@ -1147,10 +1145,10 @@ void MWindow::remove_all_lines()
 
 void MWindow::ShowLineLength()
 {
-    qDebug("Enter MWindow::ShowLineLength");
+
     length_edit->setText(QString::number(mview->ReturnLineLength()));
     length_edit->selectAll();
-    qDebug("Leave MWindow::ShowLineLength");
+
 }
 
 void MWindow::ScaleLines()

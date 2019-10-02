@@ -162,7 +162,6 @@ void jpsGraphicsView::SetDatamanager(jpsDatamanager *datamanager)
 
 void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 {
-    qDebug("Enter jpsGraphicsView::mouseMoveEvent");
     QGraphicsView::mouseMoveEvent(mouseEvent);
 
     switch (drawingMode){
@@ -294,7 +293,6 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
     emit mouse_moved();
     update();
-    qDebug("Leave jpsGraphicsView::mouseMoveEvent");
 }
 
 
@@ -574,12 +572,10 @@ void jpsGraphicsView::ActivatePointGrid()
 
 void jpsGraphicsView::wheelEvent(QWheelEvent *event)
 {
-    qDebug("Enter jpsGraphicsView::wheelEvent");
     if (midbutton_hold==false)
     {
         zoom(event->delta());
     }
-    qDebug("Leave jpsGraphicsView::wheelEvent");
 }
 
 
@@ -657,7 +653,6 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 
 const QPointF &jpsGraphicsView::return_Pos() const
 {
-    qDebug("Enter/Return jpsGraphicsView::return_Pos");
     return translated_pos;
 }
 
@@ -1419,7 +1414,6 @@ void jpsGraphicsView::EditLine(QPointF* point)
 
 qreal jpsGraphicsView::ReturnLineLength()
 {
-    qDebug("Enter/Return jpsGraphicsView::ReturnLineLength");
     return current_line->line().length();
 }
 
@@ -2521,7 +2515,6 @@ QPointF jpsGraphicsView::getNearstPointOnLine(jpsLineItem* selected_line)
  */
 void jpsGraphicsView::drawBackground(QPainter *painter, const QRectF &rect)
 {
-    qDebug("Enter jpsGraphicsView::drawBackground");
     if (_gridmode)
     {
         if (_statgrid=="Line")
@@ -2529,7 +2522,6 @@ void jpsGraphicsView::drawBackground(QPainter *painter, const QRectF &rect)
         else
             DrawPointGrid(painter,rect);
     }
-    qDebug("Leave jpsGraphicsView::drawBackground");
 }
 
 void jpsGraphicsView::DrawLineGrid(QPainter *painter, const QRectF &rect)
