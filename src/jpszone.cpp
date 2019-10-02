@@ -340,34 +340,6 @@ QList<QPointF> JPSZone::GetDoorVertices() const
     return vertices;
 }
 
-void JPSZone::AddDoor(jpsCrossing *door)
-{
-    qDebug("Enter JPSZone::AddDoor");
-    if (!crossing_list.contains(door))
-        crossing_list.push_back(door);
-    //outer_polygon.push_back(door->get_cLine()->get_line()->line());
-    qDebug("Leave JPSZone::AddDoor");
-}
-
-void JPSZone::AddInnerDoor(jpsCrossing *door, int id_polygon)
-{
-    qDebug("Enter JPSZone::AddInnerDoor");
-    if (!crossing_list.contains(door))
-    {
-        crossing_list.push_back(door);
-        if (id_polygon >= inner_polygons.size())
-            inner_polygons.push_back(QVector<QLineF>{});
-
-        inner_polygons[id_polygon].push_back(door->get_cLine()->get_line()->line());
-    }
-    qDebug("Leave JPSZone::AddInnerDoor");
-}
-
-//QPolygonF JPSZone::RoomAsPolygon() const
-//{
-//    return QPolygonF(get_vertices());
-//}
-
 QVector<QPointF> JPSZone::RoomAsSortedPolygon(const QVector<QLineF>& lines) const
 {
      qDebug("Enter JPSZone::RoomAsSortedPolygon");
@@ -1114,16 +1086,16 @@ QString JPSZone::getTypeInString() const
     switch (zoneType)
     {
         case Corridor:
-            return "Corridor";
+            return "corridor";
         case Lobby:
-            return "Lobby";
+            return "lobby";
         case Office:
-            return "Office";
+            return "office";
         case Stair:
-            return "Stair";
+            return "stair";
         case Platform:
-            return "Platform";
+            return "platform";
         default:
-            return "";
+            return "subroom";
     }
 }

@@ -483,14 +483,14 @@ void roomWidget::add_rooms_to_crossing()
 
             if (ui->roomBox_to->currentText()=="OUTSIDE") // This door is a transition
             {
-//                datamanager->get_crossingList()[cCrossingRow]->add_rooms(datamanager->get_roomlist()[cRoomRow1]);
+//                datamanager->get_crossingList()[cCrossingRow]->addSubrooms(datamanager->get_roomlist()[cRoomRow1]);
                 datamanager->get_crossingList()[cCrossingRow]->get_cLine()->setCrossing();
             }
 
             else // This door is a crossing
             {
-                datamanager->get_crossingList()[cCrossingRow]->add_rooms(datamanager->get_roomlist()[cRoomRow1],
-                                                                 datamanager->get_roomlist()[cRoomRow2]);
+                datamanager->get_crossingList()[cCrossingRow]->addSubrooms(datamanager->get_roomlist()[cRoomRow1],
+                                                                           datamanager->get_roomlist()[cRoomRow2]);
                 datamanager->get_crossingList()[cCrossingRow]->get_cLine()->setCrossing();
             }
         }
@@ -602,7 +602,7 @@ void roomWidget::add_rooms_to_exit()
 //        if (ui->roomBox_exits->currentIndex()!=-1)
 //        {
 //            int cRoomRow=ui->roomBox_exits->currentIndex();
-//            datamanager->getTransitionList()[cExitRow]->add_rooms(datamanager->get_roomlist()[cRoomRow]);
+//            datamanager->getTransitionList()[cExitRow]->addSubrooms(datamanager->get_roomlist()[cRoomRow]);
 //        }
 //    }
 //    qDebug("Leave roomWidget::add_rooms_to_exit);
@@ -1031,7 +1031,7 @@ void roomWidget::autoAssignCrossing(jpsCrossing * crossing)
          qDebug("\t pointCounter = %d, roomCounter = %d", pointCounter, roomCounter);
          if (pointCounter>=2 && roomCounter==0)
          {
-//              crossing->add_rooms(room);
+//              crossing->addSubrooms(room);
               roomCounter++;
               int index = datamanager->get_roomlist().indexOf(room);
               ui->roomBox_from->setCurrentIndex(index);
@@ -1039,7 +1039,7 @@ void roomWidget::autoAssignCrossing(jpsCrossing * crossing)
          else if (pointCounter>=2 && roomCounter==1)
          {
               roomCounter++;
-              crossing->add_rooms(crossing->get_roomList()[0],room);
+             crossing->addSubrooms(crossing->get_roomList()[0], room);
               int index = datamanager->get_roomlist().indexOf(room);
               ui->roomBox_to->setCurrentIndex(index);
               break;

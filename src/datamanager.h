@@ -36,6 +36,8 @@
 #include <QGraphicsView>
 #include <QMessageBox>
 #include <random>
+#include <QtXml>
+
 #include "jpszone.h"
 #include "jpscrossing.h"
 #include "jpsLineItem.h"
@@ -52,19 +54,20 @@
 
 using ptrConnection = std::shared_ptr<jpsConnection>;
 
-
-
 class jpsDatamanager: public DL_CreationAdapter
 {
 public:
-    jpsDatamanager(QWidget* parent=0L, jpsGraphicsView* view=0L);
-    ~jpsDatamanager();
+    explicit jpsDatamanager(QWidget* parent=nullptr, jpsGraphicsView* view=nullptr);
+    ~jpsDatamanager() override;
+
     ///Zone
     QList<JPSZone *> get_roomlist();
     void addRoom();
     void remove_room(JPSZone* room);
     void change_roomName(JPSZone* room, QString name);
     void remove_all_rooms();
+    JPSZone *getSubroomWithID(QString room_id, QString subroom_id);
+
     ///Obstacle
     QList<jpsObstacle *> get_obstaclelist();
     void new_obstacle();
@@ -118,45 +121,48 @@ public:
     bool readTrafficXML(QFile &file);
     void readDoor(QXmlStreamReader &xmlReader);
 
-
     void remove_all();
     void remove_marked_lines();
     void set_view(jpsGraphicsView* view);
     jpsGraphicsView* get_view();
 
 
-    // Read XML
+    // Read geometry XML
     bool readXML(QFile &file);
+    void parseGeometry(const QDomElement &element);
+    void parseRooms(const QDomElement &element);
+    void parseTransitions(const QDomElement &element);
+    void parseUndefine(const QDomElement &element);
+    void parseRoom(const QDomElement &element);
+    void parseSubRoom(const QDomElement &element);
+    void parseCrossings(const QDomElement &element);
+
+    void parseObstacles(QXmlStreamReader &xmlReader, JPSZone *room);
+
+    // Read routing XML
     bool readRoutingXML(QFile &file);
     void parseHline(QXmlStreamReader &xmlReader);
-    void parseSubRoom(QXmlStreamReader &xmlReader);
-    void parseWalls(QXmlStreamReader &xmlReader,JPSZone* room);
-    void parseWalls(QXmlStreamReader &xmlReader,jpsObstacle* room);
-    void parseCrossings(QXmlStreamReader &xmlReader);
-    void parseTransitions(QXmlStreamReader &xmlReader);
-    void parseObstacles(QXmlStreamReader &xmlReader, JPSZone *room);
-    QPointF parseUp(QXmlStreamReader &xmlReader); /// stair's up point
-    QPointF parseDown(QXmlStreamReader &xmlReader); /// stair's down point
 
     // Write XML
     void writeXML(QFile &file);
-    void writeRoutingXML(QFile &file);
-    void writeLineItems(QFile & file);
 
+    void writeLineItems(QFile & file);
     void writeHeader(QXmlStreamWriter *stream);
     void writeRoutingHeader(QXmlStreamWriter *stream);
     void writeHLines(QXmlStreamWriter *stream, QList<jpsLineItem* >& hLines);
     QString RoomIDHLine(jpsLineItem* lineItem);
     void writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeSubRoom(QXmlStreamWriter *stream, JPSZone* room, QList<jpsLineItem* >& lines);
-    void AutoSaveRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeCrossings(QXmlStreamWriter *stream, JPSZone *room, QList<jpsLineItem *> &lines);
     void writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeObstacles(QXmlStreamWriter *stream, jpsObstacle *obs, QList<jpsLineItem *> &lines);
     void writeNotAssignedLines(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines);
     void writeTransitionXML(QFile &file);
 
-    //Write Cognitive Map XML
+    // Write routing XML
+    void writeRoutingXML(QFile &file);
+
+    // Write Cognitive Map XML
     void WriteCognitiveMapXML(QFile &file, bool fuzzy=false);
     void WriteCognitiveMapXML(QFile &file, int k, double m, double p0);
     void WriteCognitiveMapHeader(QXmlStreamWriter *stream);
@@ -174,9 +180,16 @@ public:
     qreal MakeItFuzzy(const qreal &mean, const qreal& std);
     int GetNumberOfMainTargets() const;
 
+    // Read Cognitive Map
+    bool ParseCogMap(QFile &file);
+    jpsRegion* ParseRegion(QXmlStreamReader &xmlReader);
+    void ParseLandmark(jpsRegion* actRegion, QXmlStreamReader &xmlReader);
+    void ParseConnection(jpsRegion* actRegion, QXmlStreamReader &xmlReader);
+
     // Read DXF
     bool readDXF(std::string filename);
-    virtual void addLine(const DL_LineData& d);
+    void addLine(const DL_LineData& d) override;
+
     // write DXF
     void writeDXF(std::string filename);
     void writeDXFHeader(DL_Dxf* dxf, DL_WriterA *dw);
@@ -184,14 +197,6 @@ public:
     void writeDXFBlocks(DL_Dxf* dxf, DL_WriterA *dw);
     void writeDXFEntities(DL_Dxf* dxf, DL_WriterA *dw);
     void writeDXFObjects(DL_Dxf* dxf, DL_WriterA *dw);
-
-    QString check_printAbility();
-
-    //Parse Cognitive Map
-    bool ParseCogMap(QFile &file);
-    jpsRegion* ParseRegion(QXmlStreamReader &xmlReader);
-    void ParseLandmark(jpsRegion* actRegion, QXmlStreamReader &xmlReader);
-    void ParseConnection(jpsRegion* actRegion, QXmlStreamReader &xmlReader);
 
     // read line file
     bool ReadLineFile(QFile &file);

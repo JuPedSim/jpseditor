@@ -22,7 +22,8 @@ public:
 protected slots:
     void updateListWidget();
     void applyRooms();
-    void showRoomsinButton();
+    void showRoomsinButton(QListWidgetItem *item);
+    void highlightWall(QListWidgetItem *);
 
 private:
     Ui::TransitionWidget *ui;

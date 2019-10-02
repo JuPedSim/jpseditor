@@ -40,8 +40,6 @@ public:
     void setType(const ZoneType &type);
     QList<QPointF> GetDoorVertices() const;
 
-    void AddDoor(jpsCrossing *door);
-    void AddInnerDoor(jpsCrossing *door, int id_polygon=0);
     QVector<QPointF> RoomAsSortedPolygon(const QVector<QLineF> &lines) const;
     const QVector<QLineF>& GetOuterPolygon() const;
     qreal GetArea() const;

@@ -283,6 +283,7 @@ MWindow::~MWindow()
     delete _cMapTimer;
     delete drawing_toolbar_;
     qDebug("Leave MWindow::~MWindow");
+//    qDebug("This run is ended \n");
 }
 
 void MWindow::setupDrawingToolBar()
@@ -509,6 +510,7 @@ void MWindow::openFileXML()
 
     QString fileName=QFileDialog::getOpenFileName(this,tr("Open XML"),"",tr("XML-Files (*.xml)"));
 
+    // Open geometry
     QString error_geometry = openGeometry(fileName);
 
     // if load geometry file failed, stop read others files
@@ -532,6 +534,7 @@ void MWindow::openFileXML()
 
     if(!error_goal.isEmpty() or !error_routing.isEmpty() or !error_source.isEmpty() or !error_traffic.isEmpty())
     {
+        // Show error information when some files are locked
         QString error = "";
         QMessageBox msgBox;
         msgBox.setText("Geometry is loaded, but some files aren't loaded.");
@@ -551,17 +554,16 @@ void MWindow::openFileXML()
         msgBox.setDetailedText(error);
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.exec();
-
-        qDebug("Leave MWindow::openFileXML");
-        return;
+        
     } else
     {
-        statusBar()->showMessage(tr("Files successfully loaded!"),10000);
-        //AutoZoom to drawing
-        mview->AutoZoom();
+        statusBar()->showMessage(tr("All files successfully loaded!"),10000);
     }
-    qDebug("Leave MWindow::openFileXML");
 
+    //AutoZoom to drawing
+    mview->AutoZoom();
+
+    qDebug("Leave MWindow::openFileXML");
 }
 
 QString MWindow::openGeometry(QString fileName)
@@ -593,9 +595,8 @@ QString MWindow::openGeometry(QString fileName)
     else
     {
         this->setWindowTitle(fileName);
+        QString error = ""; // The empty error string means file is loaded successful!
 
-        QString error = ""; // file is loaded successful!
-        qDebug("Leave MWindow::openGeometry, file is loaded successfully!");
         return error;
     }
     qDebug("Leave MWindow::openGeometry");
