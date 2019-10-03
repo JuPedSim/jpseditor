@@ -448,53 +448,103 @@ void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
 
     for(int i = 0; i < ui->tableWidget_groups_1->rowCount(); i++)
     {
-        stream->writeStartElement("group");
+        if(ui->tableWidget_groups_1->item(i,0) != nullptr)
+        {
+            stream->writeStartElement("group");
+        } else
+        {
+            continue; // If the line is blank, don't write anything
+        }
 
-        // item(0,0) isn't a nullptr ever！
-        if(!ui->tableWidget_groups_1->item(i,0)->text().isEmpty())
-            stream->writeAttribute("group_id", ui->tableWidget_groups_1->item(i,0)->text());
+        if(ui->tableWidget_groups_1->item(i,0) != nullptr)
+        {
+            if(!ui->tableWidget_groups_1->item(i,0)->text().isEmpty())
+                stream->writeAttribute("group_id", ui->tableWidget_groups_1->item(i,0)->text());
+        }
 
         if(ui->tableWidget_groups_1->item(i,1) != nullptr)
-            stream->writeAttribute("agent_parameter_id", ui->tableWidget_groups_1->item(i,1)->text());
+        {
+            if(!ui->tableWidget_groups_1->item(i,1)->text().isEmpty())
+                stream->writeAttribute("agent_parameter_id", ui->tableWidget_groups_1->item(i,1)->text());
+        }
 
         if(ui->tableWidget_groups_1->item(i,2) != nullptr)
-            stream->writeAttribute("room_id", ui->tableWidget_groups_1->item(i,2)->text());
+        {
+            if(!ui->tableWidget_groups_1->item(i,2)->text().isEmpty())
+                stream->writeAttribute("room_id", ui->tableWidget_groups_1->item(i,2)->text());
+        }
 
         if(ui->tableWidget_groups_1->item(i,3) != nullptr)
-            stream->writeAttribute("subroom_id",ui->tableWidget_groups_1->item(i,3)->text());
+        {
+            if(!ui->tableWidget_groups_1->item(i,3)->text().isEmpty())
+                stream->writeAttribute("subroom_id",ui->tableWidget_groups_1->item(i,3)->text());
+        }
 
         if(ui->tableWidget_groups_1->item(i,4) != nullptr)
-            stream->writeAttribute("number",ui->tableWidget_groups_1->item(i,4)->text());
+        {
+            if(!ui->tableWidget_groups_1->item(i,4)->text().isEmpty())
+                stream->writeAttribute("number",ui->tableWidget_groups_1->item(i,4)->text());
+        }
 
         if(ui->tableWidget_groups_1->item(i,5) != nullptr)
-            stream->writeAttribute("goal_id",ui->tableWidget_groups_1->item(i,5)->text());
+        {
+            if(!ui->tableWidget_groups_1->item(i,5)->text().isEmpty())
+                stream->writeAttribute("goal_id",ui->tableWidget_groups_1->item(i,5)->text());
+        }
 
         if(ui->tableWidget_groups_1->item(i,6) != nullptr)
-            stream->writeAttribute("router_id",ui->tableWidget_groups_1->item(i,6)->text());
+        {
+            if(!ui->tableWidget_groups_1->item(i,6)->text().isEmpty())
+                stream->writeAttribute("router_id",ui->tableWidget_groups_1->item(i,6)->text());
+        }
 
         if(ui->tableWidget_groups_1->item(i,7) != nullptr)
-            stream->writeAttribute("x_min",ui->tableWidget_groups_1->item(i,7)->text());
+        {
+            if(!ui->tableWidget_groups_1->item(i,7)->text().isEmpty())
+                stream->writeAttribute("x_min",ui->tableWidget_groups_1->item(i,7)->text());
+        }
 
         if(ui->tableWidget_groups_1->item(i,8) != nullptr)
-            stream->writeAttribute("x_max",ui->tableWidget_groups_1->item(i,8)->text());
+        {
+            if(!ui->tableWidget_groups_1->item(i,8)->text().isEmpty())
+                stream->writeAttribute("x_max",ui->tableWidget_groups_1->item(i,8)->text());
+        }
 
         if(ui->tableWidget_groups_1->item(i,9) != nullptr)
-            stream->writeAttribute("y_min",ui->tableWidget_groups_1->item(i,9)->text());
+        {
+            if(!ui->tableWidget_groups_1->item(i,9)->text().isEmpty())
+                stream->writeAttribute("y_min",ui->tableWidget_groups_1->item(i,9)->text());
+        }
 
         if(ui->tableWidget_groups_1->item(i,10) != nullptr)
-            stream->writeAttribute("y_max",ui->tableWidget_groups_1->item(i,10)->text());
+        {
+            if(!ui->tableWidget_groups_1->item(i,10)->text().isEmpty())
+                stream->writeAttribute("y_max",ui->tableWidget_groups_1->item(i,10)->text());
+        }
 
         if(ui->tableWidget_groups_1->item(i,11) != nullptr)
-            stream->writeAttribute("pre_movement_mean",ui->tableWidget_groups_1->item(i,11)->text());
+        {
+            if(!ui->tableWidget_groups_1->item(i,11)->text().isEmpty())
+                stream->writeAttribute("pre_movement_mean",ui->tableWidget_groups_1->item(i,11)->text());
+        }
 
         if(ui->tableWidget_groups_1->item(i,12) != nullptr)
-            stream->writeAttribute("pre_movement_sigma",ui->tableWidget_groups_1->item(i,12)->text());
+        {
+            if(!ui->tableWidget_groups_1->item(i,12)->text().isEmpty())
+                stream->writeAttribute("pre_movement_sigma",ui->tableWidget_groups_1->item(i,12)->text());
+        }
 
         if(ui->tableWidget_groups_1->item(i,13) != nullptr)
-            stream->writeAttribute("risk_tolerance_mean",ui->tableWidget_groups_1->item(i,13)->text());
+        {
+            if(!ui->tableWidget_groups_1->item(i,13)->text().isEmpty())
+                stream->writeAttribute("risk_tolerance_mean",ui->tableWidget_groups_1->item(i,13)->text());
+        }
 
         if(ui->tableWidget_groups_1->item(i,14) != nullptr)
-            stream->writeAttribute("risk_tolerance_sigma",ui->tableWidget_groups_1->item(i,14)->text());
+        {
+            if(!ui->tableWidget_groups_1->item(i,14)->text().isEmpty())
+                stream->writeAttribute("risk_tolerance_sigma",ui->tableWidget_groups_1->item(i,14)->text());
+        }
 
         stream->writeEndElement(); //end group
     }
@@ -799,132 +849,197 @@ void InifileWidget::writeAgentParameters(QXmlStreamWriter *stream, QFile &file)
     qDebug("Enter InifileWidget::writeAgentParameters");
     for(int i = 0; i < ui->tableWidget_agents->rowCount(); i++) // // start agent_parameters
     {
-        stream->writeStartElement("agent_parameters");
-        if(ui->tableWidget_agents->item(i,0) != nullptr)
+
+        if(ui->tableWidget_agents->item(i,0) != nullptr &&
+                !ui->tableWidget_agents->item(i,0)->text().isEmpty())
+        {
+            stream->writeStartElement("agent_parameters");
             stream->writeAttribute("agent_parameter_id", ui->tableWidget_agents->item(i,0)->text());
+        } else
+        {
+            continue;
+        }
 
-        stream->writeStartElement("v0");
-        if(ui->tableWidget_agents->item(i,1) != nullptr)
-            stream->writeAttribute("mu", ui->tableWidget_agents->item(i,1)->text());
+        if(ui->tableWidget_agents->item(i,1) != nullptr ||
+                ui->tableWidget_agents->item(i,2) != nullptr)
+        {
+            stream->writeStartElement("v0");
 
-        if(ui->tableWidget_agents->item(i,2) != nullptr)
-            stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,2)->text());
-        stream->writeEndElement();
+            if(!ui->tableWidget_agents->item(i,1)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,1)->text());
 
-        stream->writeStartElement("v0_upstairs");
 
-        if(ui->tableWidget_agents->item(i,3) != nullptr)
-            stream->writeAttribute("mu", ui->tableWidget_agents->item(i,3)->text());
+            if(!ui->tableWidget_agents->item(i,2)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,2)->text());
 
-        if(ui->tableWidget_agents->item(i,4) != nullptr)
-            stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,4)->text());
+            stream->writeEndElement();
+        }
 
-        stream->writeEndElement();
+        if(ui->tableWidget_agents->item(i,3) != nullptr ||
+           ui->tableWidget_agents->item(i,4) != nullptr)
+        {
+            stream->writeStartElement("v0_upstairs");
 
-        stream->writeStartElement("v0_downstairs");
+            if(!ui->tableWidget_agents->item(i,3)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,3)->text());
 
-        if(ui->tableWidget_agents->item(i,5) != nullptr)
-            stream->writeAttribute("mu", ui->tableWidget_agents->item(i,5)->text());
+            if(!ui->tableWidget_agents->item(i,4)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,4)->text());
 
-        if(ui->tableWidget_agents->item(i,6) != nullptr)
-            stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,6)->text());
+            stream->writeEndElement();
+        }
 
-        stream->writeEndElement();
+        if(ui->tableWidget_agents->item(i,5) != nullptr ||
+           ui->tableWidget_agents->item(i,6) != nullptr)
+        {
+            stream->writeStartElement("v0_downstairs");
 
-        stream->writeStartElement("v0_idle_escalator_upstairs");
+            if(!ui->tableWidget_agents->item(i,5)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,5)->text());
 
-        if(ui->tableWidget_agents->item(i,7) != nullptr)
-            stream->writeAttribute("mu", ui->tableWidget_agents->item(i,7)->text());
+            if(!ui->tableWidget_agents->item(i,6)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,6)->text());
 
-        if(ui->tableWidget_agents->item(i,8) != nullptr)
-            stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,8)->text());
+            stream->writeEndElement();
+        }
 
-        stream->writeEndElement();
+        if(ui->tableWidget_agents->item(i,7) != nullptr ||
+           ui->tableWidget_agents->item(i,8) != nullptr)
+        {
+            stream->writeStartElement("v0_idle_escalator_upstairs");
 
-        stream->writeStartElement("v0_idle_escalator_downstairs");
+            if(!ui->tableWidget_agents->item(i,7)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,7)->text());
 
-        if(ui->tableWidget_agents->item(i,9) != nullptr)
-            stream->writeAttribute("mu", ui->tableWidget_agents->item(i,9)->text());
+            if(!ui->tableWidget_agents->item(i,8)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,8)->text());
 
-        if(ui->tableWidget_agents->item(i,10) != nullptr)
-            stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,10)->text());
+            stream->writeEndElement();
+        }
 
-        stream->writeEndElement();
+        if(ui->tableWidget_agents->item(i,9) != nullptr ||
+           ui->tableWidget_agents->item(i,10) != nullptr)
+        {
+            stream->writeStartElement("v0_idle_escalator_downstairs");
 
-        stream->writeStartElement("bmax");
+            if(!ui->tableWidget_agents->item(i,9)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,9)->text());
 
-        if(ui->tableWidget_agents->item(i,11) != nullptr)
-            stream->writeAttribute("mu", ui->tableWidget_agents->item(i,11)->text());
+            if(!ui->tableWidget_agents->item(i,10)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,10)->text());
 
-        if(ui->tableWidget_agents->item(i,12) != nullptr)
-            stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,12)->text());
+            stream->writeEndElement();
+        }
 
-        stream->writeEndElement();
+        if(ui->tableWidget_agents->item(i,11) != nullptr ||
+           ui->tableWidget_agents->item(i,12) != nullptr)
+        {
+            stream->writeStartElement("bmax");
 
-        stream->writeStartElement("bmin");
+            if(!ui->tableWidget_agents->item(i,11)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,11)->text());
 
-        if(ui->tableWidget_agents->item(i,13) != nullptr)
-            stream->writeAttribute("mu", ui->tableWidget_agents->item(i,13)->text());
+            if(!ui->tableWidget_agents->item(i,12)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,12)->text());
 
-        if(ui->tableWidget_agents->item(i,14) != nullptr)
-            stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,14)->text());
+            stream->writeEndElement();
+        }
 
-        stream->writeEndElement();
+        if(ui->tableWidget_agents->item(i,13) != nullptr ||
+           ui->tableWidget_agents->item(i,14) != nullptr)
+        {
+            stream->writeStartElement("bmin");
 
-        stream->writeStartElement("amin");
+            if(!ui->tableWidget_agents->item(i,13)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,13)->text());
 
-        if(ui->tableWidget_agents->item(i,15) != nullptr)
-            stream->writeAttribute("mu", ui->tableWidget_agents->item(i,15)->text());
+            if(!ui->tableWidget_agents->item(i,14)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,14)->text());
 
-        if(ui->tableWidget_agents->item(i,16) != nullptr)
-            stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,16)->text());
+            stream->writeEndElement();
+        }
 
-        stream->writeEndElement();
+        if(ui->tableWidget_agents->item(i,15) != nullptr ||
+           ui->tableWidget_agents->item(i,16) != nullptr)
+        {
+            stream->writeStartElement("amin");
 
-        stream->writeStartElement("tau");
+            if(!ui->tableWidget_agents->item(i,15)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,15)->text());
 
-        if(ui->tableWidget_agents->item(i,17) != nullptr)
-            stream->writeAttribute("mu", ui->tableWidget_agents->item(i,17)->text());
 
-        if(ui->tableWidget_agents->item(i,17) != nullptr)
-            stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,18)->text());
-        stream->writeEndElement();
+            if(!ui->tableWidget_agents->item(i,16)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,16)->text());
 
-        stream->writeStartElement("atau");
+            stream->writeEndElement();
+        }
 
-        if(ui->tableWidget_agents->item(i,19) != nullptr)
-            stream->writeAttribute("mu", ui->tableWidget_agents->item(i,19)->text());
+        if(ui->tableWidget_agents->item(i,17) != nullptr ||
+           ui->tableWidget_agents->item(i,18) != nullptr)
+        {
+            stream->writeStartElement("tau");
 
-        if(ui->tableWidget_agents->item(i,20) != nullptr)
-            stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,20)->text());
+            if(!ui->tableWidget_agents->item(i,17)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,17)->text());
 
-        stream->writeEndElement(); // end atau
 
-        stream->writeStartElement("T");
+            if(!ui->tableWidget_agents->item(i,18)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,18)->text());
 
-        if(ui->tableWidget_agents->item(i,21) != nullptr)
-            stream->writeAttribute("mu", ui->tableWidget_agents->item(i,21)->text());
+            stream->writeEndElement();
+        }
 
-        if(ui->tableWidget_agents->item(i,22) != nullptr)
-            stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,22)->text());
+        if(ui->tableWidget_agents->item(i,19) != nullptr ||
+           ui->tableWidget_agents->item(i,20) != nullptr)
+        {
+            stream->writeStartElement("atau");
 
-        stream->writeEndElement(); // end T
+            if(!ui->tableWidget_agents->item(i,19)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,19)->text());
 
-        stream->writeStartElement("sway");
 
-        if(ui->tableWidget_agents->item(i,23) != nullptr)
-            stream->writeAttribute("ampA", ui->tableWidget_agents->item(i,23)->text());
+            if(!ui->tableWidget_agents->item(i,20)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,20)->text());
 
-        if(ui->tableWidget_agents->item(i,24) != nullptr)
-            stream->writeAttribute("ampB", ui->tableWidget_agents->item(i,24)->text());
+            stream->writeEndElement();
+        }
 
-        if(ui->tableWidget_agents->item(i,25) != nullptr)
-            stream->writeAttribute("freqA", ui->tableWidget_agents->item(i,25)->text());
+        if(ui->tableWidget_agents->item(i,21) != nullptr ||
+           ui->tableWidget_agents->item(i,22) != nullptr)
+        {
+            stream->writeStartElement("T");
 
-        if(ui->tableWidget_agents->item(i,26) != nullptr)
-            stream->writeAttribute("freqB", ui->tableWidget_agents->item(i,26)->text());
+            if(!ui->tableWidget_agents->item(i,21)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,21)->text());
 
-        stream->writeEndElement(); // end sway
+
+            if(!ui->tableWidget_agents->item(i,22)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,22)->text());
+
+            stream->writeEndElement();
+        }
+
+        if(ui->tableWidget_agents->item(i,23) != nullptr ||
+           ui->tableWidget_agents->item(i,24) != nullptr ||
+           ui->tableWidget_agents->item(i,25) != nullptr ||
+           ui->tableWidget_agents->item(i,26) != nullptr)
+        {
+            stream->writeStartElement("T");
+
+            if(!ui->tableWidget_agents->item(i,23)->text().isEmpty())
+                stream->writeAttribute("ampA", ui->tableWidget_agents->item(i,23)->text());
+
+            if(!ui->tableWidget_agents->item(i,24)->text().isEmpty())
+                stream->writeAttribute("ampB", ui->tableWidget_agents->item(i,24)->text());
+
+            if(!ui->tableWidget_agents->item(i,25)->text().isEmpty())
+                stream->writeAttribute("freqA", ui->tableWidget_agents->item(i,25)->text());
+
+            if(!ui->tableWidget_agents->item(i,26)->text().isEmpty())
+                stream->writeAttribute("freqB", ui->tableWidget_agents->item(i,26)->text());
+
+            stream->writeEndElement();
+        }
 
         stream->writeEndElement(); // end agent_parameters
     }
