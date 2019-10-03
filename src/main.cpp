@@ -35,7 +35,7 @@
 #        pragma comment(linker, "/SUBSYSTEM:CONSOLE")
 #    endif
 #endif
-
+#define LOG_FILE_KEEP_NUM 30
 
 
 #include "mainWindow.h"
