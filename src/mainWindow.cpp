@@ -1234,7 +1234,6 @@ void MWindow::on_actionClear_all_Rooms_and_Doors_triggered()
 
 void MWindow::keyPressEvent(QKeyEvent *event)
 {
-    qDebug("Enter MWindow::keyPressEvent");
     switch(event->key())
     {
         case Qt::Key_Escape:
@@ -1244,7 +1243,6 @@ void MWindow::keyPressEvent(QKeyEvent *event)
         default:
             QWidget::keyPressEvent(event);
     }
-    qDebug("Leave MWindow::keyPressEvent");
 }
 
 // Default settings

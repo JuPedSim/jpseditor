@@ -35,7 +35,7 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>8</number>
    </property>
    <widget class="QWidget" name="tab_general">
     <attribute name="title">

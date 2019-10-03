@@ -60,6 +60,7 @@ public slots:
     void readTrafficConstraints(QXmlStreamReader *reader);
     void readTrafficFile(QXmlStreamReader *reader);
     void readRouting(QXmlStreamReader *reader);
+    void readGoals(QXmlStreamReader *reader);
     void readRoutingFile(QXmlStreamReader *reader);
     void readAgents(QXmlStreamReader *reader);
     void readAgentsDistribution(QXmlStreamReader *reader);

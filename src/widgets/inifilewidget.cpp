@@ -1104,9 +1104,13 @@ void InifileWidget::writeGlobalShortestRoute(QXmlStreamWriter *stream, QFile &fi
     stream->writeAttribute("description","global_shortest");
 
     stream->writeStartElement("parameters");
-    stream->writeStartElement("navigation_lines");
-    stream->writeAttribute("file", ui->lineEdit_global_navi->text());
-    stream->writeEndElement(); //end navigation lines
+    if(!ui->lineEdit_global_navi->text().isEmpty())
+    {
+        stream->writeStartElement("navigation_lines");
+        stream->writeAttribute("file", ui->lineEdit_global_navi->text());
+        stream->writeEndElement(); //end navigation lines
+    }
+
     stream->writeEndElement(); //end patameters
     stream->writeEndElement(); //end router
     qDebug("Leave InifileWidget::writeGlobalShortestRoute");
@@ -1508,8 +1512,8 @@ void InifileWidget::readTrafficFile(QXmlStreamReader *reader)
               <vertex px="3.2" py="13.0" />
             </polygon>
           </goal>
+          <file>goals.xml</file>
         </goals>
-        <file>goals.xml</file>
     </routing>
 */
 
@@ -1519,12 +1523,26 @@ void InifileWidget::readRouting(QXmlStreamReader *reader)
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("routing"));
 
     while (reader->readNextStartElement()) {
+        if (reader->name() == QLatin1String("goals"))
+            readGoals(reader);
+        else
+            reader->skipCurrentElement();
+    }
+    qDebug("Leave InifileWidget::readRouting");
+}
+
+void InifileWidget::readGoals(QXmlStreamReader *reader)
+{
+    qDebug("Enter InifileWidget::readGoals");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("goals"));
+
+    while (reader->readNextStartElement()) {
         if (reader->name() == QLatin1String("file"))
             readRoutingFile(reader);
         else
             reader->skipCurrentElement();
     }
-    qDebug("Leave InifileWidget::readRouting");
+    qDebug("Leave InifileWidget::readGoals");
 }
 
 void InifileWidget::readRoutingFile(QXmlStreamReader *reader)
