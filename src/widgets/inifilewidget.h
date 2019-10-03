@@ -44,6 +44,7 @@ public slots:
     bool readInifile(QXmlStreamReader *reader);
     QString errorString(QXmlStreamReader *reader) const;
     void readJuPedSim(QXmlStreamReader *reader);
+    void readHeader(QXmlStreamReader *reader);
     void readSeed(QXmlStreamReader *reader);
     void readThread(QXmlStreamReader *reader);
     void readGeometry(QXmlStreamReader *reader);
@@ -51,6 +52,7 @@ public slots:
     void readTrajectories(QXmlStreamReader *reader);
     void readTrajectoriesFile(QXmlStreamReader *reader);
     void readLogfile(QXmlStreamReader *reader);
+    void readShowStatistics(QXmlStreamReader *reader);
     void readFire(QXmlStreamReader *reader);
     void readSmoke(QXmlStreamReader *reader);
     void readWalking(QXmlStreamReader *reader);

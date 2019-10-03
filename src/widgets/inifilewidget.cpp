@@ -259,16 +259,19 @@ void InifileWidget::pushButton_deleteAgentRowClicked()
 void InifileWidget::writeHeaderData(QXmlStreamWriter *stream, QFile &file)
 {
     qDebug("Enter InifileWidget::writeHeaderData");
-    stream->writeComment("number of cores used");
-    stream->writeStartElement("num_threads");
-    if(!ui->lineEdit_general_03->text().isEmpty())
-        stream->writeCharacters(ui->lineEdit_general_03->text());
-    stream->writeEndElement();
+
+    stream->writeStartElement("header");
 
     stream->writeComment("seed used for initialising random generator");
     stream->writeStartElement("seed");
     if(!ui->lineEdit_general_05->text().isEmpty())
         stream->writeCharacters(ui->lineEdit_general_05->text());
+    stream->writeEndElement();
+
+    stream->writeComment("number of cores used");
+    stream->writeStartElement("num_threads");
+    if(!ui->lineEdit_general_03->text().isEmpty())
+        stream->writeCharacters(ui->lineEdit_general_03->text());
     stream->writeEndElement();
 
     stream->writeComment("geometry file");
@@ -308,6 +311,8 @@ void InifileWidget::writeHeaderData(QXmlStreamWriter *stream, QFile &file)
     if(!ui->comboBox_general_01->currentText().isEmpty())
         stream->writeCharacters(ui->comboBox_general_01->currentText());
     stream->writeEndElement();
+
+    stream->writeEndElement(); // End header
     qDebug("Leave InifileWidget::writeHeaderData");
 }
 
@@ -1235,19 +1240,10 @@ void InifileWidget::readJuPedSim(QXmlStreamReader *reader)
     ui->lineEdit_general_01->setText(project);
     ui->lineEdit_general_02->setText(version);
 
-    while (reader->readNextStartElement()) {
-        if (reader->name() == QLatin1String("seed"))
-            readSeed(reader);
-        else if (reader->name() == QLatin1String("num_threads"))
-            readThread(reader);
-        else if (reader->name() == QLatin1String("geometry"))
-            readGeometry(reader);
-        else if (reader->name() == QLatin1String("max_sim_time"))
-            readMaxSimTime(reader);
-        else if (reader->name() == QLatin1String("trajectories"))
-            readTrajectories(reader);
-        else if (reader->name() == QLatin1String("logfile"))
-            readLogfile(reader);
+    while (reader->readNextStartElement())
+    {
+        if(reader->name() == QLatin1String("header"))
+            readHeader(reader);
         else if (reader->name() == QLatin1String("JPSfire"))
             readFire(reader);
         else if (reader->name() == QLatin1String("traffic_constraints"))
@@ -1264,6 +1260,34 @@ void InifileWidget::readJuPedSim(QXmlStreamReader *reader)
             reader->skipCurrentElement();
     }
     qDebug("Leave InifileWidget::readJuPedSim");
+}
+
+void InifileWidget::readHeader(QXmlStreamReader *reader)
+{
+    qDebug("Enter InifileWidget::readHeader");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("header"));
+
+    while (reader->readNextStartElement())
+    {
+        if (reader->name() == QLatin1String("seed"))
+            readSeed(reader);
+        else if (reader->name() == QLatin1String("num_threads"))
+            readThread(reader);
+        else if (reader->name() == QLatin1String("geometry"))
+            readGeometry(reader);
+        else if (reader->name() == QLatin1String("max_sim_time"))
+            readMaxSimTime(reader);
+        else if (reader->name() == QLatin1String("trajectories"))
+            readTrajectories(reader);
+        else if (reader->name() == QLatin1String("logfile"))
+            readLogfile(reader);
+        else if (reader->name() == QLatin1String("show_statistics"))
+            readShowStatistics(reader);
+        else
+            reader->skipCurrentElement();
+    }
+
+    qDebug("Leave InifileWidget::readHeader");
 }
 
 void InifileWidget::readSeed(QXmlStreamReader *reader)
@@ -1348,6 +1372,16 @@ void InifileWidget::readLogfile(QXmlStreamReader *reader)
     QString logtxt = reader->readElementText();
     ui->lineEdit_general_08->setText(logtxt);
     qDebug("Leave InifileWidget::readLogfile");
+}
+
+void InifileWidget::readShowStatistics(QXmlStreamReader *reader)
+{
+    qDebug("Enter InifileWidget::readShowStatistics");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("show_statistics"));
+
+    QString show = reader->readElementText();
+    ui->comboBox_general_01->setCurrentText(show);
+    qDebug("Leave InifileWidget::readShowStatistics");
 }
 
 /*
