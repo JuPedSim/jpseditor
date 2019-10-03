@@ -2883,8 +2883,6 @@ void jpsDatamanager::writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *> &goal
 
             stream->writeEndElement();//end goal
         }
-
-        stream->writeEndElement();//end goals
     }
     qDebug("Leave jpsDatamanager::writeGoals");
 }
