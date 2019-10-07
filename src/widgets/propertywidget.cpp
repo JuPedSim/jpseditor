@@ -41,7 +41,8 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
     current_zone = zone;
 
     // Change layout depends on type
-    updateWidget(zone->getType());
+    if(zone != nullptr)
+        updateWidget(zone->getType());
 
     // Update list widget if line deleted
     connect(view, SIGNAL(markedLineDeleted()), this, SLOT(updateListwidget()));

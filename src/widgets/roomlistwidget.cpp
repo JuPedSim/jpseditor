@@ -93,6 +93,7 @@ void RoomListWidget::updateRoomsListWidget()
         ui->listWidget_rooms->addItem(room->getName());
     }
 
+    ui->listWidget_zones->clear();
     qDebug("Leave RoomListWidget::updateRoomsListWidget");
 }
 
@@ -202,7 +203,7 @@ void RoomListWidget::selectZone(QListWidgetItem *item)
 {
     qDebug("Enter selectZone");
     if(item == nullptr)
-        return;;
+        return;
 
     auto *zone = getCurrentZone(item);
     emit zoneSelected(zone);
@@ -220,19 +221,24 @@ JPSZone *RoomListWidget::getCurrentZone(QListWidgetItem *item)
     switch(type)
     {
         case Corridor:
-            zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getCorridorList();
+            if(ui->listWidget_rooms->currentItem() != nullptr)
+                zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getCorridorList();
             break;
         case Platform:
-            zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getPlatfromList();
+            if(ui->listWidget_rooms->currentItem() != nullptr)
+                zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getPlatfromList();
             break;
         case Lobby:
-            zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getLobbyList();
+            if(ui->listWidget_rooms->currentItem() != nullptr)
+                zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getLobbyList();
             break;
         case Office:
-            zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getOfficeList();
+            if(ui->listWidget_rooms->currentItem() != nullptr)
+                zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getOfficeList();
             break;
         case Stair:
-            zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getStairList();
+            if(ui->listWidget_rooms->currentItem() != nullptr)
+                zoneslist = getCurrentRoom(ui->listWidget_rooms->currentItem())->getStairList();
             break;
         default:
             return nullptr;
@@ -249,7 +255,7 @@ JPSZone *RoomListWidget::getCurrentZone(QListWidgetItem *item)
             }
         }
     }
-
+    qDebug("Warning: return null pointer. Leave RoomListWidget::getCurrentZone");
     return nullptr;
 }
 
@@ -406,6 +412,7 @@ void RoomListWidget::deleteRoomButtonClicked()
         data->removeRoom(getCurrentRoom(ui->listWidget_rooms->currentItem())); // removing opreation in datamanager
     }
     emit roomDeleted();
+
     updateRoomsListWidget();
     qDebug("Leave RoomListWidget::deleteRoomButtonClicked");
 }

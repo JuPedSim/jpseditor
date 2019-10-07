@@ -1511,6 +1511,14 @@ void MWindow::addListDockWidget(const QString &type)
 void MWindow::addPropertyDockWidget(JPSZone *zone)
 {
     qDebug("Enter MWindow::addPropertyDockWidget");
+
+    if(zone == nullptr)
+    {
+        qDebug("Zone is null point, Leave MWindow::addPropertyDockWidget");
+        return;
+    }
+
+
     closePropertyDockWidget();
 
     propertyDockWidget = new QDockWidget(tr("Property"), this);
