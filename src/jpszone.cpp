@@ -793,9 +793,11 @@ void JPSZone::addTrack(jpsLineItem *line, QString number)
 {
     qDebug("Enter JPSZone::addTrack");
     if(line == nullptr)
+    {
         qDebug("var line ist nullptr");
         qDebug("Leave JPSZone::addTrack");
         return;
+    }
 
     auto *track = new JPSTrack(line);
     track->setType(number.toInt());

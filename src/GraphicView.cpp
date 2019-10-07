@@ -757,7 +757,6 @@ bool jpsGraphicsView::use_anglesnap(QGraphicsLineItem* currentline, int accuracy
 
 void jpsGraphicsView::use_gridmode()
 {
-    qDebug("Enter void jpsGraphicsView::use_gridmode");
     if ((std::fmod(std::fabs(translated_pos.x()),_gridSize)<=_gridSize*0.1 || std::fmod(std::fabs(translated_pos.x()),_gridSize)>=_gridSize*0.9) &&
          (std::fmod(std::fabs(translated_pos.y()),_gridSize)<=_gridSize*0.1 || std::fmod(std::fabs(translated_pos.y()),_gridSize)>=_gridSize*0.9))
     {
@@ -799,7 +798,6 @@ void jpsGraphicsView::use_gridmode()
     }
     else
         point_tracked=false;
-    qDebug("Leave void jpsGraphicsView::use_gridmode");
 }
 
 void jpsGraphicsView::catch_points()
@@ -1157,7 +1155,8 @@ void jpsGraphicsView::drawLine()
                 break;
         }
 
-        line_vector.push_back(lineItem);
+        if(drawingMode != Transition)
+            line_vector.push_back(lineItem);
 
         //reset pointer
         current_line = nullptr;

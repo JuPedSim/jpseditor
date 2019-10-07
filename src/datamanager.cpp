@@ -1045,7 +1045,7 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineIte
         stream->writeAttribute("type","emergency");
 
         // room 1
-        if(transition->get_roomList()[0] == nullptr)
+        if(transition->get_roomList().isEmpty() || transition->get_roomList()[0] == nullptr)
         {
             //outside
             stream->writeAttribute("room1_id","-1");
@@ -1058,7 +1058,7 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineIte
         }
 
         // room 2
-        if(transition->get_roomList()[1] == nullptr)
+        if(transition->get_roomList().isEmpty() || transition->get_roomList()[1] == nullptr)
         {
             //outside
             stream->writeAttribute("room2_id","-1");
