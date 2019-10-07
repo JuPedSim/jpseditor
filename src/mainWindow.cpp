@@ -1518,7 +1518,6 @@ void MWindow::addPropertyDockWidget(JPSZone *zone)
         return;
     }
 
-
     closePropertyDockWidget();
 
     propertyDockWidget = new QDockWidget(tr("Property"), this);
