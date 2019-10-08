@@ -83,6 +83,8 @@ InifileWidget::InifileWidget(QWidget *parent, jpsDatamanager *dmanager) :
 
     // template widget
     templateWidget = nullptr;
+
+    ui->tabWidget->setCurrentIndex(0);
     qDebug("Leave InifileWidget::InifileWidget");
 
 }
@@ -208,16 +210,16 @@ void InifileWidget::on_pushButton_write_clicked()
 void InifileWidget::pushButton_addGroupRowClicked()
 {
     qDebug("Enter InifileWidget::pushButton_addGroupRowClicked");
-    int row = ui->tableWidget_groups_1->rowCount();
-    ui->tableWidget_groups_1->setRowCount(row+1);
+    int row = ui->tableWidget_groups->rowCount();
+    ui->tableWidget_groups->setRowCount(row + 1);
     qDebug("Leave InifileWidget::pushButton_addGroupRowClicked");
 }
 
 void InifileWidget::pushButton_deleteGrouprowClicked()
 {
     qDebug("Enter InifileWidget::pushButton_deleteGrouprowClicked");
-    int current_row = ui->tableWidget_groups_1->currentRow();
-    ui->tableWidget_groups_1->removeRow(current_row);
+    int current_row = ui->tableWidget_groups->currentRow();
+    ui->tableWidget_groups->removeRow(current_row);
     qDebug("Leaev InifileWidget::pushButton_deleteGrouprowClicked");
 }
 
@@ -451,9 +453,9 @@ void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
 
     stream->writeStartElement("agents_distribution");
 
-    for(int i = 0; i < ui->tableWidget_groups_1->rowCount(); i++)
+    for(int i = 0; i < ui->tableWidget_groups->rowCount(); i++)
     {
-        if(ui->tableWidget_groups_1->item(i,0) != nullptr)
+        if(ui->tableWidget_groups->item(i, 0) != nullptr)
         {
             stream->writeStartElement("group");
         } else
@@ -461,94 +463,94 @@ void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
             continue; // If the line is blank, don't write anything
         }
 
-        if(ui->tableWidget_groups_1->item(i,0) != nullptr)
+        if(ui->tableWidget_groups->item(i, 0) != nullptr)
         {
-            if(!ui->tableWidget_groups_1->item(i,0)->text().isEmpty())
-                stream->writeAttribute("group_id", ui->tableWidget_groups_1->item(i,0)->text());
+            if(!ui->tableWidget_groups->item(i, 0)->text().isEmpty())
+                stream->writeAttribute("group_id", ui->tableWidget_groups->item(i, 0)->text());
         }
 
-        if(ui->tableWidget_groups_1->item(i,1) != nullptr)
+        if(ui->tableWidget_groups->item(i, 1) != nullptr)
         {
-            if(!ui->tableWidget_groups_1->item(i,1)->text().isEmpty())
-                stream->writeAttribute("agent_parameter_id", ui->tableWidget_groups_1->item(i,1)->text());
+            if(!ui->tableWidget_groups->item(i, 1)->text().isEmpty())
+                stream->writeAttribute("agent_parameter_id", ui->tableWidget_groups->item(i, 1)->text());
         }
 
-        if(ui->tableWidget_groups_1->item(i,2) != nullptr)
+        if(ui->tableWidget_groups->item(i, 2) != nullptr)
         {
-            if(!ui->tableWidget_groups_1->item(i,2)->text().isEmpty())
-                stream->writeAttribute("room_id", ui->tableWidget_groups_1->item(i,2)->text());
+            if(!ui->tableWidget_groups->item(i, 2)->text().isEmpty())
+                stream->writeAttribute("room_id", ui->tableWidget_groups->item(i, 2)->text());
         }
 
-        if(ui->tableWidget_groups_1->item(i,3) != nullptr)
+        if(ui->tableWidget_groups->item(i, 3) != nullptr)
         {
-            if(!ui->tableWidget_groups_1->item(i,3)->text().isEmpty())
-                stream->writeAttribute("subroom_id",ui->tableWidget_groups_1->item(i,3)->text());
+            if(!ui->tableWidget_groups->item(i, 3)->text().isEmpty())
+                stream->writeAttribute("subroom_id",ui->tableWidget_groups->item(i, 3)->text());
         }
 
-        if(ui->tableWidget_groups_1->item(i,4) != nullptr)
+        if(ui->tableWidget_groups->item(i, 4) != nullptr)
         {
-            if(!ui->tableWidget_groups_1->item(i,4)->text().isEmpty())
-                stream->writeAttribute("number",ui->tableWidget_groups_1->item(i,4)->text());
+            if(!ui->tableWidget_groups->item(i, 4)->text().isEmpty())
+                stream->writeAttribute("number",ui->tableWidget_groups->item(i, 4)->text());
         }
 
-        if(ui->tableWidget_groups_1->item(i,5) != nullptr)
+        if(ui->tableWidget_groups->item(i, 5) != nullptr)
         {
-            if(!ui->tableWidget_groups_1->item(i,5)->text().isEmpty())
-                stream->writeAttribute("goal_id",ui->tableWidget_groups_1->item(i,5)->text());
+            if(!ui->tableWidget_groups->item(i, 5)->text().isEmpty())
+                stream->writeAttribute("goal_id",ui->tableWidget_groups->item(i, 5)->text());
         }
 
-        if(ui->tableWidget_groups_1->item(i,6) != nullptr)
+        if(ui->tableWidget_groups->item(i, 6) != nullptr)
         {
-            if(!ui->tableWidget_groups_1->item(i,6)->text().isEmpty())
-                stream->writeAttribute("router_id",ui->tableWidget_groups_1->item(i,6)->text());
+            if(!ui->tableWidget_groups->item(i, 6)->text().isEmpty())
+                stream->writeAttribute("router_id",ui->tableWidget_groups->item(i, 6)->text());
         }
 
-        if(ui->tableWidget_groups_1->item(i,7) != nullptr)
+        if(ui->tableWidget_groups->item(i, 7) != nullptr)
         {
-            if(!ui->tableWidget_groups_1->item(i,7)->text().isEmpty())
-                stream->writeAttribute("x_min",ui->tableWidget_groups_1->item(i,7)->text());
+            if(!ui->tableWidget_groups->item(i, 7)->text().isEmpty())
+                stream->writeAttribute("x_min",ui->tableWidget_groups->item(i, 7)->text());
         }
 
-        if(ui->tableWidget_groups_1->item(i,8) != nullptr)
+        if(ui->tableWidget_groups->item(i, 8) != nullptr)
         {
-            if(!ui->tableWidget_groups_1->item(i,8)->text().isEmpty())
-                stream->writeAttribute("x_max",ui->tableWidget_groups_1->item(i,8)->text());
+            if(!ui->tableWidget_groups->item(i, 8)->text().isEmpty())
+                stream->writeAttribute("x_max",ui->tableWidget_groups->item(i, 8)->text());
         }
 
-        if(ui->tableWidget_groups_1->item(i,9) != nullptr)
+        if(ui->tableWidget_groups->item(i, 9) != nullptr)
         {
-            if(!ui->tableWidget_groups_1->item(i,9)->text().isEmpty())
-                stream->writeAttribute("y_min",ui->tableWidget_groups_1->item(i,9)->text());
+            if(!ui->tableWidget_groups->item(i, 9)->text().isEmpty())
+                stream->writeAttribute("y_min",ui->tableWidget_groups->item(i, 9)->text());
         }
 
-        if(ui->tableWidget_groups_1->item(i,10) != nullptr)
+        if(ui->tableWidget_groups->item(i, 10) != nullptr)
         {
-            if(!ui->tableWidget_groups_1->item(i,10)->text().isEmpty())
-                stream->writeAttribute("y_max",ui->tableWidget_groups_1->item(i,10)->text());
+            if(!ui->tableWidget_groups->item(i, 10)->text().isEmpty())
+                stream->writeAttribute("y_max",ui->tableWidget_groups->item(i, 10)->text());
         }
 
-        if(ui->tableWidget_groups_1->item(i,11) != nullptr)
+        if(ui->tableWidget_groups->item(i, 11) != nullptr)
         {
-            if(!ui->tableWidget_groups_1->item(i,11)->text().isEmpty())
-                stream->writeAttribute("pre_movement_mean",ui->tableWidget_groups_1->item(i,11)->text());
+            if(!ui->tableWidget_groups->item(i, 11)->text().isEmpty())
+                stream->writeAttribute("pre_movement_mean",ui->tableWidget_groups->item(i, 11)->text());
         }
 
-        if(ui->tableWidget_groups_1->item(i,12) != nullptr)
+        if(ui->tableWidget_groups->item(i, 12) != nullptr)
         {
-            if(!ui->tableWidget_groups_1->item(i,12)->text().isEmpty())
-                stream->writeAttribute("pre_movement_sigma",ui->tableWidget_groups_1->item(i,12)->text());
+            if(!ui->tableWidget_groups->item(i, 12)->text().isEmpty())
+                stream->writeAttribute("pre_movement_sigma",ui->tableWidget_groups->item(i, 12)->text());
         }
 
-        if(ui->tableWidget_groups_1->item(i,13) != nullptr)
+        if(ui->tableWidget_groups->item(i, 13) != nullptr)
         {
-            if(!ui->tableWidget_groups_1->item(i,13)->text().isEmpty())
-                stream->writeAttribute("risk_tolerance_mean",ui->tableWidget_groups_1->item(i,13)->text());
+            if(!ui->tableWidget_groups->item(i, 13)->text().isEmpty())
+                stream->writeAttribute("risk_tolerance_mean",ui->tableWidget_groups->item(i, 13)->text());
         }
 
-        if(ui->tableWidget_groups_1->item(i,14) != nullptr)
+        if(ui->tableWidget_groups->item(i, 14) != nullptr)
         {
-            if(!ui->tableWidget_groups_1->item(i,14)->text().isEmpty())
-                stream->writeAttribute("risk_tolerance_sigma",ui->tableWidget_groups_1->item(i,14)->text());
+            if(!ui->tableWidget_groups->item(i, 14)->text().isEmpty())
+                stream->writeAttribute("risk_tolerance_sigma",ui->tableWidget_groups->item(i, 14)->text());
         }
 
         stream->writeEndElement(); //end group
@@ -1178,6 +1180,7 @@ void InifileWidget::on_pushButton_read_clicked()
 bool InifileWidget::readInifile(QXmlStreamReader *reader)
 {
     qDebug("Enter InifileWidget::readInifile");
+
     if (reader->readNextStartElement())
     {
         if (reader->name() == QLatin1String("JuPedSim")
@@ -1221,6 +1224,8 @@ void InifileWidget::readFromTemplate(QString name) {
     } else {
         emit inifileLoaded(tr("inifile loaded"), 2000);
     }
+
+    ui->tabWidget->setCurrentIndex(0);
     qDebug("Leave InifileWidget::readFromTemplate");
 }
 
@@ -1586,14 +1591,12 @@ void InifileWidget::readAgents(QXmlStreamReader *reader)
     qDebug("Leave InifileWidget::readRoutingFile");
 }
 
-void InifileWidget::readAgentsDistribution(QXmlStreamReader *reader)
-{
+void InifileWidget::readAgentsDistribution(QXmlStreamReader *reader) {
     qDebug("Enter InifileWidget::readAgentsDistribution");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("agents_distribution"));
 
-    while (reader->readNextStartElement())
-    {
-        if(reader->name() == QLatin1String("group"))
+    while (reader->readNextStartElement()) {
+        if (reader->name() == QLatin1String("group"))
             readGroup(reader);
         else
             reader->skipCurrentElement();
@@ -1601,54 +1604,55 @@ void InifileWidget::readAgentsDistribution(QXmlStreamReader *reader)
     qDebug("Leave InifileWidget::readAgentsDistribution");
 }
 
+
 void InifileWidget::readGroup(QXmlStreamReader *reader)
 {
     qDebug("Enter InifileWidget::readGroup");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("group"));
 
-    int row = ui->tableWidget_groups_1->rowCount();
+    int row = ui->tableWidget_groups->rowCount();
 
     QString group_id = reader->attributes().value("group_id").toString();
     QTableWidgetItem *id = new QTableWidgetItem(tr("%1").arg(group_id));
-    ui->tableWidget_groups_1->setItem(row-1, 0, id);
+    ui->tableWidget_groups->setItem(row - 1, 0, id);
 
     QString agent_parameter_id = reader->attributes().value("agent_parameter_id").toString();
     QTableWidgetItem *agent_parameter = new QTableWidgetItem(tr("%1").arg(agent_parameter_id));
-    ui->tableWidget_groups_1->setItem(row-1, 1, agent_parameter);
+    ui->tableWidget_groups->setItem(row - 1, 1, agent_parameter);
 
     QString room_id = reader->attributes().value("room_id").toString();
     QTableWidgetItem *room = new QTableWidgetItem(tr("%1").arg(room_id));
-    ui->tableWidget_groups_1->setItem(row-1, 2, room);
+    ui->tableWidget_groups->setItem(row - 1, 2, room);
 
     QString subroom_id = reader->attributes().value("subroom_id").toString();
     QTableWidgetItem *subroom = new QTableWidgetItem(tr("%1").arg(subroom_id));
-    ui->tableWidget_groups_1->setItem(row-1, 3, subroom);
+    ui->tableWidget_groups->setItem(row - 1, 3, subroom);
 
     QString number = reader->attributes().value("number").toString();
     QTableWidgetItem *num = new QTableWidgetItem(tr("%1").arg(number));
-    ui->tableWidget_groups_1->setItem(row-1, 4, num);
+    ui->tableWidget_groups->setItem(row - 1, 4, num);
 
     QString router_id = reader->attributes().value("router_id").toString();
     QTableWidgetItem *router = new QTableWidgetItem(tr("%1").arg(router_id));
-    ui->tableWidget_groups_1->setItem(row-1, 6, router);
+    ui->tableWidget_groups->setItem(row - 1, 6, router);
 
     QString x_min = reader->attributes().value("x_min").toString();
     QTableWidgetItem *xmin = new QTableWidgetItem(tr("%1").arg(x_min));
-    ui->tableWidget_groups_1->setItem(row-1, 7, xmin);
+    ui->tableWidget_groups->setItem(row - 1, 7, xmin);
 
     QString x_max = reader->attributes().value("x_max").toString();
     QTableWidgetItem *xmax = new QTableWidgetItem(tr("%1").arg(x_max));
-    ui->tableWidget_groups_1->setItem(row-1, 8, xmax);
+    ui->tableWidget_groups->setItem(row - 1, 8, xmax);
 
     QString y_min = reader->attributes().value("y_min").toString();
     QTableWidgetItem *ymin = new QTableWidgetItem(tr("%1").arg(y_min));
-    ui->tableWidget_groups_1->setItem(row-1, 9, ymin);
+    ui->tableWidget_groups->setItem(row - 1, 9, ymin);
 
     QString y_max = reader->attributes().value("y_max").toString();
     QTableWidgetItem *ymax = new QTableWidgetItem(tr("%1").arg(x_max));
-    ui->tableWidget_groups_1->setItem(row-1, 10, ymax);
+    ui->tableWidget_groups->setItem(row - 1, 10, ymax);
 
-    ui->tableWidget_groups_1->setRowCount(row+1); // add line for next group
+    ui->tableWidget_groups->setRowCount(row + 1); // add line for next group
 
     reader->readElementText();
     qDebug("Leave InifileWidget::readGroup");
@@ -2551,6 +2555,7 @@ void InifileWidget::pushButton_RoutingClicked()
 
 void InifileWidget::pushButton_chooseTemplateClicked() {
     qDebug("Enter InifileWidget::pushButton_chooseTemplateClicked");
+
     templateWidget = new TemplateWidget(this);
     templateWidget->show();
     qDebug("Leave InifileWidget::pushButton_chooseTemplateClicked");

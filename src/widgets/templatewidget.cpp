@@ -56,7 +56,7 @@ void TemplateWidget::pushButton_chooseClicked()
     qDebug("Enter TemplateWidget::pushButton_chooseClicked");
     int current_int = ui->treeWidget->currentColumn();
     QString current_name = ui->treeWidget->currentItem()->text(current_int);
-    sendTemplateName(current_name);
+    emit sendTemplateName(current_name);
 
     close();
     qDebug("Leave TemplateWidget::pushButton_chooseClicked");

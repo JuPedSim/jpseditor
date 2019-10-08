@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <JuPedSim project="JPS-Project" version="0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://xsd.jupedsim.org/0.6/jps_ini_core.xsd">
-
+<header>
   <!-- seed used for initialising random generator -->
   <seed>12542</seed>
   <!-- geometry file -->
@@ -16,6 +16,8 @@
 
   <!-- where to store the logs -->
   <logfile>log.txt</logfile>
+  <show_statistics>true</show_statistics>
+</header>
 
   <!-- traffic information: e.g closed doors or smoked rooms -->
   <traffic_constraints>
@@ -27,33 +29,19 @@
 
   <routing>
     <goals>
-      <goal id="3" final="true" caption="goal3">
-        <polygon>
-          <vertex px="3.2" py="12.0" />
-          <vertex px="3.2" py="13.0" />
-          <vertex px="5.6" py="13.0" />
-          <vertex px="5.6" py="12.0" />
-          <vertex px="3.2" py="12.0" />
-        </polygon>
-      </goal>
+      <goal />
+      <file>goals.xml</file>
     </goals>
-    <file>goals.xml</file>
   </routing>
 
   <!--persons information and distribution -->
   <agents operational_model_id="3">
     <agents_distribution>
-      <group group_id="5" room_id="0" subroom_id="0" type="10" router_id="1" agent_parameter_id="1" x_min="3" x_max="5" y_min="3" y_max="5" />
-      <group group_id="0" room_id="0" subroom_id="0" type="0" router_id="1" agent_parameter_id="1" />
-      <group group_id="1" room_id="0" subroom_id="0" type="0" router_id="1" agent_parameter_id="1" />
-      <group group_id="2" room_id="0" subroom_id="0" type="0" router_id="1" agent_parameter_id="1" />
-      <group group_id="3" room_id="0" subroom_id="0" type="0" router_id="1" agent_parameter_id="1" />
-      <group group_id="4" room_id="0" subroom_id="0" type="0" router_id="1" agent_parameter_id="1" />
+      <group />
     </agents_distribution>
 
     <agents_sources><!-- frequency in persons/seconds -->
-      <source id="10" caption="new-source" time_min="5" time_max="30" frequency="5" N_create="10" agents_max="300"
-      group_id="0"  x_min="0" x_max="3" y_min="0" y_max="3" percent="0.5" rate="2"  greedy="true"/>
+      <source />
       <file>sources.xml</file>
     </agents_sources>
   </agents>
@@ -62,20 +50,20 @@
      <model operational_model_id="3" description="Tordeux2015">
       <model_parameters>
         <solver>euler</solver>
-        <stepsize>0.01</stepsize>
+        <stepsize>0.05</stepsize>
         <exit_crossing_strategy>2</exit_crossing_strategy>
         <linkedcells enabled="true" cell_size="2.2" />
         <force_ped a="5" D="0.1" />
         <force_wall a="5" D="0.02" />
       </model_parameters>
       <agent_parameters agent_parameter_id="1">
-        <v0 mu="1.0" sigma="0.001" />
+        <v0 mu="1" sigma="0.001" />
         <bmax mu="0.15" sigma="0.00000" /> <!-- this is l, assuming peds are circles with constant radius -->
         <bmin mu="0.15" sigma="0.00000" />
         <amin mu="0.15" sigma="0.00000" />
-        <tau mu="0.5" sigma="0.001" />
+        <tau mu="0.5" sigma="0.0000" />
         <atau mu="0.0" sigma="0.00000" />
-        <T mu="1" sigma="0.001" />
+        <T mu="1" sigma="0.00" />
       </agent_parameters>
     </model>
   </operational_models>
@@ -84,10 +72,6 @@
     <router router_id="1" description="global_shortest">
       <parameters></parameters>
     </router>
-    <router router_id="2" description="quickest">
-      <parameters></parameters>
-    </router>
-
   </route_chchoice_models>
 
 </JuPedSim>

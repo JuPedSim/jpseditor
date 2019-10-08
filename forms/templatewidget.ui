@@ -121,77 +121,132 @@
        </property>
        <item>
         <property name="text">
-         <string>test_1</string>
+         <string>test_1_tordeux2015</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>test_2</string>
+         <string>test_2_gcfm.xml</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>test_3</string>
+         <string>test_2_gompertz</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>test_4</string>
+         <string>test_2_tordeux2015</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>test_5</string>
+         <string>test_3_tordeux2015</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>test_6</string>
+         <string>test_4_gcfm</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>test_7</string>
+         <string>test_4_gompertz</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>test_8</string>
+         <string>test_4_tordeux2015</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>test_9</string>
+         <string>test_5_tordeux2015</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>test_10</string>
+         <string>test_6_tordeux2015</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>test_11</string>
+         <string>test_8_gcfm</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>test_12</string>
+         <string>test_8_gompertz</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>test_13</string>
+         <string>test_8_tordeux2015</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>test_14</string>
+         <string>test_8_krausz</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>test_15</string>
+         <string>test_9_tordeux2015</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_10_tordeux2015</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_11_gcfm</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_11_gompertz</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_11_tordeux2015</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_11_krausz</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_12_gcfm</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_12_gompertz</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_12_tordeux2015</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_12_krausz</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_14_tordeux2015</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>test_14_tordeux2015</string>
         </property>
        </item>
       </item>
@@ -199,7 +254,7 @@
     </widget>
    </widget>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>

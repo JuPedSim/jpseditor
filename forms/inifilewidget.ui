@@ -35,7 +35,7 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
-    <number>8</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab_general">
     <attribute name="title">
@@ -539,7 +539,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Groups of pedestrian&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
-    <widget class="QTableWidget" name="tableWidget_groups_1">
+    <widget class="QTableWidget" name="tableWidget_groups">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -3090,7 +3090,7 @@
   <tabstop>comboBox_general_03</tabstop>
   <tabstop>lineEdit_general_12</tabstop>
   <tabstop>comboBox_groups_1</tabstop>
-  <tabstop>tableWidget_groups_1</tabstop>
+  <tabstop>tableWidget_groups</tabstop>
   <tabstop>lineEdit_model_gcfm_01</tabstop>
   <tabstop>lineEdit_model_gcfm_02</tabstop>
   <tabstop>lineEdit_model_gcfm_03</tabstop>
