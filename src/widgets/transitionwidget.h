@@ -22,6 +22,7 @@ public:
 protected slots:
     void updateListWidget();
     void applyRooms();
+    void deleteButtonClicked();
     void showRoomsinButton(QListWidgetItem *item);
     void highlightWall(QListWidgetItem *);
 
