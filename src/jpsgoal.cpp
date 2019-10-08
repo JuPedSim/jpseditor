@@ -28,7 +28,6 @@
  *
 ****************************************************************/
 
-
 #include "jpsgoal.h"
 #include "global.h"
 #include <QGraphicsSceneMouseEvent>
@@ -235,10 +234,10 @@ QVariant JPSGoal::itemChange(GraphicsItemChange change,
     qDebug("Enter JPSGoal::itemChange");
     if (isDirtyChange(change))
             emit dirty();
-    return QGraphicsRectItem::itemChange(change, value);
-    qDebug("Leave JPSGoal::itemChange");
-}
 
+    qDebug("Leave JPSGoal::itemChange");
+    return QGraphicsRectItem::itemChange(change, value);
+}
 
 void JPSGoal::keyPressEvent(QKeyEvent *event)
 {
@@ -340,8 +339,6 @@ void JPSGoal::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         QGraphicsRectItem::mouseReleaseEvent(event);
 }
 
-
-
 /*
     since 0.8.8
 
@@ -350,7 +347,6 @@ void JPSGoal::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 void JPSGoal::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                       QWidget * /* widget */)
 {
-    qDebug("Enter JPSGoal::paint");
     QPen pen(Qt::darkGreen,0);
 
     if (option->state & QStyle::State_Selected) {
@@ -363,6 +359,4 @@ void JPSGoal::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
         painter->setPen(pen);
         painter->drawRect(this->rect());
     }
-    qDebug("Leave JPSGoal::paint");
 }
-

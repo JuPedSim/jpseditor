@@ -30,7 +30,6 @@
 
 
 #include <QGraphicsView>
-//#include <QGraphicsSceneMouseEvent>
 #include <QGraphicsLineItem>
 #include "jpsLineItem.h"
 #include "jpslandmark.h"
@@ -264,8 +263,8 @@ private:
     qreal _scaleFactor;
     qreal gl_scale_f;
     bool point_tracked;
-    QGraphicsItem* current_rect;
-    QGraphicsRectItem* currentSelectRect;
+    QGraphicsItem* current_rect; // A rect for marking caught points
+    QGraphicsRectItem* currentSelectRect; // A rect for selecting
     bool objectsnap;
     bool start_endpoint_snap;
     bool intersectionspoint_snap;
