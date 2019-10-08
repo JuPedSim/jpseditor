@@ -170,16 +170,15 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
         case Source:
             if(currentSource != nullptr)
             {
-                currentSource->setRect(QRectF(
-                        QPointF(currentSource->rect().x(),currentSource->rect().y()),
+
+                currentSource->setRect(QRectF(QPointF(currentSource->rect().x(),currentSource->rect().y()),
                         QPointF(translated_pos.x(),translated_pos.y())));
             }
             break;
         case Goal:
             if(currentGoal != nullptr)
             {
-                currentGoal->setRect(QRectF(
-                        QPointF(currentGoal->rect().x(),currentGoal->rect().y()),
+                currentGoal->setRect(QRectF(QPointF(currentGoal->rect().x(),currentGoal->rect().y()),
                         QPointF(translated_pos.x(),translated_pos.y())));
             }
             break;
@@ -189,9 +188,6 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
             // draw wall, door, exit, HLine
             if (current_line!=nullptr)
             {
-                //if (statWall==true || statDoor==true || statExit==true)
-                //{
-                //emit set_focus_textedit();
                 current_line->setLine(current_line->line().x1(),current_line->line().y1(),translated_pos.x(),translated_pos.y());
                 if (current_line->line().isNull())
                     current_line->setVisible(false);
@@ -209,11 +205,12 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
        delete current_rect;
        current_rect=nullptr;
     }
+
     QPointF old_pos=pos;
 
     pos=mapToScene(mouseEvent->pos());
 
-    if (anglesnap==true)
+    if (anglesnap)
     {
         if (current_line!=nullptr)
         {
@@ -236,7 +233,6 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
     {
         translations(old_pos);
     }
-
     else if(leftbutton_hold && currentSelectRect)
     {
         currentSelectRect->setRect(QRectF(QPointF(currentSelectRect->rect().x(),currentSelectRect->rect().y())
@@ -272,15 +268,12 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
         }
 
 
-
         //VLine
         if (point_tracked && (drawingMode==Wall || drawingMode==Crossing || drawingMode==Transition))
         {
 //            SetVLine();
         }
     }
-
-
 
     if (_currentVLine!=nullptr)
     {
@@ -294,7 +287,6 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
     emit mouse_moved();
     update();
 }
-
 
 void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
 {
@@ -394,8 +386,6 @@ void jpsGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
     }
     qDebug("Leave jpsGraphicsView::mouseDoubleClickEvent");
 }
-
-
 
 void jpsGraphicsView::unmark_all_lines()
 {
@@ -632,7 +622,6 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
                 }
                 delete currentSelectRect;
                 currentSelectRect = nullptr;
-
             }
 
             //unmark selected line(s)
@@ -1107,7 +1096,6 @@ void jpsGraphicsView::drawLine()
         // all two points of the line are inited with the cursorcoordinates
         current_line = this->scene()->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),currentPen);
         current_line->setVisible(false);
-        //current_line->translate(translation_x,translation_y);
         current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
 
         emit set_focus_textedit();
@@ -1155,6 +1143,7 @@ void jpsGraphicsView::drawLine()
                 break;
         }
 
+        // Avoid writing transitions into unsigned lines
         if(drawingMode != Transition)
             line_vector.push_back(lineItem);
 
@@ -1163,8 +1152,6 @@ void jpsGraphicsView::drawLine()
 
         //Undo
         RecordUndoLineAction("LineAdded", lineItem->getType(),lineItem->get_id(),lineItem->get_line()->line());
-
-        //drawLine();
     }
 
     //Vline
@@ -1661,14 +1648,14 @@ void jpsGraphicsView::translations(QPointF old_pos)
     translation_x+=pos.x()-old_pos.x();
     translation_y+=pos.y()-old_pos.y();
 
-    /// translate the background grid
+    // Transform the background grid
     this->ChangeTranslation(translation_x,translation_y);
 
+    // Transform unfinished elements
     if (current_line!=nullptr)
     {
         //current_line->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
         current_line->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
-
     }
 
     if (currentGoal!= nullptr)
@@ -1685,21 +1672,27 @@ void jpsGraphicsView::translations(QPointF old_pos)
     {
         //current_line->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
         _currentVLine->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
-
     }
 
     // Transform saved elements
-
     for (int i=0; i<line_vector.size(); ++i)
     {
         //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
-        /// To avoid double sized translation of edited line
+        // Avoid double sized translation of edited line
         if (current_line==line_vector[i]->get_line())
         {
             continue;
         }
         line_vector[i]->get_line()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
 
+    }
+    for (jpsTransition* transition : _datamanager->getTransitionList())
+    {
+        if(current_line==transition->get_cLine()->get_line())
+        {
+            continue;
+        }
+        transition->get_cLine()->get_line()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
     for (int i=0; i<caption_list.size(); ++i)
     {
@@ -1708,21 +1701,14 @@ void jpsGraphicsView::translations(QPointF old_pos)
         caption_list[i]->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
         caption_list[i]->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
         caption_list[i]->setTransform(QTransform::fromScale(scalef,scalef),true);
-
     }
-//    for (int i=0; i<grid_point_vector.size(); ++i)
-//    {
-//        //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
-//        //grid_point_vector[i]->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
-//        grid_point_vector[i].setX(pos.x());
-//        grid_point_vector[i].setY(pos.y());
-//    }
 
     for (jpsLandmark* landmark:_datamanager->get_landmarks())
     {
 
 
     }
+
     if (currentLandmarkRect!=nullptr)
     {
         currentLandmarkRect->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
@@ -1731,10 +1717,12 @@ void jpsGraphicsView::translations(QPointF old_pos)
     {
         gridmap->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
+
     for (QGraphicsLineItem* lineItem:_yahPointer)
     {
         lineItem->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
+
     for (jpsLandmark* landmark:_datamanager->get_landmarks())
     {
         if (landmark->GetTextItem()!=nullptr)
@@ -1761,11 +1749,19 @@ void jpsGraphicsView::translations(QPointF old_pos)
 
     for (JPSSource *source : getSources())
     {
+        if(currentSource == source->getRectItem())
+        {
+            continue;
+        }
         source->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
 
     for (JPSGoal *goal : getGoals())
     {
+        if(currentGoal == goal->getRectItem())
+        {
+            continue;
+        }
         goal->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
 
@@ -2522,7 +2518,6 @@ void jpsGraphicsView::drawBackground(QPainter *painter, const QRectF &rect)
 
 void jpsGraphicsView::DrawLineGrid(QPainter *painter, const QRectF &rect)
 {
-    qDebug("Enter jpsGraphicsView::DrawLineGrid");
     //gridSize=1.0;
     qreal left = int(rect.left()-_translationX) - std::fmod(int(rect.left()-_translationX), _gridSize);
     qreal top = int(rect.top()-_translationY)- std::fmod(int(rect.top()-_translationY) , _gridSize);
@@ -2548,7 +2543,6 @@ void jpsGraphicsView::DrawLineGrid(QPainter *painter, const QRectF &rect)
 //    painter->fillRect(origin, Qt::red);
 //    painter->drawLine(xaxis);
 //    painter->drawLine(yaxis);
-    qDebug("Leave jpsGraphicsView::DrawLineGrid");
 }
 
 void jpsGraphicsView::DrawPointGrid(QPainter *painter, const QRectF &rect)
@@ -2644,8 +2638,9 @@ void jpsGraphicsView::drawSource()
     {
         // if the mouse was pressed secondly of two times
         auto *sourceItem = new JPSSource(currentSource);
+        sourceItem->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
         this->scene()->addItem(sourceItem);
-//        sourceGroup->addToGroup(sourceItem);
+
         emit sourcesChanged();
 
         // currentSource shouldn't be kept in scene, when source is saved
@@ -2764,12 +2759,13 @@ void jpsGraphicsView::drawGoal()
         //Determining first point of source
         currentGoal = this->scene()->addRect(translated_pos.x(),translated_pos.y(),0,0,currentPen);
         currentGoal->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
-
     } else
     {
         // if the mouse was pressed secondly of two times
         auto *goalItem = new JPSGoal(currentGoal);
+        goalItem->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
         this->scene()->addItem(goalItem);
+
         emit goalsChanged();
 
         // currentGoal shouldn't be kept in scene, when source is saved
@@ -2785,7 +2781,8 @@ void jpsGraphicsView::drawGoal()
 
     Will be used for showing goals in widget, goals list is saved in datamanager
  */
-QList<JPSGoal *> jpsGraphicsView::getGoals() {
+QList<JPSGoal *> jpsGraphicsView::getGoals()
+{
     qDebug("Enter jpsGraphicsView::getGoals");
     QList<JPSGoal *> goals;
 

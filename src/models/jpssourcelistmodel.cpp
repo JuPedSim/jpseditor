@@ -63,18 +63,17 @@ JPSSourceListModel::JPSSourceListModel(QList<JPSSource *> &lst, QObject *parent)
 */
 
 QVariant JPSSourceListModel::data(const QModelIndex &index, int role) const {
-    qDebug("Enter JPSSourceListModel::data");
     if (index.row() < 0 || index.row() >= lst.size()){
-        qDebug("Leave JPSSourceListModel::data");
+
         return QVariant();
     }
 
     if (role == Qt::DisplayRole){
-        qDebug("Leave JPSSourceListModel::data");
+
         return lst.at(index.row())->getCaption();
     }
 
-    qDebug("Leave JPSSourceListModel::data");
+
     return QVariant();
 }
 
@@ -94,13 +93,10 @@ QVariant JPSSourceListModel::data(const QModelIndex &index, int role) const {
 
 int JPSSourceListModel::rowCount(const QModelIndex &parent) const
 {
-    qDebug("Enter JPSSourceListModel::rowCount");
     if(parent.isValid()){
-        qDebug("Leave JPSSourceListModel::rowCount");
         return 0;
     }
 
-    qDebug("Leave JPSSourceListModel::rowCount");
     return lst.count();
 }
 
@@ -119,24 +115,24 @@ int JPSSourceListModel::rowCount(const QModelIndex &parent) const
 
 bool JPSSourceListModel::setData(const QModelIndex &index, const QVariant &value, int role) {
 
-    qDebug("Enter JPSSourceListModel::setData");
+
     if (index.row() >= 0 && index.row() < lst.size()
         && (role == Qt::EditRole || role == Qt::DisplayRole))
     {
         const QString valueString = value.toString();
 
         if (lst.at(index.row())->getCaption() == valueString){
-            qDebug("Leave JPSSourceListModel::setData");
+
             return true;
         }
 
         lst.at(index.row())->setCaption(valueString);
         emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
-        qDebug("Leave JPSSourceListModel::setData");
+
         return true;
     }
 
-    qDebug("Leave JPSSourceListModel::setData");
+
     return false;
 }
 

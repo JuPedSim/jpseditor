@@ -408,20 +408,18 @@ void JPSSource::keyPressEvent(QKeyEvent *event)
 
 void JPSSource::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug("Enter JPSSource::mousePressEvent");
+
     if (event->modifiers() & Qt::ShiftModifier) {
         m_resizing = true;
         setCursor(Qt::SizeAllCursor);
     }
     else
         QGraphicsRectItem::mousePressEvent(event);
-    qDebug("Leave JPSSource::mousePressEvent");
 }
-
 
 void JPSSource::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug("Enter JPSSource::mouseMoveEvent");
+
     if (m_resizing) {
 #ifdef ALTERNATIVE_RESIZING
         qreal dx = event->pos().x() - event->lastPos().x();
@@ -436,25 +434,24 @@ void JPSSource::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         setRect(rectangle);
 #endif
         scene()->update();
-        qDebug("Leave JPSSource::mouseMoveEvent");
+
     }
     else
-        qDebug("Leave JPSSource::mouseMoveEvent");
+
         QGraphicsRectItem::mouseMoveEvent(event);
 }
 
 
 void JPSSource::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug("Enter JPSSource::mouseReleaseEvent");
     if (m_resizing) {
         m_resizing = false;
         setCursor(Qt::ArrowCursor);
         emit dirty();
-        qDebug("Leave JPSSource::mouseReleaseEvent");
+
     }
     else
-        qDebug("Leave JPSSource::mouseReleaseEvent");
+
         QGraphicsRectItem::mouseReleaseEvent(event);
 }
 
@@ -467,7 +464,6 @@ void JPSSource::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 void JPSSource::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                               QWidget * /* widget */)
 {
-    qDebug("Enter JPSSource::paint");
     QPen pen(Qt::darkRed,0);
 
     if (option->state & QStyle::State_Selected) {
@@ -480,8 +476,10 @@ void JPSSource::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
         painter->setPen(pen);
         painter->drawRect(this->rect());
     }
-    qDebug("Leave JPSSource::paint");
 }
 
-
-
+QGraphicsRectItem *JPSSource::getRectItem() const
+{
+    qDebug("Enter/Leave JPSSource::getRectItem()");
+    return rectItem;
+}

@@ -40,8 +40,6 @@ public:
 private:
     QString _name;
     QString _type;
-
-
 };
 
 #endif // ACTION_H
