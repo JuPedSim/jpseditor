@@ -1001,8 +1001,11 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, JPSZone *room, QLi
     if(room == nullptr)
         return;
 
+    QString string = "";
+
     for (jpsCrossing *crossing : room->getCrossingList())
     {
+
         if (crossing->get_roomList().size() == 2 // A crossing must between two subrooms or romm and stair
             && !(crossing->get_roomList()[0]->getType()==Stair
             && crossing->get_roomList()[1]->getType()==Stair)) // both sides can't be stair at the same time
@@ -1027,7 +1030,36 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, JPSZone *room, QLi
 
             lines.removeOne(crossing->get_cLine());
         }
+        else
+        {
+            string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
+                    crossing->get_cLine()->get_line()->line().x1(),
+                    crossing->get_cLine()->get_line()->line().x2(),
+                    crossing->get_cLine()->get_line()->line().y1(),
+                    crossing->get_cLine()->get_line()->line().y2());
+
+            QMessageBox msgBox;
+            msgBox.setText("This crossing incorrect \n It will be saved in unsigned lines");
+            msgBox.setDetailedText(string);
+            msgBox.setStandardButtons(QMessageBox::Ok);
+
+            int ret = msgBox.exec();
+
+            switch (ret)
+            {
+                case QMessageBox::Ok:
+                    // Ok was clicked
+                    break;
+                case QMessageBox::Cancel:
+                    break;
+                default:
+                    // should never be reached
+                    break;
+            }
+        }
     }
+
+
 
     stream->writeEndElement();//crossings
     qDebug("Leave jpsDatamanager::writeCrossings");
@@ -1948,8 +1980,16 @@ void jpsDatamanager::parseSubRoom(const QDomElement &element)
             double x2=xVertices.item(i+1).toElement().attribute("px", "0").toDouble();
             double y2=xVertices.item(i+1).toElement().attribute("py", "0").toDouble();
 
-            jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"wall");
-            current_subroom->addWall(lineItem);
+            if(polygon.attribute("caption") == "track")
+            {
+                jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"track");
+                QString number = polygon.attribute("type").split("-").last();
+                current_subroom->addTrack(lineItem, number);
+            } else
+            {
+                jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"wall");
+                current_subroom->addWall(lineItem);
+            }
         }
         polygon = polygon.nextSiblingElement("polygon");
     }
