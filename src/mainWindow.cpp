@@ -30,17 +30,7 @@
 //mainWindow.cpp
 
 #include "mainWindow.h"
-#include "GraphicView.h"
 
-#include <iostream>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QShortcut>
-#include <QDesktopServices>
-#include <QUrl>
-#include <QDebug>
-#include <QSettings>
-#include <QtWidgets>
 
 MWindow :: MWindow()
 {
@@ -1403,11 +1393,6 @@ void MWindow::showStatusBarMessage(QString msg, int duration)
 void MWindow::measureLengthButtonClicked()
 {
     qDebug("Enter MWindow::measureLengthButtonClicked");
-    // open snapping widget
-
-    if(snappingOptions==nullptr)
-        this->objectsnap();
-
     mview->enableMeasureLengthMode();
     qDebug("Leave MWindow::measureLengthButtonClicked");
 }
