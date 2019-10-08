@@ -1058,9 +1058,6 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, JPSZone *room, QLi
             }
         }
     }
-
-
-
     stream->writeEndElement();//crossings
     qDebug("Leave jpsDatamanager::writeCrossings");
 }
