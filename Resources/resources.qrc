@@ -74,6 +74,43 @@
         <file>Icons/layers.png</file>
     </qresource>
     <qresource prefix="/">
-        <file>inifile_templates/test_1.xml</file>
+        <file>inifile_templates/test_1_tordeux2015.xml</file>
+        <file>inifile_templates/scenario_13_schedule.xml</file>
+        <file>inifile_templates/scenario_12_waiting_area.xml</file>
+        <file>inifile_templates/scenario_7_floorfield.xml</file>
+        <file>inifile_templates/scenario_10_big_room.xml</file>
+        <file>inifile_templates/scenario_11_sources.xml</file>
+        <file>inifile_templates/scenario_6_cognitive_map.xml</file>
+        <file>inifile_templates/scenario_5_ship.xml</file>
+        <file>inifile_templates/scenario_4_stairs.xml</file>
+        <file>inifile_templates/scenario_5_events.xml</file>
+        <file>inifile_templates/scenario_1_corridor.xml</file>
+        <file>inifile_templates/scenario_2_bottleneck.xml</file>
+        <file>inifile_templates/scenario_3_corner.xml</file>
+        <file>inifile_templates/test_15_tordeux2015.xml</file>
+        <file>inifile_templates/test_14_tordeux2015.xml</file>
+        <file>inifile_templates/test_12_krausz.xml</file>
+        <file>inifile_templates/test_12_tordeux2015.xml</file>
+        <file>inifile_templates/test_12_gompertz.xml</file>
+        <file>inifile_templates/test_12_gcfm.xml</file>
+        <file>inifile_templates/test_11_krausz.xml</file>
+        <file>inifile_templates/test_11_gompertz.xml</file>
+        <file>inifile_templates/test_11_gcfm.xml</file>
+        <file>inifile_templates/test_9_tordeux2015.xml</file>
+        <file>inifile_templates/test_10_tordeux2015.xml</file>
+        <file>inifile_templates/test_11_tordeux2015.xml</file>
+        <file>inifile_templates/test_8_krausz.xml</file>
+        <file>inifile_templates/test_8_tordeux2015.xml</file>
+        <file>inifile_templates/test_8_gompertz.xml</file>
+        <file>inifile_templates/test_8_gcfm.xml</file>
+        <file>inifile_templates/test_6_tordeux2015.xml</file>
+        <file>inifile_templates/test_5_tordeux2015.xml</file>
+        <file>inifile_templates/test_4_tordeux2015.xml</file>
+        <file>inifile_templates/test_4_gompertz.xml</file>
+        <file>inifile_templates/test_3_tordeux2015.xml</file>
+        <file>inifile_templates/test_2_tordeux2015.xml</file>
+        <file>inifile_templates/test_4_gcfm.xml</file>
+        <file>inifile_templates/test_2_gompertz.xml</file>
+        <file>inifile_templates/test_2_gcfm.xml</file>
     </qresource>
 </RCC>
