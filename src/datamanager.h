@@ -226,6 +226,9 @@ public:
     void change_crossingName(jpsCrossing* crossing, QString name);
     void remove_all_crossings();
 
+    // Transition
+    void removeTransition(jpsTransition *transition);
+
 /*
     //Show Cognitive Map
     void ShowCMapFrame(const int& frame) const;

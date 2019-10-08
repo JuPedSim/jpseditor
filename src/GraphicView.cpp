@@ -1570,14 +1570,11 @@ void jpsGraphicsView::Redo()
             RedoLineEdit(recentAction.GetItemID(),recentAction.GetOldLine());
 
         }
-
-
     }
     qDebug("Leave jpsGraphicsView::Redo");
 }
 
-
-void jpsGraphicsView::line_collision() //FIX ME!!!
+void jpsGraphicsView::line_collision()
 {
     qDebug("Enter jpsGraphicsView::line_collision");
     /// if no lines collided yet

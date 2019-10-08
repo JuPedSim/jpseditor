@@ -3282,3 +3282,10 @@ JPSZone *jpsDatamanager::getSubroomWithID(QString room_id, QString subroom_id)
     qDebug("Leave JPSZone::getSubroomWithID");
     return nullptr;
 }
+
+void jpsDatamanager::removeTransition(jpsTransition *transition)
+{
+    qDebug("Enter jpsDatamanager::removeTransition");
+    transition_list.removeOne(transition);
+    qDebug("Leave jpsDatamanager::removeTransition");
+}

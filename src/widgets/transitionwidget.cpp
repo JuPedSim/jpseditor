@@ -45,6 +45,7 @@ TransitionWidget::TransitionWidget(QWidget *parent, jpsDatamanager *dmanager, jp
     connect(ui->listWidget_transitions, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlightWall(QListWidgetItem *)));
     connect(ui->listWidget_transitions,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showRoomsinButton(QListWidgetItem*)));
     connect(ui->pushButton_apply, SIGNAL(clicked()),this,SLOT(applyRooms()));
+    connect(ui->pushButton_delete, SIGNAL(clicked()),this,SLOT(deleteButtonClicked()));
 
     connect(view, SIGNAL(transitonsChanged()), this, SLOT(updateListWidget()));
     connect(view, SIGNAL(markedLineDeleted()), this, SLOT(updateListWidget()));
@@ -169,4 +170,27 @@ void TransitionWidget::highlightWall(QListWidgetItem *item)
     view->select_line(line->get_cLine());
 
     qDebug("Leave PropertyWidget::highlightWall");
+}
+
+void TransitionWidget::deleteButtonClicked()
+{
+    qDebug("Enter TransitionWidget::deleteButtonClicked");
+    if(ui->listWidget_transitions->currentItem() == nullptr)
+    {
+        return;
+    }
+    else
+    {
+        // Delete transition in data manager
+        int row = ui->listWidget_transitions->currentRow();
+        auto *transition = data->getTransitionList()[row];
+        data->removeTransition(transition);
+
+        // Delete transition in view
+        view->delete_marked_lines();
+
+        // Update widget
+        updateListWidget();
+    }
+    qDebug("Leave TransitionWidget::deleteButtonClicked");
 }
