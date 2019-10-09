@@ -41,6 +41,7 @@ RunningWidget::RunningWidget(QWidget *parent) : QWidget(parent), ui(new Ui::Runn
     ui->lineEdit_JPScore->setReadOnly(true);
 
     cmd = new QProcess(this);
+
     connect(cmd, SIGNAL(readyReadStandardOutput()) , this, SLOT(on_readoutput()));
     connect(cmd, SIGNAL(readyReadStandardError()) , this, SLOT(on_readerror()));
     connect(ui->lineEdit_cmd, SIGNAL(returnPressed()), this, SLOT(inputCommand()));

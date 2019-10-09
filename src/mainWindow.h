@@ -238,13 +238,16 @@ private slots:
     void officeButtonClicked();
     void stairButtonClicked();
 
-    //propertyDockWidget
+    // PropertyDockWidget
     void addPropertyDockWidget(JPSZone *zone);
     void closePropertyDockWidget();
 
-    //listDockWidget
+    // ListDockWidget
     void addListDockWidget(const QString &type);
     void closeListDockWidget();
+
+    // BottemDockWidget
+    void closeBottomDockWidget();
 
 };
 

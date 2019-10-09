@@ -1582,14 +1582,29 @@ void MWindow::runSimulationButtonClicked()
     closeLeftToolBarArea();
     closeListDockWidget();
     closePropertyDockWidget();
+    closeBottomDockWidget();
 
-    qDebug("Enter MWindow::runSimulationButtonClicked");
-    bottomDockWidget = new QDockWidget("Run Simulation", this);
-    bottomDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    bottomDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+    if(bottomDockWidget == nullptr)
+    {
+        qDebug("Enter MWindow::runSimulationButtonClicked");
+        bottomDockWidget = new QDockWidget("Run Simulation", this);
+        bottomDockWidget->setFeatures(QDockWidget::DockWidgetClosable);
+        bottomDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
 
-    auto *runningWidget = new RunningWidget(this);
-    addDockWidget(Qt::BottomDockWidgetArea, bottomDockWidget);
-    bottomDockWidget->setWidget(runningWidget);
-    qDebug("Leave MWindow::runSimulationButtonClicked");
+        auto *runningWidget = new RunningWidget(this);
+        addDockWidget(Qt::BottomDockWidgetArea, bottomDockWidget);
+        bottomDockWidget->setWidget(runningWidget);
+        qDebug("Leave MWindow::runSimulationButtonClicked");
+    }
+}
+
+void MWindow::closeBottomDockWidget()
+{
+    qDebug("Enter MWindow::closeBottomDockWidget");
+    if(bottomDockWidget != nullptr)
+    {
+        bottomDockWidget->close(); //close() has deleted pointer
+        bottomDockWidget = nullptr;
+    }
+    qDebug("Leave MWindow::closeBottomDockWidget");
 }
