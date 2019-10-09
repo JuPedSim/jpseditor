@@ -904,7 +904,7 @@ void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, JPSZone *room, QList
             stream->writeAttribute("caption",zone->getName());
             stream->writeAttribute("class", zone->getTypeInString());
 
-            zone->correctPlaneCoefficients();
+            zone->correctPlaneCoefficients(); // TODO: Fix correctPlaneCoefficients()
 
             stream->writeAttribute("A_x",QString::number(zone->get_ax()));
             stream->writeAttribute("B_y",QString::number(zone->get_by()));

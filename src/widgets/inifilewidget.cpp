@@ -264,31 +264,31 @@ void InifileWidget::writeHeaderData(QXmlStreamWriter *stream, QFile &file)
 
     stream->writeStartElement("header");
 
-    stream->writeComment("seed used for initialising random generator");
+    stream->writeComment(" seed used for initialising random generator ");
     stream->writeStartElement("seed");
     if(!ui->lineEdit_general_05->text().isEmpty())
         stream->writeCharacters(ui->lineEdit_general_05->text());
     stream->writeEndElement();
 
-    stream->writeComment("number of cores used");
+    stream->writeComment(" number of cores used ");
     stream->writeStartElement("num_threads");
     if(!ui->lineEdit_general_03->text().isEmpty())
         stream->writeCharacters(ui->lineEdit_general_03->text());
     stream->writeEndElement();
 
-    stream->writeComment("geometry file");
+    stream->writeComment(" geometry file ");
     stream->writeStartElement("geometry");
     if(!ui->lineEdit_general_07->text().isEmpty())
         stream->writeCharacters(ui->lineEdit_general_07->text().split("/").last());
     stream->writeEndElement();
 
-    stream->writeComment("simulationtime");
+    stream->writeComment(" simulationtime ");
     stream->writeStartElement("max_sim_time");
     if(!ui->lineEdit_general_06->text().isEmpty())
         stream->writeCharacters(ui->lineEdit_general_06->text());
     stream->writeEndElement();
 
-    stream->writeComment("trajectories file and format");
+    stream->writeComment(" trajectories file and format ");
     stream->writeStartElement("trajectories");
     if(!ui->comboBox_general_02->currentText().isEmpty())
         stream->writeAttribute("format",ui->comboBox_general_02->currentText());
@@ -302,13 +302,13 @@ void InifileWidget::writeHeaderData(QXmlStreamWriter *stream, QFile &file)
     stream->writeEndElement(); //end file
     stream->writeEndElement(); //end trajectories
 
-    stream->writeComment("where to store the logs");
+    stream->writeComment(" where to store the logs ");
     stream->writeStartElement("logfile");
     if(!ui->lineEdit_general_08->text().isEmpty())
         stream->writeCharacters(ui->lineEdit_general_08->text());
     stream->writeEndElement();
 
-    stream->writeComment("statistics");
+    stream->writeComment(" statistics ");
     stream->writeStartElement("show_statistics");
     if(!ui->comboBox_general_01->currentText().isEmpty())
         stream->writeCharacters(ui->comboBox_general_01->currentText());
@@ -385,7 +385,7 @@ void InifileWidget::writeFire(QXmlStreamWriter *stream, QFile &file)
 void InifileWidget::writeRoutingData(QXmlStreamWriter *stream, QFile &file)
 {
     qDebug("Enter InifileWidget::writeRoutingData");
-    stream->writeComment("routing");
+    stream->writeComment(" routing ");
     stream->writeStartElement("routing");
 
     stream->writeStartElement("goals");
@@ -418,7 +418,7 @@ void InifileWidget::writeRoutingData(QXmlStreamWriter *stream, QFile &file)
 void InifileWidget::writeTrafficData(QXmlStreamWriter *stream, QFile &file)
 {
     qDebug("Enter InifileWidget::writeTrafficData");
-    stream->writeComment("traffic information: e.g closed doors or smoked rooms");
+    stream->writeComment(" traffic information: e.g closed doors or smoked rooms ");
     stream->writeStartElement("traffic_constraints");
 
     stream->writeStartElement("doors");
@@ -447,7 +447,7 @@ void InifileWidget::writeTrafficData(QXmlStreamWriter *stream, QFile &file)
 void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
 {
     qDebug("Enter InifileWidget::writeAgentData");
-    stream->writeComment("persons information and distribution");
+    stream->writeComment(" persons information and distribution ");
     stream->writeStartElement("agents");
     stream->writeAttribute("operational_model_id", QString::number(ui->comboBox_groups_1->currentIndex() + 1));
 
@@ -559,7 +559,7 @@ void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
     stream->writeEndElement(); //end agents_distribution;
 
     // write agents sources
-    stream->writeComment("frequency in persons/seconds");
+    stream->writeComment(" frequency in persons/seconds ");
     stream->writeStartElement("agents_sources");
 
     QList<JPSSource *> sources = dataManager->getSourcelist();
@@ -582,7 +582,7 @@ void InifileWidget::writeModelGcfmData(QXmlStreamWriter *stream, QFile &file)
 {
     qDebug("Enter InifileWidget::writeModelGcfmData");
     //operational model and agent parameters - gcfm
-    stream->writeComment("operational models");
+    stream->writeComment(" operational models ");
     stream->writeStartElement("operational_models");
 
     stream->writeStartElement("model");
@@ -642,7 +642,7 @@ void InifileWidget::writeModelGompData(QXmlStreamWriter *stream, QFile &file)
 {
     qDebug("Enter InifileWidget::writeModelGompData");
     //operational model and agent parameters - gcfm
-    stream->writeComment("operational model");
+    stream->writeComment(" operational model ");
     stream->writeStartElement("operational_models");
 
     stream->writeStartElement("model");
@@ -697,7 +697,7 @@ void InifileWidget::writeModelTordData(QXmlStreamWriter *stream, QFile &file)
 {
     qDebug("Enter InifileWidget::writeModelTordData");
     //operational model and agent parameters - gcfm
-    stream->writeComment("operational model");
+    stream->writeComment(" operational model ");
     stream->writeStartElement("operational_models");
 
     stream->writeStartElement("model");
@@ -749,7 +749,7 @@ void InifileWidget::writeModelGradData(QXmlStreamWriter *stream, QFile &file)
 {
     qDebug("Enter InifileWidget::writeModelGradData");
     //operational model and agent parameters - gcfm
-    stream->writeComment("operational model");
+    stream->writeComment(" operational model ");
     stream->writeStartElement("operational_models");
 
     stream->writeStartElement("model");
@@ -819,7 +819,7 @@ void InifileWidget::writeModelKrauData(QXmlStreamWriter *stream, QFile &file)
 {
     qDebug("Enter InifileWidget::writeModelKrauData");
     //operational model and agent parameters - gcfm
-    stream->writeComment("operational model");
+    stream->writeComment(" operational model ");
     stream->writeStartElement("operational_models");
 
     stream->writeStartElement("model");
@@ -1058,7 +1058,7 @@ void InifileWidget::writeRouteChoiceData(QXmlStreamWriter *stream, QFile &file)
 {
     qDebug("Enter InifileWidget::writeRouteChoiceData");
 
-    stream->writeComment("route chice model");
+    stream->writeComment(" route chice model ");
 
     stream->writeStartElement("route_choice_models");
 
