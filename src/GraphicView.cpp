@@ -120,6 +120,9 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     //Goal
     currentGoal = nullptr;
     qDebug("Leave GraphicsView::jpsGraphicsView");
+
+    // Backgound
+    background = nullptr;
 }
 
 jpsGraphicsView::~jpsGraphicsView()
@@ -1095,7 +1098,7 @@ void jpsGraphicsView::drawLine()
 
         // all two points of the line are inited with the cursorcoordinates
         current_line = this->scene()->addLine(translated_pos.x(),translated_pos.y(),translated_pos.x(),translated_pos.y(),currentPen);
-        current_line->setVisible(false);
+        current_line->setVisible(false); // For now current line is only a point
         current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
 
         emit set_focus_textedit();
@@ -1794,6 +1797,9 @@ void jpsGraphicsView::translations(QPointF old_pos)
        lineItem->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
     qDebug("Leave jpsGraphicsView::translations");
+
+    // Background
+    background->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
 }
 
 void jpsGraphicsView::AutoZoom()
@@ -1801,7 +1807,6 @@ void jpsGraphicsView::AutoZoom()
     qDebug("Enter jpsGraphicsView::translations");
     if(line_vector.size()==0)
         return;
-
 
     QPointF min(line_vector[0]->get_line()->line().p1().x(),
             line_vector[0]->get_line()->line().p1().y());
@@ -2903,4 +2908,62 @@ QList<Layer *> jpsGraphicsView::getLayerList() const
     qDebug("Enter jpsGraphicsView::getLayerList");
     return layer_list;
     qDebug("Leave jpsGraphicsView::getLayerList");
+}
+
+void jpsGraphicsView::setBackground(QString filename)
+{
+    qDebug("Enter jpsGraphicsView::setBackground");
+    if(background != nullptr)
+    {
+        delete background;
+        background = nullptr;
+    }
+
+    QPixmap image(filename);
+
+    // Get a rotated pixmap
+    QGraphicsPixmapItem importedImage(image);
+    QTransform transform(importedImage.transform());
+    transform.rotate(180, Qt::XAxis);
+    QPixmap transformedImage = image.transformed(transform);
+
+    background = new QGraphicsPixmapItem(transformedImage);
+    this->scene()->addItem(background);
+
+    // Moving by holding middle button
+    background->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+    qDebug("Leave jpsGraphicsView::setBackground");
+}
+
+void jpsGraphicsView::showHideBackground()
+{
+    qDebug("Enter jpsGraphicsView::showHideBackground");
+    if(background->isVisible())
+    {
+        background->setVisible(false);
+    } else
+    {
+        background->setVisible(true);
+    }
+    qDebug("Leave jpsGraphicsView::showHideBackground");
+}
+
+void jpsGraphicsView::scaleUpBackground()
+{
+    qDebug("Enter jpsGraphicsView::scaleUpBackground");
+    if(background != nullptr)
+    {
+        background->setScale(background->scale()+0.05);
+    }
+    qDebug("Leave jpsGraphicsView::scaleUpBackground");
+}
+
+void jpsGraphicsView::scaleDownBackground()
+{
+    qDebug("Enter jpsGraphicsView::scaleDownBackground");
+    if(background != nullptr && background->scale() > 0.1)
+    {
+        background->setScale(background->scale()-0.05);
+    }
+    qDebug("Leave jpsGraphicsView::scaleDownBackground");
 }
