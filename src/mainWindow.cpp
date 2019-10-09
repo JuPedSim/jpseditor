@@ -247,9 +247,13 @@ MWindow :: MWindow()
     zoneActionGroup->addAction(actionPlatform);
 
     // Set background
-    connect(actionBackground, SIGNAL(triggered(bool)),this,SLOT(importBackground()));
+    connect(actionImportNewBackgorund, SIGNAL(triggered(bool)),this,SLOT(importBackground()));
+    connect(actionShowHideBackground, SIGNAL(triggered(bool)), mview, SLOT(showHideBackground()));
+    connect(actionScaleUpBackground, SIGNAL(triggered(bool)), mview, SLOT(scaleUpBackground()));
+    connect(actionScaleDownBackground, SIGNAL(triggered(bool)), mview, SLOT(scaleDownBackground()));
 
-    connect(mview, SIGNAL(sendMsgToStatusBar(QString)), this, SLOT(msgReceived(QString))); /// Get length from mview
+    // Message on status bar
+    connect(mview, SIGNAL(sendMsgToStatusBar(QString)), this, SLOT(msgReceived(QString)));
 
     // Layer
     connect(actionLayer, SIGNAL(triggered(bool)),this, SLOT(layerButtonClicked()));
@@ -1420,14 +1424,11 @@ void MWindow::msgReceived(QString Msg)
 void MWindow::importBackground()
 {
     qDebug("Enter MWindow::importBackground");
-    auto image = new QImage();
     QString fileName = QFileDialog::getOpenFileName(
             this, "open image file",
             ".",
             "Image files (*.bmp *.jpg *.pbm *.pgm *.png *.ppm *.xbm *.xpm);;All files (*.*)");
-    image->load(fileName);
-    QPixmap bkgnd(QPixmap::fromImage(*image));
-    mscene->addPixmap(bkgnd);
+    mview->setBackground(fileName);
     qDebug("Leave MWindow::importBackground");
 }
 

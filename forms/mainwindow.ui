@@ -59,11 +59,20 @@
     <property name="title">
      <string>Tools</string>
     </property>
+    <widget class="QMenu" name="menuBackgroud">
+     <property name="title">
+      <string>Background</string>
+     </property>
+     <addaction name="actionImportNewBackgorund"/>
+     <addaction name="actionShowHideBackground"/>
+     <addaction name="actionScaleUpBackground"/>
+     <addaction name="actionScaleDownBackground"/>
+    </widget>
     <addaction name="actionAuto_Definition"/>
     <addaction name="actionGather_data"/>
     <addaction name="actionLandmarkWidget"/>
     <addaction name="actionNew_Inifile"/>
-    <addaction name="actionBackground"/>
+    <addaction name="menuBackgroud"/>
     <addaction name="actionRunSimulation"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -720,7 +729,7 @@
   </action>
   <action name="actionNew_Inifile">
    <property name="text">
-    <string>New Inifile</string>
+    <string>Create Inifile</string>
    </property>
    <property name="shortcut">
     <string>Meta+I</string>
@@ -829,11 +838,6 @@
    </property>
    <property name="text">
     <string>Draw</string>
-   </property>
-  </action>
-  <action name="actionBackground">
-   <property name="text">
-    <string>Import Backgroud</string>
    </property>
   </action>
   <action name="actionCorridor">
@@ -968,6 +972,32 @@
   <action name="actionRunSimulation">
    <property name="text">
     <string>Run Simulation</string>
+   </property>
+  </action>
+  <action name="actionImportNewBackgorund">
+   <property name="text">
+    <string>Import new background</string>
+   </property>
+  </action>
+  <action name="actionShowHideBackground">
+   <property name="text">
+    <string>Show/Hide background</string>
+   </property>
+  </action>
+  <action name="actionScaleUpBackground">
+   <property name="text">
+    <string>Scale up background</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+Num+Up</string>
+   </property>
+  </action>
+  <action name="actionScaleDownBackground">
+   <property name="text">
+    <string>Scale down background</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+Num+Down</string>
    </property>
   </action>
  </widget>

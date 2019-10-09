@@ -215,6 +215,12 @@ public slots:
     void addLayer();
     void deleteLayer(Layer *deletedLayer);
 
+    // Background
+    void setBackground(QString filename);
+    void showHideBackground();
+    void scaleUpBackground();
+    void scaleDownBackground();
+
 protected:
     //Mouse events
     void mouseMoveEvent(QMouseEvent * mouseEvent) override;
@@ -321,6 +327,9 @@ private:
 
     // Layer
     QList<Layer *> layer_list;
+
+    QGraphicsPixmapItem *background;
+
 
 signals:
     void mouse_moved();
