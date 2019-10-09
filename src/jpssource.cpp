@@ -434,11 +434,11 @@ void JPSSource::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         setRect(rectangle);
 #endif
         scene()->update();
-
     }
     else
-
+    {
         QGraphicsRectItem::mouseMoveEvent(event);
+    }
 }
 
 
