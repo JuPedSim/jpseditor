@@ -271,8 +271,9 @@ MWindow :: MWindow()
 MWindow::~MWindow()
 {
     qDebug("Enter MWindow::~MWindow");
-    delete mview;
+
     delete dmanager;
+    delete mview;
 
     delete length_edit;
     delete label1;
@@ -282,7 +283,6 @@ MWindow::~MWindow()
     delete _cMapTimer;
     delete drawing_toolbar_;
     qDebug("Leave MWindow::~MWindow");
-//    qDebug("This run is ended \n");
 }
 
 void MWindow::setupDrawingToolBar()
@@ -319,7 +319,6 @@ void MWindow::setupZoneToolBar()
 
     zone_toolbar_->addActions(zoneActionGroup->actions());
     qDebug("Leave MWindow::setupZoneToolBar");
-
 }
 
 void MWindow::closeLeftToolBarArea()
