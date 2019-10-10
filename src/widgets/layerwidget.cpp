@@ -40,6 +40,8 @@ LayerWidget::LayerWidget(QWidget *parent, jpsGraphicsView *mview)
 
     updateLayerListWidget();
 
+    connect(view, SIGNAL(layersChanged()), this, SLOT(updateLayerListWidget()));
+
     connect(ui->listWidget_layers, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(checkVisibility(QListWidgetItem*)));
 
     // Layer widget
@@ -83,6 +85,7 @@ void LayerWidget::updateLayerListWidget()
         return;
 
     QList<Layer *> layer_list = view->getLayerList();
+
     foreach(Layer *layer, layer_list)
     {
         QString string = layer->getName();

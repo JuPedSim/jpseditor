@@ -716,12 +716,24 @@ void jpsGraphicsView::delete_all(bool final)
         currentGoal = nullptr;
     }
 
+    if(!layer_list.isEmpty())
+    {
+        for(Layer *layer : layer_list)
+        {
+            delete layer;
+            layer = nullptr;
+        }
+
+        layer_list.clear();
+    }
+
     line_tracked=-1;
 
     emit lines_deleted(); // emit to update property widget
     emit sourcesChanged(); // emit to update source widget
     emit goalsChanged(); // emit to update goal widget
     emit transitonsChanged(); // emit to update transition widget
+    emit layersChanged(); // emit to update layer widget
 
     update();
     qDebug("Leave jpsGraphicsView::delete_all");
@@ -2907,7 +2919,7 @@ void jpsGraphicsView::addLayer()
     qDebug("Enter jpsGraphicsView::addLayer");
     auto *layer = new Layer();
 
-    this->scene()->addItem(layer); // Add layer into scene
+//    this->scene()->addItem(layer); // Add layer into scene
 
     layer_list.append(layer);
     qDebug("Leave jpsGraphicsView::addLayer");

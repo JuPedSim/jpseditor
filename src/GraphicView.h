@@ -348,6 +348,7 @@ signals:
     void goalsChanged();
     void transitonsChanged();
     void sendMsgToStatusBar(QString Msg);
+    void layersChanged();
 
     //void DoubleClick();
 
