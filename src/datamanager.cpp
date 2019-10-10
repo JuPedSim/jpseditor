@@ -2858,6 +2858,7 @@ void jpsDatamanager::writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *> &goal
         if(goal->getBeSaved() == "true")
         {
             stream->writeStartElement("goal");
+
             stream->writeAttribute("id",QString::number(goal->getId()));
             stream->writeAttribute("final",goal->getIsFinal());
             stream->writeAttribute("caption",goal->getCaption());
@@ -2874,6 +2875,7 @@ void jpsDatamanager::writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *> &goal
             stream->writeEndElement();
 
             stream->writeStartElement("vertex");
+
             stream->writeAttribute("px", QString::number(goal->rect().topRight().x()));
             stream->writeAttribute("py", QString::number(goal->rect().topRight().y()));
             stream->writeEndElement();
@@ -2893,7 +2895,9 @@ void jpsDatamanager::writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *> &goal
             stream->writeAttribute("py", QString::number(goal->rect().topLeft().y()));
             stream->writeEndElement();
 
-            stream->writeEndElement();//end goal
+            stream->writeEndElement(); // End polygon
+
+            stream->writeEndElement(); // End goal
         }
     }
     qDebug("Leave jpsDatamanager::writeGoals");
