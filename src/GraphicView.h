@@ -281,8 +281,10 @@ private:
     QPen currentPen;
     qreal catch_line_distance;
     QList<jpsLineItem *> marked_lines;
+
     QGraphicsTextItem* current_caption;
     QList<QGraphicsTextItem* > caption_list;
+
     int id_counter;
 
     //Source
@@ -310,15 +312,14 @@ private:
     bool _statLineEdit;
     bool lines_collided;
 
-
-    //Undo/Redo
+    // Undo/Redo
     ActionStack _undoStack;
     ActionStack _redoStack;
 
-    //View
+    // View
     bool statzoomwindows;
 
-    //Grid Mode
+    // Grid Mode
     qreal _gridSize;
     bool _gridmode;
     qreal _translationX;
@@ -329,7 +330,6 @@ private:
     QList<Layer *> layer_list;
 
     QGraphicsPixmapItem *background;
-
 
 signals:
     void mouse_moved();
@@ -348,7 +348,6 @@ signals:
     void goalsChanged();
     void transitonsChanged();
     void sendMsgToStatusBar(QString Msg);
-
 
     //void DoubleClick();
 

@@ -29,8 +29,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-
-
 #include <QtGui>
 #include <QLabel>
 #include <QLineEdit>
@@ -155,13 +153,12 @@ protected slots:
 
     //Line operations
     void show_coords();
-    void delete_lines();
+    void deleteAllContents();
     void delete_marked_lines();
     void send_length();
     void en_selectMode();
     void dis_selectMode();
     void lines_deleted();
-    void remove_all_lines();
     void ShowLineLength();
     void ScaleLines();
     void enableScale();

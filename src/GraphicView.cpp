@@ -664,37 +664,33 @@ void jpsGraphicsView::delete_all(bool final)
         }
     }
 
-    emit remove_all(); // emit to mainWindow
+    // Delete items in scene (sources, goals, transitions)
+    this->scene()->clear();
 
-    // Delete all lines
-
+    // Delete all lines in view
     for (int i=0; i<line_vector.size(); i++)
     {
-
-        delete line_vector[i]->get_line();
+//        delete line_vector[i]->get_line();
         delete line_vector[i];
-
+        line_vector[i] = nullptr;
     }
 
-    //line_vector.erase(line_vector.begin(),line_vector.end());
-    //intersect_point_vector.erase(intersect_point_vector.begin(),intersect_point_vector.end());
     line_vector.clear();
 
+    // Delete all intersect points
     for (int i=0; i<intersect_point_vector.size(); i++)
     {
-
         delete intersect_point_vector[i];
-
+        intersect_point_vector[i] = nullptr;
     }
 
-    //delete landmarks
+    intersect_point_vector.clear();
 
+    // Delete landmarks
     _datamanager->remove_all_landmarks();
 
-
-    intersect_point_vector.clear();
+    // Remove marked lines
     marked_lines.clear();
-
 
     if (current_line!=nullptr)
     {
@@ -708,8 +704,25 @@ void jpsGraphicsView::delete_all(bool final)
         _currentVLine=nullptr;
     }
 
+    if(currentSource != nullptr)
+    {
+        delete currentSource;
+        currentSource = nullptr;
+    }
+
+    if(currentGoal != nullptr)
+    {
+        delete currentGoal;
+        currentGoal = nullptr;
+    }
+
     line_tracked=-1;
-    emit lines_deleted();
+
+    emit lines_deleted(); // emit to update property widget
+    emit sourcesChanged(); // emit to update source widget
+    emit goalsChanged(); // emit to update goal widget
+    emit transitonsChanged(); // emit to update transition widget
+
     update();
     qDebug("Leave jpsGraphicsView::delete_all");
 }
@@ -1796,10 +1809,14 @@ void jpsGraphicsView::translations(QPointF old_pos)
     {
        lineItem->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
-    qDebug("Leave jpsGraphicsView::translations");
 
     // Background
-    background->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    if(background != nullptr)
+    {
+        background->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
+
+    qDebug("Leave jpsGraphicsView::translations");
 }
 
 void jpsGraphicsView::AutoZoom()
