@@ -44,9 +44,9 @@ public:
     void set_type(QString type);
     void set_rooms(JPSZone* room1, JPSZone* room2=nullptr);
 
-    int getElevation() const;
+    float getElevation() const;
 
-    void setElevation(int elevation);
+    void setElevation(float elevation);
 
 private:
     QList<JPSZone *> roomList;
@@ -54,7 +54,7 @@ private:
     jpsLineItem *cLine;
     QString _type;
     int _id;
-    int elevation;
+    float elevation;
 
 };
 

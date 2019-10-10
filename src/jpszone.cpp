@@ -35,6 +35,7 @@
 #include "jpszone.h"
 #include "jpscrossing.h"
 #include "jpsLineItem.h"
+#include "jpstransition.h"
 
 JPSZone::JPSZone(int id_zone, JPSZone *father, ZoneType type)
     : enterAndExitList(QList<jpsCrossing *>()), track_list(QList<JPSTrack *>()), wall_list(QList<jpsLineItem *>()),
@@ -666,10 +667,15 @@ void JPSZone::set_elevation(float elevation)
 {
     qDebug("Enter JPSZone::set_elevation");
      if(this->getType() != Stair) // only for horizontal floors
-          for (auto crossing: crossing_list)
-               crossing->set_elevation(elevation);
+     {
+         for (auto crossing: crossing_list)
+         {
+             crossing->set_elevation(elevation);
+         }
+     }
 
      elevation_ = elevation;
+
      qDebug("Leave JPSZone::set_elevation");
 }
 

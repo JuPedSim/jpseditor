@@ -98,14 +98,14 @@ void jpsTransition::set_rooms(JPSZone *room1, JPSZone *room2)
     roomList.push_back(room2);
 }
 
-int jpsTransition::getElevation() const
+float jpsTransition::getElevation() const
 {
     qDebug("Enter/Leave jpsTransition::getElevation()");
     return elevation;
 
 }
 
-void jpsTransition::setElevation(int elevation)
+void jpsTransition::setElevation(float elevation)
 {
     qDebug("Enter jpsTransition::setElevation");
     jpsTransition::elevation = elevation;

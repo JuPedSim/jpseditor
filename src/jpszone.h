@@ -4,10 +4,10 @@
 #include <QGraphicsView>
 #include "jpsLineItem.h"
 #include "jpstrack.h"
-#include "jpstransition.h"
 #include "global.h"
 
 class jpsCrossing;
+class jpsTransition;
 
 class JPSZone
 {
@@ -139,6 +139,8 @@ private:
     float elevation_;
 
 };
+
+
 
 bool EqualsPoint(const QPointF& point1, const QPointF& point2, double eps=0.001);
 

@@ -874,7 +874,7 @@ void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, JPSZone *room, QList
             stream->writeAttribute("caption",zone->getName());
             stream->writeAttribute("class", zone->getTypeInString());
 
-            zone->correctPlaneCoefficients(getTransitionInStair(zone)); // TODO: Fix correctPlaneCoefficients()
+            zone->correctPlaneCoefficients(getTransitionInSubroom(zone));
 
             stream->writeAttribute("A_x",QString::number(zone->get_ax()));
             stream->writeAttribute("B_y",QString::number(zone->get_by()));
@@ -1708,6 +1708,7 @@ void jpsDatamanager::remove_marked_lines()
             qDebug()<< "jpsDatamanager::remove_marked_lines(): Marked line isn't defined!";
         }
     }
+    qDebug("Leave jpsDatamanager::remove_marked_lines()");
 }
 
 void jpsDatamanager::set_view(jpsGraphicsView *view)
@@ -3301,22 +3302,24 @@ void jpsDatamanager::removeAllGoal()
     qDebug("Leave jpsDatamanager::removeAllGoal");
 }
 
-QList<jpsTransition *> jpsDatamanager::getTransitionInStair(JPSZone *stair)
+QList<jpsTransition *> jpsDatamanager::getTransitionInSubroom(JPSZone *subroom)
 {
-    qDebug("Enter jpsDatamanager::getTransitionInStair");
-    if(stair == nullptr)
-        return;
+    qDebug("Enter jpsDatamanager::getTransitionInSubroom");
+    if(subroom == nullptr)
+        return QList<jpsTransition *>{};
 
     QList<jpsTransition *> transitions;
 
     for(jpsTransition *transition : transition_list)
     {
-        for(JPSZone *subroom : transition->get_roomList())
+        for(JPSZone *zone : transition->get_roomList())
         {
-            if(subroom == stair)
+            if(zone == subroom)
                 transitions.append(transition);
         }
     }
 
-    qDebug("Leave jpsDatamanager::getTransitionInStair");
+    return transitions;
+
+    qDebug("Leave jpsDatamanager::getTransitionInSubroom");
 }

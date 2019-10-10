@@ -81,7 +81,7 @@ public:
     void newTransition(jpsLineItem *transition);
     void remove_exit(jpsTransition* exit);
     void removeAllTransition();
-    QList<jpsTransition *> getTransitionInStair(JPSZone* stair);
+    QList<jpsTransition *> getTransitionInSubroom(JPSZone* subroom);
 
     ///Landmark
     QList<jpsLandmark *> get_landmarks();
