@@ -99,7 +99,7 @@
     <addaction name="actionCopy"/>
     <addaction name="actionScale"/>
     <addaction name="separator"/>
-    <addaction name="actionDelete_lines"/>
+    <addaction name="actionDeleteAll"/>
     <addaction name="actionDelete_single_line"/>
     <addaction name="actionClear_all_Rooms_and_Doors"/>
    </widget>
@@ -291,7 +291,7 @@
     <bool>true</bool>
    </property>
   </action>
-  <action name="actionDelete_lines">
+  <action name="actionDeleteAll">
    <property name="icon">
     <iconset resource="../Resources/resources.qrc">
      <normaloff>:/inAppIcons/Icons/minus-square.svg</normaloff>:/inAppIcons/Icons/minus-square.svg</iconset>

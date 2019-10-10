@@ -80,8 +80,7 @@ public:
     void new_exit(QList<jpsLineItem *> newExits);
     void newTransition(jpsLineItem *transition);
     void remove_exit(jpsTransition* exit);
-    void change_exitName(jpsTransition* exit, QString name);
-    void remove_all_exits();
+    void removeAllTransition();
 
     ///Landmark
     QList<jpsLandmark *> get_landmarks();
@@ -90,30 +89,32 @@ public:
     void change_LandmarkName(jpsLandmark* landmark, QString name);
     void remove_all_landmarks();
     const int& GetLandmarkCounter() const;
+
     ///Connection
     const QList<jpsConnection*>& GetAllConnections() const;
     void NewConnection(jpsConnection* newConnection);
     void RemoveConnection(jpsConnection* connection);
     void RemoveAllConnections();
+
     ///Regions
     const QList<jpsRegion*>& GetRegions() const;
     void NewRegion(jpsRegion* region);
     void RemoveRegion(jpsRegion* region);
     void RemoveAllRegions();
     const int& GetRegionCounter() const;
-    ///Layers
-    QList<QString> getElevationList();
 
     ///Sources
     void writeSourceXML(QFile &file);
     void writeSourceHeader(QXmlStreamWriter *stream);
     void writeSources(QXmlStreamWriter *stream, QList<JPSSource *>& sourcelist);
     const QList<JPSSource *> &getSourcelist();
+    void removeAllSource();
 
     ///Goals
     void writeGoalXML(QFile &file);
     void writeGoals(QXmlStreamWriter *stream, QList<JPSGoal *>& goallist);
     const QList<JPSGoal *> &getGoallist();
+    void removeAllGoal();
 
     ///Traffic
     void writeTrafficXML(QFile &file);
@@ -125,7 +126,6 @@ public:
     void remove_marked_lines();
     void set_view(jpsGraphicsView* view);
     jpsGraphicsView* get_view();
-
 
     // Read geometry XML
     bool readXML(QFile &file);
@@ -224,7 +224,6 @@ public:
     void new_crossing(jpsLineItem* newCrossing);
     void remove_crossing(jpsCrossing* crossing);
     void change_crossingName(jpsCrossing* crossing, QString name);
-    void remove_all_crossings();
 
     // Transition
     void removeTransition(jpsTransition *transition);
@@ -248,7 +247,6 @@ private:
 
     QList<JPSSource *> sourcelist;
     QList<JPSGoal *> goallist;
-
     QList<jpsTransition *> transition_list;
 
     QList<jpsLandmark* > _landmarks;

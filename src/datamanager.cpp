@@ -207,28 +207,6 @@ QList<JPSZone *> jpsDatamanager::get_roomlist()
     return this->roomlist;
 }
 
-QList<QString> jpsDatamanager::getElevationList()
-{
-    qDebug("Enter jpsDatamanager::getElevationList");
-    QList<QString> elevationlist;
-    QList<JPSZone *> roomlist = get_roomlist();
-
-    QListIterator<JPSZone *> i(roomlist);
-    while (i.hasNext())
-    {
-        float elevation = i.next()->get_elevation();
-        if (!elevationlist.contains(QString::number(elevation)) &&
-                i.peekPrevious()->getType() != Stair)
-        {
-            elevationlist.append(QString::number(elevation));
-        }
-
-    }
-
-    qDebug("Leave jpsDatamanager::getElevationList");
-    return elevationlist;
-}
-
 void jpsDatamanager::new_obstacle()
 {
     qDebug("Enter: jpsDatamanager::new_obstacle. obs_id_counter = %d", obs_id_counter);
@@ -349,17 +327,6 @@ void jpsDatamanager::change_crossingName(jpsCrossing *crossing, QString name)
     qDebug("Leave jpsDatamanager::change_crossingName");
 }
 
-void jpsDatamanager::remove_all_crossings()
-{
-     qDebug("Enter jpsDatamanager::remove_all_crossings");
-    for (int i=0; i<crossingList.size(); i++)
-    {
-        delete crossingList[i];
-    }
-    crossingList.clear();
-    qDebug("Leave jpsDatamanager::remove_all_crossings");
-}
-
 
 QList<jpsTransition *> jpsDatamanager::getTransitionList()
 {
@@ -402,15 +369,17 @@ void jpsDatamanager::remove_exit(jpsTransition *exit)
     qDebug("Leave jpsDatamanager::remove_exit");
 }
 
-void jpsDatamanager::remove_all_exits()
+void jpsDatamanager::removeAllTransition()
 {
-     qDebug("Enter jpsDatamanager::remove_all_exits");
+     qDebug("Enter jpsDatamanager::removeAllTransition");
     for (int i=0; i<transition_list.size(); i++)
     {
-        delete transition_list[i];
+        delete transition_list[i]; // delete jpsTransition
+        transition_list[i] = nullptr;
     }
     transition_list.clear();
-    qDebug("Leave jpsDatamanager::remove_all_exits");
+
+    qDebug("Leave jpsDatamanager::removeAllTransition");
 }
 
 QList<jpsLandmark *> jpsDatamanager::get_landmarks()
@@ -453,6 +422,7 @@ void jpsDatamanager::remove_all_landmarks()
     for (jpsLandmark* landmark:_landmarks)
     {
         delete landmark;
+        landmark = nullptr;
     }
     _landmarks.clear();
     qDebug("Leave jpsDatamanager::remove_all_landmarks");
@@ -1634,13 +1604,18 @@ int jpsDatamanager::GetNumberOfMainTargets() const
 void jpsDatamanager::remove_all()
 {
     qDebug("Enter jpsDatamanager::remove_all");
-    remove_all_crossings();
-    remove_all_exits();
-    remove_all_obstacles();
+    // Delete JPSelements in data manager, not the QGraphicsitem
+    removeAllTransition();
+    removeAllGoal();
+    removeAllSource();
+
     remove_all_rooms();
+
+    remove_all_obstacles();
     remove_all_landmarks();
     RemoveAllConnections();
     RemoveAllRegions();
+
     zone_id=1;
     obs_id_counter=0;
     qDebug("Leave jpsDatamanager::remove_all");
@@ -3289,3 +3264,36 @@ void jpsDatamanager::removeTransition(jpsTransition *transition)
     transition_list.removeOne(transition);
     qDebug("Leave jpsDatamanager::removeTransition");
 }
+
+void jpsDatamanager::removeAllSource()
+{
+    qDebug("Enter jpsDatamanager::removeAllSource");
+    if(!sourcelist.isEmpty())
+    {
+        for(JPSSource *source : sourcelist)
+        {
+            delete source; // delete JPSSource
+            source = nullptr;
+        }
+
+        sourcelist.clear();
+    }
+    qDebug("Leave jpsDatamanager::removeAllSource");
+}
+
+void jpsDatamanager::removeAllGoal()
+{
+    qDebug("Enter jpsDatamanager::removeAllGoal");
+    if(!goallist.isEmpty())
+    {
+        for(JPSGoal *goal : goallist)
+        {
+            delete goal; // delete JPSGoal
+            goal = nullptr;
+        }
+
+        goallist.clear();
+    }
+    qDebug("Leave jpsDatamanager::removeAllGoal");
+}
+

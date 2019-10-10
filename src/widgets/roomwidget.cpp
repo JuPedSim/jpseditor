@@ -1246,20 +1246,20 @@ void roomWidget::show_hideLayer()
 
 void roomWidget::showLayersInfo()
 {
-    qDebug("Enter roomWidget::showLayersInfo");
-    ui->layerListWidget->clear();
-
-    QList<QString> elevationlist=datamanager->getElevationList();
-    QListIterator<QString> i(elevationlist);
-
-    while (i.hasNext())
-    {
-        QString elevation = i.next();
-        QString layerinfo = elevation + "m";
-        ui->layerListWidget->addItem(layerinfo);
-    }
-    qDebug("Layer ListWidget is updated!");
-    qDebug("Leave roomWidget::showLayersInfo");
+//    qDebug("Enter roomWidget::showLayersInfo");
+//    ui->layerListWidget->clear();
+//
+////    QList<QString> elevationlist=datamanager->getElevationList();
+//    QListIterator<QString> i(elevationlist);
+//
+//    while (i.hasNext())
+//    {
+//        QString elevation = i.next();
+//        QString layerinfo = elevation + "m";
+//        ui->layerListWidget->addItem(layerinfo);
+//    }
+//    qDebug("Layer ListWidget is updated!");
+//    qDebug("Leave roomWidget::showLayersInfo");
 }
 
 /*

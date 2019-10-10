@@ -115,7 +115,7 @@ MWindow :: MWindow()
     _statScale=false;
 
     // Signals and Slots
-    // Tab File
+    // Menu - File
     connect(actionBeenden, SIGNAL(triggered(bool)),this,SLOT(close()));
     connect(action_ffnen,SIGNAL(triggered(bool)),this,SLOT(openFileDXF()));
     connect(action_ffnen_xml,SIGNAL(triggered(bool)),this,SLOT(openFileXML()));
@@ -123,16 +123,21 @@ MWindow :: MWindow()
     connect(actionSpeichern,SIGNAL(triggered(bool)),this,SLOT(saveAsXML()));
     connect(actionSpeichern_dxf,SIGNAL(triggered(bool)),this,SLOT(saveAsDXF()));
     connect(actionSettings,SIGNAL(triggered(bool)),this,SLOT(Settings()));
-    //connect(action_ffnen_CogMap,SIGNAL(triggered(bool)),this,SLOT(openFileCMap()));
+
     // Tab Help
     connect(action_ber,SIGNAL(triggered(bool)),this,SLOT(info()));
+
     // Tab Tools
     connect(actionanglesnap,SIGNAL(triggered(bool)),this,SLOT(anglesnap()));
     connect(actiongridmode,SIGNAL(triggered(bool)),this,SLOT(gridmode()));
-
     connect(actionObjectsnap,SIGNAL(triggered(bool)),this,SLOT(objectsnap()));
-    connect(actionDelete_lines,SIGNAL(triggered(bool)),this,SLOT(delete_lines()));
+
+    // Menu - Edit
+    connect(actionDeleteAll,SIGNAL(triggered(bool)),this,SLOT(deleteAllContents()));
     connect(actionDelete_single_line,SIGNAL(triggered(bool)),this,SLOT(delete_marked_lines()));
+    connect(actionUndo,SIGNAL(triggered(bool)),mview,SLOT(Undo()));
+    connect(actionRedo,SIGNAL(triggered(bool)),mview,SLOT(Redo()));
+
     connect(actionRoom,SIGNAL(triggered(bool)),this,SLOT(define_room()));
     connect(actionAuto_Definition,SIGNAL(triggered(bool)),this,SLOT(autoDefine_room()));
 
@@ -148,35 +153,31 @@ MWindow :: MWindow()
     // Mview
     connect(mview,SIGNAL(no_drawing()),this,SLOT(en_selectMode()));
     connect(mview,SIGNAL(remove_marked_lines()),this,SLOT(lines_deleted()));
-    connect(mview,SIGNAL(remove_all()),this,SLOT(remove_all_lines()));
     connect(mview,SIGNAL(set_focus_textedit()),length_edit,SLOT(setFocus()));
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
     connect(mview,SIGNAL(LineLengthChanged()),this,SLOT(ShowLineLength()));
-
-//    QAction *str_escape = new QAction(this);
-//    str_escape->setShortcut(Qt::Key_Escape);
-//    connect(str_escape, SIGNAL(triggered(bool)), mview, SLOT(disableDrawing()));
 
     // Mark all lines
     QAction *str_a = new QAction(this);
     str_a->setShortcut(Qt::Key_A | Qt::CTRL);
     connect(str_a, SIGNAL(triggered(bool)), mview, SLOT(SelectAllLines()));
     this->addAction(str_a);
-    QAction *str_del = new QAction(this);
-    str_del->setShortcut(Qt::Key_D | Qt::CTRL);
-    connect(str_del,SIGNAL(triggered(bool)),this,SLOT(remove_all_lines()));
-    //connect(mview,SIGNAL(DoubleClick()),this,SLOT(en_selectMode()));
+
+    // Remove all lines
+//    QAction *str_del = new QAction(this);
+//    str_del->setShortcut(Qt::Key_D | Qt::CTRL);
+//    connect(str_del,SIGNAL(triggered(bool)),this,SLOT(remove_all_lines()));
+
     // Autosave
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
+
     // Landmark specifications
     connect(actionLandmarkWidget,SIGNAL(triggered(bool)),this,SLOT(define_landmark()));
+
     // CMap
 //    connect(actionRun_visualisation,SIGNAL(triggered(bool)),this,SLOT(RunCMap()));
 //    connect(_cMapTimer,SIGNAL(timeout()),this,SLOT(UpdateCMap()));
 //    connect(actionSpeichern_cogmap,SIGNAL(triggered()),this,SLOT(SaveCogMapXML()));
-    // Undo Redo
-    connect(actionUndo,SIGNAL(triggered(bool)),mview,SLOT(Undo()));
-    connect(actionRedo,SIGNAL(triggered(bool)),mview,SLOT(Redo()));
 
     // Room type data gathering
     connect(actionGather_data,SIGNAL(triggered(bool)),this, SLOT(GatherData()));
@@ -287,9 +288,9 @@ MWindow::~MWindow()
 void MWindow::setupDrawingToolBar()
 {
     qDebug("Enter MWindow::setupDrawingToolBar");
-    closeLeftToolBarArea(); // close running toolbar at first
-    closeListDockWidget();
-    closePropertyDockWidget();
+    closeLeftToolBarArea(); // close running toolbar
+    closeListDockWidget(); // close running list widget
+    closePropertyDockWidget(); // close running property widget
 
     drawing_toolbar_ = new QToolBar("Drawing ToolBar", this);
     addToolBar(Qt::LeftToolBarArea, drawing_toolbar_);
@@ -990,12 +991,21 @@ void MWindow::show_coords()
     infoLabel->setText(string);
 }
 
-void MWindow::delete_lines()
+void MWindow::deleteAllContents()
 {
-    qDebug("Enter MWindow::delete_lines");
+    qDebug("Enter MWindow::deleteAllContents");
+    closeBottomDockWidget();
+    closePropertyDockWidget();
+    closeListDockWidget();
+
+    // Delete all JPSelements in datamanager
+    dmanager->remove_all();
+
+    // Delete all QGraphicsitem in view
     mview->delete_all();
+
     statusBar()->showMessage(tr("All lines are deleted!"),10000);
-    qDebug("Leave MWindow::delete_lines");
+    qDebug("Leave MWindow::deleteAllContents");
 }
 
 void MWindow::delete_marked_lines()
@@ -1115,11 +1125,13 @@ void MWindow::en_selectMode()
 void MWindow::dis_selectMode()
 {
     qDebug("Enter MWindow::dis_selectMode");
-/*    if (actionWall->isChecked()==true || actionCrossing->isChecked()==true || actionExit->isChecked()==true
+/*
+ if (actionWall->isChecked()==true || actionCrossing->isChecked()==true || actionExit->isChecked()==true
             || actionLandmark->isChecked()==true)
     {
         actionSelect_Mode->setChecked(false);
-    }*/
+    }
+*/
 
     if(drawingActionGroup->checkedAction() != actionSelect_Mode)
         actionSelect_Mode->setChecked(false);
@@ -1133,19 +1145,12 @@ void MWindow::lines_deleted()
     qDebug("Leave MWindow::lines_deleted");
 }
 
-void MWindow::remove_all_lines()
-{
-    qDebug("Enter MWindow::remove_all_lines");
-    dmanager->remove_all();
-    qDebug("Leave MWindow::remove_all_lines");
-}
-
 void MWindow::ShowLineLength()
 {
-
+    qDebug("Enter MWindow::ShowLineLength");
     length_edit->setText(QString::number(mview->ReturnLineLength()));
     length_edit->selectAll();
-
+    qDebug("Leave MWindow::ShowLineLength");
 }
 
 void MWindow::ScaleLines()
