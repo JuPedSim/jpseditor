@@ -1081,9 +1081,9 @@ void jpsGraphicsView::catch_line_point()
 void jpsGraphicsView::catch_lines()
 {
     qDebug("Enter jpsGraphicsView::catch_lines");
-    //catch lines (only possible if wall is disabled)
-    // if current rect was build up moving the cursor to the left ->
-    // whole line has to be within the rect to select the line
+    // Catch lines (only possible if wall is disabled)
+    // If current rect was build up moving the cursor to the left ->
+    // Whole line has to be within the rect to select the line
     line_tracked=-1;
     if (currentSelectRect->rect().width()<0)
     {
@@ -1097,8 +1097,8 @@ void jpsGraphicsView::catch_lines()
             }
         }
     }
-    // if current rect was build up moving the cursor to the right ->
-    // throwing the select rect only over a part of a line is sufficent to select it
+    // Ff current rect was build up moving the cursor to the right ->
+    // Throwing the select rect only over a part of a line is sufficent to select it
     else if (currentSelectRect->rect().width()>0)
     {
         for (auto &item:line_vector)
@@ -1203,7 +1203,7 @@ void jpsGraphicsView::select_line(jpsLineItem *mline)
         QPen pen = QPen(Qt::red,4);
         pen.setCosmetic(true);
         mline->get_line()->setPen(pen);
-        marked_lines.push_back(mline);
+        marked_lines.append(mline);
         line_tracked=1;
     }
     else
@@ -2012,27 +2012,18 @@ void jpsGraphicsView::delete_marked_lines()
     qDebug("Enter jpsGraphicsView::delete_marked_lines");
     if (line_tracked!=-1)
     {
-        emit remove_marked_lines(); // emit to mainWindow
-
         for(int i=0; i<marked_lines.size(); ++i)
         {
             RecordUndoLineAction("LineDeleted", marked_lines[i]->getType(),marked_lines[i]->get_id(),marked_lines[i]->get_line()->line());
-
             RemoveIntersections(marked_lines[i]);
 
-            delete marked_lines[i]->get_line();
-
-            delete marked_lines[i];
-            marked_lines[i] = nullptr;
+            delete marked_lines[i]->get_line(); // Delete in scene
 
             line_vector.removeOne(marked_lines[i]);
         }
 
-        marked_lines.clear();
-
         //intersect_point_vector.clear();
         line_tracked=-1;
-        emit markedLineDeleted(); //emit to propertyWidget
 
         update();
     }
@@ -2106,9 +2097,9 @@ void jpsGraphicsView::SelectAllLines()
     qDebug("Leave jpsGraphicsView::SelectAllLines");
 }
 
-void jpsGraphicsView::delete_landmark()
+void jpsGraphicsView::deleteMarkedLandmark()
 {
-    qDebug("Enter jpsGraphicsView::delete_landmark");
+    qDebug("Enter jpsGraphicsView::deleteMarkedLandmark");
     if (markedLandmark!=nullptr)
     {
         _datamanager->remove_landmark(markedLandmark);
@@ -2116,7 +2107,7 @@ void jpsGraphicsView::delete_landmark()
         delete currentLandmarkRect;
         currentLandmarkRect=nullptr;
     }
-    qDebug("Leave jpsGraphicsView::delete_landmark");
+    qDebug("Leave jpsGraphicsView::deleteMarkedLandmark");
 }
 
 void jpsGraphicsView::catch_landmark()
@@ -2996,4 +2987,11 @@ void jpsGraphicsView::scaleDownBackground()
         background->setScale(background->scale()-0.05);
     }
     qDebug("Leave jpsGraphicsView::scaleDownBackground");
+}
+
+void jpsGraphicsView::clearMarkedLineList()
+{
+    qDebug("Enter jpsGraphicsView::clearMarkedLineList");
+    marked_lines.clear();
+    qDebug("Leave jpsGraphicsView::clearMarkedLineList");
 }

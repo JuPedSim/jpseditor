@@ -4,6 +4,7 @@
 #include <QtGui>
 #include <QtWidgets>
 #include "src/datamanager.h"
+#include "src/jpstransition.h"
 
 namespace Ui {
 class PropertyWidget;
