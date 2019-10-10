@@ -112,6 +112,17 @@ void TransitionWidget::applyRooms()
 
     cTran->set_rooms(room1, room2);
 
+    // Set elevation of transitions when setting room
+    if(room1 != nullptr && room1->getType() != Stair)
+    {
+        cTran->setElevation(room1->get_elevation());
+    }
+
+    if(room2 != nullptr && room2->getType() != Stair)
+    {
+        cTran->setElevation(room2->get_elevation());
+    }
+
     qDebug("Leave applyRooms");
 }
 

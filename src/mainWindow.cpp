@@ -993,9 +993,6 @@ void MWindow::show_coords()
 void MWindow::deleteAllContents()
 {
     qDebug("Enter MWindow::deleteAllContents");
-    closeBottomDockWidget();
-    closePropertyDockWidget();
-    closeListDockWidget();
 
     // Delete all JPSelements in datamanager
     dmanager->remove_all();
