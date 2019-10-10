@@ -389,16 +389,20 @@ void InifileWidget::writeRoutingData(QXmlStreamWriter *stream, QFile &file)
     stream->writeStartElement("routing");
 
     stream->writeStartElement("goals");
-    QList<JPSGoal *> goallist = dataManager->getGoallist();
-    dataManager->writeGoals(stream, goallist);
 
     auto goal_FileName = ui->lineEdit_GoalFile->text().split("/").last();
 
-    stream->writeStartElement("file");
-    if(!goal_FileName.isEmpty())
+    if(goal_FileName.isEmpty())
+    {
+        QList<JPSGoal *> goallist = dataManager->getGoallist();
+        dataManager->writeGoals(stream, goallist);
+    } else
+    {
+        stream->writeStartElement("file");
         stream->writeCharacters(goal_FileName);
+        stream->writeEndElement(); //end files
+    }
 
-    stream->writeEndElement(); //end files
     stream->writeEndElement(); //end goals
     stream->writeEndElement(); //end routing
     qDebug("Leave InifileWidget::writeRoutingData");
