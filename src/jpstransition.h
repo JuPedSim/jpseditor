@@ -44,12 +44,17 @@ public:
     void set_type(QString type);
     void set_rooms(JPSZone* room1, JPSZone* room2=nullptr);
 
+    int getElevation() const;
+
+    void setElevation(int elevation);
+
 private:
     QList<JPSZone *> roomList;
     QString cName;
     jpsLineItem *cLine;
     QString _type;
     int _id;
+    int elevation;
 
 };
 

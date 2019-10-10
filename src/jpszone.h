@@ -4,6 +4,7 @@
 #include <QGraphicsView>
 #include "jpsLineItem.h"
 #include "jpstrack.h"
+#include "jpstransition.h"
 #include "global.h"
 
 class jpsCrossing;
@@ -52,7 +53,8 @@ public:
 
     float get_elevation();
     void set_elevation(float elevation);
-    void correctPlaneCoefficients(); // calculates the coefficients A_x, B_y and C_z for stairs
+    void correctPlaneCoefficients(QList<jpsTransition *> transitions); // calculates the coefficients A_x, B_y and C_z
+    // for stairs
     bool is_highlighted();
     bool isVisible();
     void setVisible(bool visibility);

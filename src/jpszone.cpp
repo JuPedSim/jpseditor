@@ -673,14 +673,19 @@ void JPSZone::set_elevation(float elevation)
      qDebug("Leave JPSZone::set_elevation");
 }
 
-void JPSZone::correctPlaneCoefficients()
+void JPSZone::correctPlaneCoefficients(QList<jpsTransition *> transitions)
 {
      qDebug("Enter correctPlaneCoefficients");
+     if(this->getFatherRoom() == nullptr)
+     {
+         return; // Not for room
+     }
+
      qDebug("\t room=<%s> of type=<%s> has %d doors",
             this->getName().toStdString().c_str(),
             QString(this->getType()).toStdString().c_str(),
-            (int)crossing_list.size());
-    if(crossing_list.isEmpty() || this->getType() != Stair)
+            (int)transitions.size());
+    if(transitions.isEmpty() || this->getType() != Stair)
     {
         this->set_ax(0);
         this->set_by(0);
@@ -691,16 +696,16 @@ void JPSZone::correctPlaneCoefficients()
     QPointF P1(0,0), P2(0,0), P3(0,0); // plane is defined by three non-collinear points
     float elevation_1=0, elevation_2=0;
     // P1 P2 are the points on the first door of a room
-    P1 = crossing_list[0]->get_cLine()->get_line()->line().p1();
-    P2 = crossing_list[0]->get_cLine()->get_line()->line().p2();
-    elevation_1 = crossing_list[0]->get_elevation();
+    P1 = transitions[0]->get_cLine()->get_line()->line().p1();
+    P2 = transitions[0]->get_cLine()->get_line()->line().p2();
+    elevation_1 = transitions[0]->getElevation();
 
-    //from _doortList get one more point on a door with different elevation as P3
-    for (int i=1; i < crossing_list.size(); i++)
+    // Get one more point on a door with different elevation as P3
+    for (int i=1; i < transitions.size(); i++)
     {
-      if(crossing_list[i]->get_elevation() != crossing_list[0]->get_elevation()){
-           P3 = crossing_list[i]->get_cLine()->get_line()->line().p1();
-           elevation_2 = crossing_list[i]->get_elevation();
+      if(transitions[i]->getElevation() != transitions[0]->getElevation()){
+           P3 = transitions[i]->get_cLine()->get_line()->line().p1();
+           elevation_2 = transitions[i]->getElevation();
            break;
       }
     }
