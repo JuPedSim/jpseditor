@@ -140,11 +140,16 @@ void JPSZone::removeWall(jpsLineItem *wall)
 {
     qDebug("Enter JPSZone::removeWall");
     if (wall == nullptr)
-        qDebug("Var wall is nullptr");
-        qDebug("Leave JPSZone::removeWall");
+    {
+        qDebug("Wall is nullptr, Leave JPSZone::removeWall");
         return;
+    }
 
-    wall_list.removeOne(wall);
+    bool result = wall_list.removeOne(wall);
+
+    if(result)
+        qDebug("deleted!!!!");
+
     qDebug("Leave JPSZone::removeWall");
 }
 

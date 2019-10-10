@@ -158,7 +158,7 @@ protected slots:
     void send_length();
     void en_selectMode();
     void dis_selectMode();
-    void lines_deleted();
+//    void lines_deleted();
     void ShowLineLength();
     void ScaleLines();
     void enableScale();

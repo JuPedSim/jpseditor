@@ -152,7 +152,6 @@ MWindow :: MWindow()
 
     // Mview
     connect(mview,SIGNAL(no_drawing()),this,SLOT(en_selectMode()));
-    connect(mview,SIGNAL(remove_marked_lines()),this,SLOT(lines_deleted()));
     connect(mview,SIGNAL(set_focus_textedit()),length_edit,SLOT(setFocus()));
     connect(mview,SIGNAL(mouse_moved()),this,SLOT(show_coords()));
     connect(mview,SIGNAL(LineLengthChanged()),this,SLOT(ShowLineLength()));
@@ -1007,8 +1006,14 @@ void MWindow::deleteAllContents()
 void MWindow::delete_marked_lines()
 {
     qDebug("Enter MWindow::delete_marked_lines");
+
     mview->delete_marked_lines();
-    mview->delete_landmark();
+    dmanager->remove_marked_lines();
+    mview->clearMarkedLineList();
+    mview->deleteMarkedLandmark();
+
+    emit mview->markedLineDeleted();
+
     statusBar()->showMessage(tr("Marked lines are deleted!"),10000);
     qDebug("Leave MWindow::delete_marked_lines");
 }
@@ -1134,19 +1139,19 @@ void MWindow::dis_selectMode()
     qDebug("Leave MWindow::dis_selectMode");
 }
 
-void MWindow::lines_deleted()
-{
-    qDebug("Enter MWindow::lines_deleted");
-    dmanager->remove_marked_lines();
-    qDebug("Leave MWindow::lines_deleted");
-}
+//void MWindow::lines_deleted()
+//{
+//    qDebug("Enter MWindow::lines_deleted");
+//    dmanager->remove_marked_lines();
+//    qDebug("Leave MWindow::lines_deleted");
+//}
 
 void MWindow::ShowLineLength()
 {
-    qDebug("Enter MWindow::ShowLineLength");
+
     length_edit->setText(QString::number(mview->ReturnLineLength()));
     length_edit->selectAll();
-    qDebug("Leave MWindow::ShowLineLength");
+
 }
 
 void MWindow::ScaleLines()

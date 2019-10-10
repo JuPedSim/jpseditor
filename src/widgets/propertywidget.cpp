@@ -128,26 +128,10 @@ void PropertyWidget::updateListwidget()
 {
     qDebug("Enter PropertyWidget::updateListwidget");
 
-    int index = ui->tabWidget->currentIndex();
-    QString tab = ui->tabWidget->tabText(index);
+    updateWallListWidget();
+    updateCrossingListWidget();
+    updateTrackListWidget();
 
-    if(tab == "Wall")
-    {
-        updateWallListWidget();
-    }
-    else if(tab == "Crossing")
-    {
-        updateCrossingListWidget();
-    }
-    else if(tab == "Track")
-    {
-        updateTrackListWidget();
-    }
-    else
-    {
-        return;
-    }
-    qDebug("Leave PropertyWidget::updateListwidget");
 }
 
 void PropertyWidget::updateWallListWidget()
@@ -161,18 +145,24 @@ void PropertyWidget::updateWallListWidget()
     QList<jpsLineItem *> walllist = current_zone->get_listWalls();
 
     if(walllist.isEmpty())
+    {
+        qDebug("Leave PropertyWidget::updateWallListWidget");
         return;
+    }
 
     for (int i = 0; i < walllist.size(); i++)
     {
-        QString string = "";
-        string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
-                       walllist[i]->get_line()->line().x1(),
-                       walllist[i]->get_line()->line().x2(),
-                       walllist[i]->get_line()->line().y1(),
-                       walllist[i]->get_line()->line().y2());
+        if(walllist[i]->get_line() != nullptr)
+        {
+            QString string = "";
+            string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
+                           walllist[i]->get_line()->line().x1(),
+                           walllist[i]->get_line()->line().x2(),
+                           walllist[i]->get_line()->line().y1(),
+                           walllist[i]->get_line()->line().y2());
 
-        ui->listWidget_walls->addItem(string);
+            ui->listWidget_walls->addItem(string);
+        }
     }
 
     qDebug("Leave PropertyWidget::updateWallListWidget");
@@ -202,9 +192,7 @@ void PropertyWidget::removeWallButtonClicked()
     if(row == -1) // There is no rows in list
         return;
 
-    jpsLineItem *wall = current_zone->get_listWalls()[row];
-
-    current_zone->removeWall(wall);
+    current_zone->removeWall(current_zone->get_listWalls()[row]);
 
     ui->listWidget_walls->setCurrentRow(-1); // Set no focus
 
@@ -252,7 +240,10 @@ void PropertyWidget::updateCrossingListWidget()
     QList<jpsCrossing *> crossing_list = current_zone->getEnterAndExitList();
 
     if(crossing_list.isEmpty())
+    {
+        qDebug("Leave PropertyWidget::updateCrossingListWidget");
         return;
+    }
 
     for (int i = 0; i < crossing_list.size(); i++)
     {
@@ -265,8 +256,6 @@ void PropertyWidget::updateCrossingListWidget()
 
         ui->listWidget_crossing->addItem(string);
     }
-
-
 
     qDebug("Leave PropertyWidget::updateCrossingListWidget");
 }
@@ -327,7 +316,16 @@ void PropertyWidget::applyElevationButtonClicked()
     qDebug("Enter PropertyWidget::applyElevationButtonClicked");
     float elevation = ui->lineEdit_elevation->text().toFloat();
 
+    if(current_zone == nullptr)
+        return;
+
     current_zone->set_elevation(elevation);
+
+    // Setting elevation which in subrooms
+    for(auto transition : data->getTransitionInSubroom(current_zone))
+    {
+        transition->setElevation(elevation);
+    }
     qDebug("Leave PropertyWidget::applyElevationButtonClicked");
 }
 
@@ -342,7 +340,12 @@ void PropertyWidget::updateTrackListWidget()
     QList<JPSTrack *> track_list = current_zone->getTrackList();
 
     if(track_list.isEmpty())
+    {
+        qDebug("Leave PropertyWidget::updateTrackListWidget");
         return;
+    }
+
+
 
     for (int i = 0; i < track_list.size(); i++)
     {

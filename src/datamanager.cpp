@@ -1623,55 +1623,125 @@ void jpsDatamanager::remove_all()
 
 void jpsDatamanager::remove_marked_lines()
 {
+    qDebug("Enter jpsDatamanager::remove_marked_lines");
     QList<jpsLineItem* > marked_lines = _mView->get_markedLines();
-    QList<jpsObstacle*> obstacle_list = this->get_obstaclelist();
+//    QList<jpsObstacle*> obstacle_list = this->get_obstaclelist();
     QList<JPSZone* > cList = this->get_roomlist();
 
     for (int i=0; i<marked_lines.size(); i++)
     {
-        // delete wall which in obstacle
-        if (marked_lines[i]->getType() == "wall" && obstacle_list.size()>0)
-        {
-            for (int m=0; m<obstacle_list.size(); m++)
-            {
-                QList<jpsLineItem* > deleted_obstacle_lines;
-                for (int n=0; n<obstacle_list[m]->get_listWalls().size(); n++)
-                {
-                    if(marked_lines[i]==obstacle_list[m]->get_listWalls()[n])
-                    {
-                        deleted_obstacle_lines.push_back(obstacle_list[m]->get_listWalls()[n]);
-                    }
-                }
-                obstacle_list[m]->removeWall(deleted_obstacle_lines);
-                qDebug()<< "jpsDatamanager::remove_marked_lines(): Obstacle line is deleted!";
-            }
-        }
-        else
-        {
-            qDebug()<< "jpsDatamanager::remove_marked_lines(): Marked line isn't in obstacle!";
-        }
+//        // delete wall which in obstacle
+//        if (marked_lines[i]->getType() == "wall" && obstacle_list.size()>0)
+//        {
+//            for (int m=0; m<obstacle_list.size(); m++)
+//            {
+//                QList<jpsLineItem* > deleted_obstacle_lines;
+//                for (int n=0; n<obstacle_list[m]->get_listWalls().size(); n++)
+//                {
+//                    if(marked_lines[i]==obstacle_list[m]->get_listWalls()[n])
+//                    {
+//                        deleted_obstacle_lines.push_back(obstacle_list[m]->get_listWalls()[n]);
+//                    }
+//                }
+//                obstacle_list[m]->removeWall(deleted_obstacle_lines);
+//                qDebug()<< "jpsDatamanager::remove_marked_lines(): Obstacle line is deleted!";
+//            }
+//        }
+//        else
+//        {
+//            qDebug()<< "jpsDatamanager::remove_marked_lines(): Marked line isn't in obstacle!";
+//        }
 
         // delete wall
         if (marked_lines[i]->getType() == "wall" && cList.size()>0)
         {
-            for (int j=0; j<cList.size(); j++)
-            {
-                for (int l=0; l<cList[j]->getCorridorList().size(); l++)
-                {
-                    for (int k=0; k<cList[j]->getCorridorList()[l]->get_listWalls().size(); k++)
-                    {
+            QList<jpsLineItem *> walls;
 
-                        if (marked_lines[i]==cList[j]->getCorridorList()[l]->get_listWalls()[k])
+            for(auto room : cList)
+            {
+                for (auto corridor : room->getCorridorList())
+                {
+                    for(auto line : corridor->get_listWalls())
+                    {
+                        if(marked_lines[i] == line)
                         {
-                            cList[j]->getCorridorList()[l]->removeWall(marked_lines[i]);
+                            corridor->removeWall(line);
+                            delete line;
+                            line = nullptr;
+
+                        }
+
+                    }
+                }
+
+                for (auto lobby : room->getLobbyList())
+                {
+                    for(auto line : lobby->get_listWalls())
+                    {
+                        if(marked_lines[i] == line)
+                        {
+                            lobby->removeWall(line);
+                            delete line;
+                            line = nullptr;
+                        }
+
+                    }
+                }
+
+                for (auto office : room->getOfficeList())
+                {
+                    for(auto line : office->get_listWalls())
+                    {
+                        if(marked_lines[i] == line)
+                        {
+                            office->removeWall(line);
+                            delete line;
+                            line = nullptr;
+                        }
+
+                    }
+                }
+
+                for (auto stair : room->getStairList())
+                {
+                    for(auto line : stair->get_listWalls())
+                    {
+                        if(marked_lines[i] == line)
+                        {
+                            stair->removeWall(line);
+                            delete line;
+                            line = nullptr;
+                        }
+
+                    }
+                }
+            }
+
+            qDebug()<< "jpsDatamanager::remove_marked_lines: Wall is removed" ;
+        }
+
+        // Delete track
+        else if (marked_lines[i]->getType() == "track" && cList.size()>0)
+        {
+            for (auto room : cList)
+            {
+                for(auto platform : cList)
+                {
+                    for(auto track : platform->getTrackList())
+                    {
+                        if(marked_lines[i] == track->getLine())
+                        {
+                            platform->removeTrack(track);
+                            delete track;
+                            track = nullptr;
                         }
                     }
                 }
-                qDebug()<< "jpsDatamanager::remove_marked_lines(): Wall line is deleted!";
             }
-            qDebug()<< "jpsDatamanager::remove_marked_lines: marked line is removed" ;
+            qDebug()<< "jpsDatamanager::remove_marked_lines(): Track is deleted!";
         }
-        // delete crossing
+
+        // Delete crossing
         else if (marked_lines[i]->getType() == "crossing" && cList.size()>0)
         {
             foreach(JPSZone *zone, cList)
@@ -1686,12 +1756,16 @@ void jpsDatamanager::remove_marked_lines()
                         {
                             subroom->removeEnterOrExit(crossing); // remove crossing from subroom
                         }
+
+                        delete crossing;
+                        crossing = nullptr;
                     }
                 }
             }
-            qDebug()<< "jpsDatamanager::remove_marked_lines(): Crossing line is deleted!";
+            qDebug()<< "jpsDatamanager::remove_marked_lines(): Crossing is deleted!";
         }
-        // delete transition
+
+        // Delete transition
         else if(marked_lines[i]->getType() == "transition")
         {
             for (jpsTransition *tran : transition_list)
@@ -1699,15 +1773,18 @@ void jpsDatamanager::remove_marked_lines()
                 if(marked_lines[i] == tran->get_cLine())
                 {
                     transition_list.removeOne(tran);
+                    delete tran;
+                    tran = nullptr;
                 }
             }
-            qDebug()<< "jpsDatamanager::remove_marked_lines(): Transition line is deleted!";
+            qDebug()<< "jpsDatamanager::remove_marked_lines(): Transition is deleted!";
         }
         else
         {
             qDebug()<< "jpsDatamanager::remove_marked_lines(): Marked line isn't defined!";
         }
     }
+
     qDebug("Leave jpsDatamanager::remove_marked_lines()");
 }
 

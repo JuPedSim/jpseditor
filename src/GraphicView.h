@@ -148,7 +148,7 @@ public:
     QPointF getNearstPointOnLine(jpsLineItem* selected_line);
 
     // Landmark
-    void delete_landmark();
+    void deleteMarkedLandmark();
     void catch_landmark();
     void select_landmark(jpsLandmark *landmark);
     void addLandmark();
@@ -184,6 +184,9 @@ public:
     // MeasureLength
     void drawMeasureLengthLine();
     void enableMeasureLengthMode();
+
+    // Marked Line
+    void clearMarkedLineList();
 
 public slots:
     //Landmarks/Regions
@@ -337,7 +340,7 @@ signals:
     void lines_deleted();
     void markedLineDeleted();
     void no_drawing();
-    void remove_marked_lines();
+
     void remove_all();
     void PositionDefCompleted();
     void LineLengthChanged();
