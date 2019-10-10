@@ -874,7 +874,7 @@ void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, JPSZone *room, QList
             stream->writeAttribute("caption",zone->getName());
             stream->writeAttribute("class", zone->getTypeInString());
 
-            zone->correctPlaneCoefficients(); // TODO: Fix correctPlaneCoefficients()
+            zone->correctPlaneCoefficients(getTransitionInStair(zone)); // TODO: Fix correctPlaneCoefficients()
 
             stream->writeAttribute("A_x",QString::number(zone->get_ax()));
             stream->writeAttribute("B_y",QString::number(zone->get_by()));
@@ -3301,3 +3301,22 @@ void jpsDatamanager::removeAllGoal()
     qDebug("Leave jpsDatamanager::removeAllGoal");
 }
 
+QList<jpsTransition *> jpsDatamanager::getTransitionInStair(JPSZone *stair)
+{
+    qDebug("Enter jpsDatamanager::getTransitionInStair");
+    if(stair == nullptr)
+        return;
+
+    QList<jpsTransition *> transitions;
+
+    for(jpsTransition *transition : transition_list)
+    {
+        for(JPSZone *subroom : transition->get_roomList())
+        {
+            if(subroom == stair)
+                transitions.append(transition);
+        }
+    }
+
+    qDebug("Leave jpsDatamanager::getTransitionInStair");
+}

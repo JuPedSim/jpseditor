@@ -34,6 +34,7 @@ jpsTransition::jpsTransition(jpsLineItem *line)
 {
     qDebug("Enter jpsTransition::jpsTransition");
     cLine=line;
+    elevation = 0;
     qDebug("Leave jpsTransition::jpsTransition");
 }
 
@@ -95,4 +96,18 @@ void jpsTransition::set_rooms(JPSZone *room1, JPSZone *room2)
     roomList.clear();
     roomList.push_back(room1);
     roomList.push_back(room2);
+}
+
+int jpsTransition::getElevation() const
+{
+    qDebug("Enter/Leave jpsTransition::getElevation()");
+    return elevation;
+
+}
+
+void jpsTransition::setElevation(int elevation)
+{
+    qDebug("Enter jpsTransition::setElevation");
+    jpsTransition::elevation = elevation;
+    qDebug("Leave jpsTransition::setElevation");
 }
