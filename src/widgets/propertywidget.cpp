@@ -47,6 +47,7 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
     // Update list widget if line deleted
     connect(view, SIGNAL(markedLineDeleted()), this, SLOT(updateListwidget()));
     connect(view, SIGNAL(lines_deleted()),this, SLOT(updateListwidget()));
+    connect(parent, SIGNAL(allContentsDeleted()),this,SLOT(clearListWidget()));
 
     // Set-up elevation
     ui->lineEdit_elevation->setText(QString::number(current_zone->get_elevation()));
@@ -455,3 +456,15 @@ void PropertyWidget::updateCrossingInfo(QListWidgetItem *item)
     ui->lineEdit_maxAgents->setText(crossing->getMaxAgents());
     qDebug("Leave PropertyWidget::updateCrossingInfo");
 }
+
+void PropertyWidget::clearListWidget()
+{
+    qDebug("Enter PropertyWidget::clearListWidget");
+    current_zone = nullptr;
+
+    ui->listWidget_crossing->clear();
+    ui->listWidget_track->clear();
+    ui->listWidget_walls->clear();
+    qDebug("Leave PropertyWidget::clearListWidget");
+}
+
