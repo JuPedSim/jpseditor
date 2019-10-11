@@ -999,6 +999,12 @@ void MWindow::deleteAllContents()
     // Delete all QGraphicsitem in view
     mview->delete_all();
 
+    emit mview->sourcesChanged(); // emit to update source widget
+    emit mview->goalsChanged(); // emit to update goal widget
+    emit mview->transitonsChanged(); // emit to update transition widget
+    emit mview->layersChanged(); // emit to update layer widget
+    emit allContentsDeleted(); // emit to property & roomlist widget
+
     statusBar()->showMessage(tr("All lines are deleted!"),10000);
     qDebug("Leave MWindow::deleteAllContents");
 }

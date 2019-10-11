@@ -246,6 +246,8 @@ private slots:
     // BottemDockWidget
     void closeBottomDockWidget();
 
+signals:
+    void allContentsDeleted();
 };
 
 #endif // MAINWINDOW_H

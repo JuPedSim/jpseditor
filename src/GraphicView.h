@@ -339,6 +339,7 @@ signals:
     void set_focus_textedit();
     void lines_deleted();
     void markedLineDeleted();
+    void allContentsDeleted();
     void no_drawing();
 
     void remove_all();

@@ -24,6 +24,8 @@ protected slots:
     void updateWidget(ZoneType type);
     void updateListwidget();
 
+    void clearListWidget();
+
     // Crossing tab
     void updateCrossingListWidget();
     void addCrossingButtonClicked();

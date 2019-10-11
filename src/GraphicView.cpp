@@ -729,12 +729,6 @@ void jpsGraphicsView::delete_all(bool final)
 
     line_tracked=-1;
 
-    emit lines_deleted(); // emit to update property widget
-    emit sourcesChanged(); // emit to update source widget
-    emit goalsChanged(); // emit to update goal widget
-    emit transitonsChanged(); // emit to update transition widget
-    emit layersChanged(); // emit to update layer widget
-
     update();
     qDebug("Leave jpsGraphicsView::delete_all");
 }

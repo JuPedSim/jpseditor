@@ -39,6 +39,9 @@ RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager)
 
     updateRoomsListWidget();
 
+    // Delete all contents
+    connect(parent, SIGNAL(allContentsDeleted()), this, SLOT(updateRoomsListWidget()));
+
     // add propertyDockWidget
     connect(this, SIGNAL(zoneSelected(JPSZone *)), parent, SLOT(addPropertyDockWidget(JPSZone *)));
     connect(this, SIGNAL(roomSelected(JPSZone *)), parent, SLOT(addPropertyDockWidget(JPSZone *)));
