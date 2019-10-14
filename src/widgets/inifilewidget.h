@@ -2,7 +2,6 @@
 #define INIFILEWIDGET_H
 
 #include <QWidget>
-#include "src/tinyxml/tinyxml.h"
 #include "src/datamanager.h"
 #include "src/widgets/templatewidget.h"
 

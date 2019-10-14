@@ -34,8 +34,6 @@
 #include "inifilewidget.h"
 #include "ui_inifilewidget.h"
 
-#include "src/tinyxml/tinyxml.h"
-
 InifileWidget::InifileWidget(QWidget *parent, jpsDatamanager *dmanager) :
     QWidget(parent),
     ui(new Ui::InifileWidget)

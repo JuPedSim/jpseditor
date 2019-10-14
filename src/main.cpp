@@ -27,7 +27,7 @@
 
 //main.cpp
 
- //for compiling a standalone windows exe with VS
+// For compiling a standalone windows exe with VS
 #ifdef _MSC_VER
 #    ifdef NDEBUG
 #        pragma comment(linker, "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
@@ -38,7 +38,6 @@
 #define LOG_FILE_KEEP_NUM 30
 
 #include "mainWindow.h"
-
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {

@@ -32,11 +32,6 @@
 
 
 #include "datamanager.h"
-#include <iostream>
-#include <utility>
-#include <chrono>
-#include <QtWidgets>
-#include <QDebug>
 
 using myClock = std::chrono::high_resolution_clock;
 
@@ -419,6 +414,9 @@ void jpsDatamanager::change_LandmarkName(jpsLandmark *landmark, QString name)
 void jpsDatamanager::remove_all_landmarks()
 {
     qDebug("Enter jpsDatamanager::remove_all_landmarks");
+    if(_landmarks.isEmpty())
+        return;
+
     for (jpsLandmark* landmark:_landmarks)
     {
         delete landmark;
