@@ -37,6 +37,9 @@
 #endif
 #define LOG_FILE_KEEP_NUM 30
 
+#include "mainWindow.h"
+
+
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     // Add log dir if there is no

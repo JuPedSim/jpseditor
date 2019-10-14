@@ -231,6 +231,8 @@ MWindow :: MWindow()
     drawingActionGroup->addAction(actionTrack);
 
     // Zone toolbar
+    zone_toolbar_ = nullptr;
+
     connect(actionCorridor, SIGNAL(triggered(bool)),this, SLOT(corridorButtonClicked()));
     connect(actionPlatform, SIGNAL(triggered(bool)),this, SLOT(platformButtonClicked()));
     connect(actionLobby, SIGNAL(triggered(bool)),this, SLOT(lobbyButtonClicked()));
@@ -242,7 +244,6 @@ MWindow :: MWindow()
     zoneActionGroup->addAction(actionCorridor);
     zoneActionGroup->addAction(actionLobby);
     zoneActionGroup->addAction(actionOffice);
-//    zoneActionGroup->addAction(actionEntrance);
     zoneActionGroup->addAction(actionStairs);
     zoneActionGroup->addAction(actionPlatform);
 
