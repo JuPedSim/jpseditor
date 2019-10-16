@@ -59,11 +59,21 @@
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="actionRoom"/>
+    <widget class="QMenu" name="menuBackgroud">
+     <property name="title">
+      <string>Background</string>
+     </property>
+     <addaction name="actionImportNewBackgorund"/>
+     <addaction name="actionShowHideBackground"/>
+     <addaction name="actionScaleUpBackground"/>
+     <addaction name="actionScaleDownBackground"/>
+    </widget>
     <addaction name="actionAuto_Definition"/>
     <addaction name="actionGather_data"/>
     <addaction name="actionLandmarkWidget"/>
     <addaction name="actionNew_Inifile"/>
+    <addaction name="menuBackgroud"/>
+    <addaction name="actionRunSimulation"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -89,7 +99,7 @@
     <addaction name="actionCopy"/>
     <addaction name="actionScale"/>
     <addaction name="separator"/>
-    <addaction name="actionDelete_lines"/>
+    <addaction name="actionDeleteAll"/>
     <addaction name="actionDelete_single_line"/>
     <addaction name="actionClear_all_Rooms_and_Doors"/>
    </widget>
@@ -98,15 +108,29 @@
      <string>Draw</string>
     </property>
     <addaction name="actionWall"/>
-    <addaction name="actionDoor"/>
+    <addaction name="actionCrossing"/>
+    <addaction name="actionTransition"/>
     <addaction name="actionHLine"/>
     <addaction name="actionLandmark"/>
     <addaction name="actionSource"/>
     <addaction name="actionGoal"/>
+    <addaction name="actionTrack"/>
+   </widget>
+   <widget class="QMenu" name="menuZone">
+    <property name="title">
+     <string>Zone</string>
+    </property>
+    <addaction name="actionCorridor"/>
+    <addaction name="actionLobby"/>
+    <addaction name="actionEntrance"/>
+    <addaction name="actionOffice"/>
+    <addaction name="actionStairs"/>
+    <addaction name="actionPlatform"/>
    </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuEdit"/>
    <addaction name="menuDraw"/>
+   <addaction name="menuZone"/>
    <addaction name="menuView"/>
    <addaction name="menuTools"/>
    <addaction name="menuHilfe"/>
@@ -128,17 +152,13 @@
    <addaction name="actionClear_all_Rooms_and_Doors"/>
    <addaction name="separator"/>
    <addaction name="actionSelect_Mode"/>
-   <addaction name="actionWall"/>
-   <addaction name="actionDoor"/>
-   <addaction name="actionHLine"/>
-   <addaction name="actionSource"/>
-   <addaction name="actionGoal"/>
-   <addaction name="actionLandmark"/>
+   <addaction name="actionDraw"/>
+   <addaction name="actionZone"/>
    <addaction name="separator"/>
+   <addaction name="actionLayer"/>
+   <addaction name="actionMeasureLength"/>
    <addaction name="actiongridmode"/>
    <addaction name="actionObjectsnap"/>
-   <addaction name="separator"/>
-   <addaction name="actionRoom"/>
   </widget>
   <action name="action_ffnen">
    <property name="icon">
@@ -271,7 +291,7 @@
     <bool>true</bool>
    </property>
   </action>
-  <action name="actionDelete_lines">
+  <action name="actionDeleteAll">
    <property name="icon">
     <iconset resource="../Resources/resources.qrc">
      <normaloff>:/inAppIcons/Icons/minus-square.svg</normaloff>:/inAppIcons/Icons/minus-square.svg</iconset>
@@ -304,7 +324,7 @@
     <bool>true</bool>
    </property>
   </action>
-  <action name="actionDoor">
+  <action name="actionCrossing">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -313,13 +333,13 @@
    </property>
    <property name="icon">
     <iconset resource="../Resources/resources.qrc">
-     <normaloff>:/inAppIcons/Icons/door-open.svg</normaloff>:/inAppIcons/Icons/door-open.svg</iconset>
+     <normaloff>:/inAppIcons/Icons/door.png</normaloff>:/inAppIcons/Icons/door.png</iconset>
    </property>
    <property name="text">
-    <string>Door</string>
+    <string>Crossing</string>
    </property>
    <property name="toolTip">
-    <string>Door</string>
+    <string>Crossing</string>
    </property>
    <property name="shortcut">
     <string>Meta+D</string>
@@ -328,7 +348,7 @@
     <bool>true</bool>
    </property>
   </action>
-  <action name="actionExit">
+  <action name="actionTransition">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -340,10 +360,10 @@
      <normaloff>:/inAppIcons/Icons/Exit.png</normaloff>:/inAppIcons/Icons/Exit.png</iconset>
    </property>
    <property name="text">
-    <string>Exit</string>
+    <string>Transition</string>
    </property>
    <property name="toolTip">
-    <string>Exit</string>
+    <string>Draw transition</string>
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
@@ -709,7 +729,7 @@
   </action>
   <action name="actionNew_Inifile">
    <property name="text">
-    <string>New Inifile</string>
+    <string>Create Inifile</string>
    </property>
    <property name="shortcut">
     <string>Meta+I</string>
@@ -794,6 +814,190 @@
    </property>
    <property name="text">
     <string>Goal</string>
+   </property>
+  </action>
+  <action name="actionMeasureLength">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/ruler.png</normaloff>:/inAppIcons/Icons/ruler.png</iconset>
+   </property>
+   <property name="text">
+    <string>MeasureLength length</string>
+   </property>
+  </action>
+  <action name="actionDraw">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/draw.png</normaloff>:/inAppIcons/Icons/draw.png</iconset>
+   </property>
+   <property name="text">
+    <string>Draw</string>
+   </property>
+  </action>
+  <action name="actionCorridor">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/corridor.png</normaloff>:/inAppIcons/Icons/corridor.png</iconset>
+   </property>
+   <property name="text">
+    <string>corridor</string>
+   </property>
+   <property name="toolTip">
+    <string>Assemble Corrosdor</string>
+   </property>
+  </action>
+  <action name="actionLobby">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/lobby.png</normaloff>:/inAppIcons/Icons/lobby.png</iconset>
+   </property>
+   <property name="text">
+    <string>lobby</string>
+   </property>
+   <property name="toolTip">
+    <string>Assemble lobby</string>
+   </property>
+  </action>
+  <action name="actionEntrance">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/entrance.png</normaloff>:/inAppIcons/Icons/entrance.png</iconset>
+   </property>
+   <property name="text">
+    <string>Entrance</string>
+   </property>
+   <property name="toolTip">
+    <string>Assemble entrance</string>
+   </property>
+  </action>
+  <action name="actionOffice">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/office.png</normaloff>:/inAppIcons/Icons/office.png</iconset>
+   </property>
+   <property name="text">
+    <string>Office</string>
+   </property>
+   <property name="toolTip">
+    <string>Assemble office</string>
+   </property>
+  </action>
+  <action name="actionStairs">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/stairs.png</normaloff>:/inAppIcons/Icons/stairs.png</iconset>
+   </property>
+   <property name="text">
+    <string>Stairs</string>
+   </property>
+   <property name="toolTip">
+    <string>Assemble Stairs</string>
+   </property>
+  </action>
+  <action name="actionPlatform">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/platform.png</normaloff>:/inAppIcons/Icons/platform.png</iconset>
+   </property>
+   <property name="text">
+    <string>Platform</string>
+   </property>
+   <property name="toolTip">
+    <string>Assemble Platform</string>
+   </property>
+  </action>
+  <action name="actionZone">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/attribute.svg</normaloff>:/inAppIcons/Icons/attribute.svg</iconset>
+   </property>
+   <property name="text">
+    <string>zone</string>
+   </property>
+   <property name="toolTip">
+    <string>Assemble Zone</string>
+   </property>
+  </action>
+  <action name="actionTrack">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/track.png</normaloff>:/inAppIcons/Icons/track.png</iconset>
+   </property>
+   <property name="text">
+    <string>Track</string>
+   </property>
+   <property name="toolTip">
+    <string>Draw Track</string>
+   </property>
+  </action>
+  <action name="actionLayer">
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/layers.png</normaloff>:/inAppIcons/Icons/layers.png</iconset>
+   </property>
+   <property name="text">
+    <string>Layer</string>
+   </property>
+  </action>
+  <action name="actionRunSimulation">
+   <property name="text">
+    <string>Run Simulation</string>
+   </property>
+  </action>
+  <action name="actionImportNewBackgorund">
+   <property name="text">
+    <string>Import new background</string>
+   </property>
+  </action>
+  <action name="actionShowHideBackground">
+   <property name="text">
+    <string>Show/Hide background</string>
+   </property>
+  </action>
+  <action name="actionScaleUpBackground">
+   <property name="text">
+    <string>Scale up background</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+Num+Up</string>
+   </property>
+  </action>
+  <action name="actionScaleDownBackground">
+   <property name="text">
+    <string>Scale down background</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+Num+Down</string>
    </property>
   </action>
  </widget>

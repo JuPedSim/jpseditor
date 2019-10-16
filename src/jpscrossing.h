@@ -22,55 +22,49 @@
  *
  * \section Description
  * This class is representing a door to another room in the building or to the outside.
- *
  **/
 
 #ifndef JPSCROSSING_H
 #define JPSCROSSING_H
 
-#include "rooms.h"
+#include <QtWidgets>
+#include <QtGui>
+#include "src/jpsLineItem.h"
+#include "src/jpszone.h"
 
 class jpsCrossing
 {
 public:
     jpsCrossing(jpsLineItem *line);
 
-    jpsCrossing(jpsLineItem *cLine, bool isExit, float elevation);
-
     ~jpsCrossing(){}
-    QList<jpsRoom *> get_roomList();
+
+    QList<JPSZone *> get_roomList();
+    void addSubrooms(JPSZone* subroom1, JPSZone* subroom2 = nullptr);
+    void setSubroom(JPSZone* subroom);
+    void removeSubRoom(JPSZone* subroom);
+
     QString get_name();
+    void change_name(QString name);
     int get_id();
     void set_id(int id);
     jpsLineItem *get_cLine();
-    void change_name(QString name);
-    void add_rooms(jpsRoom* room1, jpsRoom* room2=0L);
-    void SetRoom(jpsRoom* room);
-    void RemoveRoom(jpsRoom* room);
-    void SetStatExit(bool stat);
-    bool IsExit();
     float get_elevation();
     void set_elevation(float elevation);
-
     QString getMaxAgents() const;
-
     void setMaxAgents(QString maxAgents);
 
     QString getOutflow() const;
-
     void setOutflow(QString outflow);
 
     bool isState() const;
-
     void setState(bool state);
 
-
 private:
-    QList<jpsRoom *> roomList;
+    QList<JPSZone *> relativeSubroom_list; // rooms that are relevant to the crossing, size can't more than 2!
     QString cName;
     jpsLineItem *cLine;
     int cId;
-    bool _isExit;
     float _elevation;
     bool state;
     QString max_agents;

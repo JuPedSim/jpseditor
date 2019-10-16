@@ -21,26 +21,26 @@
  * along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
  *
  * \section Description
- * This class is representing a door to another room in the building or to the outside.
+ * This class is representing a crossing to another room in the building.
  *
  **/
 
 #include <iostream>
-#include "jpscrossing.h"
-#include <iostream>
+#include "src/jpscrossing.h"
 #include <QDebug>
+#include <QMessageBox>
 
-jpsCrossing::jpsCrossing(jpsLineItem *line)
+jpsCrossing::jpsCrossing(jpsLineItem *line) : relativeSubroom_list(QList<JPSZone *>())
 {
+    cId = 0;
     cLine=line;
-    _isExit=false;
+    _elevation = 0;
 }
 
-QList<jpsRoom *> jpsCrossing::get_roomList()
+QList<JPSZone *> jpsCrossing::get_roomList()
 {
-    return roomList;
+    return relativeSubroom_list;
 }
-
 
 QString jpsCrossing::get_name()
 {
@@ -91,64 +91,57 @@ void jpsCrossing::setOutflow(QString outflow) {
     jpsCrossing::outflow = outflow;
 }
 
-void jpsCrossing::add_rooms(jpsRoom *room1, jpsRoom *room2)
+void jpsCrossing::addSubrooms(JPSZone *subroom1, JPSZone *subroom2)
 {
-     qDebug("Enter jpsCrossing::add_rooms");
-     qDebug("\t room1 = <%s> of type <%s>", 
-            room1->get_name().toStdString().c_str(),
-            room1->get_type().toStdString().c_str());
-    roomList.clear();
-    roomList.push_back(room1);
-    room1->AddDoor(this);
+     qDebug("Enter jpsCrossing::addSubrooms");
+     relativeSubroom_list.clear();
 
-    if(room1->get_type().toUpper() != "STAIR")  // assuming a crossing can
-                                               //  not separate two stairs
-         this->set_elevation(room1->get_elevation());
+     if(subroom1 != nullptr)
+     {
+         qDebug("\t room1 = <%s> of type <%s>",
+                subroom1->getName().toStdString().c_str(),
+                QString(subroom1->getType()).toStdString().c_str());
 
-    if (room2!=nullptr)
+         if(subroom1->getType() != Stair)  // assuming a crossing can not separate two stairs
+             this->set_elevation(subroom1->get_elevation());
+
+         relativeSubroom_list.push_back(subroom1);
+     }
+
+    if (subroom2 != nullptr)
     {
-         qDebug("\t room2 = <%s> of type <%s>", 
-                room2->get_name().toStdString().c_str(),
-                room2->get_type().toStdString().c_str());
-         if(room2->get_type().toUpper() != "STAIR")
-              this->set_elevation(room2->get_elevation());
-        roomList.push_back(room2);
-        room2->AddDoor(this);
+         qDebug("\t room2 = <%s> of type <%s>",
+                subroom2->getName().toStdString().c_str(),
+                QString(subroom2->getType()).toStdString().c_str());
+         
+         if(subroom2->getType() != Stair)
+              this->set_elevation(subroom2->get_elevation());
+         
+        relativeSubroom_list.push_back(subroom2);
     }
-    qDebug("Leave jpsCrossing::add_rooms");
+    qDebug("Leave jpsCrossing::addSubrooms");
 }
 
-void jpsCrossing::SetRoom(jpsRoom *room)
+void jpsCrossing::setSubroom(JPSZone *subroom)
 {
-    if (roomList.size()==2)
-        std::cout << "Hier!" << std::endl;
-    if (!roomList.contains(room))
-    {
-        roomList.push_back(room);
-        room->AddDoor(this);
-    }
+    qDebug("Enter jpsCrossing::setSubroom");
+    if(!relativeSubroom_list.contains(subroom))
+        relativeSubroom_list.append(subroom);
+    qDebug("Leave jpsCrossing::setSubroom");
 }
 
-void jpsCrossing::RemoveRoom(jpsRoom *room)
+void jpsCrossing::removeSubRoom(JPSZone *subroom)
 {
-    for (jpsRoom* myRoom:roomList)
+    qDebug("Enter jpsCrossing::removeSubRoom");
+    for (JPSZone* myRoom : relativeSubroom_list)
     {
-        if (room==myRoom)
+        if (subroom == myRoom)
         {
-            roomList.removeOne(room);
+            relativeSubroom_list.removeOne(subroom);
             break;
         }
     }
-}
-
-void jpsCrossing::SetStatExit(bool stat)
-{
-    _isExit=stat;
-}
-
-bool jpsCrossing::IsExit()
-{
-    return _isExit;
+    qDebug("Leave jpsCrossing::removeSubRoom");
 }
 float jpsCrossing::get_elevation()
 {

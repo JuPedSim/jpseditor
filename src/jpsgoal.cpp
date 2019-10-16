@@ -28,7 +28,6 @@
  *
 ****************************************************************/
 
-
 #include "jpsgoal.h"
 #include "global.h"
 #include <QGraphicsSceneMouseEvent>
@@ -41,6 +40,7 @@ JPSGoal::JPSGoal(QGraphicsRectItem *goalRectItem)
     : QObject(), QGraphicsRectItem(), m_resizing(false),
     m_angle(0.0), m_shearHorizontal(0.0), m_shearVertical(0.0)
 {
+    qDebug("Enter JPSGoal::JPSGoal");
     setFlags(QGraphicsItem::ItemIsSelectable|
              QGraphicsItem::ItemSendsGeometryChanges|
              QGraphicsItem::ItemIsMovable|
@@ -62,6 +62,7 @@ JPSGoal::JPSGoal(QGraphicsRectItem *goalRectItem)
     y_min = QString::number(this->rect().bottomLeft().y());
     x_max = QString::number(this->rect().topRight().x());
     y_max = QString::number(this->rect().topRight().y());
+    qDebug("Leave JPSGoal::JPSGoal");
 }
 
 JPSGoal::~JPSGoal()
@@ -69,107 +70,142 @@ JPSGoal::~JPSGoal()
 
 // For JuPedSim
 int JPSGoal::getId() const {
+    qDebug("Enter/Return JPSGoal::getId");
     return id;
 }
 
 void JPSGoal::setId(int id) {
+    qDebug("Enter JPSGoal::setId");
     JPSGoal::id = id;
+    qDebug("Leave JPSGoal::setId");
 }
 
 const QString &JPSGoal::getCaption() const {
+    qDebug("Enter/Return JPSGoal::getCaption");
     return caption;
 }
 
 void JPSGoal::setCaption(const QString &caption) {
+    qDebug("Enter JPSGoal::setCaption");
     JPSGoal::caption = caption;
+    qDebug("Leave JPSGoal::setCaption");
 }
 
 const QString &JPSGoal::getBeSaved() const {
+    qDebug("Enter/Return JPSGoal::getBeSaved");
     return beSaved;
 }
 
 void JPSGoal::setBeSaved(const QString &beSaved) {
+    qDebug("Enter JPSGoal::setBeSaved");
     JPSGoal::beSaved = beSaved;
+    qDebug("Leave JPSGoal::setBeSaved");
 }
 
 const QString &JPSGoal::getIsFinal() const {
+    qDebug("Enter/Return QString &JPSGoal::getIsFinal");
     return isFinal;
 }
 
 void JPSGoal::setIsFinal(const QString &isFinal) {
+    qDebug("Enter JPSGoal::setIsFinal");
     JPSGoal::isFinal = isFinal;
+    qDebug("Leave JPSGoal::setIsFinal");
 }
 
 QGraphicsRectItem *JPSGoal::getRectItem() const {
+    qDebug("Enter JPSGoal::getRectItem");
     return rectItem;
+    qDebug("Leave JPSGoal::getRectItem");
 }
 
 void JPSGoal::setRectItem(QGraphicsRectItem *rectItem) {
+    qDebug("Enter JPSGoal::setRectItem");
     JPSGoal::rectItem = rectItem;
+    qDebug("Leave JPSGoal::setRectItem");
 }
 
 const QString &JPSGoal::getXMin() const {
+    qDebug("Enter/Return QString &JPSGoal::getXMin");
     return x_min;
 }
 
 void JPSGoal::setXMin(const QString &xMin) {
+    qDebug("Enter JPSGoal::setXMin");
     x_min = xMin;
+    qDebug("Leave JPSGoal::setXMin");
 }
 
 const QString &JPSGoal::getXMax() const {
+    qDebug("Enter/Return PSGoal::getXMax");
     return x_max;
 }
 
 void JPSGoal::setXMax(const QString &xMax) {
+    qDebug("Enter JPSGoal::setXMax");
     x_max = xMax;
+    qDebug("Leave JPSGoal::setXMax");
 }
 
 const QString &JPSGoal::getYMin() const {
+    qDebug("Enter/Return QString &JPSGoal::getYMin");
     return y_min;
 }
 
 void JPSGoal::setYMin(const QString &yMin) {
+    qDebug("Enter JPSGoal::setYMin");
     y_min = yMin;
+    qDebug("Leave JPSGoal::setYMin");
 }
 
 const QString &JPSGoal::getYMax() const {
+    qDebug("Enter/Return JPSGoal::getYMax");
     return y_max;
 }
 
 void JPSGoal::setYMax(const QString &yMax) {
+    qDebug("Enter JPSGoal::setYMax");
     y_max = yMax;
+    qDebug("Leave JPSGoal::setYMax");
 }
 
 // For drawing
 void JPSGoal::setPen(const QPen &pen_)
 {
+    qDebug("Enter JPSGoal::setPen");
     if (isSelected() && pen_ != pen()) {
         QGraphicsRectItem::setPen(pen_);
         emit dirty();
     }
+    qDebug("Leave JPSGoal::setPen");
 }
 
 
 void JPSGoal::setBrush(const QBrush &brush_)
 {
+    qDebug("Enter JPSGoal::setBrush");
     if (isSelected() && brush_ != brush()) {
         QGraphicsRectItem::setBrush(brush_);
         emit dirty();
     }
+    qDebug("Leave JPSGoal::setBrush");
 }
 
 
 void JPSGoal::setAngle(double angle)
 {
+    qDebug("Enter JPSGoal::setAngle");
     if (isSelected() && !qFuzzyCompare(m_angle, angle)) {
         m_angle = angle;
         updateTransform();
     }
+    qDebug("Leave JPSGoal::setAngle");
 }
 
 
 void JPSGoal::setShear(double shearHorizontal, double shearVertical)
 {
+    qDebug("Enter JPSGoal::setShear");
     if (isSelected() &&
         (!qFuzzyCompare(m_shearHorizontal, shearHorizontal) ||
          !qFuzzyCompare(m_shearVertical, shearVertical))) {
@@ -177,29 +213,35 @@ void JPSGoal::setShear(double shearHorizontal, double shearVertical)
         m_shearVertical = shearVertical;
         updateTransform();
     }
+    qDebug("Leave JPSGoal::setShear");
 }
 
 
 void JPSGoal::updateTransform()
 {
+    qDebug("Enter JPSGoal::updateTransform");
     QTransform transform;
     transform.shear(m_shearHorizontal, m_shearVertical);
     transform.rotate(m_angle);
     setTransform(transform);
+    qDebug("Leave JPSGoal::updateTransform");
 }
 
 
 QVariant JPSGoal::itemChange(GraphicsItemChange change,
                                const QVariant &value)
 {
+    qDebug("Enter JPSGoal::itemChange");
     if (isDirtyChange(change))
             emit dirty();
+
+    qDebug("Leave JPSGoal::itemChange");
     return QGraphicsRectItem::itemChange(change, value);
 }
 
-
 void JPSGoal::keyPressEvent(QKeyEvent *event)
 {
+    qDebug("Enter JPSGoal::keyPressEvent");
     if (event->modifiers() & Qt::ShiftModifier ||
         event->modifiers() & Qt::ControlModifier) {
         bool move = event->modifiers() & Qt::ControlModifier;
@@ -239,23 +281,28 @@ void JPSGoal::keyPressEvent(QKeyEvent *event)
             return;
         }
     }
+    qDebug("Leave JPSGoal::keyPressEvent");
     QGraphicsRectItem::keyPressEvent(event);
 }
 
 
 void JPSGoal::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    qDebug("Enter JPSGoal::mousePressEvent");
     if (event->modifiers() & Qt::ShiftModifier) {
         m_resizing = true;
         setCursor(Qt::SizeAllCursor);
+        qDebug("Leave JPSGoal::mousePressEvent");
     }
     else
+        qDebug("Leave JPSGoal::mousePressEvent");
         QGraphicsRectItem::mousePressEvent(event);
 }
 
 
 void JPSGoal::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+    qDebug("Enter JPSGoal::mouseMoveEvent");
     if (m_resizing) {
 #ifdef ALTERNATIVE_RESIZING
         qreal dx = event->pos().x() - event->lastPos().x();
@@ -270,24 +317,27 @@ void JPSGoal::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         setRect(rectangle);
 #endif
         scene()->update();
+        qDebug("Leave JPSGoal::mouseMoveEvent");
     }
     else
+        qDebug("Leave JPSGoal::mouseMoveEvent");
         QGraphicsRectItem::mouseMoveEvent(event);
 }
 
 
 void JPSGoal::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    qDebug("Enter JPSGoal::mouseReleaseEvent");
     if (m_resizing) {
         m_resizing = false;
         setCursor(Qt::ArrowCursor);
         emit dirty();
+        qDebug("Leave JPSGoal::mouseReleaseEvent");
     }
     else
+        qDebug("Leave JPSGoal::mouseReleaseEvent");
         QGraphicsRectItem::mouseReleaseEvent(event);
 }
-
-
 
 /*
     since 0.8.8
@@ -310,4 +360,3 @@ void JPSGoal::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
         painter->drawRect(this->rect());
     }
 }
-

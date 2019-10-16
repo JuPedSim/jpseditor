@@ -14,7 +14,7 @@ RoomIdentification::RoomIdentification()
 
 }
 
-RoomIdentification::RoomIdentification(const QList<jpsRoom *> &rooms):_rooms(rooms)
+RoomIdentification::RoomIdentification(const QList<JPSZone *> &rooms):_rooms(rooms)
 {
 
 }
@@ -22,7 +22,7 @@ RoomIdentification::RoomIdentification(const QList<jpsRoom *> &rooms):_rooms(roo
 void RoomIdentification::IdentifyRooms()
 {
 
-    for (jpsRoom * room:_rooms)
+    for (JPSZone * room:_rooms)
     {
         if (room->GetArea()==0.0)
             room->IdentifyInnerOuter();
@@ -35,7 +35,7 @@ void RoomIdentification::IdentifyRooms()
         else
             ratioBBox=bBox.height()/bBox.width();
 
-        int numberDoors = room->GetDoors().size();
+        int numberDoors = room->getCrossingList().size();
 
 
         double penalty_common=0.0;
@@ -63,7 +63,7 @@ void RoomIdentification::IdentifyRooms()
         // add 2.3 to penalty_circ to increase accuracy of correct declaration. The value has been found by trial
         if (2.3+penalty_circ>penalty_common)
         {
-            room->set_type("Office");
+            room->setType(Office);
             //std::cout << "Office" << std::endl;
             //std::cout << "Circ " << penalty_circ << std::endl;
             //std::cout << "Common " << penalty_common << std::endl;
@@ -71,7 +71,7 @@ void RoomIdentification::IdentifyRooms()
         else
         {
             //std::cout << "Corridor" << std::endl;
-            room->set_type("Corridor");
+            room->setType(Corridor);
 
         }
 
@@ -80,12 +80,12 @@ void RoomIdentification::IdentifyRooms()
 
 void RoomIdentification::GatherData()
 {
-    for (jpsRoom* room:_rooms)
+    for (JPSZone* room:_rooms)
     {
         room->IdentifyInnerOuter();
         double area= room->GetArea();
         QRectF bBox = room->CalculateBoundingBox();
-        int numberDoors = room->GetDoors().size();
+        int numberDoors = room->getCrossingList().size();
 
         double ratioBBox=0.0;
         if (bBox.width()<bBox.height())
@@ -94,7 +94,7 @@ void RoomIdentification::GatherData()
             ratioBBox=bBox.height()/bBox.width();
 
         int numberGreatDoors = 0; // number of doors greater than 1.25 meters
-        for (jpsCrossing* door:room->GetDoors())
+        for (jpsCrossing* door : room->getCrossingList())
         {
             if (door->get_cLine()->get_line()->line().length()>1.25)
             {
@@ -103,7 +103,7 @@ void RoomIdentification::GatherData()
         }
         // type; area; ratio bounding box- area; ratio bounding box
 
-        QString type = room->get_type();
+        QString type = QString(room->getType());
 
 
         std::ofstream data;

@@ -1,52 +1,62 @@
+/***************************************************************
+ *
+ * \file inifilewidget.cpp
+ * \date 2019-05-02
+ * \version v0.8.9
+ * \author Tao Zhong
+ * \copyright <2009-2019> Forschungszentrum Jülich GmbH. All rights reserved.
+ *
+ * \section Lincense
+ * This file is part of JuPedSim.
+ *
+ * JuPedSim is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * JuPedSim is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * \section Description
+ * This class define a widget for inifile
+ *
+****************************************************************/
+
 #include <QDebug>
 #include <QFile>
 #include <QtWidgets>
 
-
 #include "inifilewidget.h"
 #include "ui_inifilewidget.h"
-#include "src/tinyxml/tinyxml.h"
 
 InifileWidget::InifileWidget(QWidget *parent, jpsDatamanager *dmanager) :
     QWidget(parent),
     ui(new Ui::InifileWidget)
 {
+    qDebug("Enter InifileWidget::InifileWidget");
     ui->setupUi(this);
-
-    dataManager = dmanager;
 
     // set InifileWidget as a Window
     setWindowFlag(Qt::Dialog);
 
-    // Set model gompertz invisivle
-    ui->tabWidget->removeTab(4);
+    dataManager = dmanager;
 
-    // Set agents gompertz invisivle
-    ui->tabWidget->removeTab(4);
+    // Set model gompertz invisivle
+    ui->tabWidget->removeTab(3);
 
     // Set model tordeux invisivle
-    ui->tabWidget->removeTab(4);
-
-    // Set agents tordeux invisivle
-    ui->tabWidget->removeTab(4);
+    ui->tabWidget->removeTab(3);
 
     // Set model gradnav invisivle
-    ui->tabWidget->removeTab(4);
-
-    // Set agents gradnav invisivle
-    ui->tabWidget->removeTab(4);
+    ui->tabWidget->removeTab(3);
 
     // Set model krausz invisivle
-    ui->tabWidget->removeTab(4);
-
-    // Set agents krausz invisivle
-    ui->tabWidget->removeTab(4);
-
-    // Set contraints invisivle
-    // ui->tabWidget->removeTab(4);
-
-    // Set goals invisivle
-    // ui->tabWidget->removeTab(4);
+    ui->tabWidget->removeTab(3);
 
     //signals and slots connection
     ui->lineEdit_general_07->setReadOnly(true);
@@ -54,926 +64,86 @@ InifileWidget::InifileWidget(QWidget *parent, jpsDatamanager *dmanager) :
     ui->lineEdit_SourceFile->setReadOnly(true);
     ui->lineEdit_TrafficFile->setReadOnly(true);
 
+    connect(this, SIGNAL(inifileLoaded(QString, int)), parent, SLOT(showStatusBarMessage(QString, int)));
+
+    connect(ui->pushButton_chooseTemplate, SIGNAL(clicked(bool)), this, SLOT(pushButton_chooseTemplateClicked()));
+
     connect(ui->pushButton_Geometry, SIGNAL(clicked(bool)), this, SLOT(pushButton_GeomeryClicked()));
     connect(ui->pushButton_Goal, SIGNAL(clicked(bool)), this, SLOT(pushButton_GoalClicked()));
     connect(ui->pushButton_Source, SIGNAL(clicked(bool)), this, SLOT(pushButton_SourceClicked()));
     connect(ui->pushButton_Traffic, SIGNAL(clicked(bool)), this, SLOT(pushButton_TrafficClicked()));
     connect(ui->pushButton_Routing, SIGNAL(clicked(bool)), this, SLOT(pushButton_RoutingClicked()));
-}
 
+    connect(ui->pushButton_addGroupRow, SIGNAL(clicked(bool)), this, SLOT(pushButton_addGroupRowClicked()));
+    connect(ui->pushButton_deleteGroupRow, SIGNAL(clicked(bool)), this, SLOT(pushButton_deleteGrouprowClicked()));
+    connect(ui->pushButton_addAgentRow, SIGNAL(clicked(bool)), this, SLOT(pushButton_addAgentRowClicked()));
+    connect(ui->pushButton_deleteAgentRow, SIGNAL(clicked(bool)), this, SLOT(pushButton_deleteAgentRowClicked()));
+
+    // template widget
+    templateWidget = nullptr;
+
+    ui->tabWidget->setCurrentIndex(0);
+    qDebug("Leave InifileWidget::InifileWidget");
+
+}
 InifileWidget::~InifileWidget()
 {
+    qDebug("Enter InifileWidget::~InifileWidget");
     delete ui;
-}
-
-// Add rows to tablewidgets by inserting a number into a spinbox
-
-void InifileWidget::on_spinBox_groups_1_valueChanged(int)
-{
-    ui->tableWidget_groups_1->setRowCount(ui->spinBox_groups_1->value());
-}
-
-// Add rows to tablewidgets by inserting a number into a spinbox
-void InifileWidget::on_spinBox_agents_gcfm_1_valueChanged(int)
-{
-    ui->tableWidget_agents_gcfm_1->setRowCount(ui->spinBox_agents_gcfm_1->value());
-}
-
-// Add rows to tablewidgets by inserting a number into a spinbox
-void InifileWidget::on_spinBox_agents_gompertz_1_valueChanged(int)
-{
-    ui->tableWidget_agents_gompertz_1->setRowCount(ui->spinBox_agents_gompertz_1->value());
-}
-
-// Add rows to tablewidgets by inserting a number into a spinbox
-void InifileWidget::on_spinBox_agents_tordeux_1_valueChanged(int)
-{
-    ui->tableWidget_agents_tordeux_1->setRowCount(ui->spinBox_agents_tordeux_1->value());
-}
-
-// Add rows to tablewidgets by inserting a number into a spinbox
-void InifileWidget::on_spinBox_agents_gradnav_1_valueChanged(int)
-{
-    ui->tableWidget_agents_gradnav_1->setRowCount(ui->spinBox_agents_gradnav_1->value());
-}
-
-// Add rows to tablewidgets by inserting a number into a spinbox
-void InifileWidget::on_spinBox_agents_krausz_1_valueChanged(int)
-{
-    ui->tableWidget_agents_krausz_1->setRowCount(ui->spinBox_agents_krausz_1->value());
+    qDebug("Leave InifileWidget::~InifileWidget");
 }
 
 // Set models and agents visible or invisible
 void InifileWidget::on_comboBox_groups_1_currentIndexChanged(int index)
 {
+    qDebug("Enter InifileWidget::on_comboBox_groups_1_currentIndexChanged");
     // Set gcfm visible
     if (index+1 == 1)
     {
         ui->tabWidget->removeTab(2);
-        ui->tabWidget->removeTab(2);
         ui->tabWidget->insertTab(2, ui->tab_model_gcfm, "Model Gcfm");
-        ui->tabWidget->insertTab(3, ui->tab_agents_gcfm, "Agents Gcfm");
     }
 
     // Set gompertz visible
     if (index+1 == 2)
     {
         ui->tabWidget->removeTab(2);
-        ui->tabWidget->removeTab(2);
         ui->tabWidget->insertTab(2, ui->tab_model_gompertz, "Model Gompertz");
-        ui->tabWidget->insertTab(3, ui->tab_agents_gompertz, "Agents Gompertz");
     }
 
     // Set tordeux visible
     if (index+1 == 3)
     {
         ui->tabWidget->removeTab(2);
-        ui->tabWidget->removeTab(2);
         ui->tabWidget->insertTab(2, ui->tab_model_tordeux, "Model Tordeux");
-        ui->tabWidget->insertTab(3, ui->tab_agents_tordeux, "Agents Tordeux");
     }
 
     // Set gradnav visible
     if (index+1 == 4)
     {
         ui->tabWidget->removeTab(2);
-        ui->tabWidget->removeTab(2);
         ui->tabWidget->insertTab(2, ui->tab_model_gradnav, "Model Gradnav");
-        ui->tabWidget->insertTab(3, ui->tab_agents_gradnav, "Agents Gradnav");
     }
 
     // Set krausz visible
     if (index+1 == 5)
     {
         ui->tabWidget->removeTab(2);
-        ui->tabWidget->removeTab(2);
         ui->tabWidget->insertTab(2, ui->tab_model_krausz, "Model Krausz");
-        ui->tabWidget->insertTab(3, ui->tab_agents_krausz, "Agents Krausz");
     }
-}
-/*
-    <!-- seed used for initialising random generator -->
-    <seed>12542</seed>
-
-    <!-- geometry file -->
-    <geometry>geometry.xml</geometry>
-
-    <max_sim_time>50</max_sim_time>
-
-    <!-- trajectories file and format -->
-    <trajectories format="xml-plain" fps="16" color_mode="group">
-        <file location="trajectories.xml" />
-        <!-- <socket_ hostname="127.0.0.1" port="8989" /> -->
-    </trajectories>
-
-    <!-- where to store the logs -->
-    <logfile>log.txt</logfile>
-*/
-
-void InifileWidget::writeHeaderData(QXmlStreamWriter *stream, QFile &file)
-{
-    stream->writeComment("number of cores used");
-    stream->writeStartElement("num_threads");
-    stream->writeCharacters(ui->lineEdit_general_03->text());
-    stream->writeEndElement();
-
-    stream->writeComment("seed used for initialising random generator");
-    stream->writeStartElement("seed");
-    stream->writeCharacters(ui->lineEdit_general_05->text());
-    stream->writeEndElement();
-
-    stream->writeComment("geometry file");
-    stream->writeStartElement("geometry");
-    stream->writeCharacters(ui->lineEdit_general_07->text().split("/").last());
-    stream->writeEndElement();
-
-    stream->writeComment("simulationtime");
-    stream->writeStartElement("max_sim_time");
-    stream->writeCharacters(ui->lineEdit_general_06->text());
-    stream->writeEndElement();
-
-    stream->writeComment("trajectories file and format");
-    stream->writeStartElement("trajectories");
-    stream->writeAttribute("format",ui->comboBox_general_02->currentText());
-    stream->writeAttribute("fps", ui->lineEdit_general_10->text());
-    stream->writeAttribute("color_mode",ui->comboBox_general_03->currentText());
-    stream->writeStartElement("file");
-    stream->writeAttribute("location", ui->lineEdit_general_12->text());
-    stream->writeEndElement(); //end file
-    stream->writeEndElement(); //end trajectories
-
-    stream->writeComment("where to store the logs");
-    stream->writeStartElement("logfile");
-    stream->writeCharacters(ui->lineEdit_general_08->text());
-    stream->writeEndElement();
-
-    QString head_line_19 = "\t<!-- statistics -->\n";
-
-    QString head_line_20 = "\t<show_statistics>" +
-            ui->comboBox_general_01->currentText() +
-            "</show_statistics>\n";
-
-    stream->writeComment("statistics");
-    stream->writeStartElement("show_statistics");
-    stream->writeCharacters(ui->comboBox_general_01->currentText());
-    stream->writeEndElement();
-
-    return;
+    qDebug("Leave InifileWidget::on_comboBox_groups_1_currentIndexChanged");
 }
 
-void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
-{
-    stream->writeComment("persons information and distribution");
-    stream->writeStartElement("agents");
-    stream->writeAttribute("operational_model_id", QString::number(ui->comboBox_groups_1->currentIndex() + 1));
-    stream->writeStartElement("agents_distribution");
-
-    for(int i = 0; i < ui->spinBox_groups_1->value(); i++)
-    {
-        stream->writeStartElement("group");
-        stream->writeAttribute("group_id", ui->tableWidget_groups_1->item(i,0)->text());
-        stream->writeAttribute("agent_parameter_id", ui->tableWidget_groups_1->item(i,1)->text());
-        stream->writeAttribute("room_id",ui->tableWidget_groups_1->item(i,2)->text());
-        stream->writeAttribute("subroom_id",ui->tableWidget_groups_1->item(i,3)->text());
-        stream->writeAttribute("number",ui->tableWidget_groups_1->item(i,4)->text());
-        stream->writeAttribute("goal_id",ui->tableWidget_groups_1->item(i,5)->text());
-        stream->writeAttribute("router_id",ui->tableWidget_groups_1->item(i,6)->text());
-        stream->writeAttribute("x_min",ui->tableWidget_groups_1->item(i,7)->text());
-        stream->writeAttribute("x_max",ui->tableWidget_groups_1->item(i,8)->text());
-        stream->writeAttribute("y_min",ui->tableWidget_groups_1->item(i,9)->text());
-        stream->writeAttribute("y_max",ui->tableWidget_groups_1->item(i,10)->text());
-        stream->writeAttribute("pre_movement_mean",ui->tableWidget_groups_1->item(i,11)->text());
-        stream->writeAttribute("pre_movement_sigma",ui->tableWidget_groups_1->item(i,12)->text());
-        stream->writeAttribute("risk_tolerance_mean",ui->tableWidget_groups_1->item(i,13)->text());
-        stream->writeAttribute("risk_tolerance_sigma",ui->tableWidget_groups_1->item(i,14)->text());
-        stream->writeEndElement(); //end group
-    }
-
-    stream->writeEndElement(); //end agents_distribution;
-
-    // write agents sources
-    stream->writeComment("frequency in persons/seconds");
-    stream->writeStartElement("agents_sources");
-
-    QList<JPSSource *> sources = dataManager->getSourcelist();
-    dataManager->writeSources(stream, sources);
-
-    auto source_FileName = ui->lineEdit_SourceFile->text().split("/").last();
-    stream->writeStartElement("file");
-    stream->writeCharacters(source_FileName);
-    stream->writeEndElement(); //end files
-    stream->writeEndElement(); //end agents_sources
-    stream->writeEndElement(); //end agents
-
-    return;
-}
-
-void InifileWidget::writeModelGcfmData(QXmlStreamWriter *stream, QFile &file)
-{
-    //operational model and agent parameters - gcfm
-    stream->writeComment("operational models");
-    stream->writeStartElement("operational_models");
-
-    stream->writeStartElement("model");
-    stream->writeAttribute("operational_model_id","1");
-    stream->writeAttribute("description", "gcfm");
-
-    stream->writeStartElement("model_parameters");
-    stream->writeTextElement("solver", ui->lineEdit_model_gcfm_01->text());
-    stream->writeTextElement("stepsize", ui->lineEdit_model_gcfm_02->text());
-    stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_gcfm_03->text());
-
-    stream->writeStartElement("linkedcells");
-    stream->writeAttribute("enabled", ui->lineEdit_model_gcfm_04->text());
-    stream->writeAttribute("cell_size", ui->lineEdit_model_gcfm_05->text());
-    stream->writeEndElement(); //end linkedcells
-
-    stream->writeStartElement("force_ped");
-    stream->writeAttribute("nu", ui->lineEdit_model_gcfm_06->text());
-    stream->writeAttribute("dist_max", ui->lineEdit_model_gcfm_07->text());
-    stream->writeAttribute("desteff_max", ui->lineEdit_model_gcfm_08->text());
-    stream->writeAttribute("interpolation_width", ui->lineEdit_model_gcfm_09->text());
-    stream->writeEndElement(); //end force_ped
-
-    stream->writeStartElement("force_wall");
-    stream->writeAttribute("nu",ui->lineEdit_model_gcfm_10->text());
-    stream->writeAttribute("dist_max", ui->lineEdit_model_gcfm_11->text());
-    stream->writeAttribute("desteff_max", ui->lineEdit_model_gcfm_12->text());
-    stream->writeAttribute("interpolation_width", ui->lineEdit_model_gcfm_13->text());
-    stream->writeEndElement(); //end force_wall
-
-    stream->writeEndElement(); // end model_parameters
-
-    for(int i = 0; i < ui->spinBox_agents_gcfm_1->value(); i++)
-    {
-        stream->writeStartElement("agent_parameters");
-        stream->writeAttribute("agent_parameter_id", ui->tableWidget_agents_gcfm_1->item(i,0)->text());
-
-        stream->writeStartElement("v0");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,1)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,2)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_upstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,3)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,4)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_downstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,5)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,6)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_idle_escalator_upstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,7)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,8)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_idle_escalator_downstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,9)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,10)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("bmax");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,11)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,12)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("bmin");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,13)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,14)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("amin");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,15)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,16)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("tau");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,17)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,18)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("atau");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gcfm_1->item(i,19)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gcfm_1->item(i,20)->text());
-        stream->writeEndElement();
-
-        stream->writeEndElement(); // end agent_parameters
-
-    }
-
-    stream->writeEndElement(); //end model
-    stream->writeEndElement(); //end operational model
-
-    return ;
-}
-
-void InifileWidget::writeModelGompData(QXmlStreamWriter *stream, QFile &file)
-{
-    //operational model and agent parameters - gcfm
-    stream->writeComment("operational model");
-    stream->writeStartElement("operational_models");
-
-    stream->writeStartElement("model");
-    stream->writeAttribute("operational_model_id","2");
-    stream->writeAttribute("description", "gompertz");
-
-    stream->writeStartElement("model_parameters");
-    stream->writeTextElement("solver", ui->lineEdit_model_gompertz_01->text());
-    stream->writeTextElement("stepsize", ui->lineEdit_model_gompertz_02->text());
-    stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_gompertz_03->text());
-
-    stream->writeStartElement("linkedcells");
-    stream->writeAttribute("enabled", ui->lineEdit_model_gompertz_04->text());
-    stream->writeAttribute("cell_size", ui->lineEdit_model_gompertz_05->text());
-    stream->writeEndElement(); //end linkedcells
-
-    stream->writeStartElement("force_ped");
-    stream->writeAttribute("nu", ui->lineEdit_model_gompertz_06->text());
-    stream->writeAttribute("b", ui->lineEdit_model_gompertz_07->text());
-    stream->writeAttribute("c", ui->lineEdit_model_gompertz_08->text());
-    stream->writeEndElement(); //end force_ped
-
-    stream->writeStartElement("force_wall");
-    stream->writeAttribute("nu",ui->lineEdit_model_gompertz_09->text());
-    stream->writeAttribute("b", ui->lineEdit_model_gompertz_10->text());
-    stream->writeAttribute("c", ui->lineEdit_model_gompertz_11->text());
-    stream->writeEndElement(); //end force_wall
-
-    stream->writeEndElement(); // end model_parameters
-
-    for(int i = 0; i < ui->spinBox_agents_gompertz_1->value(); i++)
-    {
-        stream->writeStartElement("agent_parameters");
-        stream->writeAttribute("agent_parameter_id", ui->tableWidget_agents_gompertz_1->item(i,0)->text());
-
-        stream->writeStartElement("v0");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,1)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,2)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_upstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,3)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,4)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_downstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,5)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,6)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_idle_escalator_upstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,7)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,8)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_idle_escalator_downstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,9)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,10)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("bmax");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,11)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,12)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("bmin");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,13)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,14)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("amin");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,15)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,16)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("tau");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,17)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,18)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("atau");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gompertz_1->item(i,19)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gompertz_1->item(i,20)->text());
-        stream->writeEndElement();
-
-        stream->writeEndElement(); // end agent_parameters
-
-    }
-
-    stream->writeEndElement(); //end model
-    stream->writeEndElement(); //end operational model
-
-    return ;
-}
-
-void InifileWidget::writeModelTordData(QXmlStreamWriter *stream, QFile &file)
-{
-    //operational model and agent parameters - gcfm
-    stream->writeComment("operational model");
-    stream->writeStartElement("operational_models");
-
-    stream->writeStartElement("model");
-    stream->writeAttribute("operational_model_id","3");
-    stream->writeAttribute("description", "Tordeux2015");
-
-    stream->writeStartElement("model_parameters");
-    stream->writeTextElement("solver", ui->lineEdit_model_tordeux_01->text());
-    stream->writeTextElement("stepsize", ui->lineEdit_model_tordeux_02->text());
-    stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_tordeux_03->text());
-
-    stream->writeStartElement("linkedcells");
-    stream->writeAttribute("enabled", ui->lineEdit_model_tordeux_04->text());
-    stream->writeAttribute("cell_size", ui->lineEdit_model_tordeux_05->text());
-    stream->writeEndElement(); //end linkedcells
-
-    stream->writeStartElement("force_ped");
-    stream->writeAttribute("a", ui->lineEdit_model_tordeux_06->text());
-    stream->writeAttribute("D", ui->lineEdit_model_tordeux_07->text());
-    stream->writeEndElement(); //end force_ped
-
-    stream->writeStartElement("force_wall");
-    stream->writeAttribute("a",ui->lineEdit_model_tordeux_08->text());
-    stream->writeAttribute("D", ui->lineEdit_model_tordeux_09->text());
-    stream->writeEndElement(); //end force_wall
-    stream->writeEndElement(); // end model_parameters
-
-    for(int i = 0; i < ui->spinBox_agents_tordeux_1->value(); i++)
-    {
-        stream->writeStartElement("agent_parameters");
-        stream->writeAttribute("agent_parameter_id", ui->tableWidget_agents_tordeux_1->item(i,0)->text());
-
-        stream->writeStartElement("v0");
-        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,1)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,2)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_upstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,3)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,4)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_downstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,5)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,6)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_idle_escalator_upstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,7)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,8)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_idle_escalator_downstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,9)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,10)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("bmax");
-        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,11)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,12)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("bmin");
-        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,13)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,14)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("amin");
-        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,15)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,16)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("tau");
-        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,17)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,18)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("atau");
-        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,19)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,20)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("T");
-        stream->writeAttribute("mu", ui->tableWidget_agents_tordeux_1->item(i,21)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_tordeux_1->item(i,22)->text());
-        stream->writeEndElement();
-
-        stream->writeEndElement(); // end agent_parameters
-    }
-
-    stream->writeEndElement(); //end model
-    stream->writeEndElement(); //end operational model
-
-    return ;
-}
-
-void InifileWidget::writeModelGradData(QXmlStreamWriter *stream, QFile &file)
-{
-    //operational model and agent parameters - gcfm
-    stream->writeComment("operational model");
-    stream->writeStartElement("operational_models");
-
-    stream->writeStartElement("model");
-    stream->writeAttribute("operational_model_id","4");
-    stream->writeAttribute("description", "gradnav");
-
-    stream->writeStartElement("model_parameters");
-    stream->writeTextElement("solver", ui->lineEdit_model_gradnav_01->text());
-    stream->writeTextElement("stepsize", ui->lineEdit_model_gradnav_02->text());
-    stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_gradnav_03->text());
-
-    stream->writeStartElement("linkedcells");
-    stream->writeAttribute("enabled", ui->lineEdit_model_gradnav_04->text());
-    stream->writeAttribute("cell_size", ui->lineEdit_model_gradnav_05->text());
-    stream->writeEndElement(); //end linkedcells
-
-    stream->writeStartElement("floorfield");
-    stream->writeAttribute("delta_h", ui->lineEdit_model_gradnav_06->text());
-    stream->writeAttribute("wall_avoid_distance", ui->lineEdit_model_gradnav_07->text());
-    stream->writeAttribute("use_wall_avoidance", ui->lineEdit_model_gradnav_08->text());
-    stream->writeEndElement(); //end floorfield
-
-    stream->writeStartElement("anti_clipping");
-    stream->writeAttribute("slow_down_distance", ui->lineEdit_model_gradnav_09->text());
-    stream->writeEndElement(); //end anti_clipping
-
-    stream->writeStartElement("force_ped");
-    stream->writeAttribute("nu", ui->lineEdit_model_gradnav_10->text());
-    stream->writeAttribute("b", ui->lineEdit_model_gradnav_11->text());
-    stream->writeAttribute("c", ui->lineEdit_model_gradnav_12->text());
-    stream->writeEndElement(); //end force_ped
-
-    stream->writeStartElement("force_wall");
-    stream->writeAttribute("nu", ui->lineEdit_model_gradnav_13->text());
-    stream->writeAttribute("b", ui->lineEdit_model_gradnav_14->text());
-    stream->writeAttribute("c", ui->lineEdit_model_gradnav_15->text());
-    stream->writeEndElement(); //end force_wall
-    stream->writeEndElement(); // end model_parameters
-
-    for(int i = 0; i < ui->spinBox_agents_gradnav_1->value(); i++)
-    {
-        stream->writeStartElement("agent_parameters");
-        stream->writeAttribute("agent_parameter_id", ui->tableWidget_agents_gradnav_1->item(i,0)->text());
-
-        stream->writeStartElement("v0");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,1)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,2)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_upstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,3)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,4)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_downstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,5)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,6)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_idle_escalator_upstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,7)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,8)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_idle_escalator_downstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,9)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,10)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("bmax");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,11)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,12)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("bmin");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,13)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,14)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("amin");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,15)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,16)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("tau");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,17)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,18)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("atau");
-        stream->writeAttribute("mu", ui->tableWidget_agents_gradnav_1->item(i,19)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_gradnav_1->item(i,20)->text());
-        stream->writeEndElement();
-
-        stream->writeEndElement(); // end agent_parameters
-
-    }
-
-    stream->writeEndElement(); //end model
-    stream->writeEndElement(); //end operational model
-
-    return ;
-}
-
-void InifileWidget::writeModelKrauData(QXmlStreamWriter *stream, QFile &file)
-{
-    //operational model and agent parameters - gcfm
-    stream->writeComment("operational model");
-    stream->writeStartElement("operational_models");
-
-    stream->writeStartElement("model");
-    stream->writeAttribute("operational_model_id","5");
-    stream->writeAttribute("description", "krausz");
-
-    stream->writeStartElement("model_parameters");
-    stream->writeTextElement("solver", ui->lineEdit_model_krausz_01->text());
-    stream->writeTextElement("stepsize", ui->lineEdit_model_krausz_02->text());
-    stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_krausz_03->text());
-
-    stream->writeStartElement("linkedcells");
-    stream->writeAttribute("enabled", ui->lineEdit_model_krausz_04->text());
-    stream->writeAttribute("cell_size", ui->lineEdit_model_krausz_05->text());
-    stream->writeEndElement(); //end linkedcells
-
-    stream->writeStartElement("force_ped");
-    stream->writeAttribute("nu", ui->lineEdit_model_krausz_06->text());
-    stream->writeAttribute("dist_max", ui->lineEdit_model_krausz_07->text());
-    stream->writeAttribute("desteff_max", ui->lineEdit_model_krausz_08->text());
-    stream->writeAttribute("interpolation_width", ui->lineEdit_model_krausz_09->text());
-    stream->writeEndElement(); //end force_ped
-
-    stream->writeStartElement("force_wall");
-    stream->writeAttribute("nu", ui->lineEdit_model_krausz_10->text());
-    stream->writeAttribute("dist_max", ui->lineEdit_model_krausz_11->text());
-    stream->writeAttribute("desteff_max", ui->lineEdit_model_krausz_12->text());
-    stream->writeAttribute("interpolation_width", ui->lineEdit_model_krausz_13->text());
-    stream->writeEndElement(); //end force_wall
-    stream->writeEndElement(); // end model_parameters
-
-    for(int i = 0; i < ui->spinBox_agents_krausz_1->value(); i++)
-    {
-        stream->writeStartElement("agent_parameters");
-        stream->writeAttribute("agent_parameter_id", ui->tableWidget_agents_krausz_1->item(i,0)->text());
-
-        stream->writeStartElement("v0");
-        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,1)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,2)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_upstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,3)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,4)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_downstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,5)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,6)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_idle_escalator_upstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,7)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,8)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("v0_idle_escalator_downstairs");
-        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,9)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,10)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("bmax");
-        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,11)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,12)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("bmin");
-        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,13)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,14)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("amin");
-        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,15)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,16)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("tau");
-        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,17)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,18)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("atau");
-        stream->writeAttribute("mu", ui->tableWidget_agents_krausz_1->item(i,19)->text());
-        stream->writeAttribute("sigma", ui->tableWidget_agents_krausz_1->item(i,20)->text());
-        stream->writeEndElement();
-
-        stream->writeStartElement("sway");
-        stream->writeAttribute("ampA", ui->tableWidget_agents_krausz_1->item(i,21)->text());
-        stream->writeAttribute("ampB", ui->tableWidget_agents_krausz_1->item(i,22)->text());
-        stream->writeAttribute("freqA", ui->tableWidget_agents_krausz_1->item(i,23)->text());
-        stream->writeAttribute("freqB", ui->tableWidget_agents_krausz_1->item(i,24)->text());
-        stream->writeEndElement();
-
-        stream->writeEndElement(); // end agent_parameters
-    }
-
-    stream->writeEndElement(); //end model
-    stream->writeEndElement(); //end operational model
-
-    return ;
-}
-
-void InifileWidget::writeRouteChoiceData(QXmlStreamWriter *stream, QFile &file)
-{
-
-    stream->writeComment("route chice model");
-    stream->writeStartElement("route_choice_models");
-
-    int router = ui->comboBox_Router->currentIndex();
-
-    switch(router){
-        case 0:
-            writeFFGlobalShortestModel(stream, file);
-            break;
-        case 1:
-            writeGlobalShortestModel(stream, file);
-            break;
-        case 2:
-            writeCognitiveMap(stream, file);
-            break;
-        default:
-            break;
-    }
-
-    stream->writeEndElement();
-
-    return ;
-}
-
-void InifileWidget::writeFFGlobalShortestModel(QXmlStreamWriter *stream, QFile &file)
-{
-    stream->writeStartElement("router");
-    stream->writeAttribute("router_id", ui->lineEdit_ID->text());
-    stream->writeAttribute("description","ff_global_shortest");
-
-    if(ui->radioButton_VTK->isChecked())
-        stream->writeTextElement("write_VTK_files", "true");
-    else
-        stream->writeTextElement("write_VTK_files", "false");
-
-    stream->writeEndElement();
-}
-
-void InifileWidget::writeGlobalShortestModel(QXmlStreamWriter *stream, QFile &file)
-{
-    stream->writeStartElement("router");
-    stream->writeAttribute("router_id", ui->lineEdit_ID->text());
-    stream->writeAttribute("description","global_shortest");
-
-    stream->writeStartElement("parameters");
-    stream->writeStartElement("navigation_lines");
-    stream->writeAttribute("file", ui->lineEdit_route_choice_03->text());
-    stream->writeEndElement(); //end navigation lines
-    stream->writeEndElement(); //end patameters
-    stream->writeEndElement(); //end router
-}
-
-void InifileWidget::writeCognitiveMap(QXmlStreamWriter *stream, QFile &file)
-{
-    stream->writeStartElement("router");
-    stream->writeAttribute("router_id", ui->lineEdit_ID->text());
-    stream->writeAttribute("description","cognitive_map");
-    stream->writeStartElement("sensors");
-    //TODO: finish sensors
-    stream->writeEndElement();//end sensors
-
-    stream->writeStartElement("cognitive_map");
-    stream->writeAttribute("status", "complete");
-    stream->writeEndElement(); //end cognitive map
-    stream->writeEndElement(); //router
-}
 
 // Create ini.xml on button push
 void InifileWidget::on_pushButton_write_clicked()
 {
-//    //check header (geometry)
-//    if (CheckHeaderData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //goal
-//    if (!CheckRoutingData())
-//        return;
-//
-//    //source
-//    if (!CheckSourceData())
-//        return;
-//
-//    //traffic(door)
-//    if (!CheckTrafficData())
-//        return;
-//
-//    //check agents information and distribution
-//    if (CheckAgentData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check operational model - gcfm
-//    if (CheckModelGcfmData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check agent parameters - gcfm
-//    if (CheckAgentGcfmData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check operational model - gompertz
-//    if (CheckModelGompData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check agent parameters - gompertz
-//    if (CheckAgentGompData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check operational model - tordeux
-//    if (CheckModelTordData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check agent parameters - tordeux
-//    if (CheckAgentTordData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check operational model - gradnav
-//    if (CheckModelGradData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check agent parameters - gradnav
-//    if (CheckAgentGradData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check operational model - krausz
-//    if (CheckModelKrauData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check agent parameters - krausz
-//    if (CheckAgentKrauData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //check route_choice_models
-//    if (CheckRouteChoiceData() == 0)
-//    {
-//        return;
-//    }
-//
-//    //header
-//    QString head_lines = writeHeaderData();
-//
-//    //agents information and distribution
-//    QString agen_lines = writeAgentData();
-//
-//    //operational model and agent parameters - gcfm
-//    QString gcfm_lines = writeModelGcfmData();
-//
-//    //operational model and agent parameters - gompertz
-//    QString gomp_lines = writeModelGompData();
-//
-//    //operational model and agent parameters - tordeux
-//    QString tord_lines = writeModelTordData();
-//
-//    //operational model and agent parameters - gradnav
-//    QString grad_lines = writeModelGradData();
-//
-//    //operational model and agent parameters - krausz
-//    QString krau_lines = writeModelKrauData();
-//
-//    //route_choice_models
-//    QString choi_lines = writeRouteChoiceData();
-//
+    qDebug("Enter InifileWidget::on_pushButton_write_clicked");
     //save to file
     QString file_name = QFileDialog::getSaveFileName(this,
-            tr("Create ini"),
-            "",
-            tr("XML-Files (*.xml)"));
+                                                     tr("Create ini"),
+                                                     "",
+                                                     tr("XML-Files (*.xml)"));
     QFile file(file_name);
 
 
@@ -992,6 +162,8 @@ void InifileWidget::on_pushButton_write_clicked()
         stream->writeAttribute("xsi:noNamespaceSchemaLocation","http://xsd.jupedsim.org/0.6/jps_ini_core.xsd");
 
         writeHeaderData(stream, file);
+
+        writeFire(stream, file);
 
         writeTrafficData(stream, file);
 
@@ -1030,11 +202,955 @@ void InifileWidget::on_pushButton_write_clicked()
         stream = nullptr;
     }
     file.close();
+    qDebug("Leave InifileWidget::on_pushButton_write_clicked");
+}
+
+void InifileWidget::pushButton_addGroupRowClicked()
+{
+    qDebug("Enter InifileWidget::pushButton_addGroupRowClicked");
+    int row = ui->tableWidget_groups->rowCount();
+    ui->tableWidget_groups->setRowCount(row + 1);
+    qDebug("Leave InifileWidget::pushButton_addGroupRowClicked");
+}
+
+void InifileWidget::pushButton_deleteGrouprowClicked()
+{
+    qDebug("Enter InifileWidget::pushButton_deleteGrouprowClicked");
+    int current_row = ui->tableWidget_groups->currentRow();
+    ui->tableWidget_groups->removeRow(current_row);
+    qDebug("Leaev InifileWidget::pushButton_deleteGrouprowClicked");
+}
+
+void InifileWidget::pushButton_addAgentRowClicked()
+{
+    qDebug("Enter InifileWidget::pushButton_addAgentRowClicked");
+    int row = ui->tableWidget_agents->rowCount();
+    ui->tableWidget_agents->setRowCount(row+1);
+    qDebug("Leave InifileWidget::pushButton_addAgentRowClicked");
+}
+
+void InifileWidget::pushButton_deleteAgentRowClicked()
+{
+    qDebug("Enter InifileWidget::pushButton_deleteAgentRowClicked");
+    int current_row = ui->tableWidget_agents->currentRow();
+    ui->tableWidget_agents->removeRow(current_row);
+    qDebug("Leave InifileWidget::pushButton_deleteAgentRowClicked");
+}
+
+/*
+    <!-- seed used for initialising random generator -->
+    <seed>12542</seed>
+
+    <!-- geometry file -->
+    <geometry>geometry.xml</geometry>
+
+    <max_sim_time>50</max_sim_time>
+
+    <!-- trajectories file and format -->
+    <trajectories format="xml-plain" fps="16" color_mode="group">
+        <file location="trajectories.xml" />
+        <!-- <socket_ hostname="127.0.0.1" port="8989" /> -->
+    </trajectories>
+
+    <!-- where to store the logs -->
+    <logfile>log.txt</logfile>
+*/
+
+void InifileWidget::writeHeaderData(QXmlStreamWriter *stream, QFile &file)
+{
+    qDebug("Enter InifileWidget::writeHeaderData");
+
+    stream->writeStartElement("header");
+
+    stream->writeComment(" seed used for initialising random generator ");
+    stream->writeStartElement("seed");
+    if(!ui->lineEdit_general_05->text().isEmpty())
+        stream->writeCharacters(ui->lineEdit_general_05->text());
+    stream->writeEndElement();
+
+    stream->writeComment(" number of cores used ");
+    stream->writeStartElement("num_threads");
+    if(!ui->lineEdit_general_03->text().isEmpty())
+        stream->writeCharacters(ui->lineEdit_general_03->text());
+    stream->writeEndElement();
+
+    stream->writeComment(" geometry file ");
+    stream->writeStartElement("geometry");
+    if(!ui->lineEdit_general_07->text().isEmpty())
+        stream->writeCharacters(ui->lineEdit_general_07->text().split("/").last());
+    stream->writeEndElement();
+
+    stream->writeComment(" simulationtime ");
+    stream->writeStartElement("max_sim_time");
+    if(!ui->lineEdit_general_06->text().isEmpty())
+        stream->writeCharacters(ui->lineEdit_general_06->text());
+    stream->writeEndElement();
+
+    stream->writeComment(" trajectories file and format ");
+    stream->writeStartElement("trajectories");
+    if(!ui->comboBox_general_02->currentText().isEmpty())
+        stream->writeAttribute("format",ui->comboBox_general_02->currentText());
+    if(!ui->lineEdit_general_10->text().isEmpty())
+        stream->writeAttribute("fps", ui->lineEdit_general_10->text());
+    if(!ui->comboBox_general_03->currentText().isEmpty())
+        stream->writeAttribute("color_mode",ui->comboBox_general_03->currentText());
+    stream->writeStartElement("file");
+    if(!ui->lineEdit_general_12->text().isEmpty())
+        stream->writeAttribute("location", ui->lineEdit_general_12->text());
+    stream->writeEndElement(); //end file
+    stream->writeEndElement(); //end trajectories
+
+    stream->writeComment(" where to store the logs ");
+    stream->writeStartElement("logfile");
+    if(!ui->lineEdit_general_08->text().isEmpty())
+        stream->writeCharacters(ui->lineEdit_general_08->text());
+    stream->writeEndElement();
+
+    stream->writeComment(" statistics ");
+    stream->writeStartElement("show_statistics");
+    if(!ui->comboBox_general_01->currentText().isEmpty())
+        stream->writeCharacters(ui->comboBox_general_01->currentText());
+    stream->writeEndElement();
+
+    stream->writeEndElement(); // End header
+    qDebug("Leave InifileWidget::writeHeaderData");
+}
+
+void InifileWidget::writeFire(QXmlStreamWriter *stream, QFile &file)
+{
+    qDebug("Enter InifileWidget::writeFire");
+    stream->writeStartElement("JPSfire");
+
+    if(ui->checkBox_A->isChecked())
+    {
+        stream->writeStartElement("A_smoke_sensor");
+        if(!ui->lineEdit_A_grids->text().isEmpty())
+            stream->writeAttribute("smoke_factor_grids", ui->lineEdit_A_grids->text());
+        if(!ui->lineEdit_A_update->text().isEmpty())
+            stream->writeAttribute("update_time", ui->lineEdit_A_update->text());
+        if(!ui->lineEdit_A_final->text().isEmpty())
+            stream->writeAttribute("final_time", ui->lineEdit_A_final->text());
+        stream->writeEndElement(); //end smoke
+    }
+
+    if(ui->checkBox_B->isChecked())
+    {
+        stream->writeStartElement("B_walking_speed");
+        if(!ui->lineEdit_B_grids->text().isEmpty())
+            stream->writeAttribute("smoke_factor_grids", ui->lineEdit_B_grids->text());
+        if(!ui->lineEdit_B_update->text().isEmpty())
+            stream->writeAttribute("update_time", ui->lineEdit_B_update->text());
+        if(!ui->lineEdit_B_final->text().isEmpty())
+            stream->writeAttribute("final_time", ui->lineEdit_B_final->text());
+        stream->writeEndElement(); //end walking
+    }
+
+    if(ui->checkBox_C->isChecked())
+    {
+        stream->writeStartElement("C_toxicity_analysis");
+        if(!ui->lineEdit_C_grids->text().isEmpty())
+            stream->writeAttribute("smoke_factor_grids", ui->lineEdit_C_grids->text());
+        if(!ui->lineEdit_C_update->text().isEmpty())
+            stream->writeAttribute("update_time", ui->lineEdit_C_update->text());
+        if(!ui->lineEdit_C_final->text().isEmpty())
+            stream->writeAttribute("final_time", ui->lineEdit_C_final->text());
+        stream->writeEndElement(); //end toxicity
+    }
+    stream->writeEndElement(); //end JPSfire
+    qDebug("Leave InifileWidget::writeFire");
 
 }
+
+
+
+/*
+<routing>
+    <goals>
+        <goal id="0" final="false" caption="goal 1">
+            <polygon>
+                <vertex px="-5.0" py="-5.0" />
+                <vertex px="-5.0" py="-2.0" />
+                <vertex px="-3.0" py="-2.0" />
+                <vertex px="-3.0" py="-5.0" />
+                <vertex px="-5.0" py="-5.0" />
+            </polygon>
+        </goal>
+        <file>goals.xml</file>
+    </goals>
+</routing>
+*/
+
+void InifileWidget::writeRoutingData(QXmlStreamWriter *stream, QFile &file)
+{
+    qDebug("Enter InifileWidget::writeRoutingData");
+    stream->writeComment(" routing ");
+    stream->writeStartElement("routing");
+
+    stream->writeStartElement("goals");
+
+    auto goal_FileName = ui->lineEdit_GoalFile->text().split("/").last();
+
+    if(goal_FileName.isEmpty())
+    {
+        QList<JPSGoal *> goallist = dataManager->getGoallist();
+        dataManager->writeGoals(stream, goallist);
+    } else
+    {
+        stream->writeStartElement("file");
+        stream->writeCharacters(goal_FileName);
+        stream->writeEndElement(); //end files
+    }
+
+    stream->writeEndElement(); //end goals
+    stream->writeEndElement(); //end routing
+    qDebug("Leave InifileWidget::writeRoutingData");
+}
+
+/*
+    since v0.8.8
+
+    <traffic_constraints>
+        <doors>
+          <door trans_id="1" caption="NaN" state="open" />
+        </doors>
+        <file>traffic.xml</file>
+    </traffic_constraints>
+*/
+
+void InifileWidget::writeTrafficData(QXmlStreamWriter *stream, QFile &file)
+{
+    qDebug("Enter InifileWidget::writeTrafficData");
+    stream->writeComment(" traffic information: e.g closed doors or smoked rooms ");
+    stream->writeStartElement("traffic_constraints");
+
+    stream->writeStartElement("doors");
+    QList<jpsCrossing *> crossings = dataManager->get_crossingList();
+    QList<jpsCrossing *> doorlist;
+
+    for(jpsCrossing *crossing:crossings)
+    {
+//        if(crossing->IsExit())
+//            doorlist.append(crossing);
+    }
+
+    dataManager->writeTraffics(stream, doorlist);
+
+    auto traffic_FileName = ui->lineEdit_TrafficFile->text().split("/").last();
+    stream->writeStartElement("file");
+    if(!traffic_FileName.isEmpty())
+        stream->writeCharacters(traffic_FileName);
+
+    stream->writeEndElement(); //end files
+    stream->writeEndElement(); //end doors
+    stream->writeEndElement(); //end traffic_constraints
+    qDebug("Leave InifileWidget::writeTrafficData");
+}
+
+void InifileWidget::writeAgentData(QXmlStreamWriter *stream, QFile &file)
+{
+    qDebug("Enter InifileWidget::writeAgentData");
+    stream->writeComment(" persons information and distribution ");
+    stream->writeStartElement("agents");
+    stream->writeAttribute("operational_model_id", QString::number(ui->comboBox_groups_1->currentIndex() + 1));
+
+    stream->writeStartElement("agents_distribution");
+
+    for(int i = 0; i < ui->tableWidget_groups->rowCount(); i++)
+    {
+        if(ui->tableWidget_groups->item(i, 0) != nullptr)
+        {
+            stream->writeStartElement("group");
+        } else
+        {
+            continue; // If the line is blank, don't write anything
+        }
+
+        if(ui->tableWidget_groups->item(i, 0) != nullptr)
+        {
+            if(!ui->tableWidget_groups->item(i, 0)->text().isEmpty())
+                stream->writeAttribute("group_id", ui->tableWidget_groups->item(i, 0)->text());
+        }
+
+        if(ui->tableWidget_groups->item(i, 1) != nullptr)
+        {
+            if(!ui->tableWidget_groups->item(i, 1)->text().isEmpty())
+                stream->writeAttribute("agent_parameter_id", ui->tableWidget_groups->item(i, 1)->text());
+        }
+
+        if(ui->tableWidget_groups->item(i, 2) != nullptr)
+        {
+            if(!ui->tableWidget_groups->item(i, 2)->text().isEmpty())
+                stream->writeAttribute("room_id", ui->tableWidget_groups->item(i, 2)->text());
+        }
+
+        if(ui->tableWidget_groups->item(i, 3) != nullptr)
+        {
+            if(!ui->tableWidget_groups->item(i, 3)->text().isEmpty())
+                stream->writeAttribute("subroom_id",ui->tableWidget_groups->item(i, 3)->text());
+        }
+
+        if(ui->tableWidget_groups->item(i, 4) != nullptr)
+        {
+            if(!ui->tableWidget_groups->item(i, 4)->text().isEmpty())
+                stream->writeAttribute("number",ui->tableWidget_groups->item(i, 4)->text());
+        }
+
+        if(ui->tableWidget_groups->item(i, 5) != nullptr)
+        {
+            if(!ui->tableWidget_groups->item(i, 5)->text().isEmpty())
+                stream->writeAttribute("goal_id",ui->tableWidget_groups->item(i, 5)->text());
+        }
+
+        if(ui->tableWidget_groups->item(i, 6) != nullptr)
+        {
+            if(!ui->tableWidget_groups->item(i, 6)->text().isEmpty())
+                stream->writeAttribute("router_id",ui->tableWidget_groups->item(i, 6)->text());
+        }
+
+        if(ui->tableWidget_groups->item(i, 7) != nullptr)
+        {
+            if(!ui->tableWidget_groups->item(i, 7)->text().isEmpty())
+                stream->writeAttribute("x_min",ui->tableWidget_groups->item(i, 7)->text());
+        }
+
+        if(ui->tableWidget_groups->item(i, 8) != nullptr)
+        {
+            if(!ui->tableWidget_groups->item(i, 8)->text().isEmpty())
+                stream->writeAttribute("x_max",ui->tableWidget_groups->item(i, 8)->text());
+        }
+
+        if(ui->tableWidget_groups->item(i, 9) != nullptr)
+        {
+            if(!ui->tableWidget_groups->item(i, 9)->text().isEmpty())
+                stream->writeAttribute("y_min",ui->tableWidget_groups->item(i, 9)->text());
+        }
+
+        if(ui->tableWidget_groups->item(i, 10) != nullptr)
+        {
+            if(!ui->tableWidget_groups->item(i, 10)->text().isEmpty())
+                stream->writeAttribute("y_max",ui->tableWidget_groups->item(i, 10)->text());
+        }
+
+        if(ui->tableWidget_groups->item(i, 11) != nullptr)
+        {
+            if(!ui->tableWidget_groups->item(i, 11)->text().isEmpty())
+                stream->writeAttribute("pre_movement_mean",ui->tableWidget_groups->item(i, 11)->text());
+        }
+
+        if(ui->tableWidget_groups->item(i, 12) != nullptr)
+        {
+            if(!ui->tableWidget_groups->item(i, 12)->text().isEmpty())
+                stream->writeAttribute("pre_movement_sigma",ui->tableWidget_groups->item(i, 12)->text());
+        }
+
+        if(ui->tableWidget_groups->item(i, 13) != nullptr)
+        {
+            if(!ui->tableWidget_groups->item(i, 13)->text().isEmpty())
+                stream->writeAttribute("risk_tolerance_mean",ui->tableWidget_groups->item(i, 13)->text());
+        }
+
+        if(ui->tableWidget_groups->item(i, 14) != nullptr)
+        {
+            if(!ui->tableWidget_groups->item(i, 14)->text().isEmpty())
+                stream->writeAttribute("risk_tolerance_sigma",ui->tableWidget_groups->item(i, 14)->text());
+        }
+
+        stream->writeEndElement(); //end group
+    }
+
+    stream->writeEndElement(); //end agents_distribution;
+
+    // write agents sources
+    stream->writeComment(" frequency in persons/seconds ");
+    stream->writeStartElement("agents_sources");
+
+    QList<JPSSource *> sources = dataManager->getSourcelist();
+
+    dataManager->writeSources(stream, sources);
+
+    auto source_FileName = ui->lineEdit_SourceFile->text().split("/").last();
+    stream->writeStartElement("file");
+    if(!source_FileName.isEmpty())
+        stream->writeCharacters(source_FileName);
+    stream->writeEndElement(); //end files
+
+    stream->writeEndElement(); //end agents_sources
+    stream->writeEndElement(); //end agents
+    qDebug("Leave InifileWidget::writeAgentData");
+
+}
+
+void InifileWidget::writeModelGcfmData(QXmlStreamWriter *stream, QFile &file)
+{
+    qDebug("Enter InifileWidget::writeModelGcfmData");
+    //operational model and agent parameters - gcfm
+    stream->writeComment(" operational models ");
+    stream->writeStartElement("operational_models");
+
+    stream->writeStartElement("model");
+    stream->writeAttribute("operational_model_id","1");
+    stream->writeAttribute("description", "gcfm");
+
+    stream->writeStartElement("model_parameters");
+    if(!ui->lineEdit_model_gcfm_01->text().isEmpty())
+        stream->writeTextElement("solver", ui->lineEdit_model_gcfm_01->text());
+    if(!ui->lineEdit_model_gcfm_02->text().isEmpty())
+        stream->writeTextElement("stepsize", ui->lineEdit_model_gcfm_02->text());
+    if(!ui->lineEdit_model_gcfm_03->text().isEmpty())
+        stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_gcfm_03->text());
+    if(!ui->lineEdit_model_gcfm_14->text().isEmpty())
+        stream->writeTextElement("periodic", ui->lineEdit_model_gcfm_14->text());
+
+
+    stream->writeStartElement("linkedcells");
+    if(!ui->lineEdit_model_gcfm_04->text().isEmpty())
+        stream->writeAttribute("enabled", ui->lineEdit_model_gcfm_04->text());
+    if(!ui->lineEdit_model_gcfm_05->text().isEmpty())
+        stream->writeAttribute("cell_size", ui->lineEdit_model_gcfm_05->text());
+    stream->writeEndElement(); //end linkedcells
+
+    stream->writeStartElement("force_ped");
+    if(!ui->lineEdit_model_gcfm_06->text().isEmpty())
+        stream->writeAttribute("nu", ui->lineEdit_model_gcfm_06->text());
+    if(!ui->lineEdit_model_gcfm_07->text().isEmpty())
+        stream->writeAttribute("dist_max", ui->lineEdit_model_gcfm_07->text());
+    if(!ui->lineEdit_model_gcfm_08->text().isEmpty())
+        stream->writeAttribute("desteff_max", ui->lineEdit_model_gcfm_08->text());
+    if(!ui->lineEdit_model_gcfm_09->text().isEmpty())
+        stream->writeAttribute("interpolation_width", ui->lineEdit_model_gcfm_09->text());
+    stream->writeEndElement(); //end force_ped
+
+    stream->writeStartElement("force_wall");
+    if(!ui->lineEdit_model_gcfm_10->text().isEmpty())
+        stream->writeAttribute("nu",ui->lineEdit_model_gcfm_10->text());
+    if(!ui->lineEdit_model_gcfm_11->text().isEmpty())
+        stream->writeAttribute("dist_max", ui->lineEdit_model_gcfm_11->text());
+    if(!ui->lineEdit_model_gcfm_12->text().isEmpty())
+        stream->writeAttribute("desteff_max", ui->lineEdit_model_gcfm_12->text());
+    if(!ui->lineEdit_model_gcfm_13->text().isEmpty())
+        stream->writeAttribute("interpolation_width", ui->lineEdit_model_gcfm_13->text());
+    stream->writeEndElement(); //end force_wall
+
+    stream->writeEndElement(); // end model_parameters
+
+    writeAgentParameters(stream, file);
+
+    stream->writeEndElement(); //end model
+    stream->writeEndElement(); //end operational model
+    qDebug("Leave InifileWidget::writeModelGcfmData");
+}
+
+void InifileWidget::writeModelGompData(QXmlStreamWriter *stream, QFile &file)
+{
+    qDebug("Enter InifileWidget::writeModelGompData");
+    //operational model and agent parameters - gcfm
+    stream->writeComment(" operational model ");
+    stream->writeStartElement("operational_models");
+
+    stream->writeStartElement("model");
+    stream->writeAttribute("operational_model_id","2");
+    stream->writeAttribute("description", "gompertz");
+
+    stream->writeStartElement("model_parameters");
+    if(!ui->lineEdit_model_gompertz_01->text().isEmpty())
+        stream->writeTextElement("solver", ui->lineEdit_model_gompertz_01->text());
+    if(!ui->lineEdit_model_gompertz_02->text().isEmpty())
+        stream->writeTextElement("stepsize", ui->lineEdit_model_gompertz_02->text());
+    if(!ui->lineEdit_model_gompertz_03->text().isEmpty())
+        stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_gompertz_03->text());
+    if(!ui->lineEdit_model_gompertz_12->text().isEmpty())
+        stream->writeTextElement("periodic", ui->lineEdit_model_gompertz_12->text());
+
+    stream->writeStartElement("linkedcells");
+    if(!ui->lineEdit_model_gompertz_04->text().isEmpty())
+        stream->writeAttribute("enabled", ui->lineEdit_model_gompertz_04->text());
+    if(!ui->lineEdit_model_gompertz_05->text().isEmpty())
+        stream->writeAttribute("cell_size", ui->lineEdit_model_gompertz_05->text());
+    stream->writeEndElement(); //end linkedcells
+
+    stream->writeStartElement("force_ped");
+    if(!ui->lineEdit_model_gompertz_06->text().isEmpty())
+        stream->writeAttribute("nu", ui->lineEdit_model_gompertz_06->text());
+    if(!ui->lineEdit_model_gompertz_07->text().isEmpty())
+        stream->writeAttribute("b", ui->lineEdit_model_gompertz_07->text());
+    if(!ui->lineEdit_model_gompertz_08->text().isEmpty())
+        stream->writeAttribute("c", ui->lineEdit_model_gompertz_08->text());
+    stream->writeEndElement(); //end force_ped
+
+    stream->writeStartElement("force_wall");
+    if(!ui->lineEdit_model_gompertz_09->text().isEmpty())
+        stream->writeAttribute("nu",ui->lineEdit_model_gompertz_09->text());
+    if(!ui->lineEdit_model_gompertz_10->text().isEmpty())
+        stream->writeAttribute("b", ui->lineEdit_model_gompertz_10->text());
+    if(!ui->lineEdit_model_gompertz_11->text().isEmpty())
+        stream->writeAttribute("c", ui->lineEdit_model_gompertz_11->text());
+    stream->writeEndElement(); //end force_wall
+
+    stream->writeEndElement(); // end model_parameters
+
+    writeAgentParameters(stream, file);
+
+    stream->writeEndElement(); //end model
+    stream->writeEndElement(); //end operational model
+    qDebug("Leave InifileWidget::writeModelGompData");
+}
+
+void InifileWidget::writeModelTordData(QXmlStreamWriter *stream, QFile &file)
+{
+    qDebug("Enter InifileWidget::writeModelTordData");
+    //operational model and agent parameters - gcfm
+    stream->writeComment(" operational model ");
+    stream->writeStartElement("operational_models");
+
+    stream->writeStartElement("model");
+    stream->writeAttribute("operational_model_id","3");
+    stream->writeAttribute("description", "Tordeux2015");
+
+    stream->writeStartElement("model_parameters");
+    if(!ui->lineEdit_model_tordeux_01->text().isEmpty())
+        stream->writeTextElement("solver", ui->lineEdit_model_tordeux_01->text());
+    if(!ui->lineEdit_model_tordeux_02->text().isEmpty())
+        stream->writeTextElement("stepsize", ui->lineEdit_model_tordeux_02->text());
+    if(!ui->lineEdit_model_tordeux_03->text().isEmpty())
+        stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_tordeux_03->text());
+    if(!ui->lineEdit_model_tordeux_10->text().isEmpty())
+        stream->writeTextElement("periodic", ui->lineEdit_model_tordeux_10->text());
+
+    stream->writeStartElement("linkedcells");
+    if(!ui->lineEdit_model_tordeux_04->text().isEmpty())
+        stream->writeAttribute("enabled", ui->lineEdit_model_tordeux_04->text());
+    if(!ui->lineEdit_model_tordeux_05->text().isEmpty())
+        stream->writeAttribute("cell_size", ui->lineEdit_model_tordeux_05->text());
+    stream->writeEndElement(); //end linkedcells
+
+    stream->writeStartElement("force_ped");
+    if(!ui->lineEdit_model_tordeux_06->text().isEmpty())
+        stream->writeAttribute("a", ui->lineEdit_model_tordeux_06->text());
+    if(!ui->lineEdit_model_tordeux_07->text().isEmpty())
+        stream->writeAttribute("D", ui->lineEdit_model_tordeux_07->text());
+    stream->writeEndElement(); //end force_ped
+
+    stream->writeStartElement("force_wall");
+    if(!ui->lineEdit_model_tordeux_08->text().isEmpty())
+        stream->writeAttribute("a",ui->lineEdit_model_tordeux_08->text());
+    if(!ui->lineEdit_model_tordeux_09->text().isEmpty())
+        stream->writeAttribute("D", ui->lineEdit_model_tordeux_09->text());
+    stream->writeEndElement(); //end force_wall
+
+    stream->writeEndElement(); // end model_parameters
+
+    writeAgentParameters(stream, file);
+
+    stream->writeEndElement(); //end model
+
+    stream->writeEndElement(); //end operational model
+    qDebug("Leave InifileWidget::writeModelTordData");
+}
+
+void InifileWidget::writeModelGradData(QXmlStreamWriter *stream, QFile &file)
+{
+    qDebug("Enter InifileWidget::writeModelGradData");
+    //operational model and agent parameters - gcfm
+    stream->writeComment(" operational model ");
+    stream->writeStartElement("operational_models");
+
+    stream->writeStartElement("model");
+    stream->writeAttribute("operational_model_id","4");
+    stream->writeAttribute("description", "gradnav");
+
+    stream->writeStartElement("model_parameters");
+    if(!ui->lineEdit_model_gradnav_01->text().isEmpty())
+        stream->writeTextElement("solver", ui->lineEdit_model_gradnav_01->text());
+    if(!ui->lineEdit_model_gradnav_02->text().isEmpty())
+        stream->writeTextElement("stepsize", ui->lineEdit_model_gradnav_02->text());
+    if(!ui->lineEdit_model_gradnav_03->text().isEmpty())
+        stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_gradnav_03->text());
+    if(!ui->lineEdit_model_gradnav_16->text().isEmpty())
+        stream->writeTextElement("periodic", ui->lineEdit_model_gradnav_16->text());
+
+    stream->writeStartElement("linkedcells");
+    if(!ui->lineEdit_model_gradnav_04->text().isEmpty())
+        stream->writeAttribute("enabled", ui->lineEdit_model_gradnav_04->text());
+    if(!ui->lineEdit_model_gradnav_05->text().isEmpty())
+        stream->writeAttribute("cell_size", ui->lineEdit_model_gradnav_05->text());
+    stream->writeEndElement(); //end linkedcells
+
+    stream->writeStartElement("floorfield");
+    if(!ui->lineEdit_model_gradnav_06->text().isEmpty())
+        stream->writeAttribute("delta_h", ui->lineEdit_model_gradnav_06->text());
+    if(!ui->lineEdit_model_gradnav_07->text().isEmpty())
+        stream->writeAttribute("wall_avoid_distance", ui->lineEdit_model_gradnav_07->text());
+    if(!ui->lineEdit_model_gradnav_08->text().isEmpty())
+        stream->writeAttribute("use_wall_avoidance", ui->lineEdit_model_gradnav_08->text());
+    stream->writeEndElement(); //end floorfield
+
+    stream->writeStartElement("anti_clipping");
+    if(!ui->lineEdit_model_gradnav_09->text().isEmpty())
+        stream->writeAttribute("slow_down_distance", ui->lineEdit_model_gradnav_09->text());
+    stream->writeEndElement(); //end anti_clipping
+
+    stream->writeStartElement("force_ped");
+    if(!ui->lineEdit_model_gradnav_10->text().isEmpty())
+        stream->writeAttribute("nu", ui->lineEdit_model_gradnav_10->text());
+    if(!ui->lineEdit_model_gradnav_11->text().isEmpty())
+        stream->writeAttribute("b", ui->lineEdit_model_gradnav_11->text());
+    if(!ui->lineEdit_model_gradnav_12->text().isEmpty())
+        stream->writeAttribute("c", ui->lineEdit_model_gradnav_12->text());
+    stream->writeEndElement(); //end force_ped
+
+    stream->writeStartElement("force_wall");
+    if(!ui->lineEdit_model_gradnav_13->text().isEmpty())
+        stream->writeAttribute("nu", ui->lineEdit_model_gradnav_13->text());
+    if(!ui->lineEdit_model_gradnav_14->text().isEmpty())
+        stream->writeAttribute("b", ui->lineEdit_model_gradnav_14->text());
+    if(!ui->lineEdit_model_gradnav_15->text().isEmpty())
+        stream->writeAttribute("c", ui->lineEdit_model_gradnav_15->text());
+    stream->writeEndElement(); //end force_wall
+
+    stream->writeEndElement(); // end model_parameters
+
+    writeAgentParameters(stream, file);
+
+    stream->writeEndElement(); //end model
+
+    stream->writeEndElement(); //end operational model
+    qDebug("Leave InifileWidget::writeModelGradData");
+}
+
+void InifileWidget::writeModelKrauData(QXmlStreamWriter *stream, QFile &file)
+{
+    qDebug("Enter InifileWidget::writeModelKrauData");
+    //operational model and agent parameters - gcfm
+    stream->writeComment(" operational model ");
+    stream->writeStartElement("operational_models");
+
+    stream->writeStartElement("model");
+    stream->writeAttribute("operational_model_id","5");
+    stream->writeAttribute("description", "krausz");
+
+    stream->writeStartElement("model_parameters");
+    if(!ui->lineEdit_model_krausz_01->text().isEmpty())
+        stream->writeTextElement("solver", ui->lineEdit_model_krausz_01->text());
+    if(!ui->lineEdit_model_krausz_02->text().isEmpty())
+        stream->writeTextElement("stepsize", ui->lineEdit_model_krausz_02->text());
+    if(!ui->lineEdit_model_krausz_03->text().isEmpty())
+        stream->writeTextElement("exit_crossing_strategy", ui->lineEdit_model_krausz_03->text());
+    if(!ui->lineEdit_model_krausz_06->text().isEmpty())
+        stream->writeTextElement("periodic", ui->lineEdit_model_krausz_06->text());
+
+    stream->writeStartElement("linkedcells");
+    if(!ui->lineEdit_model_krausz_04->text().isEmpty())
+        stream->writeAttribute("enabled", ui->lineEdit_model_krausz_04->text());
+    if(!ui->lineEdit_model_krausz_05->text().isEmpty())
+        stream->writeAttribute("cell_size", ui->lineEdit_model_krausz_05->text());
+    stream->writeEndElement(); //end linkedcells
+
+    writeAgentParameters(stream, file);
+
+    stream->writeEndElement(); //end model
+
+    stream->writeEndElement(); //end operational model
+    qDebug("Leave InifileWidget::writeModelKrauData");
+}
+
+void InifileWidget::writeAgentParameters(QXmlStreamWriter *stream, QFile &file)
+{
+    qDebug("Enter InifileWidget::writeAgentParameters");
+    for(int i = 0; i < ui->tableWidget_agents->rowCount(); i++) // // start agent_parameters
+    {
+
+        if(ui->tableWidget_agents->item(i,0) != nullptr &&
+                !ui->tableWidget_agents->item(i,0)->text().isEmpty())
+        {
+            stream->writeStartElement("agent_parameters");
+            stream->writeAttribute("agent_parameter_id", ui->tableWidget_agents->item(i,0)->text());
+        } else
+        {
+            continue;
+        }
+
+        if(ui->tableWidget_agents->item(i,1) != nullptr ||
+                ui->tableWidget_agents->item(i,2) != nullptr)
+        {
+            stream->writeStartElement("v0");
+
+            if(!ui->tableWidget_agents->item(i,1)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,1)->text());
+
+
+            if(!ui->tableWidget_agents->item(i,2)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,2)->text());
+
+            stream->writeEndElement();
+        }
+
+        if(ui->tableWidget_agents->item(i,3) != nullptr ||
+           ui->tableWidget_agents->item(i,4) != nullptr)
+        {
+            stream->writeStartElement("v0_upstairs");
+
+            if(!ui->tableWidget_agents->item(i,3)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,3)->text());
+
+            if(!ui->tableWidget_agents->item(i,4)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,4)->text());
+
+            stream->writeEndElement();
+        }
+
+        if(ui->tableWidget_agents->item(i,5) != nullptr ||
+           ui->tableWidget_agents->item(i,6) != nullptr)
+        {
+            stream->writeStartElement("v0_downstairs");
+
+            if(!ui->tableWidget_agents->item(i,5)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,5)->text());
+
+            if(!ui->tableWidget_agents->item(i,6)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,6)->text());
+
+            stream->writeEndElement();
+        }
+
+        if(ui->tableWidget_agents->item(i,7) != nullptr ||
+           ui->tableWidget_agents->item(i,8) != nullptr)
+        {
+            stream->writeStartElement("v0_idle_escalator_upstairs");
+
+            if(!ui->tableWidget_agents->item(i,7)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,7)->text());
+
+            if(!ui->tableWidget_agents->item(i,8)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,8)->text());
+
+            stream->writeEndElement();
+        }
+
+        if(ui->tableWidget_agents->item(i,9) != nullptr ||
+           ui->tableWidget_agents->item(i,10) != nullptr)
+        {
+            stream->writeStartElement("v0_idle_escalator_downstairs");
+
+            if(!ui->tableWidget_agents->item(i,9)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,9)->text());
+
+            if(!ui->tableWidget_agents->item(i,10)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,10)->text());
+
+            stream->writeEndElement();
+        }
+
+        if(ui->tableWidget_agents->item(i,11) != nullptr ||
+           ui->tableWidget_agents->item(i,12) != nullptr)
+        {
+            stream->writeStartElement("bmax");
+
+            if(!ui->tableWidget_agents->item(i,11)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,11)->text());
+
+            if(!ui->tableWidget_agents->item(i,12)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,12)->text());
+
+            stream->writeEndElement();
+        }
+
+        if(ui->tableWidget_agents->item(i,13) != nullptr ||
+           ui->tableWidget_agents->item(i,14) != nullptr)
+        {
+            stream->writeStartElement("bmin");
+
+            if(!ui->tableWidget_agents->item(i,13)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,13)->text());
+
+            if(!ui->tableWidget_agents->item(i,14)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,14)->text());
+
+            stream->writeEndElement();
+        }
+
+        if(ui->tableWidget_agents->item(i,15) != nullptr ||
+           ui->tableWidget_agents->item(i,16) != nullptr)
+        {
+            stream->writeStartElement("amin");
+
+            if(!ui->tableWidget_agents->item(i,15)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,15)->text());
+
+
+            if(!ui->tableWidget_agents->item(i,16)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,16)->text());
+
+            stream->writeEndElement();
+        }
+
+        if(ui->tableWidget_agents->item(i,17) != nullptr ||
+           ui->tableWidget_agents->item(i,18) != nullptr)
+        {
+            stream->writeStartElement("tau");
+
+            if(!ui->tableWidget_agents->item(i,17)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,17)->text());
+
+
+            if(!ui->tableWidget_agents->item(i,18)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,18)->text());
+
+            stream->writeEndElement();
+        }
+
+        if(ui->tableWidget_agents->item(i,19) != nullptr ||
+           ui->tableWidget_agents->item(i,20) != nullptr)
+        {
+            stream->writeStartElement("atau");
+
+            if(!ui->tableWidget_agents->item(i,19)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,19)->text());
+
+
+            if(!ui->tableWidget_agents->item(i,20)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,20)->text());
+
+            stream->writeEndElement();
+        }
+
+        if(ui->tableWidget_agents->item(i,21) != nullptr ||
+           ui->tableWidget_agents->item(i,22) != nullptr)
+        {
+            stream->writeStartElement("T");
+
+            if(!ui->tableWidget_agents->item(i,21)->text().isEmpty())
+                stream->writeAttribute("mu", ui->tableWidget_agents->item(i,21)->text());
+
+
+            if(!ui->tableWidget_agents->item(i,22)->text().isEmpty())
+                stream->writeAttribute("sigma", ui->tableWidget_agents->item(i,22)->text());
+
+            stream->writeEndElement();
+        }
+
+        if(ui->tableWidget_agents->item(i,23) != nullptr ||
+           ui->tableWidget_agents->item(i,24) != nullptr ||
+           ui->tableWidget_agents->item(i,25) != nullptr ||
+           ui->tableWidget_agents->item(i,26) != nullptr)
+        {
+            stream->writeStartElement("T");
+
+            if(!ui->tableWidget_agents->item(i,23)->text().isEmpty())
+                stream->writeAttribute("ampA", ui->tableWidget_agents->item(i,23)->text());
+
+            if(!ui->tableWidget_agents->item(i,24)->text().isEmpty())
+                stream->writeAttribute("ampB", ui->tableWidget_agents->item(i,24)->text());
+
+            if(!ui->tableWidget_agents->item(i,25)->text().isEmpty())
+                stream->writeAttribute("freqA", ui->tableWidget_agents->item(i,25)->text());
+
+            if(!ui->tableWidget_agents->item(i,26)->text().isEmpty())
+                stream->writeAttribute("freqB", ui->tableWidget_agents->item(i,26)->text());
+
+            stream->writeEndElement();
+        }
+
+        stream->writeEndElement(); // end agent_parameters
+    }
+    qDebug("Leave InifileWidget::writeAgentParameters");
+
+}
+
+void InifileWidget::writeRouteChoiceData(QXmlStreamWriter *stream, QFile &file)
+{
+    qDebug("Enter InifileWidget::writeRouteChoiceData");
+
+    stream->writeComment(" route chice model ");
+
+    stream->writeStartElement("route_choice_models");
+
+    if(ui->checkBox_ff->isChecked())
+    {
+        writeFFGlobalShortestRoute(stream, file);
+    }
+
+    if(ui->checkBox_global->isChecked())
+    {
+        writeGlobalShortestRoute(stream, file);
+    }
+
+    if(ui->checkBox_trips->isChecked())
+    {
+        writeTripsRoute(stream, file);
+    }
+
+    stream->writeEndElement();
+
+    qDebug("Leave InifileWidget::writeRouteChoiceData");
+}
+
+void InifileWidget::writeFFGlobalShortestRoute(QXmlStreamWriter *stream, QFile &file)
+{
+    qDebug("Enter InifileWidget::writeFFGlobalShortestRoute");
+    stream->writeStartElement("router");
+    stream->writeAttribute("router_id", ui->lineEdit_ff_global_ID->text());
+    stream->writeAttribute("description","ff_global_shortest");
+
+    if(ui->comboBox_ff_global->currentText() == "True")
+        stream->writeTextElement("write_VTK_files", "true");
+    else
+        stream->writeTextElement("write_VTK_files", "false");
+
+    stream->writeEndElement();
+    qDebug("Leave InifileWidget::writeFFGlobalShortestRoute");
+}
+
+void InifileWidget::writeGlobalShortestRoute(QXmlStreamWriter *stream, QFile &file)
+{
+    qDebug("Enter InifileWidget::writeGlobalShortestRoute");
+    stream->writeStartElement("router");
+    stream->writeAttribute("router_id", ui->lineEdit_global_ID->text());
+    stream->writeAttribute("description","global_shortest");
+
+    stream->writeStartElement("parameters");
+    if(!ui->lineEdit_global_navi->text().isEmpty())
+    {
+        stream->writeStartElement("navigation_lines");
+        stream->writeAttribute("file", ui->lineEdit_global_navi->text());
+        stream->writeEndElement(); //end navigation lines
+    }
+
+    stream->writeEndElement(); //end patameters
+    stream->writeEndElement(); //end router
+    qDebug("Leave InifileWidget::writeGlobalShortestRoute");
+}
+
+void InifileWidget::writeCognitiveMap(QXmlStreamWriter *stream, QFile &file)
+{
+    qDebug("Enter InifileWidget::writeCognitiveMap");
+//    stream->writeStartElement("router");
+//    stream->writeAttribute("router_id", ui->lineEdit_ID->text());
+//    stream->writeAttribute("description","cognitive_map");
+//    stream->writeStartElement("sensors");
+//    stream->writeEndElement();//end sensors
+//
+//    stream->writeStartElement("cognitive_map");
+//    stream->writeAttribute("status", "complete");
+//    stream->writeEndElement(); //end cognitive map
+//    stream->writeEndElement(); //router
+    qDebug("Leave InifileWidget::writeCognitiveMap");
+}
+
+
+void InifileWidget::writeTripsRoute(QXmlStreamWriter *stream, QFile &file)
+{
+    qDebug("Enter InifileWidget::writeTripsRoute");
+    stream->writeStartElement("router");
+    stream->writeAttribute("router_id", ui->lineEdit_trips_ID->text());
+    stream->writeAttribute("description","ff_global_shortest_trips");
+    stream->writeEndElement(); //end router
+    qDebug("Leave InifileWidget::writeTripsRoute");
+}
+
 // Read ini.xml on button push
 void InifileWidget::on_pushButton_read_clicked()
 {
+    qDebug("Enter InifileWidget::on_pushButton_read_clicked");
     QString fileName = QFileDialog::getOpenFileName(this,tr("Read ini"),"",tr("XML-Files (*.xml)"));
 
     if (fileName.isEmpty())
@@ -1060,10 +1176,13 @@ void InifileWidget::on_pushButton_read_clicked()
     } else {
         emit inifileLoaded(tr("inifile loaded"), 2000);
     }
+    qDebug("Leave InifileWidget::on_pushButton_read_clicked");
 }
 
 bool InifileWidget::readInifile(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readInifile");
+
     if (reader->readNextStartElement())
     {
         if (reader->name() == QLatin1String("JuPedSim")
@@ -1072,17 +1191,49 @@ bool InifileWidget::readInifile(QXmlStreamReader *reader)
             readJuPedSim(reader);
         }
         else {
+            qDebug("InifileWidget::readInifile");
             return false;
 //            reader->raiseError(QObject::tr("The file is not an JuPedSim version 0.8 file."));
         }
     }
-
+    qDebug("Leave InifileWidget::readInifile");
     return true;
 //    return reader->error();
 }
 
+void InifileWidget::readFromTemplate(QString name) {
+    qDebug("Enter InifileWidget::readFromTemplate");
+    QString fileName = ":/inifile_templates/" + name + ".xml";
+
+    QFile file(fileName);
+
+    auto reader = new QXmlStreamReader(&file);
+
+    if (!file.open(QIODevice::ReadOnly|QIODevice::Text))
+    {
+        QMessageBox::warning(this, tr("JPSeditor"),
+                             tr("Cannot read file %1:\n%2.")
+                                     .arg(QDir::toNativeSeparators(fileName),
+                                          file.errorString()));
+        return;
+    }
+
+    if (!readInifile(reader)) {
+        QMessageBox::warning(this, tr("JPSeditor"),
+                             tr("Parse error in file %1:\n\n%2")
+                                     .arg(QDir::toNativeSeparators(fileName),
+                                          errorString(reader)));
+    } else {
+        emit inifileLoaded(tr("inifile loaded"), 2000);
+    }
+
+    ui->tabWidget->setCurrentIndex(0);
+    qDebug("Leave InifileWidget::readFromTemplate");
+}
+
 QString InifileWidget::errorString(QXmlStreamReader *reader) const
 {
+    qDebug("Enter/Retrun InifileWidget::errorString");
     return QObject::tr("%1\nLine %2, column %3")
             .arg(reader->errorString())
             .arg(reader->lineNumber())
@@ -1091,25 +1242,21 @@ QString InifileWidget::errorString(QXmlStreamReader *reader) const
 
 void InifileWidget::readJuPedSim(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readJuPedSim");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("JuPedSim"));
 
     QString project = reader->attributes().value("project").toString();
     QString version = reader->attributes().value("version").toString();
 
     ui->lineEdit_general_01->setText(project);
-    ui->lineEdit_general_03->setText(version);
+    ui->lineEdit_general_02->setText(version);
 
-    while (reader->readNextStartElement()) {
-        if (reader->name() == QLatin1String("seed"))
-            readSeed(reader);
-        else if (reader->name() == QLatin1String("geometry"))
-            readGeometry(reader);
-        else if (reader->name() == QLatin1String("max_sim_time"))
-            readMaxSimTime(reader);
-        else if (reader->name() == QLatin1String("trajectories"))
-            readTrajectories(reader);
-        else if (reader->name() == QLatin1String("logfile"))
-            readLogfile(reader);
+    while (reader->readNextStartElement())
+    {
+        if(reader->name() == QLatin1String("header"))
+            readHeader(reader);
+        else if (reader->name() == QLatin1String("JPSfire"))
+            readFire(reader);
         else if (reader->name() == QLatin1String("traffic_constraints"))
             readTrafficConstraints(reader);
         else if (reader->name() == QLatin1String("routing"))
@@ -1123,34 +1270,80 @@ void InifileWidget::readJuPedSim(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readJuPedSim");
+}
+
+void InifileWidget::readHeader(QXmlStreamReader *reader)
+{
+    qDebug("Enter InifileWidget::readHeader");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("header"));
+
+    while (reader->readNextStartElement())
+    {
+        if (reader->name() == QLatin1String("seed"))
+            readSeed(reader);
+        else if (reader->name() == QLatin1String("num_threads"))
+            readThread(reader);
+        else if (reader->name() == QLatin1String("geometry"))
+            readGeometry(reader);
+        else if (reader->name() == QLatin1String("max_sim_time"))
+            readMaxSimTime(reader);
+        else if (reader->name() == QLatin1String("trajectories"))
+            readTrajectories(reader);
+        else if (reader->name() == QLatin1String("logfile"))
+            readLogfile(reader);
+        else if (reader->name() == QLatin1String("show_statistics"))
+            readShowStatistics(reader);
+        else
+            reader->skipCurrentElement();
+    }
+
+    qDebug("Leave InifileWidget::readHeader");
 }
 
 void InifileWidget::readSeed(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readSeed");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("seed"));
 
     QString title = reader->readElementText();
     ui->lineEdit_general_05->setText(title);
+    qDebug("Leave InifileWidget::readSeed");
+}
+
+void InifileWidget::readThread(QXmlStreamReader *reader)
+{
+    qDebug("Enter InifileWidget::readThread");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("num_threads"));
+
+    QString title = reader->readElementText();
+    ui->lineEdit_general_03->setText(title);
+    qDebug("Leave InifileWidget::readThread");
 }
 
 void InifileWidget::readGeometry(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readGeometry");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("geometry"));
 
     QString title = reader->readElementText();
     ui->lineEdit_general_07->setText(title);
+    qDebug("Leave InifileWidget::readGeometry");
 }
 
 void InifileWidget::readMaxSimTime(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readMaxSimTime");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("max_sim_time"));
 
     QString title = reader->readElementText();
     ui->lineEdit_general_06->setText(title);
+    qDebug("Leave InifileWidget::readMaxSimTime");
 }
 
 void InifileWidget::readTrajectories(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readTrajectories");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("trajectories"));
 
     QString format = reader->attributes().value("format").toString();
@@ -1167,24 +1360,122 @@ void InifileWidget::readTrajectories(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readTrajectories");
 }
 
 void InifileWidget::readTrajectoriesFile(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readTrajectoriesFile");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("file"));
 
     QString file = reader->attributes().value("location").toString();
     ui->lineEdit_general_12->setText(file);
 
     reader->readElementText(); //move current token to end element, so that readNextStartElement can work fine.
+    qDebug("Leave InifileWidget::readTrajectoriesFile");
 }
 
 void InifileWidget::readLogfile(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readLogfile");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("logfile"));
 
     QString logtxt = reader->readElementText();
     ui->lineEdit_general_08->setText(logtxt);
+    qDebug("Leave InifileWidget::readLogfile");
+}
+
+void InifileWidget::readShowStatistics(QXmlStreamReader *reader)
+{
+    qDebug("Enter InifileWidget::readShowStatistics");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("show_statistics"));
+
+    QString show = reader->readElementText();
+    ui->comboBox_general_01->setCurrentText(show);
+    qDebug("Leave InifileWidget::readShowStatistics");
+}
+
+/*
+    <JPSfire>
+      <A_smoke_sensor smoke_factor_grids="/path/tp//3_sfgrids/" update_time="10.0" final_time="100.0" />
+      <B_walking_speed/>
+      <C_toxicity_analysis/>
+    </JPSfire>
+*/
+
+void InifileWidget::readFire(QXmlStreamReader *reader)
+{
+    qDebug("Enter InifileWidget::readFire");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("JPSfire"));
+
+    while (reader->readNextStartElement()) {
+        if (reader->name() == QLatin1String("A_smoke_sensor"))
+            readSmoke(reader);
+        else if(reader->name() == QLatin1String("B_walking_speed"))
+            readWalking(reader);
+        else if(reader->name() == QLatin1String("C_toxicity_analysis"))
+            readToxicity(reader);
+        else
+            reader->skipCurrentElement();
+    }
+    qDebug("Leave InifileWidget::readFire");
+}
+
+void InifileWidget::readSmoke(QXmlStreamReader *reader)
+{
+    qDebug("Enter InifileWidget::readSmoke");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("A_smoke_sensor"));
+
+    ui->checkBox_A->setChecked(true);
+
+    QString grids = reader->attributes().value("smoke_factor_grids").toString();
+    QString update_time = reader->attributes().value("update_time").toString();
+    QString final_time = reader->attributes().value("final_time").toString();
+
+    ui->lineEdit_A_grids->setText(grids);
+    ui->lineEdit_A_update->setText(update_time);
+    ui->lineEdit_A_final->setText(final_time);
+
+    reader->readNext();//now is attribute element, move to end element
+    qDebug("Leave InifileWidget::readSmoke");
+}
+
+void InifileWidget::readWalking(QXmlStreamReader *reader)
+{
+    qDebug("Enter InifileWidget::readWalking");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("B_walking_speed"));
+
+    ui->checkBox_B->setChecked(true);
+
+    QString grids = reader->attributes().value("smoke_factor_grids").toString();
+    QString update_time = reader->attributes().value("update_time").toString();
+    QString final_time = reader->attributes().value("final_time").toString();
+
+    ui->lineEdit_B_grids->setText(grids);
+    ui->lineEdit_B_update->setText(update_time);
+    ui->lineEdit_B_final->setText(final_time);
+
+    reader->readNext();//now is attribute element, move to end element
+    qDebug("Leave InifileWidget::readWalking");
+}
+
+void InifileWidget::readToxicity(QXmlStreamReader *reader)
+{
+    qDebug("Enter InifileWidget::readToxicity");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("C_toxicity_analysis"));
+
+    ui->checkBox_C->setChecked(true);
+
+    QString grids = reader->attributes().value("smoke_factor_grids").toString();
+    QString update_time = reader->attributes().value("update_time").toString();
+    QString final_time = reader->attributes().value("final_time").toString();
+
+    ui->lineEdit_C_grids->setText(grids);
+    ui->lineEdit_C_update->setText(update_time);
+    ui->lineEdit_C_final->setText(final_time);
+
+    reader->readNext();//now is attribute element, move to end element
+    qDebug("Leave InifileWidget::readToxicity");
 }
 
 /*
@@ -1197,6 +1488,7 @@ void InifileWidget::readLogfile(QXmlStreamReader *reader)
 */
 void InifileWidget::readTrafficConstraints(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readTrafficConstraints");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("traffic_constraints"));
 
     while (reader->readNextStartElement()) {
@@ -1205,14 +1497,17 @@ void InifileWidget::readTrafficConstraints(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readTrafficConstraints");
 }
 
 void InifileWidget::readTrafficFile(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readTrafficFile");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("file"));
 
     QString file = reader->readElementText();
     ui->lineEdit_TrafficFile->setText(file);
+    qDebug("Leave InifileWidget::readTrafficFile");
 }
 
 /*
@@ -1224,14 +1519,29 @@ void InifileWidget::readTrafficFile(QXmlStreamReader *reader)
               <vertex px="3.2" py="13.0" />
             </polygon>
           </goal>
+          <file>goals.xml</file>
         </goals>
-        <file>goals.xml</file>
     </routing>
 */
 
 void InifileWidget::readRouting(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readRouting");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("routing"));
+
+    while (reader->readNextStartElement()) {
+        if (reader->name() == QLatin1String("goals"))
+            readGoals(reader);
+        else
+            reader->skipCurrentElement();
+    }
+    qDebug("Leave InifileWidget::readRouting");
+}
+
+void InifileWidget::readGoals(QXmlStreamReader *reader)
+{
+    qDebug("Enter InifileWidget::readGoals");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("goals"));
 
     while (reader->readNextStartElement()) {
         if (reader->name() == QLatin1String("file"))
@@ -1239,14 +1549,17 @@ void InifileWidget::readRouting(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readGoals");
 }
 
 void InifileWidget::readRoutingFile(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readRoutingFile");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("file"));
 
     QString file = reader->readElementText();
     ui->lineEdit_GoalFile->setText(file);
+    qDebug("Leave InifileWidget::readRoutingFile");
 }
 
 /*
@@ -1266,6 +1579,7 @@ void InifileWidget::readRoutingFile(QXmlStreamReader *reader)
 
 void InifileWidget::readAgents(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readRoutingFile");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("agents"));
 
     while (reader->readNextStartElement()) {
@@ -1276,73 +1590,79 @@ void InifileWidget::readAgents(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readRoutingFile");
 }
 
-void InifileWidget::readAgentsDistribution(QXmlStreamReader *reader)
-{
+void InifileWidget::readAgentsDistribution(QXmlStreamReader *reader) {
+    qDebug("Enter InifileWidget::readAgentsDistribution");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("agents_distribution"));
 
-    while (reader->readNextStartElement())
-    {
-        if(reader->name() == QLatin1String("group"))
+    while (reader->readNextStartElement()) {
+        if (reader->name() == QLatin1String("group"))
             readGroup(reader);
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readAgentsDistribution");
 }
+
 
 void InifileWidget::readGroup(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readGroup");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("group"));
 
-    int row = ui->tableWidget_groups_1->rowCount();
-    ui->tableWidget_groups_1->setRowCount(row+1);
+    int row = ui->tableWidget_groups->rowCount();
 
     QString group_id = reader->attributes().value("group_id").toString();
     QTableWidgetItem *id = new QTableWidgetItem(tr("%1").arg(group_id));
-    ui->tableWidget_groups_1->setItem(row, 0, id);
+    ui->tableWidget_groups->setItem(row - 1, 0, id);
 
     QString agent_parameter_id = reader->attributes().value("agent_parameter_id").toString();
     QTableWidgetItem *agent_parameter = new QTableWidgetItem(tr("%1").arg(agent_parameter_id));
-    ui->tableWidget_groups_1->setItem(row, 1, agent_parameter);
+    ui->tableWidget_groups->setItem(row - 1, 1, agent_parameter);
 
     QString room_id = reader->attributes().value("room_id").toString();
     QTableWidgetItem *room = new QTableWidgetItem(tr("%1").arg(room_id));
-    ui->tableWidget_groups_1->setItem(row, 2, room);
+    ui->tableWidget_groups->setItem(row - 1, 2, room);
 
     QString subroom_id = reader->attributes().value("subroom_id").toString();
     QTableWidgetItem *subroom = new QTableWidgetItem(tr("%1").arg(subroom_id));
-    ui->tableWidget_groups_1->setItem(row, 3, subroom);
+    ui->tableWidget_groups->setItem(row - 1, 3, subroom);
 
     QString number = reader->attributes().value("number").toString();
     QTableWidgetItem *num = new QTableWidgetItem(tr("%1").arg(number));
-    ui->tableWidget_groups_1->setItem(row, 4, num);
+    ui->tableWidget_groups->setItem(row - 1, 4, num);
 
     QString router_id = reader->attributes().value("router_id").toString();
     QTableWidgetItem *router = new QTableWidgetItem(tr("%1").arg(router_id));
-    ui->tableWidget_groups_1->setItem(row, 6, router);
+    ui->tableWidget_groups->setItem(row - 1, 6, router);
 
     QString x_min = reader->attributes().value("x_min").toString();
     QTableWidgetItem *xmin = new QTableWidgetItem(tr("%1").arg(x_min));
-    ui->tableWidget_groups_1->setItem(row, 7, xmin);
+    ui->tableWidget_groups->setItem(row - 1, 7, xmin);
 
     QString x_max = reader->attributes().value("x_max").toString();
     QTableWidgetItem *xmax = new QTableWidgetItem(tr("%1").arg(x_max));
-    ui->tableWidget_groups_1->setItem(row, 8, xmax);
+    ui->tableWidget_groups->setItem(row - 1, 8, xmax);
 
     QString y_min = reader->attributes().value("y_min").toString();
     QTableWidgetItem *ymin = new QTableWidgetItem(tr("%1").arg(y_min));
-    ui->tableWidget_groups_1->setItem(row, 9, ymin);
+    ui->tableWidget_groups->setItem(row - 1, 9, ymin);
 
     QString y_max = reader->attributes().value("y_max").toString();
     QTableWidgetItem *ymax = new QTableWidgetItem(tr("%1").arg(x_max));
-    ui->tableWidget_groups_1->setItem(row, 10, ymax);
+    ui->tableWidget_groups->setItem(row - 1, 10, ymax);
+
+    ui->tableWidget_groups->setRowCount(row + 1); // add line for next group
 
     reader->readElementText();
+    qDebug("Leave InifileWidget::readGroup");
 }
 
 void InifileWidget::readAgentsSources(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readAgentsSources");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("agents_sources"));
 
 
@@ -1352,13 +1672,16 @@ void InifileWidget::readAgentsSources(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readAgentsSources");
 }
 
 void InifileWidget::readSourceFile(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readSourceFile");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("file"));
     QString file = reader->readElementText();
     ui->lineEdit_SourceFile->setText(file);
+    qDebug("Leave InifileWidget::readSourceFile");
 }
 
 /*
@@ -1387,6 +1710,7 @@ void InifileWidget::readSourceFile(QXmlStreamReader *reader)
 
 void InifileWidget::readModels(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readModels");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("operational_models"));
 
     while (reader->readNextStartElement()) {
@@ -1395,10 +1719,12 @@ void InifileWidget::readModels(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readModels");
 }
 
 void InifileWidget::readModel(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readModel");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("model"));
 
     int id = reader->attributes().value("operational_model_id").toInt();
@@ -1406,42 +1732,52 @@ void InifileWidget::readModel(QXmlStreamReader *reader)
 
     // change tab widget to current model
     ui->comboBox_groups_1->setCurrentIndex(id-1);
-    on_comboBox_groups_1_currentIndexChanged(id-1);
+    on_comboBox_groups_1_currentIndexChanged(id-1); //tabs changed
 
     while (reader->readNextStartElement()) {
         if (reader->name() == QLatin1String("model_parameters"))
             readModelParameters(reader, id);
         else if (reader->name() == QLatin1String("agent_parameters"))
-            readAgentParamaters(reader, id);
+            readAgentParamaters(reader);
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readModel");
 }
 
 void InifileWidget::readModelParameters(QXmlStreamReader *reader, int modelindex)
 {
+    qDebug("Enter InifileWidget::readModelParameters");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("model_parameters"));
 
     while (reader->readNextStartElement()) {
         if (reader->name() == QLatin1String("solver"))
-            readSlover(reader, modelindex);
+            readSlover(reader, modelindex); // for all models
         else if (reader->name() == QLatin1String("stepsize"))
-            readStepsize(reader, modelindex);
+            readStepsize(reader, modelindex); // for all models
         else if (reader->name() == QLatin1String("exit_crossing_strategy"))
-            readExit(reader, modelindex);
+            readExit(reader, modelindex); // for all models
         else if (reader->name() == QLatin1String("linkedcells"))
-            readLinkedcells(reader, modelindex);
+            readLinkedcells(reader, modelindex); // for all models
+        else if (reader->name() == QLatin1String("periodic"))
+            readPeriodic(reader, modelindex); // for all models
         else if (reader->name() == QLatin1String("force_ped"))
-            readForcePed(reader, modelindex);
+            readForcePed(reader, modelindex); // for gcfm, gompertz, Tordeux2015, gradnav
         else if (reader->name() == QLatin1String("force_wall"))
-            readForceWall(reader, modelindex);
+            readForceWall(reader, modelindex); // for gcfm, gompertz, Tordeux2015, gradnav
+        else if (reader->name() == QLatin1String("anti_clipping"))
+            readAntiClipping(reader); // for gradnav
+        else if (reader->name() == QLatin1String("floorfield"))
+            readFloorfield(reader); // for in gradnav
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readModelParameters");
 }
 
 void InifileWidget::readSlover(QXmlStreamReader *reader, int modelindex)
 {
+    qDebug("Enter InifileWidget::readSlover");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("solver"));
     QString solver = reader->readElementText();
 
@@ -1465,10 +1801,12 @@ void InifileWidget::readSlover(QXmlStreamReader *reader, int modelindex)
         default:
             break;
     }
+    qDebug("Leave InifileWidget::readSlover");
 }
 
 void InifileWidget::readStepsize(QXmlStreamReader *reader, int modelindex)
 {
+    qDebug("Enter InifileWidget::readStepsize");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("stepsize"));
     QString stepsize = reader->readElementText();
 
@@ -1492,10 +1830,12 @@ void InifileWidget::readStepsize(QXmlStreamReader *reader, int modelindex)
         default:
             break;
     }
+    qDebug("Leave InifileWidget::readStepsize");
 }
 
 void InifileWidget::readExit(QXmlStreamReader *reader, int modelindex)
 {
+    qDebug("Enter InifileWidget::readExit");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("exit_crossing_strategy"));
     QString exit = reader->readElementText();
 
@@ -1519,16 +1859,45 @@ void InifileWidget::readExit(QXmlStreamReader *reader, int modelindex)
         default:
             break;
     }
+    qDebug("Leave InifileWidget::readExit");
+}
+
+void InifileWidget::readPeriodic(QXmlStreamReader *reader, int modelindex)
+{
+    qDebug("Enter InifileWidget::readPeriodic");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("periodic"));
+    QString periodic = reader->readElementText();
+
+    switch(modelindex)
+    {
+        case 1:
+            ui->lineEdit_model_gcfm_14->setText(periodic);
+            break;
+        case 2:
+            ui->lineEdit_model_gompertz_12->setText(periodic);
+            break;
+        case 3:
+            ui->lineEdit_model_tordeux_10->setText(periodic);
+            break;
+        case 4:
+            ui->lineEdit_model_gradnav_16->setText(periodic);
+            break;
+        case 5:
+            ui->lineEdit_model_krausz_06->setText(periodic);
+            break;
+        default:
+            break;
+    }
+    qDebug("Leave InifileWidget::readPeriodic");
 }
 
 void InifileWidget::readLinkedcells(QXmlStreamReader *reader, int modelindex)
 {
+    qDebug("Enter InifileWidget::readLinkedcells");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("linkedcells"));
 
     QString enabled = reader->attributes().value("enabled").toString();
     QString cell_size = reader->attributes().value("cell_size").toString();
-
-    reader->readNext();
 
     switch(modelindex)
     {
@@ -1567,43 +1936,68 @@ void InifileWidget::readLinkedcells(QXmlStreamReader *reader, int modelindex)
             break;
         }
     }
+
+    reader->readNext();
+    qDebug("Leave InifileWidget::readLinkedcells");
 }
 
 void InifileWidget::readForcePed(QXmlStreamReader *reader, int modelindex)
 {
+    qDebug("Enter InifileWidget::readForcePed");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("force_ped"));
 
     switch(modelindex)
     {
         case 1:
         {
-            //TODO: add parameters for gcmf
+            QString nu_ped = reader->attributes().value("nu").toString();
+            QString distance_ped = reader->attributes().value("dist_max").toString();
+            QString distance_eff_ped = reader->attributes().value("disteff_max").toString();
+            QString width_ped = reader->attributes().value("interpolation_width").toString();
+
+            ui->lineEdit_model_gcfm_06->setText(nu_ped);
+            ui->lineEdit_model_gcfm_07->setText(distance_ped);
+            ui->lineEdit_model_gcfm_08->setText(distance_eff_ped);
+            ui->lineEdit_model_gcfm_09->setText(width_ped);
+
             break;
         }
         case 2:
         {
-            //TODO: add parameters for gompertz
+            QString nu_ped = reader->attributes().value("nu").toString();
+            QString b_ped = reader->attributes().value("b").toString();
+            QString c_ped = reader->attributes().value("c").toString();
+
+            ui->lineEdit_model_gompertz_06->setText(nu_ped);
+            ui->lineEdit_model_gompertz_07->setText(b_ped);
+            ui->lineEdit_model_gompertz_08->setText(c_ped);
+
             break;
         }
         case 3:
         {
-            QString a = reader->attributes().value("a").toString();
-            QString D = reader->attributes().value("D").toString();
+            QString a_ped = reader->attributes().value("a").toString();
+            QString D_ped = reader->attributes().value("D").toString();
 
-            ui->lineEdit_model_tordeux_06->setText(a);
-            ui->lineEdit_model_tordeux_07->setText(D);
+            ui->lineEdit_model_tordeux_06->setText(a_ped);
+            ui->lineEdit_model_tordeux_07->setText(D_ped);
 
-            reader->readNext();
             break;
         }
         case 4:
         {
-            //TODO: add paramters for gradnav
+            QString nu_ped = reader->attributes().value("nu").toString();
+            QString b_ped = reader->attributes().value("b").toString();
+            QString c_ped = reader->attributes().value("c").toString();
+
+            ui->lineEdit_model_gradnav_10->setText(nu_ped);
+            ui->lineEdit_model_gradnav_11->setText(b_ped);
+            ui->lineEdit_model_gradnav_12->setText(c_ped);
+
             break;
         }
         case 5:
         {
-            //TODO: add parameters for krausz
             break;
         }
         default:
@@ -1612,43 +2006,67 @@ void InifileWidget::readForcePed(QXmlStreamReader *reader, int modelindex)
         }
     }
 
+    reader->readNext();
+    qDebug("Leave InifileWidget::readForcePed");
 }
 
 void InifileWidget::readForceWall(QXmlStreamReader *reader, int modelindex)
 {
+    qDebug("Enter InifileWidget::readForceWall");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("force_wall"));
 
     switch(modelindex)
     {
         case 1:
         {
-            //TODO: add parameters for gcmf
+            QString nu_wall = reader->attributes().value("nu").toString();
+            QString distance_wall = reader->attributes().value("dist_max").toString();
+            QString distance_eff_wall = reader->attributes().value("disteff_max").toString();
+            QString width_wall = reader->attributes().value("interpolation_width").toString();
+
+            ui->lineEdit_model_gcfm_10->setText(nu_wall);
+            ui->lineEdit_model_gcfm_11->setText(distance_wall);
+            ui->lineEdit_model_gcfm_12->setText(distance_eff_wall);
+            ui->lineEdit_model_gcfm_13->setText(width_wall);
+
             break;
         }
         case 2:
         {
-            //TODO: add parameters for gompertz
+            QString nu_wall = reader->attributes().value("nu").toString();
+            QString b_wall = reader->attributes().value("b").toString();
+            QString c_wall = reader->attributes().value("c").toString();
+
+            ui->lineEdit_model_gompertz_09->setText(nu_wall);
+            ui->lineEdit_model_gompertz_10->setText(b_wall);
+            ui->lineEdit_model_gompertz_11->setText(c_wall);
+
             break;
         }
         case 3:
         {
-            QString a = reader->attributes().value("a").toString();
-            QString D = reader->attributes().value("D").toString();
+            QString a_wall = reader->attributes().value("a").toString();
+            QString D_wall = reader->attributes().value("D").toString();
 
-            ui->lineEdit_model_tordeux_08->setText(a);
-            ui->lineEdit_model_tordeux_09->setText(D);
+            ui->lineEdit_model_tordeux_08->setText(a_wall);
+            ui->lineEdit_model_tordeux_09->setText(D_wall);
 
-            reader->readNext();
             break;
         }
         case 4:
         {
-            //TODO: add paramters for gradnav
+            QString nu_wall = reader->attributes().value("nu").toString();
+            QString b_wall = reader->attributes().value("b").toString();
+            QString c_wall = reader->attributes().value("c").toString();
+
+            ui->lineEdit_model_gradnav_13->setText(nu_wall);
+            ui->lineEdit_model_gradnav_14->setText(b_wall);
+            ui->lineEdit_model_gradnav_15->setText(c_wall);
+
             break;
         }
         case 5:
         {
-            //TODO: add parameters for krausz
             break;
         }
         default:
@@ -1656,354 +2074,343 @@ void InifileWidget::readForceWall(QXmlStreamReader *reader, int modelindex)
             break;
         }
     }
+    qDebug("Leave InifileWidget::readForceWall");
+
+    reader->readNext();
 }
 
-void InifileWidget::readAgentParamaters(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readAntiClipping(QXmlStreamReader *reader)
 {
-    //TODO: just one or more?
+    qDebug("Enter InifileWidget::readAntiClipping");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("anti_clipping"));
 
+    QString distance = reader->attributes().value("slow_down_distance").toString();
+    ui->lineEdit_model_gradnav_09->setText(distance);
+
+    reader->readNext();
+    qDebug("Leave InifileWidget::readAntiClipping");
+}
+
+void InifileWidget::readFloorfield(QXmlStreamReader *reader)
+{
+    qDebug("Enter InifileWidget::readFloorfield");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("floorfield"));
+
+    QString delta = reader->attributes().value("delta_h").toString();
+    QString distance = reader->attributes().value("wall_avoid_distance").toString();
+    QString avoidance = reader->attributes().value("use_wall_avoidance").toString();
+
+    ui->lineEdit_model_gradnav_06->setText(delta);
+    ui->lineEdit_model_gradnav_07->setText(distance);
+    ui->lineEdit_model_gradnav_08->setText(avoidance);
+
+    reader->readNext();
+    qDebug("Leave InifileWidget::readFloorfield");
+}
+
+void InifileWidget::readAgentParamaters(QXmlStreamReader *reader)
+{
+    qDebug("Enter InifileWidget::readAgentParamaters");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("agent_parameters"));
 
     QString id = reader->attributes().value("agent_parameter_id").toString();
+    QTableWidgetItem *agentid = new QTableWidgetItem(tr("%1").arg(id));
 
-    switch(modelindex)
-    {
-        case 1:
-        {
-            //TODO: add parameters for gcmf
-            break;
-        }
-        case 2:
-        {
-            //TODO: add parameters for gompertz
-            break;
-        }
-        case 3:
-        {
-            QTableWidgetItem *agentid = new QTableWidgetItem(tr("%1").arg(id));
-            ui->tableWidget_agents_tordeux_1->setItem(0,0,agentid);
+    int row = ui->tableWidget_agents->rowCount();
+    int row_index = row-1;
 
-            reader->readNext();
-            break;
-        }
-        case 4:
-        {
-            //TODO: add paramters for gradnav
-            break;
-        }
-        case 5:
-        {
-            //TODO: add parameters for krausz
-            break;
-        }
-        default:
-        {
-            break;
-        }
-    }
+    ui->tableWidget_agents->setItem(row_index,0,agentid);
 
     while (reader->readNextStartElement()) {
         if (reader->name() == QLatin1String("v0"))
-            readV0(reader, modelindex);
+            readV0(reader); // for all models
+        else if (reader->name() == QLatin1String("v0_upstairs"))
+            readV0Upstairs(reader); // for all models
+        else if (reader->name() == QLatin1String("v0_downstairs"))
+            readV0Downstars(reader); // for all models
+        else if (reader->name() == QLatin1String("v0_idle_escalator_upstairs"))
+            readV0IdleUpstairs(reader); // for all models
+        else if (reader->name() == QLatin1String("v0_idle_escalator_downstairs"))
+            readV0Idledownstairs(reader); // for all models
         else if (reader->name() == QLatin1String("bmax"))
-            readBmax(reader, modelindex);
+            readBmax(reader); // for all models
         else if (reader->name() == QLatin1String("bmin"))
-            readBmin(reader, modelindex);
+            readBmin(reader); // for all models
         else if (reader->name() == QLatin1String("amin"))
-            readAmin(reader, modelindex);
+            readAmin(reader); // for all models
         else if (reader->name() == QLatin1String("tau"))
-            readTau(reader, modelindex);
+            readTau(reader);  // for all models
         else if (reader->name() == QLatin1String("atau"))
-            readAtou(reader, modelindex);
+            readAtou(reader); // for all models
         else if (reader->name() == QLatin1String("T"))
-            readT(reader, modelindex);
+            readT(reader); // for all models
+        else if (reader->name() == QLatin1String("sway"))
+            readSway(reader); // for krausz
         else
             reader->skipCurrentElement();
     }
+
+    // add new row for next agent parameters
+    ui->tableWidget_agents->setRowCount(row+1);
+
+    reader->readNext();
+    qDebug("Leave InifileWidget::readAgentParamaters");
 }
 
-void InifileWidget::readV0(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readV0(QXmlStreamReader *reader)
 {
+    qDebug("Leave InifileWidget::readV0");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("v0"));
 
+    int row_index = ui->tableWidget_agents->rowCount()-1;
+
     QString mu = reader->attributes().value("mu").toString();
     QString sigma = reader->attributes().value("sigma").toString();
 
-    switch(modelindex)
-    {
-        case 1:
-        {
-            //TODO: add parameters for gcmf
-            break;
-        }
-        case 2:
-        {
-            //TODO: add parameters for gompertz
-            break;
-        }
-        case 3:
-        {
-            QTableWidgetItem *v0_mu = new QTableWidgetItem(tr("%1").arg(mu));
-            QTableWidgetItem *v0_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
-            ui->tableWidget_agents_tordeux_1->setItem(0,1, v0_mu);
-            ui->tableWidget_agents_tordeux_1->setItem(0,2, v0_sigma);
+    QTableWidgetItem *v0_mu = new QTableWidgetItem(tr("%1").arg(mu));
+    QTableWidgetItem *v0_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
 
-            reader->readNext();
-            break;
-        }
-        case 4:
-        {
-            //TODO: add paramters for gradnav
-            break;
-        }
-        case 5:
-        {
-            //TODO: add parameters for krausz
-            break;
-        }
-        default:
-        {
-            break;
-        }
-    }
+    ui->tableWidget_agents->setItem(row_index,1, v0_mu);
+    ui->tableWidget_agents->setItem(row_index,2, v0_sigma);
+
+    reader->readNext();
+    qDebug("Leave InifileWidget::readV0");
 }
 
-void InifileWidget::readBmax(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readV0Upstairs(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readV0Upstairs");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("v0_upstairs"));
+
+    int row_index = ui->tableWidget_agents->rowCount()-1;
+
+    QString mu = reader->attributes().value("mu").toString();
+    QString sigma = reader->attributes().value("sigma").toString();
+
+    QTableWidgetItem *v0_mu = new QTableWidgetItem(tr("%1").arg(mu));
+    QTableWidgetItem *v0_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
+
+    ui->tableWidget_agents->setItem(row_index,3, v0_mu);
+    ui->tableWidget_agents->setItem(row_index,4, v0_sigma);
+
+    reader->readNext();
+    qDebug("Leave InifileWidget::readV0Upstairs");
+}
+
+void InifileWidget::readV0Downstars(QXmlStreamReader *reader)
+{
+    qDebug("Enter InifileWidget::readV0Downstars");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("v0_downstairs"));
+
+    int row_index = ui->tableWidget_agents->rowCount()-1;
+
+    QString mu = reader->attributes().value("mu").toString();
+    QString sigma = reader->attributes().value("sigma").toString();
+
+    QTableWidgetItem *v0_mu = new QTableWidgetItem(tr("%1").arg(mu));
+    QTableWidgetItem *v0_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
+
+    ui->tableWidget_agents->setItem(row_index,5, v0_mu);
+    ui->tableWidget_agents->setItem(row_index,6, v0_sigma);
+
+    reader->readNext();
+    qDebug("Leave InifileWidget::readV0Downstars");
+}
+
+void InifileWidget::readV0IdleUpstairs(QXmlStreamReader *reader)
+{
+    qDebug("Enter InifileWidget::readV0IdleUpstairs");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("v0_idle_escalator_upstairs"));
+
+    int row_index = ui->tableWidget_agents->rowCount()-1;
+
+    QString mu = reader->attributes().value("mu").toString();
+    QString sigma = reader->attributes().value("sigma").toString();
+
+    QTableWidgetItem *v0_mu = new QTableWidgetItem(tr("%1").arg(mu));
+    QTableWidgetItem *v0_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
+
+    ui->tableWidget_agents->setItem(row_index,7, v0_mu);
+    ui->tableWidget_agents->setItem(row_index,8, v0_sigma);
+
+    reader->readNext();
+    qDebug("Leave InifileWidget::readV0IdleUpstairs");
+}
+
+void InifileWidget::readV0Idledownstairs(QXmlStreamReader *reader)
+{
+    qDebug("Enter InifileWidget::readV0Idledownstairs");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("v0_idle_escalator_downstairs"));
+
+    int row_index = ui->tableWidget_agents->rowCount()-1;
+
+    QString mu = reader->attributes().value("mu").toString();
+    QString sigma = reader->attributes().value("sigma").toString();
+
+    QTableWidgetItem *v0_mu = new QTableWidgetItem(tr("%1").arg(mu));
+    QTableWidgetItem *v0_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
+
+    ui->tableWidget_agents->setItem(row_index,9, v0_mu);
+    ui->tableWidget_agents->setItem(row_index,10, v0_sigma);
+
+    reader->readNext();
+    qDebug("Leave InifileWidget::readV0Idledownstairs");
+}
+
+void InifileWidget::readBmax(QXmlStreamReader *reader)
+{
+    qDebug("Enter InifileWidget::readBmax");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("bmax"));
 
+    int row_index = ui->tableWidget_agents->rowCount()-1;
+
     QString mu = reader->attributes().value("mu").toString();
     QString sigma = reader->attributes().value("sigma").toString();
 
-    switch(modelindex) {
-        case 1: {
-            //TODO: add parameters for gcmf
-            break;
-        }
-        case 2: {
-            //TODO: add parameters for gompertz
-            break;
-        }
-        case 3: {
-            QTableWidgetItem *bmax_mu = new QTableWidgetItem(tr("%1").arg(mu));
-            QTableWidgetItem *bmax_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
-            ui->tableWidget_agents_tordeux_1->setItem(0, 11, bmax_mu);
-            ui->tableWidget_agents_tordeux_1->setItem(0, 12, bmax_sigma);
+    QTableWidgetItem *bmax_mu = new QTableWidgetItem(tr("%1").arg(mu));
+    QTableWidgetItem *bmax_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
 
-            reader->readNext();
-            break;
-        }
-        case 4: {
-            //TODO: add paramters for gradnav
-            break;
-        }
-        case 5: {
-            //TODO: add parameters for krausz
-            break;
-        }
-        default: {
-            break;
-        }
-    }
+    ui->tableWidget_agents->setItem(row_index,11, bmax_mu);
+    ui->tableWidget_agents->setItem(row_index,12, bmax_sigma);
+
+    reader->readNext();
+    qDebug("Leave InifileWidget::readBmax");
 }
 
-void InifileWidget::readBmin(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readBmin(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readBmax");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("bmin"));
 
+    int row_index = ui->tableWidget_agents->rowCount()-1;
+
     QString mu = reader->attributes().value("mu").toString();
     QString sigma = reader->attributes().value("sigma").toString();
 
-    switch(modelindex) {
-        case 1: {
-            //TODO: add parameters for gcmf
-            break;
-        }
-        case 2: {
-            //TODO: add parameters for gompertz
-            break;
-        }
-        case 3: {
-            QTableWidgetItem *bmin_mu = new QTableWidgetItem(tr("%1").arg(mu));
-            QTableWidgetItem *bmin_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
-            ui->tableWidget_agents_tordeux_1->setItem(0, 13, bmin_mu);
-            ui->tableWidget_agents_tordeux_1->setItem(0, 14, bmin_sigma);
+    QTableWidgetItem *bmin_mu = new QTableWidgetItem(tr("%1").arg(mu));
+    QTableWidgetItem *bmin_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
 
-            reader->readNext();
-            break;
-        }
-        case 4: {
-            //TODO: add paramters for gradnav
-            break;
-        }
-        case 5: {
-            //TODO: add parameters for krausz
-            break;
-        }
-        default: {
-            break;
-        }
-    }
+    ui->tableWidget_agents->setItem(row_index,13, bmin_mu);
+    ui->tableWidget_agents->setItem(row_index,14, bmin_sigma);
+
+    reader->readNext();
+    qDebug("Leave InifileWidget::readBmax");
+
 }
 
-void InifileWidget::readAmin(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readAmin(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readAmin");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("amin"));
 
+    int row_index = ui->tableWidget_agents->rowCount()-1;
+
     QString mu = reader->attributes().value("mu").toString();
     QString sigma = reader->attributes().value("sigma").toString();
 
-    switch(modelindex) {
-        case 1: {
-            //TODO: add parameters for gcmf
-            break;
-        }
-        case 2: {
-            //TODO: add parameters for gompertz
-            break;
-        }
-        case 3: {
-            QTableWidgetItem *amin_mu = new QTableWidgetItem(tr("%1").arg(mu));
-            QTableWidgetItem *amin_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
-            ui->tableWidget_agents_tordeux_1->setItem(0, 15, amin_mu);
-            ui->tableWidget_agents_tordeux_1->setItem(0, 16, amin_sigma);
+    QTableWidgetItem *amin_mu = new QTableWidgetItem(tr("%1").arg(mu));
+    QTableWidgetItem *amin_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
 
-            reader->readNext();
-            break;
-        }
-        case 4: {
-            //TODO: add paramters for gradnav
-            break;
-        }
-        case 5: {
-            //TODO: add parameters for krausz
-            break;
-        }
-        default: {
-            break;
-        }
-    }
+    ui->tableWidget_agents->setItem(row_index,15, amin_mu);
+    ui->tableWidget_agents->setItem(row_index,16, amin_sigma);
+
+    reader->readNext();
+    qDebug("Leave InifileWidget::readAmin");
+
 }
 
-void InifileWidget::readTau(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readTau(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readTau");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("tau"));
 
+    int row_index = ui->tableWidget_agents->rowCount()-1;
+
     QString mu = reader->attributes().value("mu").toString();
     QString sigma = reader->attributes().value("sigma").toString();
 
-    switch(modelindex) {
-        case 1: {
-            //TODO: add parameters for gcmf
-            break;
-        }
-        case 2: {
-            //TODO: add parameters for gompertz
-            break;
-        }
-        case 3: {
-            QTableWidgetItem *tau_mu = new QTableWidgetItem(tr("%1").arg(mu));
-            QTableWidgetItem *tau_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
-            ui->tableWidget_agents_tordeux_1->setItem(0, 17, tau_mu);
-            ui->tableWidget_agents_tordeux_1->setItem(0, 18, tau_sigma);
+    QTableWidgetItem *tau_mu = new QTableWidgetItem(tr("%1").arg(mu));
+    QTableWidgetItem *tau_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
 
-            reader->readNext();
-            break;
-        }
-        case 4: {
-            //TODO: add paramters for gradnav
-            break;
-        }
-        case 5: {
-            //TODO: add parameters for krausz
-            break;
-        }
-        default: {
-            break;
-        }
-    }
+    ui->tableWidget_agents->setItem(row_index,17, tau_mu);
+    ui->tableWidget_agents->setItem(row_index,18, tau_sigma);
+
+    reader->readNext();
+    qDebug("Leave InifileWidget::readTau");
+
 }
 
-void InifileWidget::readAtou(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readAtou(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readAtou");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("atau"));
 
+    int row_index = ui->tableWidget_agents->rowCount()-1;
+
     QString mu = reader->attributes().value("mu").toString();
     QString sigma = reader->attributes().value("sigma").toString();
 
-    switch(modelindex) {
-        case 1: {
-            //TODO: add parameters for gcmf
-            break;
-        }
-        case 2: {
-            //TODO: add parameters for gompertz
-            break;
-        }
-        case 3: {
-            QTableWidgetItem *atau_mu = new QTableWidgetItem(tr("%1").arg(mu));
-            QTableWidgetItem *atau_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
-            ui->tableWidget_agents_tordeux_1->setItem(0, 19, atau_mu);
-            ui->tableWidget_agents_tordeux_1->setItem(0, 20, atau_sigma);
+    QTableWidgetItem *atau_mu = new QTableWidgetItem(tr("%1").arg(mu));
+    QTableWidgetItem *atau_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
 
-            reader->readNext();
-            break;
-        }
-        case 4: {
-            //TODO: add paramters for gradnav
-            break;
-        }
-        case 5: {
-            //TODO: add parameters for krausz
-            break;
-        }
-        default: {
-            break;
-        }
-    }
+    ui->tableWidget_agents->setItem(row_index,19, atau_mu);
+    ui->tableWidget_agents->setItem(row_index,20, atau_sigma);
+
+
+    reader->readNext();
+    qDebug("Leave InifileWidget::readAtou");
+
 }
 
-void InifileWidget::readT(QXmlStreamReader *reader, int modelindex)
+void InifileWidget::readT(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readT");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("T"));
+
+    int row_index = ui->tableWidget_agents->rowCount()-1;
 
     QString mu = reader->attributes().value("mu").toString();
     QString sigma = reader->attributes().value("sigma").toString();
 
-    switch(modelindex) {
-        case 1: {
-            //TODO: add parameters for gcmf
-            break;
-        }
-        case 2: {
-            //TODO: add parameters for gompertz
-            break;
-        }
-        case 3: {
-            QTableWidgetItem *t_mu = new QTableWidgetItem(tr("%1").arg(mu));
-            QTableWidgetItem *t_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
-            ui->tableWidget_agents_tordeux_1->setItem(0, 21, t_mu);
-            ui->tableWidget_agents_tordeux_1->setItem(0, 22, t_sigma);
+    QTableWidgetItem *t_mu = new QTableWidgetItem(tr("%1").arg(mu));
+    QTableWidgetItem *t_sigma = new QTableWidgetItem(tr("%1").arg(sigma));
 
-            reader->readNext();
-            break;
-        }
-        case 4: {
-            //TODO: add paramters for gradnav
-            break;
-        }
-        case 5: {
-            //TODO: add parameters for krausz
-            break;
-        }
-        default: {
-            break;
-        }
-    }
+    ui->tableWidget_agents->setItem(row_index,21, t_mu);
+    ui->tableWidget_agents->setItem(row_index,22, t_sigma);
+
+    reader->readNext();
+    qDebug("Leave InifileWidget::readT");
+}
+
+void InifileWidget::readSway(QXmlStreamReader *reader)
+{
+    qDebug("Enter InifileWidget::readSway");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("sway"));
+
+    int row_index = ui->tableWidget_agents->rowCount()-1;
+
+    QString ampA = reader->attributes().value("ampA").toString();
+    QString ampB = reader->attributes().value("ampB").toString();
+    QString freqA = reader->attributes().value("freqA").toString();
+    QString freqB = reader->attributes().value("freqB").toString();
+
+    QTableWidgetItem *sway_ampA = new QTableWidgetItem(tr("%1").arg(ampA));
+    QTableWidgetItem *sway_ampB = new QTableWidgetItem(tr("%1").arg(ampB));
+    QTableWidgetItem *sway_freqA = new QTableWidgetItem(tr("%1").arg(freqA));
+    QTableWidgetItem *sway_freqB = new QTableWidgetItem(tr("%1").arg(freqB));
+
+    ui->tableWidget_agents->setItem(row_index,24, sway_ampA);
+    ui->tableWidget_agents->setItem(row_index,25, sway_ampB);
+    ui->tableWidget_agents->setItem(row_index,26, sway_freqA);
+    ui->tableWidget_agents->setItem(row_index,27, sway_freqB);
+
+    reader->readNext();
+    qDebug("Leave InifileWidget::readSway");
 }
 
 void InifileWidget::readRouteChoiceModels(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readRouteChoiceModels");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("route_choice_models"));
 
     while (reader->readNextStartElement()) {
@@ -2012,39 +2419,85 @@ void InifileWidget::readRouteChoiceModels(QXmlStreamReader *reader)
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readRouteChoiceModels");
 }
 
 void InifileWidget::readRouter(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readRouter");
     Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("router"));
 
     QString router_id = reader->attributes().value("router_id").toString();
     QString description = reader->attributes().value("description").toString();
 
-    ui->lineEdit_ID->setText(router_id);
-    //TODO: set router description
+    if(description == "ff_global_shortest")
+    {
+        ui->checkBox_ff->setChecked(true);
+        ui->lineEdit_ff_global_ID->setText(router_id);
+    }
+    else if(description == "global_shortest")
+    {
+        ui->checkBox_global->setChecked(true);
+        ui->lineEdit_global_ID->setText(router_id);
+    }
+    else if(description == "ff_global_shortest_trips")
+    {
+        ui->checkBox_trips->setChecked(true);
+        ui->lineEdit_trips_ID->setText(router_id);
+    }
 
-    while (reader->readNextStartElement()) {
+    while (reader->readNextStartElement())
+    {
         if (reader->name() == QLatin1String("parameters"))
             readRouterParameters(reader);
         else
             reader->skipCurrentElement();
     }
+    qDebug("Leave InifileWidget::readRouter");
 }
+
 
 void InifileWidget::readRouterParameters(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readRouterParameters");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("parameters"));
+
+    while (reader->readNextStartElement())
+    {
+        if (reader->name() == QLatin1String("navigation_lines"))
+            readNavigationLines(reader);
+        else if(reader->name() == QLatin1String("write_VTK_files"))
+            readVTK(reader);
+        else
+            reader->skipCurrentElement();
+    }
+
     reader->readElementText();
+    qDebug("Leave InifileWidget::readRouterParameters");
 }
 
 void InifileWidget::readNavigationLines(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readNavigationLines");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("navigation_lines"));
 
+    QString file = reader->attributes().value("file").toString();
+    ui->lineEdit_global_navi->setText(file);
+
+    reader->readNext();
+    qDebug("Leave InifileWidget::readNavigationLines");
 }
 
 void InifileWidget::readVTK(QXmlStreamReader *reader)
 {
+    qDebug("Enter InifileWidget::readVTK");
+    Q_ASSERT(reader->isStartElement() && reader->name() == QLatin1String("write_VTK_files"));
 
+    QString status = reader->attributes().value("write_VTK_files").toString();
+    ui->comboBox_ff_global->setCurrentText(status);
+
+    reader->readNext();
+    qDebug("Leave InifileWidget::readVTK");
 }
 
 /*
@@ -2054,110 +2507,58 @@ void InifileWidget::readVTK(QXmlStreamReader *reader)
 
 void InifileWidget::pushButton_GeomeryClicked()
 {
+    qDebug("Enter InifileWidget::pushButton_GeomeryClicked");
     QString fileName=QFileDialog::getOpenFileName(this,tr("Choose Geometry"),""
             ,tr("XML-Files (*.xml)"));
 
     ui->lineEdit_general_07->setText(fileName);
+    qDebug("Leave InifileWidget::pushButton_GeomeryClicked");
 }
 
 void InifileWidget::pushButton_GoalClicked()
 {
+    qDebug("Enter InifileWidget::pushButton_GoalClicked");
     QString fileName=QFileDialog::getOpenFileName(this,tr("Choose goals"),""
             ,tr("XML-Files (*.xml)"));
 
     ui->lineEdit_GoalFile->setText(fileName);
+    qDebug("Leave InifileWidget::pushButton_GoalClicked");
 }
 
 void InifileWidget::pushButton_SourceClicked()
 {
+    qDebug("Enter InifileWidget::pushButton_SourceClicked");
     QString fileName=QFileDialog::getOpenFileName(this,tr("Choose sources"),""
             ,tr("XML-Files (*.xml)"));
 
     ui->lineEdit_SourceFile->setText(fileName);
+    qDebug("Leave InifileWidget::pushButton_SourceClicked");
 }
 
 void InifileWidget::pushButton_TrafficClicked()
 {
+    qDebug("Enter InifileWidget::pushButton_TrafficClicked");
     QString fileName=QFileDialog::getOpenFileName(this,tr("Choose trffic"),""
             ,tr("XML-Files (*.xml)"));
 
     ui->lineEdit_TrafficFile->setText(fileName);
+    qDebug("Leave InifileWidget::pushButton_TrafficClicked");
 }
 
 void InifileWidget::pushButton_RoutingClicked()
 {
+    qDebug("Enter InifileWidget::pushButton_RoutingClicked");
     QString fileName=QFileDialog::getOpenFileName(this,tr("Choose Routing"),""
             ,tr("XML-Files (*.xml)"));
 
-    ui->lineEdit_route_choice_03->setText(fileName);
+    ui->lineEdit_global_navi->setText(fileName);
+    qDebug("Leave InifileWidget::pushButton_RoutingClicked");
 }
 
-/*
-<routing>
-    <goals>
-        <goal id="0" final="false" caption="goal 1">
-            <polygon>
-                <vertex px="-5.0" py="-5.0" />
-                <vertex px="-5.0" py="-2.0" />
-                <vertex px="-3.0" py="-2.0" />
-                <vertex px="-3.0" py="-5.0" />
-                <vertex px="-5.0" py="-5.0" />
-            </polygon>
-        </goal>
-        <file>goals.xml</file>
-    </goals>
-</routing>
-*/
+void InifileWidget::pushButton_chooseTemplateClicked() {
+    qDebug("Enter InifileWidget::pushButton_chooseTemplateClicked");
 
-void InifileWidget::writeRoutingData(QXmlStreamWriter *stream, QFile &file)
-{
-    stream->writeComment("routing");
-    stream->writeStartElement("routing");
-
-    stream->writeStartElement("goals");
-    QList<JPSGoal *> goallist = dataManager->getGoallist();
-    dataManager->writeGoals(stream, goallist);
-
-    auto goal_FileName = ui->lineEdit_GoalFile->text().split("/").last();
-    stream->writeStartElement("file");
-    stream->writeCharacters(goal_FileName);
-    stream->writeEndElement(); //end files
-    stream->writeEndElement(); //end goals
-    stream->writeEndElement(); //end routing
-}
-
-/*
-    since v0.8.8
-
-    <traffic_constraints>
-        <doors>
-          <door trans_id="1" caption="NaN" state="open" />
-        </doors>
-        <file>traffic.xml</file>
-    </traffic_constraints>
-*/
-
-void InifileWidget::writeTrafficData(QXmlStreamWriter *stream, QFile &file)
-{
-    stream->writeComment("traffic information: e.g closed doors or smoked rooms");
-    stream->writeStartElement("traffic_constraints");
-
-    stream->writeStartElement("doors");
-    QList<jpsCrossing *> crossings = dataManager->get_crossingList();
-    QList<jpsCrossing *> doorlist;
-
-    for(jpsCrossing *crossing:crossings)
-    {
-        if(crossing->IsExit())
-            doorlist.append(crossing);
-    }
-
-    dataManager->writeTraffics(stream, doorlist);
-
-    auto traffic_FileName = ui->lineEdit_TrafficFile->text().split("/").last();
-    stream->writeStartElement("file");
-    stream->writeCharacters(traffic_FileName);
-    stream->writeEndElement(); //end files
-    stream->writeEndElement(); //end doors
-    stream->writeEndElement(); //end traffic_constraints
+    templateWidget = new TemplateWidget(this);
+    templateWidget->show();
+    qDebug("Leave InifileWidget::pushButton_chooseTemplateClicked");
 }

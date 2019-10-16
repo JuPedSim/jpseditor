@@ -26,6 +26,7 @@
 
 bool isDirtyChange(QGraphicsItem::GraphicsItemChange change)
 {
+    qDebug("Enter/Return isDirtyChange");
     return (change == QGraphicsItem::ItemPositionChange ||
             change == QGraphicsItem::ItemPositionHasChanged ||
             change == QGraphicsItem::ItemTransformChange ||

@@ -30,7 +30,6 @@
 
 
 #include <QGraphicsView>
-//#include <QGraphicsSceneMouseEvent>
 #include <QGraphicsLineItem>
 #include "jpsLineItem.h"
 #include "jpslandmark.h"
@@ -38,6 +37,8 @@
 #include "jpssource.h"
 #include "jpsgoal.h"
 #include "./UndoFramework/actionstack.h"
+#include "global.h"
+#include "models/layer.h"
 
 using ptrConnection = std::shared_ptr<jpsConnection>;
 using ptrLandmark = std::shared_ptr<jpsLandmark>;
@@ -67,7 +68,7 @@ public:
     void SetDatamanager(jpsDatamanager* datamanager);
 
     //Change modes
-    enum DrawingMode {Selecting, Editing, Wall, Door, Exit, HLine, Landmark, Source, Goal};
+
     void setDrawingMode(DrawingMode mode);
 
     void change_stat_anglesnap();
@@ -78,17 +79,18 @@ public:
     bool statusWall();
     void en_disableWall();
     bool statusDoor();
-    void en_disableDoor();
-    bool statusExit();
-    void en_disableExit();
+    void en_disableCrossing();
+    void enableTransition();
+    void enableTrack();
     bool statusHLine();
     void en_disableHLine();
     bool statusLandmark();
     void en_disableLandmark();
-    void enableSourceMode();
+
     void drawSource();
+    void enableSourceMode();
+
     void drawGoal();
-    void enableEditMode();
     void enableGoalMode();
 
 
@@ -146,7 +148,7 @@ public:
     QPointF getNearstPointOnLine(jpsLineItem* selected_line);
 
     // Landmark
-    void delete_landmark();
+    void deleteMarkedLandmark();
     void catch_landmark();
     void select_landmark(jpsLandmark *landmark);
     void addLandmark();
@@ -179,6 +181,13 @@ public:
     void SetGrid(QString grid);
     void ChangeGridSize(const qreal& factor);
 
+    // MeasureLength
+    void drawMeasureLengthLine();
+    void enableMeasureLengthMode();
+
+    // Marked Line
+    void clearMarkedLineList();
+
 public slots:
     //Landmarks/Regions
     void StatPositionDef();
@@ -203,6 +212,17 @@ public slots:
 
     QList<JPSSource *> getSources();
     QList<JPSGoal *> getGoals();
+
+    // Layer
+    QList<Layer *> getLayerList() const;
+    void addLayer();
+    void deleteLayer(Layer *deletedLayer);
+
+    // Background
+    void setBackground(QString filename);
+    void showHideBackground();
+    void scaleUpBackground();
+    void scaleDownBackground();
 
 protected:
     //Mouse events
@@ -244,11 +264,6 @@ private:
 
     // Drawing Mode
     DrawingMode drawingMode;
-//    bool statWall;
-//    bool statDoor;
-//    bool statExit;
-//    bool statLandmark;
-//    bool _statHLine;
 
     bool stat_break_;
     int _statCopy;
@@ -257,8 +272,8 @@ private:
     qreal _scaleFactor;
     qreal gl_scale_f;
     bool point_tracked;
-    QGraphicsItem* current_rect;
-    QGraphicsRectItem* currentSelectRect;
+    QGraphicsItem* current_rect; // A rect for marking caught points
+    QGraphicsRectItem* currentSelectRect; // A rect for selecting
     bool objectsnap;
     bool start_endpoint_snap;
     bool intersectionspoint_snap;
@@ -269,8 +284,10 @@ private:
     QPen currentPen;
     qreal catch_line_distance;
     QList<jpsLineItem *> marked_lines;
+
     QGraphicsTextItem* current_caption;
     QList<QGraphicsTextItem* > caption_list;
+
     int id_counter;
 
     //Source
@@ -281,8 +298,6 @@ private:
 
 //    QGraphicsItemGroup *sourceGroup;
 //    QGraphicsItemGroup *getSourceGroup() const;
-
-private:
 
     //Landmark and waypoints
     jpsLandmark* markedLandmark;
@@ -300,27 +315,33 @@ private:
     bool _statLineEdit;
     bool lines_collided;
 
-
-    //Undo/Redo
+    // Undo/Redo
     ActionStack _undoStack;
     ActionStack _redoStack;
 
-    //View
+    // View
     bool statzoomwindows;
 
-    //Grid Mode
+    // Grid Mode
     qreal _gridSize;
     bool _gridmode;
     qreal _translationX;
     qreal _translationY;
     QString _statgrid;
 
+    // Layer
+    QList<Layer *> layer_list;
+
+    QGraphicsPixmapItem *background;
+
 signals:
     void mouse_moved();
     void set_focus_textedit();
     void lines_deleted();
+    void markedLineDeleted();
+    void allContentsDeleted();
     void no_drawing();
-    void remove_marked_lines();
+
     void remove_all();
     void PositionDefCompleted();
     void LineLengthChanged();
@@ -329,6 +350,10 @@ signals:
     void RegionDefCompleted();
     void sourcesChanged();
     void goalsChanged();
+    void transitonsChanged();
+    void sendMsgToStatusBar(QString Msg);
+    void layersChanged();
+
     //void DoubleClick();
 
 };

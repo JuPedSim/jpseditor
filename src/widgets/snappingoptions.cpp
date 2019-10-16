@@ -5,29 +5,36 @@ SnappingOptions::SnappingOptions(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SnappingOptions)
 {
+    qDebug("Enter SnappingOptions::SnappingOptions");
     ui->setupUi(this);
 
     connect(ui->startendpointBox,SIGNAL(stateChanged(int)),this,SLOT(sendState()));
     connect(ui->intersectionspointBox,SIGNAL(stateChanged(int)),this,SLOT(sendState()));
     connect(ui->centerpointBox,SIGNAL(stateChanged(int)),this,SLOT(sendState()));
     connect(ui->linepointBox,SIGNAL(stateChanged(int)),this,SLOT(sendState()));
+    qDebug("Leave SnappingOptions::SnappingOptions");
 }
 
 SnappingOptions::~SnappingOptions()
 {
+    qDebug("Enter SnappingOptions::~SnappingOptions");
     delete ui;
+    qDebug("Leave SnappingOptions::~SnappingOptions");
 }
 
 void SnappingOptions::sendState()
 {
+    qDebug("Enter SnappingOptions::sendState");
     emit snapStart_endpoint(ui->startendpointBox->isChecked());
     emit snapIntersections_point(ui->intersectionspointBox->isChecked());
     emit snapCenter_point(ui->centerpointBox->isChecked());
     emit snapSelectedLine_point(ui->linepointBox->isChecked());
+    qDebug("Leave SnappingOptions::sendState");
 }
 
 void SnappingOptions::setState(QList<bool> &snapping)
 {
+    qDebug("Enter SnappingOptions::setState");
     if(snapping[0])
         ui->startendpointBox->setChecked(true);
 
@@ -39,9 +46,11 @@ void SnappingOptions::setState(QList<bool> &snapping)
 
     if(snapping[3])
         ui->linepointBox->setChecked(true);
+    qDebug("Leave SnappingOptions::setState");
 }
 
 QList<bool> SnappingOptions::getState() {
+    qDebug("Enter SnappingOptions::getState");
     QList<bool> objectsnapping;
     bool endpoint;
     bool Intersections_point;
@@ -81,6 +90,6 @@ QList<bool> SnappingOptions::getState() {
     objectsnapping.append(Intersections_point);
     objectsnapping.append(Center_point);
     objectsnapping.append(SelectedLine_point);;
-
+    qDebug("Leave SnappingOptions::getState");
     return objectsnapping;
 }

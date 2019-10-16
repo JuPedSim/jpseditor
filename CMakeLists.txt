@@ -25,10 +25,7 @@ cmake_minimum_required(VERSION 3.2)
 #   cmake_policy(SET CMP0025 NEW) #fixes error No known features for CXX compiler (on mac)
 # ENDIF (POLICY CMP0025)
 
-# REMINDER: there is no CMAKE_PREFIX_PATH any more, make sure Qt is already in System PATH before building
-
 project(JPSeditor LANGUAGES CXX)
-
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -39,16 +36,58 @@ set(README_FILE "${CMAKE_SOURCE_DIR}/README.md")
 set(CMAKE_COLOR_MAKEFILE ON)
 set(JPSEDITOR_MAJOR_VERSION 0)
 set(JPSEDITOR_MINOR_VERSION 8)
-set(JPSEDITOR_PATCH_VERSION 8)
+set(JPSEDITOR_PATCH_VERSION 9)
 set(JPSEDITOR_VERSION
         ${JPSEDITOR_MAJOR_VERSION}.${JPSEDITOR_MINOR_VERSION}.${JPSEDITOR_PATCH_VERSION})
+
+find_package(Git REQUIRED) # no need for this msg. It comes from cmake.findgit()
+
+find_program(GIT_SCM git DOC "Git version control")
+mark_as_advanced(GIT_SCM)
+find_file(GITDIR NAMES .git PATHS ${CMAKE_SOURCE_DIR} NO_DEFAULT_PATH)
+if (GIT_SCM AND GITDIR)
+  # the commit's SHA1, and whether the building workspace was dirty or not
+  # describe --match=NeVeRmAtCh --always --tags --abbrev=40 --dirty
+  execute_process(COMMAND
+          "${GIT_EXECUTABLE}" --no-pager describe --tags --always --dirty
+          WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+          OUTPUT_VARIABLE GIT_SHA1
+          ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+  # branch
+  execute_process(
+          COMMAND "${GIT_EXECUTABLE}" rev-parse --abbrev-ref HEAD
+          WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+          OUTPUT_VARIABLE GIT_BRANCH
+          OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+
+  # the date of the commit
+  execute_process(COMMAND
+          "${GIT_EXECUTABLE}" log -1 --format=%ad --date=local
+          WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+          OUTPUT_VARIABLE GIT_DATE
+          ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+  add_definitions("-DGIT_COMMIT_HASH=\"${GIT_SHA1}\"")
+  add_definitions("-DGIT_COMMIT_DATE=\"${GIT_DATE}\"")
+  add_definitions("-DGIT_BRANCH=\"${GIT_BRANCH}\"")
+  add_definitions("-DJPSEDITOR_VERSION=\"${JPSEDITOR_VERSION}\"")
+else()
+  message(STATUS "Not in a git repo")
+endif()
 
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
 message( STATUS "Generating  ................................... ${PROJECT_NAME} (${JPSEDITOR_VERSION}) -- ${CMAKE_BUILD_TYPE}")
-#message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
+if(APPLE )
+  set (CMAKE_INSTALL_PREFIX "/Applications")
+  set (CMAKE_PREFIX_PATH "/Applications/Qt/5.13.0/clang_64")
+endif()
+message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
+
 
 # ------------------------- Begin Generic CMake Variable Logging ------------------
 # the compiler used for C files
@@ -56,18 +95,18 @@ message( STATUS "Generating  ................................... ${PROJECT_NAME}
 
 # the compiler used for C++ files
 # message( STATUS "CMAKE_CXX_COMPILER: " ${CMAKE_CXX_COMPILER} )
-
 # ------------------------- End of Generic CMake Variable Logging ------------------
-# put in cmake cmake scripts if any; not necessary now
-#set(CMAKE_MODULE_PATH  ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
-#message(STATUS "CMAKE_MODULE_PATH" ${CMAKE_MODULE_PATH})
+
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+
+# put in cmake cmake scripts if any
+# message(STATUS "CMAKE_MODULE_PATH" ${CMAKE_MODULE_PATH})
 
 #------------------ set important directories --------------------
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/bin")
 # Debug messages
 message( STATUS "CMAKE_BINARY_DIR .............................. " ${CMAKE_BINARY_DIR} )
-message( STATUS "CMAKE_CURRENT_BINARY_DIR ...................... " ${CMAKE_CURRENT_BINARY_DIR} )
 message( STATUS "CMAKE_SOURCE_DIR .............................. " ${CMAKE_SOURCE_DIR} )
 message( STATUS "CMAKE_CURRENT_SOURCE_DIR ...................... " ${CMAKE_CURRENT_SOURCE_DIR} )
 message( STATUS "CMAKE_RUNTIME_OUTPUT_DIRECTORY ................ " ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} )
@@ -95,85 +134,77 @@ endif()
 #---------------------
 
 set( SRCS
-    src/mainWindow.cpp
     src/main.cpp
-    src/GraphicView.cpp
-    src/graphicscene.cpp
-    src/rooms.cpp
-    src/datamanager.cpp
-    src/global.cpp
 
-    # JPSelement
-    src/jpscrossing.cpp
-    src/jpsLineItem.cpp
-    src/jpsexit.cpp
-    src/jpsobstacle.cpp
-    src/jpslandmark.cpp
-    src/jpsconnection.cpp
-    src/jpsregion.cpp
-    src/jpssource.cpp
-    src/jpsgoal.cpp
-
-    # JPSmodel
-    src/models/jpselementlistmodel.cpp
-    src/models/jpssourcelistmodel.cpp
-    src/models/jpsgoallistmodel.cpp
-
-    # reader for xml
-    src/XML/goalreader.cpp
-    src/XML/sourcereader.cpp
-
-    # for widgets
+## Controllers
+    src/mainWindow.cpp
     src/widgets/roomwidget.cpp
-    src/widgets/goalwidget.cpp
     src/widgets/settingdialog.cpp
     src/widgets/inifilewidget.cpp
     src/widgets/snappingoptions.cpp
     src/widgets/widgetlandmark.cpp
     src/widgets/widgetsettings.cpp
+    src/widgets/roomlistwidget.cpp
+    src/widgets/propertywidget.cpp
+    src/widgets/transitionwidget.cpp
+    src/widgets/layerwidget.cpp
+    src/widgets/templatewidget.cpp
+    src/widgets/runningwidget.cpp
+    src/widgets/goalwidget.cpp
     src/widgets/sourcewidget.cpp
 
-    # for datamanager
+    src/GraphicView.cpp
+    src/graphicscene.cpp
+    src/datamanager.cpp
+
+## Models
+    src/models/jpselementlistmodel.cpp
+    src/models/jpssourcelistmodel.cpp
+    src/models/jpsgoallistmodel.cpp
+    src/models/layer.cpp
+
+## JPSelements
+    src/jpszone.cpp
+    src/jpscrossing.cpp
+    src/jpsLineItem.cpp
+    src/jpstransition.cpp
+    src/jpsobstacle.cpp
+    src/jpslandmark.cpp
+    src/jpstrack.cpp
+    src/jpsconnection.cpp
+    src/jpsregion.cpp
+    src/jpssource.cpp
+    src/jpsgoal.cpp
+
+##  XML
+    src/XML/goalreader.cpp
+    src/XML/sourcereader.cpp
+
+## MISC
     dxflib/src/dl_writer_ascii.cpp
     dxflib/src/dl_dxf.cpp
-
-    # for undo feature
     src/UndoFramework/action.cpp
     src/UndoFramework/actionstack.cpp
     src/UndoFramework/lineaction.cpp
-
-    # for roomdefinition feature
     src/AutomaticRoomIdentification/roomdefinition.cpp
     src/AutomaticRoomIdentification/roomidentification.cpp
-  )
+
+    src/global.cpp
+        )
 # all header files that should be treated with moc
 set( HDR
-    src/dtrace.h
+## Controllers
     src/mainWindow.h
     src/GraphicView.h
     src/graphicscene.h
-    src/elementtype.h
-    src/global.h
-    src/rooms.h
-    src/datamanager.h
 
-    src/jpscrossing.h
-    src/jpsLineItem.h
-    src/jpsexit.h
-    src/jpsobstacle.h
-    src/jpslandmark.h
-    src/jpsconnection.h
-    src/jpsregion.h
-    src/jpssource.h
-    src/jpsgoal.h
-
-    src/XML/goalreader.h
-    src/XML/sourcereader.h
-
-    src/models/jpsgoallistmodel.h
-    src/models/jpselementlistmodel.h
-    src/models/jpssourcelistmodel.h
-
+    src/widgets/roomlistwidget.h
+    src/widgets/propertywidget.h
+    src/widgets/transitionwidget.h
+    src/widgets/layerwidget.h
+    src/widgets/templatewidget.h
+    src/widgets/runningwidget.h
+    src/widgets/roomwidget.h
     src/widgets/widgetlandmark.h
     src/widgets/widgetsettings.h
     src/widgets/settingdialog.h
@@ -181,8 +212,32 @@ set( HDR
     src/widgets/snappingoptions.h
     src/widgets/sourcewidget.h
     src/widgets/goalwidget.h
-    src/widgets/roomwidget.h
 
+## JPSelements
+    src/jpsgoal.h
+    src/jpszone.h
+    src/datamanager.h
+    src/jpscrossing.h
+    src/jpsLineItem.h
+    src/jpstransition.h
+    src/jpsobstacle.h
+    src/jpslandmark.h
+    src/jpstrack.h
+    src/jpsconnection.h
+    src/jpsregion.h
+    src/jpssource.h
+
+## Models
+    src/models/jpselementlistmodel.h
+    src/models/jpssourcelistmodel.h
+    src/models/layer.h
+    src/models/jpsgoallistmodel.h
+
+## XML
+    src/XML/goalreader.h
+    src/XML/sourcereader.h
+
+## MISC
     dxflib/src/dl_writer_ascii.h
     dxflib/src/dl_writer.h
     dxflib/src/dl_global.h
@@ -198,11 +253,13 @@ set( HDR
     src/UndoFramework/action.h
     src/UndoFramework/actionstack.h
     src/UndoFramework/lineaction.h
-
     src/AutomaticRoomIdentification/roomID.h
     src/AutomaticRoomIdentification/roomdefinition.h
     src/AutomaticRoomIdentification/roomidentification.h
-  )
+
+    src/elementtype.h
+    src/global.h
+        )
 
 # *.ui files
 set( UIS
@@ -215,6 +272,12 @@ set( UIS
     forms/snappingoptions.ui
     forms/sourcewidget.ui
     forms/goalwidget.ui
+    forms/roomlistwidget.ui
+    forms/propertywidget.ui
+    forms/transitionwidget.ui
+    forms/layerwidget.ui
+    forms/templatewidget.ui
+    forms/runningwidget.ui
   )
 
 # and finally a resource file
@@ -222,7 +285,6 @@ set( RCS
         Resources/resources.qrc
   )
 
-# Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Instruct CMake to run moc automatically when needed.
@@ -232,76 +294,47 @@ IF (WIN32)
     SET (QT_USE_QTMAIN TRUE)
 ENDIF (WIN32)
 
-#--------------- here comes QT. Version problem (4 or 5?)
-if("${DESIRED_QT_VERSION}" STREQUAL "")
-    set(DESIRED_QT_VERSION 5)
-else()
-    set(DESIRED_QT_VERSION 4)
-endif()
+set(DESIRED_QT_VERSION 5)
 
 message(STATUS "Searching for Qt version ...................... " ${DESIRED_QT_VERSION})
 # find packages according to qt version
 if("${DESIRED_QT_VERSION}" STREQUAL "5")
-  find_package(Qt5Widgets REQUIRED)
+  FIND_PACKAGE(Qt5Widgets REQUIRED)
+  FIND_PACKAGE(Qt5Xml REQUIRED)
   #-----------------------------------------------------
   set(QT5_INSTALLED TRUE)
+  set(QT_USE_QTXML TRUE)
   set(QTVERSION 5)
   MESSAGE(STATUS "Found Qt version .............................. ${Qt5Core_VERSION_STRING}")
-
-elseif("${DESIRED_QT_VERSION}" STREQUAL "4")
-  find_package(Qt COMPONENTS QtXml QT_USE_QTNETWORK QtXmlPatterns REQUIRED)
-  set(QT4_INSTALLED TRUE)
-  set(QTVERSION 4)
 endif()
 
 execute_process(COMMAND ${QT_QMAKE_EXECUTABLE} -query QT_VERSION OUTPUT_VARIABLE QT_VERSION)
-# qt version > 5 or qt version < 3 are not supported
-if( ${QTVERSION} VERSION_GREATER 6 OR ${QTVERSION} VERSION_LESS 3)
-  message(FATAL_ERROR "QT version " ${QTVERSION} " not supported. Try 4 or 5")
+# qt version > 5 are not supported
+if(${QTVERSION} VERSION_LESS 5)
+  message(FATAL_ERROR "QT version " ${QTVERSION} " not supported. Try 5")
 endif()
 
-# if(QT5_INSTALLED)
-#   message(STATUS "QT5_INSTALLED: " ${QT5_INSTALLED})
-# elseif(QT4_INSTALLED )
-#   message(STATUS "QT4_INSTALLED: " ${QT4_INSTALLED})
-# elseif(QT3_INSTALLED)
-#   message(STATUS "QT3_INSTALLED: " ${QT3_INSTALLED})
-# else()
-#   message(SEND_ERROR "No supported Qt found.")
-# endif()
-# Disable automatic conversion from QString to ASCII 8-bit strings (char *)
-# (Keeps code compatible with Qt/Mac/64bit)
+## Set-up icon of app
 if(APPLE)
   ADD_DEFINITIONS(-DQT_NO_CAST_TO_ASCII)
   # include the icns file in the target
   SET(SRCS ${SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/Resources/jpseditor.icns)
-elseif(WIN32)
+  SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/Resources/jpseditor.icns PROPERTIES MACOSX_PACKAGE_LOCATION
+          Resources)
+  elseif(WIN32)
   SET(SRCS ${SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/Resources/jpseditor.rc)
 endif()
 
 # this command will generate rules that will run rcc on all files from RCS
 # in result RC_SRCS variable will contain paths to files produced by rcc
-if(${QT4_INSTALLED})
-  message(STATUS "Working with Qt4")
-  # and finally this will run moc:
-  QT4_WRAP_CPP( MOC_HDRS ${MOC_HDRS} )
-  # this will run uic on .ui files:
-  QT4_WRAP_UI( UI_HDRS ${UIS} )
-  QT4_ADD_RESOURCES( RCS ${RCS} )
-  include( ${QT_USE_FILE} )
-  ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE WIN32
-  ${SRCS}
-  ${MOC_HDRS}
-  ${UI_HDRS}
-  ${RCS}
-  )
-  TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${QT_LIBRARIES})
-elseif( ${QT5_INSTALLED})
+if( ${QT5_INSTALLED})
   message(STATUS "Working with Qt5")
   # http://www.kdab.com/using-cmake-with-qt-5/
   set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}" )
+
   qt5_wrap_ui( UI_HDRS ${UIS} )
   qt5_add_resources( RCS ${RCS} )
+  #qt5_use_package(JPSeditor Widgets)
 
   add_executable( ${PROJECT_NAME} MACOSX_BUNDLE WIN32
   ${SRCS}
@@ -309,18 +342,11 @@ elseif( ${QT5_INSTALLED})
   ${UI_HDRS}
   ${RCS}
   )
-
-  target_link_libraries(${PROJECT_NAME} ${Qt5Widgets_LIBRARIES})
+ qt5_use_modules(${PROJECT_NAME} Widgets)
+ target_link_libraries(${PROJECT_NAME} ${Qt5Widgets_LIBRARIES} Qt5::Xml)
 else()
   message(FATAL_ERROR "QT NOT FOUND - ABORT")
 endif()
-
-# add icon file into bundle
-IF(APPLE)
-  SET(MACOSX_BUNDLE_ICON_FILE jpseditor.icns)
-  SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/Resources/jpseditor.icns PROPERTIES MACOSX_PACKAGE_LOCATION
-          Resources)
-ENDIF(APPLE)
 
 SET_TARGET_PROPERTIES( ${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE TRUE)
 #----------------------------------------------------------------------
@@ -333,8 +359,8 @@ set(warning_flags "${warning_flags} -pedantic")
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   set(CMAKE_CXX_FLAGS                "${CMAKE_CXX_FLAGS} ${warning_flags}")
   set(CMAKE_CXX_FLAGS_DEBUG          "${CMAKE_CXX_FLAGS_DEBUG} ${warning_flags} -O0 -g -Wunused-variable -Wunused-parameter -Wunused-function -Wshadow -Wunused")
-  #    set(CMAKE_CXX_FLAGS_RELEASE        "${CMAKE_CXX_FLAGS_RELEASE} -O3 -DNDEBUG")
 endif()
+
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     message(STATUS "Using compiler ................................ Clang (${CMAKE_CXX_COMPILER_VERSION})")
@@ -348,7 +374,7 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   set(CMAKE_CXX_FLAGS_DEBUG          "${CMAKE_CXX_FLAGS_DEBUG} -DTRACE_LOGGING")
   message(STATUS "Debug flags: "  ${CMAKE_CXX_FLAGS} " " ${CMAKE_CXX_FLAGS_DEBUG} )
   message(STATUS "Debug flags ..................................."  ${CMAKE_CXX_FLAGS} " " ${CMAKE_CXX_FLAGS_DEBUG} )
-else(CMAKE_BUILD_TYPE MATCHES Debug)
+else(CMAKE_BUILD_TYPE MATCHES Release)
   message(STATUS "Release flags ................................." ${CMAKE_CXX_FLAGS} " ,  " ${CMAKE_CXX_FLAGS_RELEASE} )
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
@@ -375,7 +401,6 @@ else()
   set(EXECUTABLE "${BIN_INSTALL_DIR}/${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX}")
 endif()
 
-
 SET(plugin_dest_dir bin)
 SET(qtconf_dest_dir bin)
 SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}")
@@ -395,75 +420,72 @@ elseif( ${QT5_INSTALLED})
   SET(DIRS ${QT_LIBRARY_DIRS})
 endif()
 
-
 #================================================ APPLE Stuff ======================
-
+# Set how it shows up in the Info.plist file
 IF(APPLE)
-  # set how it shows up in the Info.plist file
+  SET(MACOSX_BUNDLE_ICON_FILE jpseditor.icns)
   SET(MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2015-2019 Forschungszentrum Juelich. All rights reserved.")
   SET(MACOSX_BUNDLE_BUNDLE_NAME "${PROJECT_NAME}")
   SET(MACOSX_BUNDLE_BUNDLE_VERSION "${JPSEDITOR_VERSION}")
   SET(MACOSX_BUNDLE_LONG_VERSION_STRING "version ${JPSEDITOR_VERSION}")
   SET(MACOSX_BUNDLE_SHORT_VERSION_STRING "${JPSEDITOR_VERSION}")
   SET(MACOSX_BUNDLE_EDIT_IDENTIFIER "https://www.jupedsim.org")
-  # set where in the bundle to put the icns file
-  # set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Resources/Info.plist.in)
 ENDIF(APPLE)
 
 # To Create a package, one can run "cpack -G DragNDrop CPackConfig.cmake" on Mac OS X
 # where CPackConfig.cmake is created by including CPack
 # And then there's ways to customize this as well
 # https://github.com/mikemcquaid/Fabula
-set(CPACK_BINARY_DRAGNDROP ON)
-set(CPACK_GENERATOR "TBZ2")
-set(CPACK_PACKAGE_VERSION_MAJOR "${JPSEDITOR_MAJOR_VERSION}")
-set(CPACK_PACKAGE_VERSION_MINOR "${JPSEDITOR_MINOR_VERSION}")
-set(CPACK_PACKAGE_VERSION_PATCH "${JPSEDITOR_PATCH_VERSION}")
-set(CPACK_PACKAGE_VERSION "${JPSEDITOR_VERSION}")
-set(CPACK_PACKAGE_VENDOR "${JPSEDITOR_VENDOR}")
-set(CPACK_RESOURCE_FILE_README "${README_FILE}")
-if(WIN32) # todo test this for windows
-  set(CPACK_GENERATOR "NSIS")
-  set(CPACK_PACKAGE_EXECUTABLES "${PROJECT_NAME}" "${PROJECT_NAME}")
-  set(CPACK_PACKAGE_INSTALL_DIRECTORY "${PROJECT_NAME}")
-  set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME} ${JPSEDITOR_VERSION}")
-  set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/${LICENSE_FILE}")
-  set(CPACK_NSIS_EXECUTABLES_DIRECTORY "${BIN_INSTALL_DIR}")
-  #set(CPACK_NSIS_MUI_ICON "${PROJECT_ICONS_DIRECTORY}/NSIS.ico")
-  #set(CPACK_PACKAGE_ICON "${PROJECT_ICONS_DIRECTORY}\\\\NSISHeader.bmp")
-  set(CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX}")
-  #    set(CPACK_NSIS_MENU_LINKS "${LICENSE_FILE}" "License" "${README_FILE}" "Readme")
-  #   set(CPACK_NSIS_MUI_FINISHPAGE_RUN "${CPACK_NSIS_INSTALLED_ICON_NAME}")
-elseif(APPLE) # todo test this for apple
-  set(CPACK_GENERATOR "DragNDrop")
-  set(CPACK_DMG_FORMAT "UDBZ")
-  set(CPACK_DMG_VOLUME_NAME "${PROJECT_NAME}")
-  set(CPACK_SYSTEM_NAME "OSX")
-  set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${JPSEDITOR_VERSION}")
-  #set(CPACK_PACKAGE_ICON "${ICONS_DIR}/DMG.icns")
-  #set(CPACK_DMG_DS_STORE "${ICONS_DIR}/DMGDSStore")
-  #set(CPACK_DMG_BACKGROUND_IMAGE "${ICONS_DIR}/DMGBackground.png")
-elseif(UNIX)
-  # tested with success in
-  # Linux dhcppc5 3.2.0-4-686-pae #1 SMP Debian 3.2.68-1+deb7u2 i686 GNU/Linux
-  set(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
-  SET(CPACK_GENERATOR "DEB")
-
-  SET(CPACK_PACKAGE_DESCRIPTION "simulation core of JuPedSim")
-  SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Geometry editor of JuPedSim, a framework for simulation and analysis of pedestrian dynamics")
-  #SET(CPACK_PACKAGE_VENDOR "nowardev")
-  SET(CPACK_PACKAGE_CONTACT "m.chraibi@fz-juelich.de")
-  SET(CPACK_PACKAGE_VERSION_MAJOR "${JPSEDITOR_MAJOR_VERSION}")
-  SET(CPACK_PACKAGE_VERSION_MINOR "${JPSEDITOR_MINOR_VERSION}")
-  SET(CPACK_PACKAGE_VERSION_PATCH "${JPSEDITOR_PATCH_VERSION}")
-  SET(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${JPSEDITOR_VERSION}")
-  SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${JPSEDITOR_VERSION}")
-  #SET(CPACK_DEBIAN_PACKAGE_DEPENDS " Boost (>= 1.59) ")
-  SET(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-  SET( CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://jupedsim.org")
-  SET(CPACK_DEBIAN_PACKAGE_SUGGESTS, "jpsvis, jpsreport, jpscore")
-  SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
-  SET(CPACK_DEBIAN_PACKAGE_SECTION "science")
-  SET(CPACK_DEBIAN_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
-endif()
-include(CPack)
+#set(CPACK_BINARY_DRAGNDROP ON)
+#set(CPACK_GENERATOR "TBZ2")
+#set(CPACK_PACKAGE_VERSION_MAJOR "${JPSEDITOR_MAJOR_VERSION}")
+#set(CPACK_PACKAGE_VERSION_MINOR "${JPSEDITOR_MINOR_VERSION}")
+#set(CPACK_PACKAGE_VERSION_PATCH "${JPSEDITOR_PATCH_VERSION}")
+#set(CPACK_PACKAGE_VERSION "${JPSEDITOR_VERSION}")
+#set(CPACK_PACKAGE_VENDOR "${JPSEDITOR_VENDOR}")
+#set(CPACK_RESOURCE_FILE_README "${README_FILE}")
+#if(WIN32) #
+#  set(CPACK_GENERATOR "NSIS")
+#  set(CPACK_PACKAGE_EXECUTABLES "${PROJECT_NAME}" "${PROJECT_NAME}")
+#  set(CPACK_PACKAGE_INSTALL_DIRECTORY "${PROJECT_NAME}")
+#  set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME} ${JPSEDITOR_VERSION}")
+#  set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/${LICENSE_FILE}")
+#  set(CPACK_NSIS_EXECUTABLES_DIRECTORY "${BIN_INSTALL_DIR}")
+#  #set(CPACK_NSIS_MUI_ICON "${PROJECT_ICONS_DIRECTORY}/NSIS.ico")
+#  #set(CPACK_PACKAGE_ICON "${PROJECT_ICONS_DIRECTORY}\\\\NSISHeader.bmp")
+#  set(CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX}")
+#  #    set(CPACK_NSIS_MENU_LINKS "${LICENSE_FILE}" "License" "${README_FILE}" "Readme")
+#  #   set(CPACK_NSIS_MUI_FINISHPAGE_RUN "${CPACK_NSIS_INSTALLED_ICON_NAME}")
+#elseif(APPLE) #
+#  set(CPACK_GENERATOR "DragNDrop")
+#  set(CPACK_DMG_FORMAT "UDBZ")
+#  set(CPACK_DMG_VOLUME_NAME "${PROJECT_NAME}")
+#  set(CPACK_SYSTEM_NAME "OSX")
+#  set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${JPSEDITOR_VERSION}")
+#  #set(CPACK_PACKAGE_ICON "${ICONS_DIR}/DMG.icns")
+#  #set(CPACK_DMG_DS_STORE "${ICONS_DIR}/DMGDSStore")
+#  #set(CPACK_DMG_BACKGROUND_IMAGE "${ICONS_DIR}/DMGBackground.png")
+#elseif(UNIX)
+#  # tested with success in
+#  # Linux dhcppc5 3.2.0-4-686-pae #1 SMP Debian 3.2.68-1+deb7u2 i686 GNU/Linux
+#  set(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
+#  SET(CPACK_GENERATOR "DEB")
+#
+#  SET(CPACK_PACKAGE_DESCRIPTION "simulation core of JuPedSim")
+#  SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Geometry editor of JuPedSim, a framework for simulation and analysis of pedestrian dynamics")
+#  #SET(CPACK_PACKAGE_VENDOR "nowardev")
+#  SET(CPACK_PACKAGE_CONTACT "m.chraibi@fz-juelich.de")
+#  SET(CPACK_PACKAGE_VERSION_MAJOR "${JPSEDITOR_MAJOR_VERSION}")
+#  SET(CPACK_PACKAGE_VERSION_MINOR "${JPSEDITOR_MINOR_VERSION}")
+#  SET(CPACK_PACKAGE_VERSION_PATCH "${JPSEDITOR_PATCH_VERSION}")
+#  SET(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${JPSEDITOR_VERSION}")
+#  SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${JPSEDITOR_VERSION}")
+#  #SET(CPACK_DEBIAN_PACKAGE_DEPENDS " Boost (>= 1.59) ")
+#  SET(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+#  SET( CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://jupedsim.org")
+#  SET(CPACK_DEBIAN_PACKAGE_SUGGESTS, "jpsvis, jpsreport, jpscore")
+#  SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+#  SET(CPACK_DEBIAN_PACKAGE_SECTION "science")
+#  SET(CPACK_DEBIAN_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+#endif()
+#include(CPack)

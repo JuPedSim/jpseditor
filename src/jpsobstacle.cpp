@@ -27,21 +27,26 @@
 
 #include "jpsobstacle.h"
 
-jpsObstacle::jpsObstacle(int id):jpsRoom(id)
+jpsObstacle::jpsObstacle(int id): JPSZone(id, nullptr, Obstacle)
 {
+    qDebug("enter jpsObstacle::jpsObstacle");
     QString string="Obstacle ";
     string.append(QString::number(id));
-    jpsRoom::change_name(string);
-    _room=0L;
+    JPSZone::setName(string);
+    _room = nullptr;
+    qDebug("Leave jpsObstacle::jpsObstacle");
 }
 
-void jpsObstacle::set_room(jpsRoom *room)
+void jpsObstacle::set_room(JPSZone *room)
 {
+    qDebug("Enter jpsObstacle::set_room");
     _room=room;
+    qDebug("Leave jpsObstacle::set_room");
 }
 
-jpsRoom* jpsObstacle::get_room()
+JPSZone* jpsObstacle::get_room()
 {
+    qDebug("Enter/Leave jpsObstacle::get_room");
     return _room;
 }
 

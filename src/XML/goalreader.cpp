@@ -31,11 +31,14 @@
 
 GoalReader::GoalReader(jpsGraphicsView *view)
 {
+    qDebug("Enter GoalReader::GoalReader");
     currentView = view;
+    qDebug("Leave GoalReader::GoalReader");
 }
 
 bool GoalReader::read(QIODevice *device)
 {
+    qDebug("Enter GoalReader::read");
     xml.setDevice(device);
 
     if(xml.readNextStartElement())
@@ -48,12 +51,13 @@ bool GoalReader::read(QIODevice *device)
             xml.raiseError(QObject::tr("The file is not an version 0.8 file."));
         }
     }
-
+    qDebug("Leave GoalReader::read");
     return !xml.error();
 }
 
 void GoalReader::readJPScore()
 {
+    qDebug("Enter GoalReader::readJPScore");
     while (xml.readNextStartElement())
     {
         if(xml.name() == QLatin1String("goals"))
@@ -61,10 +65,12 @@ void GoalReader::readJPScore()
         else
             xml.skipCurrentElement();
     }
+    qDebug("Leave GoalReader::readJPScore");
 }
 
 void GoalReader::readGoals()
 {
+    qDebug("Enter GoalReader::readGoals");
     while (xml.readNextStartElement())
     {
         if(xml.name() == QLatin1String("goal"))
@@ -72,10 +78,12 @@ void GoalReader::readGoals()
         else
             xml.skipCurrentElement();
     }
+    qDebug("Leave GoalReader::readGoals");
 }
 
 void GoalReader::readGoal()
 {
+    qDebug("Enter GoalReader::readGoal");
     QPen currentPen;
     currentPen.setColor(Qt::darkGreen);
     currentPen.setCosmetic(true);
@@ -109,7 +117,7 @@ void GoalReader::readGoal()
             xml.skipCurrentElement();
     }
 
-    QRectF rect(vertexes[0], vertexes[2]); //TODO: use x_min, x_max, y_min, y_max to draw the rect.
+    QRectF rect(vertexes[0], vertexes[2]);
     auto *rectItem = new QGraphicsRectItem;
     rectItem->setRect(rect);
     auto *goal = new JPSGoal(rectItem);
@@ -120,4 +128,5 @@ void GoalReader::readGoal()
     goal->setBeSaved("true");
 
     currentView->scene()->addItem(goal);
+    qDebug("Leave GoalReader::readGoal");
 }
