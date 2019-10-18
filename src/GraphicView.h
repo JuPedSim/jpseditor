@@ -253,10 +253,13 @@ private:
     QList<jpsLineItem *> line_vector;
     QList<QGraphicsLineItem *> _origin;
     //QList<QList<jpsLineItem*> *> mainlist;
-    QPointF pos;
-    //QPointF* intersection_point;
+
+    QPointF pos; // position of the mouse cursor;
+
+//    QPointF* intersection_point;
     bool midbutton_hold;
     bool leftbutton_hold;
+
     qreal translation_x;
     qreal translation_y;
     QPointF translated_pos;

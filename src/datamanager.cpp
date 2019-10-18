@@ -1602,6 +1602,7 @@ int jpsDatamanager::GetNumberOfMainTargets() const
 void jpsDatamanager::remove_all()
 {
     qDebug("Enter jpsDatamanager::remove_all");
+
     // Delete JPSelements in data manager, not the QGraphicsitem
     removeAllTransition();
     removeAllGoal();

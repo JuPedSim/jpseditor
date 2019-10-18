@@ -209,9 +209,11 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
        current_rect=nullptr;
     }
 
+    // Pass last positon of mouse to old_ps
     QPointF old_pos=pos;
 
-    pos=mapToScene(mouseEvent->pos());
+    // Get position of mouse in scene coordinate
+    pos = mapToScene(mouseEvent->pos());
 
     if (anglesnap)
     {
@@ -242,6 +244,7 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
                                          ,QPointF(translated_pos.x(),translated_pos.y())));
     }
 
+    // If the view was moving, minus the translation of view
     translated_pos.setX(pos.x()-translation_x);
     translated_pos.setY(pos.y()-translation_y);
 
@@ -269,7 +272,6 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
         {
             catch_line_point();
         }
-
 
         //VLine
         if (point_tracked && (drawingMode==Wall || drawingMode==Crossing || drawingMode==Transition))
@@ -1667,16 +1669,17 @@ void jpsGraphicsView::zoom(int delta)
 void jpsGraphicsView::translations(QPointF old_pos)
 {
     qDebug("Enter jpsGraphicsView::translations");
+
+    // Range of translation
     translation_x+=pos.x()-old_pos.x();
     translation_y+=pos.y()-old_pos.y();
 
     // Transform the background grid
     this->ChangeTranslation(translation_x,translation_y);
 
-    // Transform unfinished elements
+    // Transform QGraphicsitem when view moving
     if (current_line!=nullptr)
     {
-        //current_line->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
         current_line->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
     }
 
@@ -1723,12 +1726,6 @@ void jpsGraphicsView::translations(QPointF old_pos)
         caption_list[i]->setTransform(QTransform::fromScale(1.0/scalef,1.0/scalef),true); // without this line translations won't work
         caption_list[i]->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),-pos.y()+old_pos.y()), true);
         caption_list[i]->setTransform(QTransform::fromScale(scalef,scalef),true);
-    }
-
-    for (jpsLandmark* landmark:_datamanager->get_landmarks())
-    {
-
-
     }
 
     if (currentLandmarkRect!=nullptr)
