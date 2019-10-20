@@ -43,7 +43,6 @@
  * @para fname File name of the file to be created.
  * @para version DXF version. Defaults to DL_VERSION_2002.
  *
- * @todo What if \c fname is NULL?  Or \c fname can't be opened for
  * another reason?
  */
 class DXFLIB_EXPORT DL_WriterA : public DL_Writer {

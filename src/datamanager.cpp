@@ -2202,8 +2202,6 @@ void jpsDatamanager::parseCrossings(const QDomElement &element)
 
 void jpsDatamanager::parseObstacles(QXmlStreamReader &xmlReader, JPSZone *room)
 {
-// TODO: finish for obstacles
-
 //    while(!(xmlReader.tokenType() == QXmlStreamReader::EndElement &&
 //                xmlReader.name() == "subroom"))
 //    {

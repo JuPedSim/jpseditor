@@ -49,4 +49,4 @@ make-linux:
 
 
 after_script:
-  - echo "End CI" # todo: run report script
+  - echo "End CI"

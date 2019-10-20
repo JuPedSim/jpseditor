@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QList>
 #include <QMap>
+#include <QSettings>
 
 namespace Ui {
 class SettingDialog;
@@ -17,27 +18,15 @@ public:
     explicit SettingDialog(QWidget *parent = nullptr);
     ~SettingDialog();
 
-    void setCurrentSetting(QMap<QString, QString> settingsmap);
+public slots:
+    void loadSettings();
+    void cancelButtonClicked();
+    void chooseBackupButtonClicked();
+    void applyButtonClicked();
+    void chooseJPScoreButtonClicked();
 
 signals:
-    void sendSetting(QMap<QString, QString>);
-
-private slots:
-    void on_cancelButton_clicked();
-
-    void on_chooseButton_clicked();
-
-    void on_confirmButton_clicked();
-
-    void on_choosejpsButton_clicked();
-
-    void on_jpsvisButton_clicked();
-
-    void on_cancelButton_page2_clicked();
-
-    void on_confirmButton_page2_clicked();
-
-    void on_applyButton_clicked();
+    void changeTimer(int interval);
 
 private:
     Ui::SettingDialog *ui;

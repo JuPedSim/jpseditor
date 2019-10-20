@@ -21,10 +21,6 @@ public:
     void removeLineFromLayer(jpsLineItem *wall);
     QList<jpsLineItem *> getLineItemList();
 
-    // TODO: For jpsLandmark
-
-    // TODO: For JPSGoal & JPSSource
-
     bool isVisible();
     void setVisible(bool is_visible);
 
