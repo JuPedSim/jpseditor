@@ -213,19 +213,19 @@ void PropertyWidget::highlightWall(QListWidgetItem *item)
     {
         auto *line = current_zone->getEnterAndExitList()[cRow];
         view->unmark_all_lines();
-        view->select_line(line->get_cLine());
+        view->markLine(line->get_cLine());
     }
     else if(ui->tabWidget->tabText(index) == "Wall")
     {
         auto *line= current_zone->get_listWalls()[wRow];
         view->unmark_all_lines();
-        view->select_line(line);
+        view->markLine(line);
     }
     else if(ui->tabWidget->tabText(index) == "Track")
     {
         auto *line = current_zone->getTrackList()[tRow];
         view->unmark_all_lines();
-        view->select_line(line->getLine());
+        view->markLine(line->getLine());
     }
     qDebug("Leave PropertyWidget::highlightWall");
 }

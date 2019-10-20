@@ -1089,7 +1089,7 @@ void jpsGraphicsView::catch_lines()
                     && currentSelectRect->contains(item->get_line()->line().p2())
                     && item->get_defaultColor()!="white")
             {
-                select_line(item);
+                markLine(item);
             }
         }
     }
@@ -1101,7 +1101,7 @@ void jpsGraphicsView::catch_lines()
         {
             if (currentSelectRect->collidesWithItem(item->get_line()) && item->get_defaultColor()!="white")
             {
-                select_line(item);
+                markLine(item);
                 line_tracked=1;
 
             }
@@ -1188,9 +1188,9 @@ void jpsGraphicsView::drawLine()
 
 }
 
-void jpsGraphicsView::select_line(jpsLineItem *mline)
+void jpsGraphicsView::markLine(jpsLineItem *mline)
 {
-    qDebug("Enter jpsGraphicsView::select_line");
+    qDebug("Enter jpsGraphicsView::markLine");
     if (mline == nullptr)
         return;
 
@@ -1209,7 +1209,7 @@ void jpsGraphicsView::select_line(jpsLineItem *mline)
         mline->get_line()->setPen(pen);
         marked_lines.removeOne(mline);
     }
-    qDebug("Leave jpsGraphicsView::select_line");
+    qDebug("Leave jpsGraphicsView::markLine");
 }
 
 
@@ -2041,7 +2041,7 @@ void jpsGraphicsView::RemoveLineItem(const QLineF &line)
         if (lineItem->get_line()->line()==line)
         {
             unmark_all_lines();
-            select_line(lineItem);
+            markLine(lineItem);
             delete_marked_lines();
         }
     }
@@ -2083,7 +2083,7 @@ void jpsGraphicsView::SelectAllLines()
     marked_lines.clear();
     for (jpsLineItem* line:line_vector)
     {
-        select_line(line);
+        markLine(line);
     }
     qDebug("Leave jpsGraphicsView::SelectAllLines");
 }

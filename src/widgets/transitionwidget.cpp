@@ -178,7 +178,7 @@ void TransitionWidget::highlightWall(QListWidgetItem *item)
 
     auto *line = data->getTransitionList()[cRow];
     view->unmark_all_lines();
-    view->select_line(line->get_cLine());
+    view->markLine(line->get_cLine());
 
     qDebug("Leave PropertyWidget::highlightWall");
 }

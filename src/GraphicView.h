@@ -138,7 +138,7 @@ public:
     QList<jpsLineItem *> get_markedLines();
     QList<jpsLineItem *> get_line_vector();
     void unmark_all_lines();
-    void select_line(jpsLineItem *mline);
+    void markLine(jpsLineItem *mline);
     void SetVLine();
     void EditLine(QPointF* point);
     qreal ReturnLineLength();

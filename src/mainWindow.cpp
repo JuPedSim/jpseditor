@@ -1462,7 +1462,7 @@ void MWindow::addListDockWidget(const QString &type)
     listDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
 
     // create list widget
-    auto *listWidget = new RoomListWidget(this, this->dmanager);
+    auto *listWidget = new RoomListWidget(this, this->dmanager, this->mview);
     listWidget->setLabel(type);
 
     // add list widget into dock widget
