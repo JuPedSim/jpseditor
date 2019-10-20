@@ -51,7 +51,7 @@
       <model_parameters>
         <solver>euler</solver>
         <stepsize>0.1</stepsize>
-        <exit_crossing_strategy>2</exit_crossing_strategy>
+        <exit_crossing_strategy>8</exit_crossing_strategy>
         <linkedcells enabled="true" cell_size="3" />
         <force_ped a="5" D="0.1" />
         <force_wall a="5" D="0.02" />
