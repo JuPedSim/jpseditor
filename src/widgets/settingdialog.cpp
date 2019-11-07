@@ -101,7 +101,7 @@ void SettingDialog::chooseJPScoreButtonClicked()
             this,
             tr("Choose JPSvis"),
             "/Users",
-            "jpscore.app");
+            "jpscore");
 
     ui->lineEdit_JPScore->setText(programm);
     qDebug("Leave SettingDialog::chooseJPScoreButtonClicked");
