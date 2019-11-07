@@ -164,7 +164,7 @@
             <widget class="QLineEdit" name="lineEdit_JPSvis"/>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_chooseJPSvos">
+            <widget class="QPushButton" name="pushButton_chooseJPSvis">
              <property name="text">
               <string>Choose</string>
              </property>
