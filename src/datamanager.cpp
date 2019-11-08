@@ -1602,6 +1602,7 @@ int jpsDatamanager::GetNumberOfMainTargets() const
 void jpsDatamanager::remove_all()
 {
     qDebug("Enter jpsDatamanager::remove_all");
+
     // Delete JPSelements in data manager, not the QGraphicsitem
     removeAllTransition();
     removeAllGoal();
@@ -2201,8 +2202,6 @@ void jpsDatamanager::parseCrossings(const QDomElement &element)
 
 void jpsDatamanager::parseObstacles(QXmlStreamReader &xmlReader, JPSZone *room)
 {
-// TODO: finish for obstacles
-
 //    while(!(xmlReader.tokenType() == QXmlStreamReader::EndElement &&
 //                xmlReader.name() == "subroom"))
 //    {

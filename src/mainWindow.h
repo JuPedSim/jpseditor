@@ -98,14 +98,12 @@ private:
     jpsDatamanager* dmanager;
 
     // CMap
-    QTimer *_cMapTimer;
+//    QTimer *_cMapTimer;
 
     jpsGraphicsView* mview;
 
     /// Variabes
     int _cMapFrame;
-
-    QSettings settings;
 
     QTimer *timer;
 
@@ -114,7 +112,7 @@ private:
     QList<bool> objectsnapping;
 
 
-protected slots:
+public slots:
     
     //parseFiles
     void openFileDXF();
@@ -176,7 +174,6 @@ protected slots:
     void Settings();
     void ShowOrigin();
 
-    
     //autosave
     void AutoSave();
 
@@ -208,14 +205,14 @@ protected slots:
     // Running widget
     void runSimulationButtonClicked();
 
+    // Time
+    void setTimer(int interval);
+
 private slots:
     void on_actionCopy_triggered();
     void on_actionOnline_Help_triggered();
     void on_actionClear_all_Rooms_and_Doors_triggered();
 
-    //default setting
-    void saveSettings(QMap<QString, QString> settingsmap);
-    QMap<QString, QString> loadSettings();
     void on_actionNew_Inifile_triggered();
     void on_actionBack_to_Origin_triggered();
     void on_actionZoom_Windows_triggered();

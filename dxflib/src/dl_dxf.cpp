@@ -224,10 +224,6 @@ bool DL_Dxf::readDxfGroups(std::stringstream& stream,
  *
  * @retval true if line could be read
  * @retval false if \p fp is already at end of file
- *
- * @todo Change function to use safer FreeBSD strl* functions
- * @todo Is it a problem if line is blank (i.e., newline only)?
- *      Then, when function returns, (s==NULL).
  */
 bool DL_Dxf::getStrippedLine(std::string& s, unsigned int size, FILE *fp) {
     if (!feof(fp)) {
@@ -674,7 +670,6 @@ bool DL_Dxf::processDXFGroup(DL_CreationInterface* creationInterface,
             endEntity(creationInterface);
         }
 
-        // TODO: end of SPLINE entity
         //if (prevEntity==DL_ENTITY_CONTROLPOINT && currentEntity!=DL_ENTITY_CONTROLPOINT) {
         //    endEntity(creationInterface);
         //}
@@ -1649,7 +1644,6 @@ void DL_Dxf::addText(DL_CreationInterface* creationInterface) {
 
 /**
  * Adds an attrib entity that was read from the file via the creation interface.
- * @todo add attrib instead of normal text
  */
 void DL_Dxf::addAttribute(DL_CreationInterface* creationInterface) {
     DL_AttributeData d(

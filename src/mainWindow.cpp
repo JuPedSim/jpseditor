@@ -103,15 +103,6 @@ MWindow :: MWindow()
     statusBar()->addPermanentWidget(label_y);
     statusBar()->addPermanentWidget(y_edit);
 
-    // Timer needed for autosaving function
-    // timer will trigger autosave every 5th minute
-    timer = new QTimer(this);
-    timer->setInterval(600000);
-    timer->start();
-
-    _cMapTimer = new QTimer(this);
-    //_cMapTimer=nullptr;
-
     _statScale=false;
 
     // Signals and Slots
@@ -122,6 +113,9 @@ MWindow :: MWindow()
     connect(action_ffnen_cogmap,SIGNAL(triggered(bool)),this,SLOT(openFileCogMap()));
     connect(actionSpeichern,SIGNAL(triggered(bool)),this,SLOT(saveAsXML()));
     connect(actionSpeichern_dxf,SIGNAL(triggered(bool)),this,SLOT(saveAsDXF()));
+
+    // Tab Preference
+    settingDialog = nullptr;
     connect(actionSettings,SIGNAL(triggered(bool)),this,SLOT(Settings()));
 
     // Tab Help
@@ -168,6 +162,17 @@ MWindow :: MWindow()
 //    connect(str_del,SIGNAL(triggered(bool)),this,SLOT(remove_all_lines()));
 
     // Autosave
+//    _cMapTimer = new QTimer(this);
+    // Timer needed for autosaving function
+    // timer will trigger autosave every 5th minute
+    timer = new QTimer(this);
+
+    timer->start();
+    QSettings settings;
+    settings.beginGroup("backup");
+    int interval = settings.value("interval", "1").toInt()*60000;
+    settings.endGroup();
+    timer->setInterval(interval);
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
 
     // Landmark specifications
@@ -280,7 +285,7 @@ MWindow::~MWindow()
     delete label2;
     delete infoLabel;
     delete timer;
-    delete _cMapTimer;
+//    delete _cMapTimer;
     delete drawing_toolbar_;
     qDebug("Leave MWindow::~MWindow");
 }
@@ -341,8 +346,14 @@ void MWindow::closeLeftToolBarArea()
 void MWindow::AutoSave()
 {
     qDebug("Enter MWindow::AutoSave");
-    QMap<QString, QString> settingsmap = loadSettings();
-    QString backupfolder = settingsmap["backupfolder"];
+
+    QSettings settings("FZJ","JPSeditor");
+
+    settings.beginGroup("backup");
+    QString backupfolder = settings.value("backupfolder", "../").toString();
+    settings.endGroup();
+
+    qDebug("Backup folder is %s", qUtf8Printable(backupfolder));
 
     QString filename = backupfolder + "/backup_untitled.xml";
     QFile file(filename);
@@ -442,23 +453,7 @@ void MWindow::GatherData()
 void MWindow::Settings()
 {
     qDebug("Enter MWindow::Settings");
-    settingDialog = new SettingDialog;
-
-//    QString backupfolder = settings.value("backupfolder").toString();
-//    QString interval =  settings.value("interval").toString();
-//
-//    qDebug()<< settings.value("backupfolder");
-//    qDebug()<< settings.value("interval");
-//
-//    QMap<QString, QString> defaultsetting;
-//    defaultsetting["backupfolder"] = backupfolder;
-//    defaultsetting["interval"] = interval;
-
-    QMap<QString, QString> defaultsetting = loadSettings();
-    connect(settingDialog,SIGNAL(sendSetting(QMap<QString, QString>)),
-            this,SLOT(saveSettings(QMap<QString, QString>)));
-    settingDialog->setCurrentSetting(defaultsetting);
-
+    settingDialog = new SettingDialog(this);
     settingDialog->setModal(true);
     settingDialog->exec();
     qDebug("Leave MWindow::Settings");
@@ -1252,34 +1247,6 @@ void MWindow::keyPressEvent(QKeyEvent *event)
     }
 }
 
-// Default settings
-void MWindow::saveSettings(QMap<QString, QString> settingsmap)
-{
-    QSettings settings("FZJ","JPSeditor");
-    settings.beginGroup("backup");
-    settings.setValue("backupfolder", settingsmap["backupfolder"]);
-    settings.setValue("interval", settingsmap["interval"]);
-    timer->setInterval(settingsmap["interval"].toInt());
-    settings.endGroup();
-}
-
-QMap<QString, QString> MWindow::loadSettings()
-{
-    qDebug("Enter MWindow::loadSettings");
-    QSettings settings("FZJ","JPSeditor");
-
-    settings.beginGroup("backup");
-    QString value = settings.value("backupfolder", "../").toString();
-    QString interval = settings.value("interval", "600000").toString();
-    settings.endGroup();
-
-    QMap<QString, QString> settingsmap;
-    settingsmap["backupfolder"] = value;
-    settingsmap["interval"] = interval;
-
-    qDebug("Leave MWindow::loadSettings");
-    return settingsmap;
-}
 
 void MWindow::on_actionNew_Inifile_triggered()
 {
@@ -1495,7 +1462,7 @@ void MWindow::addListDockWidget(const QString &type)
     listDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
 
     // create list widget
-    auto *listWidget = new RoomListWidget(this, this->dmanager);
+    auto *listWidget = new RoomListWidget(this, this->dmanager, this->mview);
     listWidget->setLabel(type);
 
     // add list widget into dock widget
@@ -1620,4 +1587,11 @@ void MWindow::closeBottomDockWidget()
         bottomDockWidget = nullptr;
     }
     qDebug("Leave MWindow::closeBottomDockWidget");
+}
+
+void MWindow::setTimer(int interval)
+{
+    qDebug("Enter MWindow::setTimer");
+    timer->setInterval(interval*60000); // Convert interval into millisecond
+    qDebug("Leave MWindow::setTimer");
 }

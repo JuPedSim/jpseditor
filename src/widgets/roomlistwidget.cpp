@@ -30,17 +30,22 @@
 #include "roomlistwidget.h"
 #include "ui_roomlistwidget.h"
 
-RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager)
+RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsView *gview)
     : QWidget(parent), ui(new Ui::RoomListWidget)
 {
     qDebug("Enter RoomListWidget::RoomListWidget");
     ui->setupUi(this);
     data = dmanager;
+    view = gview;
 
     updateRoomsListWidget();
 
     // Delete all contents
     connect(parent, SIGNAL(allContentsDeleted()), this, SLOT(updateRoomsListWidget()));
+
+    // Highlight room and subroom
+    connect(ui->listWidget_rooms, SIGNAL(itemClicked(QListWidgetItem *)),this, SLOT(highlightRoom(QListWidgetItem *)));
+    connect(ui->listWidget_zones, SIGNAL(itemClicked(QListWidgetItem *)),this, SLOT(highlightZone(QListWidgetItem *)));
 
     // add propertyDockWidget
     connect(this, SIGNAL(zoneSelected(JPSZone *)), parent, SLOT(addPropertyDockWidget(JPSZone *)));
@@ -440,4 +445,89 @@ void RoomListWidget::deleteZoneButtonClicked()
     qDebug("Leave RoomListWidget::deleteZoneButtonClicked");
 }
 
+void RoomListWidget::highlightRoom(QListWidgetItem *item)
+{
+    qDebug("Enter oomListWidget::highlightRoom");
+    if(item == nullptr)
+        return;
 
+    auto *room = getCurrentRoom(item);
+
+    view->unmark_all_lines();
+
+    for(QList<JPSZone *> list : room->getZoneList())
+    {
+        for(JPSZone *zone : list)
+        {
+            if(zone != nullptr) // Mark every zones
+            {
+                if(zone->getType() == Platform)
+                {
+                    for(JPSTrack *track : zone->getTrackList())
+                    {
+                        view->markLine(track->getLine());
+                    }
+                } else
+                {
+                    for(jpsLineItem *wall : zone->get_listWalls())
+                    {
+                        view->markLine(wall);
+                    }
+                }
+
+                // Mark crossing
+                for(jpsCrossing *crossing : zone->getEnterAndExitList())
+                {
+                    view->markLine(crossing->get_cLine());
+                }
+
+                // Mark transitions in the subroom
+                for(jpsTransition *transition : data->getTransitionInSubroom(zone))
+                {
+                    view->markLine(transition->get_cLine());
+                }
+            }
+        }
+    }
+
+    qDebug("Leave oomListWidget::highlightRoom");
+}
+
+void RoomListWidget::highlightZone(QListWidgetItem *item)
+{
+    qDebug("Enter RoomListWidget::highlightZone");
+    if(item == nullptr)
+        return;
+
+    view->unmark_all_lines();
+
+    auto *zone = getCurrentZone(item);
+
+    if(zone->getType() == Platform)
+    {
+        for(JPSTrack *track : zone->getTrackList())
+        {
+            view->markLine(track->getLine());
+        }
+    } else
+    {
+        for(jpsLineItem *wall : zone->get_listWalls())
+        {
+            view->markLine(wall);
+        }
+    }
+
+    // Mark crossing
+    for(jpsCrossing *crossing : zone->getEnterAndExitList())
+    {
+        view->markLine(crossing->get_cLine());
+    }
+
+    // Mark transitions in the subroom
+    for(jpsTransition *transition : data->getTransitionInSubroom(zone))
+    {
+        view->markLine(transition->get_cLine());
+    }
+
+    qDebug("Leave RoomListWidget::highlightZone");
+}

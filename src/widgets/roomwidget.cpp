@@ -361,7 +361,7 @@ void roomWidget::selectWall()
         }
         int cWallRow=ui->listWalls->currentRow();
         int cRoomRow=ui->list_rooms->currentRow();
-        graphview->select_line(datamanager->get_roomlist()[cRoomRow]->get_listWalls()[cWallRow]);
+        graphview->markLine(datamanager->get_roomlist()[cRoomRow]->get_listWalls()[cWallRow]);
     }
     qDebug("Leave roomWidget::selectWall");
 }
@@ -521,7 +521,7 @@ void roomWidget::select_crossing()
             graphview->unmark_all_lines();
         }
         int cCrossRow=ui->crossingList->currentRow();
-        graphview->select_line(datamanager->get_crossingList()[cCrossRow]->get_cLine());
+        graphview->markLine(datamanager->get_crossingList()[cCrossRow]->get_cLine());
     }
     qDebug("Leave roomWidget::select_crossing");
 }
@@ -635,7 +635,7 @@ void roomWidget::select_exit()
 //        int cExitRow=ui->exitList->currentRow();
 
 
-//        graphview->select_line(datamanager->getTransitionList()[cExitRow]->get_cLine());
+//        graphview->markLine(datamanager->getTransitionList()[cExitRow]->get_cLine());
 
 //    }
 //    qDebug("Leave roomWidget::select_exit);
@@ -782,7 +782,7 @@ void roomWidget::selectWallObs()
         int cWallRow=ui->listWallsObs->currentRow();
         int cObsRow=ui->list_obstacles->currentRow();
 
-        graphview->select_line(datamanager->get_obstaclelist()[cObsRow]->get_listWalls()[cWallRow]);
+        graphview->markLine(datamanager->get_obstaclelist()[cObsRow]->get_listWalls()[cWallRow]);
 
     }
     qDebug("Leave roomWidget::selectWallObs");

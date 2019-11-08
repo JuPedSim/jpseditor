@@ -258,7 +258,7 @@ void LayerWidget::highLight(QListWidgetItem *item)
     {
         // For wall, crossing, transition, track, hline
         auto *line = layer->getLineItemList()[ui->listWidget_items->currentRow()];
-        view->select_line(line);
+        view->markLine(line);
     }
 
     qDebug("Leave LayerWidget::highLight");
