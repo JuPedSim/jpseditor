@@ -60,8 +60,8 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 
     transition_id = 1;
 
-    sourcelist = _mView->getSources();
-    goallist = _mView->getGoals();
+//    sourcelist = _mView->getSources();
+//    goallist = _mView->getGoals();
     qDebug("Leave jpsDatamanager::jpsDatamanager");
 }
 

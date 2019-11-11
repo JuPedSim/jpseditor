@@ -36,22 +36,41 @@ RunningWidget::RunningWidget(QWidget *parent) : QWidget(parent), ui(new Ui::Runn
 {
     ui->setupUi(this);
 
+    // Set-up ui
     ui->InfoWidget->setReadOnly(true); // only for display
     ui->lineEdit_inifile->setReadOnly(true);
     ui->lineEdit_JPScore->setReadOnly(true);
+    ui->lineEdit_JPSvis->setReadOnly(true);
+    ui->lineEdit_Geometry->setReadOnly(true);
+    ui->lineEdit_Trajetory->setReadOnly(true);
 
+    // Load default settings
+    QSettings settings("FZJ","JPSeditor");
+
+    settings.beginGroup("JuPedSim");
+    ui->lineEdit_JPScore->setText(settings.value("JPScore", "../").toString());
+    ui->lineEdit_JPSvis->setText(settings.value("JPSvis", "../").toString());
+    settings.endGroup();
+
+    // Start process
     cmd = new QProcess(this);
+    cmd->start("zsh");
+    cmd->waitForStarted();
 
+    // Signals & Slots
     connect(cmd, SIGNAL(readyReadStandardOutput()) , this, SLOT(on_readoutput()));
     connect(cmd, SIGNAL(readyReadStandardError()) , this, SLOT(on_readerror()));
     connect(ui->lineEdit_cmd, SIGNAL(returnPressed()), this, SLOT(inputCommand()));
 
     connect(ui->pushButton_chooseInifle, SIGNAL(clicked()), this, SLOT(chooseInifileButtonClicked()));
     connect(ui->pushButton_chooseJPScore, SIGNAL(clicked()), this, SLOT(chooseJPScoreButtonClicked()));
-    connect(ui->pushButton_run, SIGNAL(clicked()), this, SLOT(runButtonClicked()));
+    connect(ui->pushButton_chooseJPSvis, SIGNAL(clicked()), this, SLOT(chooseJPSvisButtonClicked()));
+    connect(ui->pushButton_chooseGeometry, SIGNAL(clicked()), this, SLOT(chooseGeometryButtonClicked()));
+    connect(ui->pushButton_chooseTrajetory, SIGNAL(clicked()), this, SLOT(chooseTrajetoryButtonClicked()));
 
-    cmd->start("zsh");
-    cmd->waitForStarted();
+    connect(ui->pushButton_run, SIGNAL(clicked()), this, SLOT(runButtonClicked()));
+    connect(ui->pushButton_viewGeometry, SIGNAL(clicked()), this, SLOT(viewGeometryButtonClicked()));
+    connect(ui->pushButton_viewResult, SIGNAL(clicked()), this, SLOT(viewResultButtonClicked()));
 }
 
 RunningWidget::~RunningWidget()
@@ -74,7 +93,7 @@ void RunningWidget::on_readoutput()
 void RunningWidget::on_readerror()
 {
     qDebug("Enter RunningWidget::on_readerror");
-//    QMessageBox::information(nullptr, "Error", cmd->readAllStandardError().data());
+    QMessageBox::information(nullptr, "Error", cmd->readAllStandardError().data());
     qDebug("Leave RunningWidget::on_readerror");
 }
 
@@ -99,11 +118,67 @@ void RunningWidget::chooseInifileButtonClicked()
 void RunningWidget::chooseJPScoreButtonClicked()
 {
     qDebug("Enter RunningWidget::chooseJPScoreButtonClicked");
-    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose JPSCore Path"),""
-            ,tr("JPScore (jpscore)"));
+    QString programm = QFileDialog::getOpenFileName(
+            this,
+            tr("Choose JPSvis"),
+            "/Users",
+            "jpscore");
 
-    ui->lineEdit_JPScore->setText(fileName);
+    ui->lineEdit_JPScore->setText(programm);
     qDebug("Leave RunningWidget::chooseJPScoreButtonClicked");
+}
+
+void RunningWidget::chooseJPSvisButtonClicked() 
+{
+    qDebug("Enter RunningWidget::chooseJPSvisButtonClicked");
+    QString programm = QFileDialog::getOpenFileName(
+            this,
+            tr("Choose JPSvis"),
+            "/Users",
+            "jpsvis.app");
+
+    ui->lineEdit_JPSvis->setText(programm);
+    qDebug("Leave RunningWidget::chooseJPSvisButtonClicked");
+}
+
+void RunningWidget::chooseGeometryButtonClicked()
+{
+    qDebug("Enter RunningWidget::chooseGeometryButtonClicked");
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose geometry"),""
+            ,tr("XML-Files (*.xml)"));
+
+    ui->lineEdit_Geometry->setText(fileName);
+    qDebug("Leave RunningWidget::chooseGeometryButtonClicked");
+}
+
+void RunningWidget::chooseTrajetoryButtonClicked()
+{
+    qDebug("Enter RunningWidget::chooseTrajetoryButtonClicked");
+    QString fileName=QFileDialog::getOpenFileName(this,tr("Choose trajetory"),""
+            ,tr("XML-Files (*.xml)"));
+
+    ui->lineEdit_Trajetory->setText(fileName);
+    qDebug("Leave RunningWidget::chooseTrajetoryButtonClicked");
+}
+
+void RunningWidget::viewGeometryButtonClicked()
+{
+    qDebug("Enter RunningWidget::viewGeometryButtonClicked");
+    QString command = ui->lineEdit_JPSvis->text() + " " + ui->lineEdit_Geometry->text();
+    ui->lineEdit_cmd->setText(command);
+
+    inputCommand();
+    qDebug("Leave RunningWidget::viewGeometryButtonClicked");
+}
+
+void RunningWidget::viewResultButtonClicked()
+{
+    qDebug("Enter RunningWidget::viewResultButtonClicked");
+    QString command = ui->lineEdit_JPSvis->text() + " " + ui->lineEdit_Trajetory->text();
+    ui->lineEdit_cmd->setText(command);
+
+    inputCommand();
+    qDebug("Leave RunningWidget::viewResultButtonClicked");
 }
 
 void RunningWidget::runButtonClicked()
