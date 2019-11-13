@@ -1924,7 +1924,7 @@ void jpsDatamanager::parseUndefine(const QDomElement &element)
         double y2=xVertices.item(1).toElement().attribute("py", "0").toDouble();
 
         QString type = polygon.attribute("caption");
-        _mView->addLineItem(x1,y1,x2,y2,type);
+        _mView->addLineItem(x1,y1,x2,y2,"wall");
     }
 
     qDebug("Leave jpsDatamanager::parseUndefine");
@@ -2148,7 +2148,7 @@ void jpsDatamanager::parseHline(QXmlStreamReader &xmlReader)
             qreal x2=xmlReader.attributes().value("px").toString().toFloat();
             qreal y2=xmlReader.attributes().value("py").toString().toFloat();
             // add Line to graphview
-            _mView->addLineItem(x1,y1,x2,y2,"HLine");
+            _mView->addLineItem(x1,y1,x2,y2,"hline");
         }
     }
     qDebug("Leave jpsDatamanager::parseHline");
@@ -2256,11 +2256,11 @@ void jpsDatamanager::addLine(const DL_LineData &d)
     std::string layername = attributes.getLayer();
     std::transform(layername.begin(), layername.end(), layername.begin(), ::tolower);
     if (layername=="wall")
-        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"Wall");
+        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
     else if (layername=="door")
-        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"Crossing");
+        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"crossing");
     else
-        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2);
+        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
     qDebug("Leave jpsDatamanager::addLine");
 }
 
