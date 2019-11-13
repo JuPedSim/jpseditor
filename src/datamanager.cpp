@@ -2255,12 +2255,13 @@ void jpsDatamanager::addLine(const DL_LineData &d)
     DL_Attributes attributes = DL_CreationInterface::getAttributes();
     std::string layername = attributes.getLayer();
     std::transform(layername.begin(), layername.end(), layername.begin(), ::tolower);
+
     if (layername=="wall")
         _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
     else if (layername=="door")
         _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"crossing");
     else
-        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
+        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"undefined");
     qDebug("Leave jpsDatamanager::addLine");
 }
 

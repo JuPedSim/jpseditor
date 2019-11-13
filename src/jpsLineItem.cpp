@@ -172,6 +172,14 @@ void jpsLineItem::setTrack()
     qDebug("Leave jpsLineItem::setTrack");
 }
 
+void jpsLineItem::setUndefined()
+{
+    qDebug("Enter jpsLineItem::setUndefined");
+    lineType = undefined;
+    defaultColor="black";
+    qDebug("Leave jpsLineItem::setUndefined");
+}
+
 void jpsLineItem::set_defaultColor(QString color)
 {
     qDebug("Enter jpsLineItem::set_defaultColor");
