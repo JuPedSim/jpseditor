@@ -93,7 +93,7 @@ void RunningWidget::on_readoutput()
 void RunningWidget::on_readerror()
 {
     qDebug("Enter RunningWidget::on_readerror");
-    QMessageBox::information(nullptr, "Error", cmd->readAllStandardError().data());
+    ui->InfoWidget->append(cmd->readAllStandardError().data());
     qDebug("Leave RunningWidget::on_readerror");
 }
 
@@ -164,7 +164,7 @@ void RunningWidget::chooseTrajetoryButtonClicked()
 void RunningWidget::viewGeometryButtonClicked()
 {
     qDebug("Enter RunningWidget::viewGeometryButtonClicked");
-    QString command = ui->lineEdit_JPSvis->text() + " " + ui->lineEdit_Geometry->text();
+    QString command = ui->lineEdit_JPSvis->text() + "/Contents/MacOS/jpsvis" + " " + ui->lineEdit_Geometry->text();
     ui->lineEdit_cmd->setText(command);
 
     inputCommand();
@@ -174,7 +174,8 @@ void RunningWidget::viewGeometryButtonClicked()
 void RunningWidget::viewResultButtonClicked()
 {
     qDebug("Enter RunningWidget::viewResultButtonClicked");
-    QString command = ui->lineEdit_JPSvis->text() + " " + ui->lineEdit_Trajetory->text();
+    QString command = ui->lineEdit_JPSvis->text() + "/Contents/MacOS/jpsvis"  +
+            " " + ui->lineEdit_Trajetory->text();
     ui->lineEdit_cmd->setText(command);
 
     inputCommand();
