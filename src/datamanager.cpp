@@ -2241,30 +2241,58 @@ bool jpsDatamanager::readDXF(std::string filename)
     }
     else
     {
-        ///AutoZoom to contents (items of Scene)
         _mView->AutoZoom();
+
+        // Print unimported layer
+        QMessageBox msgBox;
+        QString detailied_text;
+
+        QStringListIterator javaStyleIterator(unimported_layer);
+        while (javaStyleIterator.hasNext())
+        {
+            detailied_text += javaStyleIterator.next() + "\n";
+        }
+
+        msgBox.setText("Geometry is loaded, but lines in these layer aren't loaded.");
+        msgBox.setDetailedText(detailied_text);
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.exec();
         qDebug("Leave jpsDatamanager::readDXF");
         return true;
     }
-
 }
 
 void jpsDatamanager::addLine(const DL_LineData &d)
 {
     qDebug("Enter jpsDatamanager::addLine");
     DL_Attributes attributes = DL_CreationInterface::getAttributes();
-    std::string layername = attributes.getLayer();
-    std::transform(layername.begin(), layername.end(), layername.begin(), ::tolower);
+    auto layername = QString::fromStdString(attributes.getLayer());
 
-    if (layername=="wall")
+    if (layername.contains("wall"))
+    {
         _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
-    else if (layername=="door")
+    }
+    else if (layername.contains("crossing"))
+    {
         _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"crossing");
+    }
+    else if (layername.contains("transition"))
+    {
+        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"transition");
+    }
+    else if (layername.contains("track"))
+    {
+        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"track");
+    }
     else
-        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"undefined");
+    {
+        if(!unimported_layer.contains(layername))
+        {
+            unimported_layer.append(layername);
+        }
+    }
     qDebug("Leave jpsDatamanager::addLine");
 }
-
 
 void jpsDatamanager::writeDXF(std::string filename)
 {
