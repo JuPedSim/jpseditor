@@ -61,7 +61,7 @@ void Layer::setName(QString layername)
 
 QList<jpsLineItem *> Layer::getLineItemList()
 {
-    qDebug("Enter/Leave Layer::getItemLis");
+    qDebug("Enter/Leave Layer::getItemList");
     return lineItem_list;
 }
 

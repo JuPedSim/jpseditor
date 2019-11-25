@@ -47,6 +47,7 @@ LayerWidget::LayerWidget(QWidget *parent, jpsGraphicsView *mview)
     // Layer widget
     connect(ui->pushButton_addLayer, SIGNAL(clicked()), this, SLOT(addLayerButtonClicked()));
     connect(ui->listWidget_layers, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(renameLayer(QListWidgetItem *)));
+    connect(ui->listWidget_layers, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(updateItemsListWidget(QListWidgetItem *)));
     connect(ui->pushButton_deleteLayer, SIGNAL(clicked()), this, SLOT(deleteLayerButtonClicked()));
 
     // Item widget
@@ -151,7 +152,7 @@ void LayerWidget::deleteLayerButtonClicked()
     }
 
     updateLayerListWidget();
-    updateItemsListWidget();
+    updateItemsListWidget(ui->listWidget_layers->currentItem());
     qDebug("Leave void LayerWidget::deleteLayerButtonClicked");
 }
 
@@ -178,35 +179,36 @@ void LayerWidget::addItemsButtonClicked()
         msgBox.exec();
     }
 
-    updateItemsListWidget();
+    updateItemsListWidget(ui->listWidget_layers->currentItem());
 
     qDebug("Leave LayerWidget::addItemsButtonClicked");
 }
 
-void LayerWidget::updateItemsListWidget()
+void LayerWidget::updateItemsListWidget(QListWidgetItem *item)
 {
-    qDebug("Enter LayerWidget::updateItemsListWidget");
+    qDebug("Enter LayerWidget::updateLayerListWidget(QListWidgetItem *item)");
     ui->listWidget_items->clear();
 
-    if(ui->listWidget_layers->currentItem() == nullptr)
+    if(item == nullptr)
         return;
 
-    foreach(Layer *layer, view->getLayerList())
-    {
-        // Show QGraphicsLineItem
-        foreach(jpsLineItem *item, layer->getLineItemList())
-        {
-            QString string = "";
-            string.sprintf("Line: [%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
-                    item->get_line()->line().x1(),
-                    item->get_line()->line().x2(),
-                    item->get_line()->line().y1(),
-                    item->get_line()->line().y2());
+    int index = ui->listWidget_layers->currentRow();
+    auto layer = view->getLayerList()[index];
 
-            ui->listWidget_items->addItem(string);
-        }
+    foreach(jpsLineItem *item, layer->getLineItemList())
+    {
+        QString type = item->getType();
+        QString string = "";
+        string.sprintf("%s: [%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
+                       qUtf8Printable(type),
+                       item->get_line()->line().x1(),
+                       item->get_line()->line().x2(),
+                       item->get_line()->line().y1(),
+                       item->get_line()->line().y2());
+
+        ui->listWidget_items->addItem(string);
     }
-    qDebug("Leave LayerWidget::updateItemsListWidget");
+    qDebug("Leave LayerWidget::updateLayerListWidget(QListWidgetItem *item)");
 }
 
 void LayerWidget::checkVisibility(QListWidgetItem *item)
@@ -241,7 +243,7 @@ void LayerWidget::removeItemsButtonClicked()
         }
     }
 
-    updateItemsListWidget();
+    updateItemsListWidget(ui->listWidget_layers->currentItem());
     qDebug("Leave LayerWidget::removeItemsButtonClicked");
 }
 
@@ -254,7 +256,8 @@ void LayerWidget::highLight(QListWidgetItem *item)
     auto *layer = view->getLayerList()[ui->listWidget_layers->currentRow()];
     QString text = item->text();
 
-    if(text.contains("Line"))
+    if(text.contains("wall") || text.contains("crossing")
+    || text.contains("track") || text.contains("transition") || text.contains("hline"))
     {
         // For wall, crossing, transition, track, hline
         auto *line = layer->getLineItemList()[ui->listWidget_items->currentRow()];

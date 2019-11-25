@@ -1015,7 +1015,7 @@ void jpsGraphicsView::catch_line_point()
 void jpsGraphicsView::catch_lines()
 {
     qDebug("Enter jpsGraphicsView::catch_lines");
-    // Catch elements (only possible if wall is disabled) which haven't own widget (exp. transitions, sources, goals)
+    // Catch wall, crossing, transition, track, hline
     // If current rect was build up moving the cursor to the left ->
     // Whole line has to be within the rect to select the line
     line_tracked=-1;
@@ -1025,17 +1025,26 @@ void jpsGraphicsView::catch_lines()
         for (auto &item:line_vector)
         {
             if (currentSelectRect->contains(item->get_line()->line().p1())
-                    && currentSelectRect->contains(item->get_line()->line().p2())
-                    && item->get_defaultColor()!="white")
+                && currentSelectRect->contains(item->get_line()->line().p2())
+                && item->get_defaultColor()!="white")
             {
                 markLine(item);
             }
         }
 
+        // select transitions
+        for (auto item:_datamanager->getTransitionList())
+        {
+            if (currentSelectRect->contains(item->get_cLine()->get_line()->line().p1())
+                && currentSelectRect->contains(item->get_cLine()->get_line()->line().p2()))
+            {
+                markLine(item->get_cLine());
+            }
+        }
 
     }
-    // Ff current rect was build up moving the cursor to the right ->
-    // Throwing the select rect only over a part of a line is sufficent to select it
+        // Ff current rect was build up moving the cursor to the right ->
+        // Throwing the select rect only over a part of a line is sufficent to select it
     else if (currentSelectRect->rect().width()>0)
     {
         for (auto &item : line_vector)
@@ -1047,6 +1056,15 @@ void jpsGraphicsView::catch_lines()
             }
         }
 
+        // select transitions
+        for (auto item:_datamanager->getTransitionList())
+        {
+            if (currentSelectRect->collidesWithItem(item->get_cLine()->get_line()))
+            {
+                markLine(item->get_cLine());
+                line_tracked=1;
+            }
+        }
     }
     qDebug("Leave jpsGraphicsView::catch_lines");
 }
