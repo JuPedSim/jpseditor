@@ -24,6 +24,7 @@ public slots:
     void chooseBackupButtonClicked();
     void applyButtonClicked();
     void chooseJPScoreButtonClicked();
+    void chooseJPSvisButtonClicked();
 
 signals:
     void changeTimer(int interval);

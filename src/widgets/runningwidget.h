@@ -22,7 +22,13 @@ private slots:
 
     void chooseInifileButtonClicked();
     void chooseJPScoreButtonClicked();
+    void chooseJPSvisButtonClicked();
+    void chooseGeometryButtonClicked();
+    void chooseTrajetoryButtonClicked();
+
     void runButtonClicked();
+    void viewGeometryButtonClicked();
+    void viewResultButtonClicked();
 
 private:
     Ui::RunningWidget *ui;

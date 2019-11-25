@@ -19,7 +19,9 @@ SettingDialog::SettingDialog(QWidget *parent) :
     connect(ui->chooseButton, SIGNAL(clicked()),this, SLOT(chooseBackupButtonClicked()));
     connect(ui->applyButton, SIGNAL(clicked()),this, SLOT(applyButtonClicked()));
     connect(ui->cancelButton, SIGNAL(clicked()),this, SLOT(cancelButtonClicked()));
+
     connect(ui->pushButton_chooseJPScore, SIGNAL(clicked()),this, SLOT(chooseJPScoreButtonClicked()));
+    connect(ui->pushButton_chooseJPSvis, SIGNAL(clicked()),this, SLOT(chooseJPSvisButtonClicked()));
 
     // Setting up settings
     loadSettings();
@@ -67,6 +69,7 @@ void SettingDialog::applyButtonClicked()
 
     settings.beginGroup("JuPedSim");
     settings.setValue("JPScore", ui->lineEdit_JPScore->text());
+    settings.setValue("JPSvis", ui->lineEdit_JPSvis->text());
     settings.endGroup();
 
     qDebug("Leave SettingDialog::applyButtonClicked");
@@ -84,6 +87,7 @@ void SettingDialog::loadSettings()
 
     settings.beginGroup("JuPedSim");
     ui->lineEdit_JPScore->setText(settings.value("JPScore", "../").toString());
+    ui->lineEdit_JPSvis->setText(settings.value("JPSvis", "../").toString());
     settings.endGroup();
 
     qDebug("Leave MWindow::loadSettings");
@@ -93,12 +97,25 @@ void SettingDialog::chooseJPScoreButtonClicked()
 {
     qDebug("Enter SettingDialog::chooseJPScoreButtonClicked");
 
-    QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
-                                                    "/Users",
-                                                    QFileDialog::ShowDirsOnly
-                                                    | QFileDialog::DontResolveSymlinks);
+    QString programm = QFileDialog::getOpenFileName(
+            this,
+            tr("Choose JPSvis"),
+            "/Users",
+            "jpscore");
 
-    ui->lineEdit_JPScore->setText(dir);
+    ui->lineEdit_JPScore->setText(programm);
     qDebug("Leave SettingDialog::chooseJPScoreButtonClicked");
 }
 
+void SettingDialog::chooseJPSvisButtonClicked()
+{
+    qDebug("Enter SettingDialog::chooseJPSvisButtonClicked");
+    QString programm = QFileDialog::getOpenFileName(
+            this,
+            tr("Choose JPSvis"),
+            "/Users",
+            "jpsvis.app");
+
+    ui->lineEdit_JPSvis->setText(programm);
+    qDebug("Leave SettingDialog::chooseJPSvisButtonClicked");
+}

@@ -1260,6 +1260,7 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
 
     current_line=this->scene()->addLine(x1,y1,x2,y2,pen);
     current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+
     jpsLineItem* newLine = new jpsLineItem(current_line);
     newLine->set_id(id_counter);
     id_counter++;
@@ -1286,7 +1287,7 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
     }
     else
     {
-
+        newLine->setUndefined();
     }
 
     pen.setColor(newLine->get_defaultColor());

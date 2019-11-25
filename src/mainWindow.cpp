@@ -168,7 +168,7 @@ MWindow :: MWindow()
     timer = new QTimer(this);
 
     timer->start();
-    QSettings settings;
+    QSettings settings("FZJ","JPSeditor");
     settings.beginGroup("backup");
     int interval = settings.value("interval", "1").toInt()*60000;
     settings.endGroup();

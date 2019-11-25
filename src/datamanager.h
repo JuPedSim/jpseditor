@@ -190,6 +190,7 @@ public:
     // Read DXF
     bool readDXF(std::string filename);
     void addLine(const DL_LineData& d) override;
+    QStringList unimported_layer;
 
     // write DXF
     void writeDXF(std::string filename);

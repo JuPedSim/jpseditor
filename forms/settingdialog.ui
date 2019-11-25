@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Setting</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget1">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -23,16 +23,34 @@
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
+    <item row="1" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QPushButton" name="cancelButton">
+        <property name="text">
+         <string>Cancel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="applyButton">
+        <property name="text">
+         <string>Apply</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="backupTab">
        <attribute name="title">
         <string>Backup</string>
        </attribute>
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget2">
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -95,13 +113,13 @@
        <attribute name="title">
         <string>JuPedSim</string>
        </attribute>
-       <widget class="QWidget" name="layoutWidget">
+       <widget class="QWidget" name="layoutWidget3">
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>20</y>
+          <y>21</y>
           <width>291</width>
-          <height>91</height>
+          <height>171</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout">
@@ -133,28 +151,31 @@
            </property>
           </widget>
          </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>JPSvis</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <item>
+            <widget class="QLineEdit" name="lineEdit_JPSvis"/>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_chooseJPSvis">
+             <property name="text">
+              <string>Choose</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
         </layout>
        </widget>
       </widget>
      </widget>
-    </item>
-    <item row="1" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QPushButton" name="cancelButton">
-        <property name="text">
-         <string>Cancel</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="applyButton">
-        <property name="text">
-         <string>Apply</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </item>
    </layout>
   </widget>

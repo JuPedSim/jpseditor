@@ -55,6 +55,7 @@ public:
     void setHline();
     void setTransition();
     void setTrack();
+    void setUndefined();
     void set_defaultColor(QString color);
     bool is_Wall();
     bool is_Crossing();
