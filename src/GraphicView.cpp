@@ -128,7 +128,9 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
 jpsGraphicsView::~jpsGraphicsView()
 {
     qDebug("Enter jpsGraphicsView::~jpsGraphicsView");
-    delete_all(true);
+    // When exit the programm, marked lines and landmarks are already deleted by ~datamanger,
+    // Here just delete the contents in the view.
+    removeContents();
     qDebug("Leave jpsGraphicsView::~jpsGraphicsView");
 }
 
@@ -300,7 +302,7 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
     {
         switch (drawingMode){
             case Landmark:
-                addLandmark();
+                drawLandmark();
                 break;
             case Source:
                 drawSource();
@@ -407,9 +409,9 @@ void jpsGraphicsView::unmark_all_lines()
     qDebug("Leave jpsGraphicsView::unmark_all_lines");
 }
 
-void jpsGraphicsView::addLandmark()
+void jpsGraphicsView::drawLandmark()
 {
-    qDebug("Enter jpsGraphicsView::addLandmark");
+    qDebug("Enter jpsGraphicsView::drawLandmark");
     QPixmap pixmap("../jupedsim/forms/statue.jpg");
 
     QGraphicsPixmapItem* pixmapItem = this->scene()->addPixmap(pixmap);
@@ -429,17 +431,16 @@ void jpsGraphicsView::addLandmark()
     text->setData(0,0.01);
     text->setTransform(QTransform::fromScale(0.01,-0.01),true);
 
-
     landmark->SetPixMapText(text);
 
     _datamanager->new_landmark(landmark);
-    qDebug("Leave jpsGraphicsView::addLandmark");
+    qDebug("Leave jpsGraphicsView::drawLandmark");
 
 }
 
-void jpsGraphicsView::addLandmark(const QPointF &pos)
+void jpsGraphicsView::drawLandmark(const QPointF &pos)
 {
-    qDebug("Enter jpsGraphicsView::addLandmark");
+    qDebug("Enter jpsGraphicsView::drawLandmark");
     QPixmap pixmap("../jupedsim/forms/statue.jpg");
 
     QGraphicsPixmapItem* pixmapItem = this->scene()->addPixmap(pixmap);
@@ -464,7 +465,7 @@ void jpsGraphicsView::addLandmark(const QPointF &pos)
     landmark->SetPixMapText(text);
 
     _datamanager->new_landmark(landmark);
-    qDebug("Leave jpsGraphicsView::addLandmark");
+    qDebug("Leave jpsGraphicsView::drawLandmark");
 }
 
 
@@ -666,70 +667,7 @@ void jpsGraphicsView::delete_all(bool final)
         }
     }
 
-    // Delete items in scene (sources, goals, transitions)
-    this->scene()->clear();
-
-    // Delete all lines in view
-    for (int i=0; i<line_vector.size(); i++)
-    {
-//        delete line_vector[i]->get_line();
-        delete line_vector[i];
-        line_vector[i] = nullptr;
-    }
-
-    line_vector.clear();
-
-    // Delete all intersect points
-    for (int i=0; i<intersect_point_vector.size(); i++)
-    {
-        delete intersect_point_vector[i];
-        intersect_point_vector[i] = nullptr;
-    }
-
-    intersect_point_vector.clear();
-
-    // Delete landmarks
-    _datamanager->remove_all_landmarks();
-
-    // Remove marked lines
-    marked_lines.clear();
-
-    if (current_line!=nullptr)
-    {
-        delete current_line;
-        current_line=nullptr;
-    }
-
-    if (_currentVLine!=nullptr)
-    {
-        delete _currentVLine;
-        _currentVLine=nullptr;
-    }
-
-    if(currentSource != nullptr)
-    {
-        delete currentSource;
-        currentSource = nullptr;
-    }
-
-    if(currentGoal != nullptr)
-    {
-        delete currentGoal;
-        currentGoal = nullptr;
-    }
-
-    if(!layer_list.isEmpty())
-    {
-        for(Layer *layer : layer_list)
-        {
-            delete layer;
-            layer = nullptr;
-        }
-
-        layer_list.clear();
-    }
-
-    line_tracked=-1;
+    removeContents();
 
     update();
     qDebug("Leave jpsGraphicsView::delete_all");
@@ -1077,10 +1015,11 @@ void jpsGraphicsView::catch_line_point()
 void jpsGraphicsView::catch_lines()
 {
     qDebug("Enter jpsGraphicsView::catch_lines");
-    // Catch lines (only possible if wall is disabled)
+    // Catch elements (only possible if wall is disabled) which haven't own widget (exp. transitions, sources, goals)
     // If current rect was build up moving the cursor to the left ->
     // Whole line has to be within the rect to select the line
     line_tracked=-1;
+
     if (currentSelectRect->rect().width()<0)
     {
         for (auto &item:line_vector)
@@ -1092,20 +1031,22 @@ void jpsGraphicsView::catch_lines()
                 markLine(item);
             }
         }
+
+
     }
     // Ff current rect was build up moving the cursor to the right ->
     // Throwing the select rect only over a part of a line is sufficent to select it
     else if (currentSelectRect->rect().width()>0)
     {
-        for (auto &item:line_vector)
+        for (auto &item : line_vector)
         {
             if (currentSelectRect->collidesWithItem(item->get_line()) && item->get_defaultColor()!="white")
             {
                 markLine(item);
                 line_tracked=1;
-
             }
         }
+
     }
     qDebug("Leave jpsGraphicsView::catch_lines");
 }
@@ -2986,4 +2927,98 @@ void jpsGraphicsView::clearMarkedLineList()
     qDebug("Enter jpsGraphicsView::clearMarkedLineList");
     marked_lines.clear();
     qDebug("Leave jpsGraphicsView::clearMarkedLineList");
+}
+
+void jpsGraphicsView::removeContents()
+{
+    qDebug("Enter jpsGraphicsView::removeContents");
+    // Delete all contents which are stored in GraphicView, but not in datamanger(landmarks and marked lines)
+
+    // Delete items in scene (sources, goals, transitions and all QGraphicItems);
+    // If a list contains QGraphicItems, it just need to be cleared with clear();
+    this->scene()->clear();
+
+    if (current_line!=nullptr)
+    {
+        delete current_line;
+        current_line=nullptr;
+    }
+
+    // Delete all intersect points
+    for (int i=0; i<intersect_point_vector.size(); i++)
+    {
+        delete intersect_point_vector[i];
+        intersect_point_vector[i] = nullptr;
+    }
+
+    intersect_point_vector.clear();
+
+    // Delete all lines
+    for (int i=0; i<line_vector.size(); i++)
+    {
+        delete line_vector[i];
+        line_vector[i] = nullptr;
+    }
+
+    line_vector.clear();
+
+    // Delete all origins
+    _origin.clear();
+
+    if(current_rect != nullptr)
+    {
+        delete current_rect;
+        current_rect = nullptr;
+    }
+
+    if(currentSelectRect != nullptr)
+    {
+        delete currentSelectRect;
+        currentSelectRect = nullptr;
+    }
+
+    caption_list.clear();
+
+    if(currentSource != nullptr)
+    {
+        delete currentSource;
+        currentSource = nullptr;
+    }
+
+    if(currentGoal != nullptr)
+    {
+        delete currentGoal;
+        currentGoal = nullptr;
+    }
+
+    if (_currentVLine!=nullptr)
+    {
+        delete _currentVLine;
+        _currentVLine=nullptr;
+    }
+
+    if(_currentTrackedPoint!= nullptr)
+    {
+        delete _currentTrackedPoint;
+        _currentTrackedPoint = nullptr;
+    }
+
+    if(gridmap!= nullptr)
+    {
+        delete gridmap;
+        gridmap = nullptr;
+    }
+
+    layer_list.clear(); // Layer war already added into scene
+
+    if(background != nullptr)
+    {
+        delete background;
+        background = nullptr;
+    }
+
+    line_tracked=-1;
+
+    update();
+    qDebug("Leave jpsGraphicsView::removeContents");
 }

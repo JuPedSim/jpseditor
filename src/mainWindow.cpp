@@ -285,7 +285,6 @@ MWindow::~MWindow()
     delete label2;
     delete infoLabel;
     delete timer;
-//    delete _cMapTimer;
     delete drawing_toolbar_;
     qDebug("Leave MWindow::~MWindow");
 }
@@ -993,7 +992,7 @@ void MWindow::deleteAllContents()
     dmanager->remove_all();
 
     // Delete all QGraphicsitem in view
-    mview->delete_all();
+    mview->removeContents();
 
     emit mview->sourcesChanged(); // emit to update source widget
     emit mview->goalsChanged(); // emit to update goal widget

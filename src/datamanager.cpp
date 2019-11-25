@@ -40,6 +40,7 @@ jpsDatamanager::jpsDatamanager(QWidget *parent, jpsGraphicsView *view)
 {
     qDebug("Enter jpsDatamanager::jpsDatamanager");
     parent_widget=parent;
+
     _mView=view;
     obs_id_counter=0;
     _crossingIdCounter=1;
@@ -1609,8 +1610,8 @@ void jpsDatamanager::remove_all()
     removeAllSource();
 
     remove_all_rooms();
-
     remove_all_obstacles();
+
     remove_all_landmarks();
     RemoveAllConnections();
     RemoveAllRegions();
@@ -2617,7 +2618,7 @@ void jpsDatamanager::ParseLandmark(jpsRegion *actRegion, QXmlStreamReader &xmlRe
 
 
     //create landmark incl. pixmap
-    _mView->addLandmark(QPointF(real_x,real_y));
+    _mView->drawLandmark(QPointF(real_x, real_y));
 
     _landmarks.back()->SetId(id);
     _landmarks.back()->SetCaption(caption);

@@ -56,6 +56,8 @@ public:
     //Destructor
     ~jpsGraphicsView() override;
 
+    void removeContents();
+
     QGraphicsScene *GetScene();
     const qreal& GetTranslationX() const;
     const qreal& GetTranslationY() const;
@@ -68,7 +70,6 @@ public:
     void SetDatamanager(jpsDatamanager* datamanager);
 
     //Change modes
-
     void setDrawingMode(DrawingMode mode);
 
     void change_stat_anglesnap();
@@ -92,7 +93,6 @@ public:
 
     void drawGoal();
     void enableGoalMode();
-
 
     // global functions
     qreal get_scale_f();
@@ -151,8 +151,8 @@ public:
     void deleteMarkedLandmark();
     void catch_landmark();
     void select_landmark(jpsLandmark *landmark);
-    void addLandmark();
-    void addLandmark(const QPointF& pos);
+    void drawLandmark();
+    void drawLandmark(const QPointF& pos);
     // unmark Landmarks see slots
 
     //Connections and YAHPointer
@@ -245,18 +245,15 @@ protected slots:
 
 private:
     jpsDatamanager* _datamanager;
+
     QGraphicsLineItem* current_line;
     QPolygonF polygon;
-    //std::vector<jpsLineItem> line_vector;
     QList<QPointF *> intersect_point_vector;
-    //QList<QPointF> grid_point_vector;
     QList<jpsLineItem *> line_vector;
     QList<QGraphicsLineItem *> _origin;
-    //QList<QList<jpsLineItem*> *> mainlist;
 
     QPointF pos; // position of the mouse cursor;
 
-//    QPointF* intersection_point;
     bool midbutton_hold;
     bool leftbutton_hold;
 
@@ -335,6 +332,7 @@ private:
     // Layer
     QList<Layer *> layer_list;
 
+    // Background
     QGraphicsPixmapItem *background;
 
 signals:
