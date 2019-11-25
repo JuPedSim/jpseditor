@@ -2903,7 +2903,7 @@ void jpsGraphicsView::addLayer()
     qDebug("Enter jpsGraphicsView::addLayer");
     auto *layer = new Layer();
 
-//    this->scene()->addItem(layer); // Add layer into scene
+    this->scene()->addItem(layer); // Add layer into scene
 
     layer_list.append(layer);
     qDebug("Leave jpsGraphicsView::addLayer");

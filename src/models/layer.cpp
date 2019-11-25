@@ -36,6 +36,7 @@ Layer::Layer() : QGraphicsItemGroup(nullptr)
     qDebug("Enter Layer::Layer");
     name = "Layer";
     visible = true;
+
     qDebug("Leave Layer::Layer");
 }
 
@@ -85,7 +86,7 @@ void Layer::addLineToLayer(jpsLineItem *wall)
         return;
 
     lineItem_list.append(wall);
-    addToGroup(wall->get_line());
+    addToGroup(wall->get_line()); // Add line into the group of this layer
     qDebug("Leave Layer::addLineToLayer");
 }
 
@@ -99,4 +100,3 @@ void Layer::removeLineFromLayer(jpsLineItem *line)
     lineItem_list.removeOne(line);
     qDebug("Leave Layer::removeLineFromLayer");
 }
-
