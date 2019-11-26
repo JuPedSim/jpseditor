@@ -2956,12 +2956,6 @@ void jpsGraphicsView::removeContents()
     // If a list contains QGraphicItems, it just need to be cleared with clear();
     this->scene()->clear();
 
-    if (current_line!=nullptr)
-    {
-        delete current_line;
-        current_line=nullptr;
-    }
-
     // Delete all intersect points
     for (int i=0; i<intersect_point_vector.size(); i++)
     {
@@ -2983,57 +2977,9 @@ void jpsGraphicsView::removeContents()
     // Delete all origins
     _origin.clear();
 
-    if(current_rect != nullptr)
-    {
-        delete current_rect;
-        current_rect = nullptr;
-    }
-
-    if(currentSelectRect != nullptr)
-    {
-        delete currentSelectRect;
-        currentSelectRect = nullptr;
-    }
-
     caption_list.clear();
 
-    if(currentSource != nullptr)
-    {
-        delete currentSource;
-        currentSource = nullptr;
-    }
-
-    if(currentGoal != nullptr)
-    {
-        delete currentGoal;
-        currentGoal = nullptr;
-    }
-
-    if (_currentVLine!=nullptr)
-    {
-        delete _currentVLine;
-        _currentVLine=nullptr;
-    }
-
-    if(_currentTrackedPoint!= nullptr)
-    {
-        delete _currentTrackedPoint;
-        _currentTrackedPoint = nullptr;
-    }
-
-    if(gridmap!= nullptr)
-    {
-        delete gridmap;
-        gridmap = nullptr;
-    }
-
     layer_list.clear(); // Layer war already added into scene
-
-    if(background != nullptr)
-    {
-        delete background;
-        background = nullptr;
-    }
 
     line_tracked=-1;
 
