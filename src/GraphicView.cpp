@@ -319,7 +319,6 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                     emit DefConnection1Completed();
                     break;
                 }
-                    //LineEdit
                 else if (_currentTrackedPoint!=nullptr && line_tracked==1 && _statCopy==0)
                 {
                     EditLine(_currentTrackedPoint);
@@ -349,6 +348,7 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
             default:
                 if (_statLineEdit)
                 {
+                    // Edit line
                     for (jpsLineItem* line:line_vector)
                     {
                         locate_intersection(marked_lines.first(),line);
@@ -359,9 +359,10 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                     emit no_drawing();
                     break;
                 }
-                else // If door, wall, exit, hline is edited currently
+                else
                 {
-                    drawLine(); // Draw wall, crossing, transition, hline, track
+                    // Draw wall, crossing, transition, hline, track
+                    drawLine();
                     break;
                 }
         }
@@ -1126,9 +1127,8 @@ void jpsGraphicsView::drawLine()
                 break;
         }
 
-        // Avoid writing transitions into unsigned lines
-        if(drawingMode != Transition)
-            line_vector.push_back(lineItem);
+        // line_vector saves all lineItem, no matter if it's assigned or not
+        line_vector.push_back(lineItem);
 
         //reset pointer
         current_line = nullptr;
