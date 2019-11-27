@@ -755,9 +755,6 @@ void MWindow::saveAsXML(){
 
     if(file.open(QIODevice::WriteOnly|QIODevice::Text))
     {
-        //Save geometry
-        dmanager->writeXML(file);
-
         //Save routing (hlines)
         QString fileNameRouting=fileName.split(".").first()+"_routing.xml";
         QFile routingFile(fileNameRouting);
@@ -787,6 +784,9 @@ void MWindow::saveAsXML(){
         QFile transitionFile(fileNameTransition);
         if(transitionFile.open(QIODevice::WriteOnly|QIODevice::Text))
             dmanager->writeTransitionXML(transitionFile);
+
+        //Save geometry
+        dmanager->writeXML(file);
 
         statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
     }

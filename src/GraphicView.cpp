@@ -403,8 +403,11 @@ void jpsGraphicsView::unmark_all_lines()
 
     for (int i=0; i<marked_lines.size();i++)
     {
-        pen.setColor(QColor(marked_lines[i]->get_defaultColor()));
-        marked_lines[i]->get_line()->setPen(pen);
+        if(marked_lines[i]!= nullptr)
+        {
+            pen.setColor(QColor(marked_lines[i]->get_defaultColor()));
+            marked_lines[i]->get_line()->setPen(pen);
+        }
     }
     marked_lines.clear();
     qDebug("Leave jpsGraphicsView::unmark_all_lines");
@@ -2200,6 +2203,14 @@ QList<jpsLineItem *> jpsGraphicsView::get_line_vector()
 {
     qDebug("Enter/Return jpsGraphicsView::get_line_vector");
     return line_vector;
+}
+
+void jpsGraphicsView::removeLineFromLine_vector(jpsLineItem *line)
+{
+    qDebug("Enter jpsGraphicsView::removeLineFromLine_vector");
+    if (line_vector.contains(line))
+        line_vector.removeOne(line);
+    qDebug("Leave jpsGraphicsView::removeLineFromLine_vector");
 }
 
 qreal jpsGraphicsView::get_scale_f()

@@ -155,7 +155,7 @@ public:
     void writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeSubRoom(QXmlStreamWriter *stream, JPSZone* room, QList<jpsLineItem* >& lines);
     void writeCrossings(QXmlStreamWriter *stream, JPSZone *room, QList<jpsLineItem *> &lines);
-    void writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
+    void writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines);
     void writeObstacles(QXmlStreamWriter *stream, jpsObstacle *obs, QList<jpsLineItem *> &lines);
     void writeNotAssignedLines(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines);
     void writeTransitionXML(QFile &file);

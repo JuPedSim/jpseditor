@@ -137,6 +137,7 @@ public:
     jpsLineItem *addLineItem(const QLineF &line, const QString &type="");
     QList<jpsLineItem *> get_markedLines();
     QList<jpsLineItem *> get_line_vector();
+    void removeLineFromLine_vector(jpsLineItem *line);
     void unmark_all_lines();
     void markLine(jpsLineItem *mline);
     void SetVLine();
@@ -249,7 +250,7 @@ private:
     QGraphicsLineItem* current_line;
     QPolygonF polygon;
     QList<QPointF *> intersect_point_vector;
-    QList<jpsLineItem *> line_vector;
+    QList<jpsLineItem *> line_vector; // Save all jpsLineItem when they created, remove them when they written in xml
     QList<QGraphicsLineItem *> _origin;
 
     QPointF pos; // position of the mouse cursor;

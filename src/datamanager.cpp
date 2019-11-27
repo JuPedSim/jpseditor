@@ -526,7 +526,8 @@ void jpsDatamanager::writeXML(QFile &file)
     qDebug("Enter jpsDatamanager::writeXML");
     auto *stream = new QXmlStreamWriter(&file);
 
-    QList<jpsLineItem* > lines = _mView->get_line_vector(); //lines are all jpsLineItem
+    // Lines is a copy of line_vector, just using for writing
+    QList<jpsLineItem* > lines = _mView->get_line_vector();
 
     stream->setAutoFormatting(true);
     stream->writeStartDocument("1.0",true);
@@ -1008,7 +1009,7 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, JPSZone *room, QLi
                     crossing->get_cLine()->get_line()->line().y2());
 
             QMessageBox msgBox;
-            msgBox.setText("This crossing incorrect \n It will be saved in unsigned lines");
+            msgBox.setText("This crossing is incorrect \n It will be saved in unsigned lines");
             msgBox.setDetailedText(string);
             msgBox.setStandardButtons(QMessageBox::Ok);
 
@@ -1037,50 +1038,59 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineIte
 
     for(jpsTransition *transition : transition_list)
     {
-        stream->writeStartElement("transition");
-        stream->writeAttribute("id",QString::number(transition->get_id()));
-        stream->writeAttribute("caption","exit");
-        stream->writeAttribute("type","emergency");
-
-        // room 1
-        if(transition->get_roomList().isEmpty() || transition->get_roomList()[0] == nullptr)
+        if(transition->get_roomList()[0] == nullptr && transition->get_roomList()[1] == nullptr)
         {
-            //outside
-            stream->writeAttribute("room1_id","-1");
-            stream->writeAttribute("subroom1_id","-1");
+            continue;
         } else
         {
-            //room
-            stream->writeAttribute("room1_id",QString::number(transition->get_roomList()[0]->getFatherRoom()->get_id()));
-            stream->writeAttribute("subroom1_id",QString::number(transition->get_roomList()[0]->get_id()));
+            stream->writeStartElement("transition");
+            stream->writeAttribute("id",QString::number(transition->get_id()));
+            stream->writeAttribute("caption","exit");
+            stream->writeAttribute("type","emergency");
+
+            // Skip unused transition, whose both sides are outside
+
+            // room 1
+            if(transition->get_roomList().isEmpty() || transition->get_roomList()[0] == nullptr)
+            {
+                //outside
+                stream->writeAttribute("room1_id","-1");
+                stream->writeAttribute("subroom1_id","-1");
+            } else
+            {
+                //room
+                stream->writeAttribute("room1_id",QString::number(transition->get_roomList()[0]->getFatherRoom()->get_id()));
+                stream->writeAttribute("subroom1_id",QString::number(transition->get_roomList()[0]->get_id()));
+            }
+
+            // room 2
+            if(transition->get_roomList().isEmpty() || transition->get_roomList()[1] == nullptr)
+            {
+                //outside
+                stream->writeAttribute("room2_id","-1");
+                stream->writeAttribute("subroom2_id","-1");
+            } else
+            {
+                //room
+                stream->writeAttribute("room2_id",QString::number(transition->get_roomList()[1]->getFatherRoom()->get_id()));
+                stream->writeAttribute("subroom2_id",QString::number(transition->get_roomList()[1]->get_id()));
+            }
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px",QString::number(transition->get_cLine()->get_line()->line().x1()));
+            stream->writeAttribute("py",QString::number(transition->get_cLine()->get_line()->line().y1()));
+            stream->writeEndElement(); //vertex
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px",QString::number(transition->get_cLine()->get_line()->line().x2()));
+            stream->writeAttribute("py",QString::number(transition->get_cLine()->get_line()->line().y2()));
+            stream->writeEndElement(); //vertex
+
+            stream->writeEndElement(); //transition
+
+            // Remove jpsLineItem of transition from line_vector
+            lines.removeOne(transition->get_cLine());
         }
-
-        // room 2
-        if(transition->get_roomList().isEmpty() || transition->get_roomList()[1] == nullptr)
-        {
-            //outside
-            stream->writeAttribute("room2_id","-1");
-            stream->writeAttribute("subroom2_id","-1");
-        } else
-        {
-            //room
-            stream->writeAttribute("room2_id",QString::number(transition->get_roomList()[1]->getFatherRoom()->get_id()));
-            stream->writeAttribute("subroom2_id",QString::number(transition->get_roomList()[1]->get_id()));
-        }
-
-        stream->writeStartElement("vertex");
-        stream->writeAttribute("px",QString::number(transition->get_cLine()->get_line()->line().x1()));
-        stream->writeAttribute("py",QString::number(transition->get_cLine()->get_line()->line().y1()));
-        stream->writeEndElement(); //vertex
-
-        stream->writeStartElement("vertex");
-        stream->writeAttribute("px",QString::number(transition->get_cLine()->get_line()->line().x2()));
-        stream->writeAttribute("py",QString::number(transition->get_cLine()->get_line()->line().y2()));
-        stream->writeEndElement(); //vertex
-
-        stream->writeEndElement(); //transition
-
-        lines.removeOne(transition->get_cLine());
     }
     qDebug("Leave jpsDatamanager::writeTransitions");
 }
@@ -2885,7 +2895,6 @@ void jpsDatamanager::writeSourceXML(QFile &file) {
     writeSourceHeader(stream);
 
     stream->writeStartElement("agents_sources");
-    sourcelist.clear();
     sourcelist = getSourcelist();
     writeSources(stream, sourcelist);
     stream->writeEndElement(); //end sources
@@ -2944,7 +2953,6 @@ void jpsDatamanager::writeGoalXML(QFile &file)
     stream->writeAttribute("version", "0.8");
 
     stream->writeStartElement("goals");
-    goallist.clear();
     goallist = getGoallist();
     writeGoals(stream, goallist);
     stream->writeEndElement(); //end goals
@@ -3034,6 +3042,8 @@ void jpsDatamanager::writeTransitionXML(QFile &file)
 {
     qDebug("Enter jpsDatamanager::writeTransitionXML");
     QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
+
+    // Lines is a copy of line_vector, just using for writing
     QList<jpsLineItem* > lines = _mView->get_line_vector();
 
     stream->setAutoFormatting(true);
@@ -3092,7 +3102,6 @@ void jpsDatamanager::writeTrafficXML(QFile &file)
             doorlist.append(door);
         }
     }
-
 
     stream->setAutoFormatting(true);
 
