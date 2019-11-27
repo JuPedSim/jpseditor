@@ -2280,7 +2280,6 @@ DL_WriterA* DL_Dxf::out(const char* file, DL_Codes::version version) {
  * by the given DXF writer object.
  */
 void DL_Dxf::writeHeader(DL_WriterA& dw) {
-    dw.comment("dxflib " DL_VERSION);
     dw.sectionHeader();
 
     dw.dxfString(9, "$ACADVER");

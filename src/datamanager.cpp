@@ -2244,20 +2244,29 @@ bool jpsDatamanager::readDXF(std::string filename)
     {
         _mView->AutoZoom();
 
-        // Print unimported layer
-        QMessageBox msgBox;
-        QString detailied_text;
-
-        QStringListIterator javaStyleIterator(unimported_layer);
-        while (javaStyleIterator.hasNext())
+        if(unimported_layer.isEmpty())
         {
-            detailied_text += javaStyleIterator.next() + "\n";
+        }
+        else
+        {
+            // Print unimported layer
+
+            QString detailied_text;
+
+            QStringListIterator javaStyleIterator(unimported_layer);
+            while (javaStyleIterator.hasNext())
+            {
+                detailied_text += javaStyleIterator.next() + "\n";
+            }
+
+            QMessageBox msgBox;
+
+            msgBox.setText("Geometry is loaded, but lines in these layer aren't loaded.");
+            msgBox.setDetailedText(detailied_text);
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.exec();
         }
 
-        msgBox.setText("Geometry is loaded, but lines in these layer aren't loaded.");
-        msgBox.setDetailedText(detailied_text);
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.exec();
         qDebug("Leave jpsDatamanager::readDXF");
         return true;
     }
@@ -2306,7 +2315,6 @@ void jpsDatamanager::writeDXF(std::string filename)
         printf("Cannot open file 'myfile.dxf' \
         for writing.");
         // abort function e.g. with return
-
     }
 
     writeDXFHeader(dxf,dw);
@@ -2429,9 +2437,6 @@ void jpsDatamanager::writeDXFTables(DL_Dxf *dxf, DL_WriterA *dw)
     //end tables
     dw->sectionEnd();
     qDebug("Leave jpsDatamanager::writeDXFTables");
-
-
-
 }
 
 void jpsDatamanager::writeDXFBlocks(DL_Dxf *dxf, DL_WriterA *dw)
