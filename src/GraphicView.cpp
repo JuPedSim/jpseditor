@@ -1672,16 +1672,8 @@ void jpsGraphicsView::translations(QPointF old_pos)
             continue;
         }
         line_vector[i]->get_line()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
 
-    }
-    for (jpsTransition* transition : _datamanager->getTransitionList())
-    {
-        if(current_line==transition->get_cLine()->get_line())
-        {
-            continue;
-        }
-        transition->get_cLine()->get_line()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
-    }
     for (int i=0; i<caption_list.size(); ++i)
     {
         //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
