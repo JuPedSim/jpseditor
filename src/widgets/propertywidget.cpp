@@ -47,7 +47,6 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
     // Update list widget if line deleted
     connect(view, SIGNAL(markedLineDeleted()), this, SLOT(updateListwidget()));
     connect(view, SIGNAL(lines_deleted()),this, SLOT(updateListwidget()));
-    connect(parent, SIGNAL(allContentsDeleted()),this,SLOT(clearListWidget()));
 
     // Set-up elevation
     ui->lineEdit_elevation->setText(QString::number(current_zone->get_elevation()));

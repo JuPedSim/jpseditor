@@ -1089,6 +1089,7 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineIte
             stream->writeEndElement(); //transition
 
             // Remove jpsLineItem of transition from line_vector
+            // If not removed now, the transition will be written in unsigned lines
             lines.removeOne(transition->get_cLine());
         }
     }
