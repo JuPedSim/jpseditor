@@ -359,6 +359,7 @@ set(warning_flags "${warning_flags} -pedantic")
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   set(CMAKE_CXX_FLAGS                "${CMAKE_CXX_FLAGS} ${warning_flags}")
   set(CMAKE_CXX_FLAGS_DEBUG          "${CMAKE_CXX_FLAGS_DEBUG} ${warning_flags} -O0 -g -Wunused-variable -Wunused-parameter -Wunused-function -Wshadow -Wunused")
+  set(CMAKE_CXX_FLAGS                "-fprofile-instr-generate -fcoverage-mapping")
 endif()
 
 
@@ -419,6 +420,7 @@ if( ${QT5_INSTALLED})
 elseif( ${QT5_INSTALLED})
   SET(DIRS ${QT_LIBRARY_DIRS})
 endif()
+
 
 #================================================ APPLE Stuff ======================
 # Set how it shows up in the Info.plist file
@@ -489,3 +491,4 @@ ENDIF(APPLE)
 #  SET(CPACK_DEBIAN_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 #endif()
 #include(CPack)
+

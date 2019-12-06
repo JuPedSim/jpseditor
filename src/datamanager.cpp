@@ -526,7 +526,7 @@ void jpsDatamanager::writeXML(QFile &file)
     qDebug("Enter jpsDatamanager::writeXML");
     auto *stream = new QXmlStreamWriter(&file);
 
-    QList<jpsLineItem* > lines = _mView->get_line_vector(); //lines are all unassign jpsLineItem
+    QList<jpsLineItem* > lines = _mView->get_line_vector(); //lines are all jpsLineItem
 
     stream->setAutoFormatting(true);
     stream->writeStartDocument("1.0",true);
@@ -1126,7 +1126,7 @@ void jpsDatamanager::writeNotAssignedLines(QXmlStreamWriter *stream, QList<jpsLi
 {
      qDebug("Enter jpsDatamanager::writeNotAssignedLines");
 
-    /// save lines which are not assigned to a room yet
+    /// Save lines which are not assigned to a room yet
     stream->writeStartElement("Room");
 
     stream->writeAttribute("id",QString::number(-1));
@@ -2244,20 +2244,29 @@ bool jpsDatamanager::readDXF(std::string filename)
     {
         _mView->AutoZoom();
 
-        // Print unimported layer
-        QMessageBox msgBox;
-        QString detailied_text;
-
-        QStringListIterator javaStyleIterator(unimported_layer);
-        while (javaStyleIterator.hasNext())
+        if(unimported_layer.isEmpty())
         {
-            detailied_text += javaStyleIterator.next() + "\n";
+        }
+        else
+        {
+            // Print unimported layer
+
+            QString detailied_text;
+
+            QStringListIterator javaStyleIterator(unimported_layer);
+            while (javaStyleIterator.hasNext())
+            {
+                detailied_text += javaStyleIterator.next() + "\n";
+            }
+
+            QMessageBox msgBox;
+
+            msgBox.setText("Geometry is loaded, but lines in these layer aren't loaded.");
+            msgBox.setDetailedText(detailied_text);
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.exec();
         }
 
-        msgBox.setText("Geometry is loaded, but lines in these layer aren't loaded.");
-        msgBox.setDetailedText(detailied_text);
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.exec();
         qDebug("Leave jpsDatamanager::readDXF");
         return true;
     }
@@ -2306,12 +2315,9 @@ void jpsDatamanager::writeDXF(std::string filename)
         printf("Cannot open file 'myfile.dxf' \
         for writing.");
         // abort function e.g. with return
-
     }
-    //Header
-    writeDXFHeader(dxf,dw);
-    // ....
 
+    writeDXFHeader(dxf,dw);
     writeDXFTables(dxf,dw);
     writeDXFBlocks(dxf,dw);
     writeDXFEntities(dxf,dw);
@@ -2431,9 +2437,6 @@ void jpsDatamanager::writeDXFTables(DL_Dxf *dxf, DL_WriterA *dw)
     //end tables
     dw->sectionEnd();
     qDebug("Leave jpsDatamanager::writeDXFTables");
-
-
-
 }
 
 void jpsDatamanager::writeDXFBlocks(DL_Dxf *dxf, DL_WriterA *dw)
@@ -2469,52 +2472,50 @@ void jpsDatamanager::writeDXFEntities(DL_Dxf *dxf, DL_WriterA *dw)
 {
     qDebug("Enter jpsDatamanager::writeDXFEntities");
     dw->sectionEntities();
-    // write all your entities..
 
-    //dxf->writePoint(
-    //*dw,
-    //DL_PointData(10.0,
-    //45.0,
-    //0.0),
-    //DL_Attributes("mainlayer", 256, 256, -1, "BYLAYER"));
-
-
+    // Write wall, crossing, transition, hline, track
     QList<jpsLineItem* > lines = _mView->get_line_vector();
 
-
-    DL_Attributes attributeW("wall", 256, 256, -1, "BYLAYER");
-    DL_Attributes attributeD("door", 16, 78, 139, "BYLAYER");
+    DL_Attributes attributeWall("wall", 256, 256, -1, "BYLAYER");
+    DL_Attributes attributeCrossing("crossing", 256, 256, -1, "BYLAYER");
+    DL_Attributes attributeTransition("transition", 256, 256, -1, "BYLAYER");
+    DL_Attributes attributeTrack("track", 256, 256, -1, "BYLAYER");
 
     for (jpsLineItem* lineItem:lines)
     {
-        DL_LineData linedata(lineItem->get_line()->line().x1(),
+        DL_LineData linedata(
+                    lineItem->get_line()->line().x1(),
                     lineItem->get_line()->line().y1(),
                     0.0,
                     lineItem->get_line()->line().x2(),
                     lineItem->get_line()->line().y2(),
                     0.0);
 
-        if (lineItem->is_Wall())
-            dxf->writeLine(*dw,linedata,attributeW);
+        if (lineItem->getType() == "wall")
+        {
+            dxf->writeLine(*dw,linedata,attributeWall);
+        }
+        else if(lineItem->getType() == "crossing")
+        {
+            dxf->writeLine(*dw,linedata,attributeCrossing);
+        }
+        else if(lineItem->getType() == "transition")
+        {
+            dxf->writeLine(*dw,linedata,attributeTransition);
+        }
+        else if(lineItem->getType() == "track")
+        {
+            dxf->writeLine(*dw,linedata,attributeTrack);
+        }
         else
-            dxf->writeLine(*dw,linedata,attributeD);
+        {
+            continue; // Don't write hline into dxf
+        }
 
     }
 
+    // TODO: Write goal, source
 
-    /*
-    dxf->writeLine(
-    *dw,
-    DL_LineData(25.0,
-    // start point
-    30.0,
-    0.0,
-    100.0,
-    // end point
-    120.0,
-    0.0),
-    DL_Attributes("mainlayer", 256,256, -1, "BYLAYER"));
-    */
     dw->sectionEnd();
     qDebug("Leave jpsDatamanager::writeDXFEntities");
 }
