@@ -61,7 +61,6 @@ public:
     MWindow();
     ~MWindow();
 
-
 private:
     // qwidget pointers, will be deleted by QtWidgets itself
     roomWidget *rwidget;

@@ -583,7 +583,6 @@ void jpsDatamanager::writeRoutingXML(QFile &file) // Construction side
 
     delete stream;
     qDebug("Leave jpsDatamanager::writeRoutingXML");
-
 }
 
 void jpsDatamanager::writeLineItems(QFile &file)
@@ -2287,6 +2286,7 @@ void jpsDatamanager::addLine(const DL_LineData &d)
 {
     qDebug("Enter jpsDatamanager::addLine");
     DL_Attributes attributes = DL_CreationInterface::getAttributes();
+
     auto layername = QString::fromStdString(attributes.getLayer());
 
     if (layername.contains("wall"))
@@ -2403,23 +2403,23 @@ void jpsDatamanager::writeDXFTables(DL_Dxf *dxf, DL_WriterA *dw)
     100,             //default width
     "CONTINUOUS"));    //default line style
 
-    dxf->writeLayer(*dw,
-    DL_LayerData("mainlayer", 0),
-    DL_Attributes(
-    std::string(""),
-    2,
-    2,
-    100,
-    "CONTINUOUS"));
-
-    dxf->writeLayer(*dw,
-    DL_LayerData("anotherlayer", 0),
-    DL_Attributes(
-    std::string(""),
-    1,
-    1,
-    100,
-    "CONTINUOUS"));
+//    dxf->writeLayer(*dw,
+//    DL_LayerData("mainlayer", 0),
+//    DL_Attributes(
+//    std::string(""),
+//    2,
+//    2,
+//    100,
+//    "CONTINUOUS"));
+//
+//    dxf->writeLayer(*dw,
+//    DL_LayerData("anotherlayer", 0),
+//    DL_Attributes(
+//    std::string(""),
+//    1,
+//    1,
+//    100,
+//    "CONTINUOUS"));
     dw->tableEnd();
 
     //dxf->writeStyle(*dw,);
@@ -2463,18 +2463,6 @@ void jpsDatamanager::writeDXFBlocks(DL_Dxf *dxf, DL_WriterA *dw)
     dxf->writeBlock(*dw,
     DL_BlockData("*Paper_Space0", 0, 0.0, 0.0, 0.0));
     dxf->writeEndBlock(*dw, "*Paper_Space0");
-    dxf->writeBlock(*dw,
-    DL_BlockData("myblock1", 0, 0.0, 0.0, 0.0));
-    // ...
-    // write block entities e.g. with dxf.writeLine(), ..
-    // ...
-    dxf->writeEndBlock(*dw, "myblock1");
-    dxf->writeBlock(*dw,
-    DL_BlockData("myblock2", 0, 0.0, 0.0, 0.0));
-    // ...
-    // write block entities e.g. with dxf.writeLine(), ..
-    // ...
-    dxf->writeEndBlock(*dw, "myblock2");
     dw->sectionEnd();
     qDebug("Leave jpsDatamanager::writeDXFBlocks");
 }
@@ -2486,11 +2474,15 @@ void jpsDatamanager::writeDXFEntities(DL_Dxf *dxf, DL_WriterA *dw)
 
     // Write wall, crossing, transition, hline, track
     QList<jpsLineItem* > lines = _mView->get_line_vector();
+    QList<JPSSource* > sources = _mView->getSources();
+    QList<JPSGoal* > goals = _mView->getGoals();
 
     DL_Attributes attributeWall("wall", 256, 256, -1, "BYLAYER");
     DL_Attributes attributeCrossing("crossing", 256, 256, -1, "BYLAYER");
     DL_Attributes attributeTransition("transition", 256, 256, -1, "BYLAYER");
     DL_Attributes attributeTrack("track", 256, 256, -1, "BYLAYER");
+
+    DL_Attributes attributeGoal("goal", 256, 256, -1, "BYLAYER");
 
     for (jpsLineItem* lineItem:lines)
     {
@@ -2522,11 +2514,85 @@ void jpsDatamanager::writeDXFEntities(DL_Dxf *dxf, DL_WriterA *dw)
         {
             continue; // Don't write hline into dxf
         }
-
     }
 
-    // TODO: Write goal, source
+    // Write sources
+    for(JPSSource* source: sources)
+    {
+        QString name = source->getCaption();
 
+        DL_Attributes attributeSource(name.toStdString(), 256, 256, -1, "BYLAYER");
+
+        DL_LineData line_top(source->rect().topLeft().x(),
+                             source->rect().topLeft().y(),
+                             0.0,
+                             source->rect().topRight().x(),
+                             source->rect().topRight().y(),
+                             0.0);
+
+        DL_LineData line_left(source->rect().topLeft().x(),
+                              source->rect().topLeft().y(),
+                              0.0,
+                              source->rect().bottomLeft().x(),
+                              source->rect().bottomLeft().y(),
+                              0.0);
+
+        DL_LineData line_right(source->rect().topRight().x(),
+                               source->rect().topRight().y(),
+                               0.0,
+                               source->rect().bottomRight().x(),
+                               source->rect().bottomRight().y(),
+                               0.0);
+
+        DL_LineData line_bottem(source->rect().bottomLeft().x(),
+                                source->rect().bottomLeft().y(),
+                                0.0,
+                                source->rect().bottomRight().x(),
+                                source->rect().bottomRight().y(),
+                                0.0);
+
+        dxf->writeLine(*dw, line_top, attributeSource);
+        dxf->writeLine(*dw, line_bottem, attributeSource);
+        dxf->writeLine(*dw, line_left, attributeSource);
+        dxf->writeLine(*dw, line_right, attributeSource);
+    }
+
+    // Write goals
+    for(JPSGoal* goal: goals)
+    {
+        DL_LineData line_top(goal->rect().topLeft().x(),
+                             goal->rect().topLeft().y(),
+                             0.0,
+                             goal->rect().topRight().x(),
+                             goal->rect().topRight().y(),
+                             0.0);
+
+        DL_LineData line_left(goal->rect().topLeft().x(),
+                              goal->rect().topLeft().y(),
+                              0.0,
+                              goal->rect().bottomLeft().x(),
+                              goal->rect().bottomLeft().y(),
+                              0.0);
+
+        DL_LineData line_right(goal->rect().topRight().x(),
+                               goal->rect().topRight().y(),
+                               0.0,
+                               goal->rect().bottomRight().x(),
+                               goal->rect().bottomRight().y(),
+                               0.0);
+
+        DL_LineData line_bottem(goal->rect().bottomLeft().x(),
+                                goal->rect().bottomLeft().y(),
+                                0.0,
+                                goal->rect().bottomRight().x(),
+                                goal->rect().bottomRight().y(),
+                                0.0);
+
+        dxf->writeLine(*dw, line_top, attributeGoal);
+        dxf->writeLine(*dw, line_bottem, attributeGoal);
+        dxf->writeLine(*dw, line_left, attributeGoal);
+        dxf->writeLine(*dw, line_right, attributeGoal);
+    }
     dw->sectionEnd();
     qDebug("Leave jpsDatamanager::writeDXFEntities");
 }
