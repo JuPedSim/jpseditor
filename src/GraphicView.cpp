@@ -1234,6 +1234,9 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
     else if (type=="transition")
     {
         newLine->setTransition();
+        // Transition isn't a normal JPSLineItem, rather JPSTransition class
+        _datamanager->newTransition(newLine);
+        emit transitonsChanged();
     }
     else if (type=="hline")
     {
