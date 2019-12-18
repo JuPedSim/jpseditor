@@ -278,6 +278,9 @@ private:
 
     bool isInCrossingList(jpsLineItem *markedLine);
 
+    // For DXF import
+    QList<QPointF> points; // Points in rects of sources or goals
+
     // Deprecated
     QList<jpsCrossing *> crossingList;
 

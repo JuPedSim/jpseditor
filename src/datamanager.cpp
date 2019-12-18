@@ -2305,6 +2305,30 @@ void jpsDatamanager::addLine(const DL_LineData &d)
     {
         _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"track");
     }
+    else if (layername.contains("source"))
+    {
+        points.append(QPointF(d.x1, d.y1));
+        points.append(QPointF(d.x2, d.y2));
+
+        if(points.size() == 8) // Every 4 lines as a rect
+        {
+            _mView->addSourceItem(points);
+
+            points.clear();
+        }
+    }
+    else if (layername.contains("goal"))
+    {
+        points.append(QPointF(d.x1, d.y1));
+        points.append(QPointF(d.x2, d.y2));
+
+        if(points.size() == 8)
+        {
+            _mView->addGoalItem(points);
+
+            points.clear();
+        }
+    }
     else
     {
         if(!unimported_layer.contains(layername))
@@ -2312,6 +2336,7 @@ void jpsDatamanager::addLine(const DL_LineData &d)
             unimported_layer.append(layername);
         }
     }
+
     qDebug("Leave jpsDatamanager::addLine");
 }
 

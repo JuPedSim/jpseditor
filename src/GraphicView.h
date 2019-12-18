@@ -135,6 +135,11 @@ public:
     // lines read from dxf-file
     jpsLineItem *addLineItem(const qreal &x1, const qreal &y1, const qreal &x2, const qreal &y2, const QString &type="");
     jpsLineItem *addLineItem(const QLineF &line, const QString &type="");
+
+    // Sources and goals read from dxf-file
+    void addSourceItem(const QList<QPointF> &points);
+    void addGoalItem(const QList<QPointF> &points);
+
     QList<jpsLineItem *> get_markedLines();
     QList<jpsLineItem *> get_line_vector();
     void removeLineFromLine_vector(jpsLineItem *line);

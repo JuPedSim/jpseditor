@@ -1286,10 +1286,40 @@ jpsLineItem *jpsGraphicsView::addLineItem(const QLineF &line, const QString &typ
     return addLineItem(line.p1().x(),line.p1().y(),line.p2().x(),line.p2().y(),type);
 }
 
+void jpsGraphicsView::addSourceItem(const QList<QPointF> &points)
+{
+    qDebug("Enter jpsGraphicsView::addSourceItem");
+    QGraphicsRectItem *rectItem = this->scene()->addRect(QRectF(points.first(), points.last()),currentPen);
+    auto *sourceItem = new JPSSource(rectItem);
+    sourceItem->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+    this->scene()->addItem(sourceItem);
+    this->scene()->removeItem(rectItem);
+
+    this->scene()->update();
+
+    emit sourcesChanged();
+    qDebug("Leave jpsGraphicsView::addSourceItem");
+}
+
+void jpsGraphicsView::addGoalItem(const QList<QPointF> &points)
+{
+    qDebug("Enter jpsGraphicsView::addGoalItem");
+    QGraphicsRectItem *rectItem = this->scene()->addRect(QRectF(points.first(), points.last()),currentPen);
+    auto *goalItem = new JPSGoal(rectItem);
+    goalItem->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+    this->scene()->addItem(goalItem);
+    this->scene()->removeItem(rectItem);
+
+    this->scene()->update();
+
+    emit goalsChanged();
+    qDebug("Leave jpsGraphicsView::addGoalItem");
+}
+
 void jpsGraphicsView::locate_intersection(jpsLineItem *item1, jpsLineItem *item2)
 {
     qDebug("Enter jpsGraphicsView::locate_intersection");
-    //this pointer is necessary due to the architecture of the method 'intersect'
+    // this pointer is necessary due to the architecture of the method 'intersect'
     QPointF* intersection_point = new QPointF;
     // if 'intersect'==1 -> an intersection point exists
     if (item1->get_line()->line().intersect(item2->get_line()->line(),intersection_point)==1)
