@@ -333,7 +333,7 @@
    </property>
    <property name="icon">
     <iconset resource="../Resources/resources.qrc">
-     <normaloff>:/inAppIcons/Icons/door.png</normaloff>:/inAppIcons/Icons/door.png</iconset>
+     <normaloff>:/inAppIcons/Icons/Door.png</normaloff>:/inAppIcons/Icons/Door.png</iconset>
    </property>
    <property name="text">
     <string>Crossing</string>
