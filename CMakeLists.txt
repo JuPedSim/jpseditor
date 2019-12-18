@@ -82,7 +82,7 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "")
 endif()
 
 message( STATUS "Generating  ................................... ${PROJECT_NAME} (${JPSEDITOR_VERSION}) -- ${CMAKE_BUILD_TYPE}")
-if(APPLE )
+if(APPLE)
   set (CMAKE_INSTALL_PREFIX "/Applications")
   set (CMAKE_PREFIX_PATH "/Applications/Qt/5.13.0/clang_64")
 endif()
@@ -359,7 +359,6 @@ set(warning_flags "${warning_flags} -pedantic")
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   set(CMAKE_CXX_FLAGS                "${CMAKE_CXX_FLAGS} ${warning_flags}")
   set(CMAKE_CXX_FLAGS_DEBUG          "${CMAKE_CXX_FLAGS_DEBUG} ${warning_flags} -O0 -g -Wunused-variable -Wunused-parameter -Wunused-function -Wshadow -Wunused")
-  set(CMAKE_CXX_FLAGS                "-fprofile-instr-generate -fcoverage-mapping")
 endif()
 
 
