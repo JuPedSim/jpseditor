@@ -1214,8 +1214,6 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
     /*
      * add Lineitem when prase a XML file
      */
-
-    qDebug() << "Enter jpsGraphicsView::addLineItem";
     QPen pen = QPen(Qt::black,2);
 
     pen.setCosmetic(true);
@@ -1223,7 +1221,7 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
     current_line=this->scene()->addLine(x1,y1,x2,y2,pen);
     current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
 
-    jpsLineItem* newLine = new jpsLineItem(current_line);
+    auto* newLine = new jpsLineItem(current_line);
     newLine->set_id(id_counter);
     id_counter++;
 
@@ -1276,11 +1274,9 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
     }
 
     current_line=nullptr;
-    
-    qDebug() << "Leave jpsGraphicsView::addLineItem";
+
     qDebug("Leave jpsGraphicsView::addLineItem");
     return newLine;
-
 }
 
 jpsLineItem *jpsGraphicsView::addLineItem(const QLineF &line, const QString &type)
@@ -1346,7 +1342,6 @@ void jpsGraphicsView::locate_intersection(jpsLineItem *item1, jpsLineItem *item2
         intersection_point=nullptr;
     }
     qDebug("Leave jpsGraphicsView::locate_intersection");
-
 }
 
 void jpsGraphicsView::SetVLine()
@@ -2898,6 +2893,8 @@ void jpsGraphicsView::addLayer()
     qDebug("Enter jpsGraphicsView::addLayer");
     auto *layer = new Layer();
 
+    emit layersChanged();
+
     this->scene()->addItem(layer); // Add layer into scene
 
     layer_list.append(layer);
@@ -2908,6 +2905,8 @@ void jpsGraphicsView::deleteLayer(Layer *deletedLayer)
 {
     qDebug("Enter jpsGraphicsView::deleteLayer");
     layer_list.removeOne(deletedLayer);
+
+    emit layersChanged();
     qDebug("Leave jpsGraphicsView::deleteLayer");
 }
 

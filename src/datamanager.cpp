@@ -2245,6 +2245,10 @@ bool jpsDatamanager::readDXF(std::string filename)
 {
     qDebug("Enter jpsDatamanager::readDXF");
     DL_Dxf dxf;
+
+    // Every import dxf as a layer
+    _mView->addLayer();
+
     if (!dxf.in(filename, this))
     {
         qDebug("Leave jpsDatamanager::readDXF");
@@ -2282,6 +2286,7 @@ bool jpsDatamanager::readDXF(std::string filename)
     }
 }
 
+//TODO: Refoctoring for issue212
 void jpsDatamanager::addLine(const DL_LineData &d)
 {
     qDebug("Enter jpsDatamanager::addLine");
@@ -2289,13 +2294,21 @@ void jpsDatamanager::addLine(const DL_LineData &d)
 
     auto layername = QString::fromStdString(attributes.getLayer());
 
-    if (layername.contains("wall"))
+    if (layername.contains("room"))
     {
-        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
-    }
-    else if (layername.contains("crossing"))
-    {
-        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"crossing");
+        if(isRepeatedRoomName(layername))
+        {
+            // Nothing to do
+        }else {
+            // Create a new room at first;
+            addRoom();
+            roomlist.last()->setName(layername);
+            addCorridor(roomlist.last());
+        }
+
+        auto wall = _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
+        roomlist.last()->getCorridorList().last()->addWall(wall);
+        _mView->getLayerList().last()->addLineToLayer(wall);
     }
     else if (layername.contains("transition"))
     {
@@ -2492,6 +2505,7 @@ void jpsDatamanager::writeDXFBlocks(DL_Dxf *dxf, DL_WriterA *dw)
     qDebug("Leave jpsDatamanager::writeDXFBlocks");
 }
 
+//TODO: Refoctoring for issue212
 void jpsDatamanager::writeDXFEntities(DL_Dxf *dxf, DL_WriterA *dw)
 {
     qDebug("Enter jpsDatamanager::writeDXFEntities");
@@ -3528,4 +3542,17 @@ QList<jpsTransition *> jpsDatamanager::getTransitionInSubroom(JPSZone *subroom)
     return transitions;
 
     qDebug("Leave jpsDatamanager::getTransitionInSubroom");
+}
+
+
+bool jpsDatamanager::isRepeatedRoomName(QString name)
+{
+    qDebug("Enter jpsDatamanager::isRepeatedRoomName");
+    for(auto *room : roomlist)
+    {
+        if(name == room->getName())
+            return true;
+    }
+    return false;
+    qDebug("Leave jpsDatamanager::isRepeatedRoomName");
 }

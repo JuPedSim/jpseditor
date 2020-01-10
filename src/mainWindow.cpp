@@ -472,19 +472,17 @@ void MWindow::openFileDXF(){
     //QFile file(fileName);
     std::string fName= fileName.toStdString();
 
-    if (!dmanager->readDXF(fName))
+    closeListDockWidget(); // Close list widget at first, in case datamanager changed but widget can't update
+
+    if (dmanager->readDXF(fName))
+    {
+        statusBar()->showMessage("DXF-File successfully loaded!",10000);
+    }
+    else
     {
         statusBar()->showMessage("DXF-File could not be parsed!",10000);
     }
-    //if(file.open(QIODevice::ReadOnly|QIODevice::Text)) {
-      //  textEdit->setPlainText(QString::fromUtf8(file.readAll()));
-     //   statusBar()->showMessage(tr("Datei erfolgreich geladen"),5000);
-    //}
-    else
-    {
 
-        statusBar()->showMessage("DXF-File successfully loaded!",10000);
-    }
     qDebug("Leave MWindow::openFileDXF");
 }
 

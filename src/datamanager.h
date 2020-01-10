@@ -63,6 +63,7 @@ public:
     ///Zone
     QList<JPSZone *> get_roomlist();
     void addRoom();
+    bool isRepeatedRoomName(QString name);
     void remove_room(JPSZone* room);
     void change_roomName(JPSZone* room, QString name);
     void remove_all_rooms();
