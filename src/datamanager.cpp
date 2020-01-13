@@ -354,20 +354,9 @@ void jpsDatamanager::newTransition(jpsLineItem *transition)
     qDebug("Leave jpsDatamanager::newTransition");
 }
 
-void jpsDatamanager::remove_exit(jpsTransition *exit)
-{
-     qDebug("Enter jpsDatamanager::remove_exit");
-    if (transition_list.size()>0)
-    {
-        transition_list.removeOne(exit);
-        delete exit;
-    }
-    qDebug("Leave jpsDatamanager::remove_exit");
-}
-
 void jpsDatamanager::removeAllTransition()
 {
-     qDebug("Enter jpsDatamanager::removeAllTransition");
+    qDebug("Enter jpsDatamanager::removeAllTransition");
     for (int i=0; i<transition_list.size(); i++)
     {
         delete transition_list[i]; // delete jpsTransition
@@ -376,6 +365,44 @@ void jpsDatamanager::removeAllTransition()
     transition_list.clear();
 
     qDebug("Leave jpsDatamanager::removeAllTransition");
+}
+
+/*
+ * Recognize the from and to rooms for transition
+ *
+ * */
+void jpsDatamanager::recognizeRoomForTransition(jpsTransition *transition)
+{
+    qDebug("Enter jpsDatamanager::recognizeRoomForTransition");
+    auto point1 = transition->get_cLine()->get_line()->line().p1();
+
+    for (auto room : roomlist)
+    {
+        for (auto list : room->getZoneList())
+        {
+            for (auto zone : list)
+            {
+                auto wall_list = zone->get_listWalls();
+
+                for(auto line : wall_list)
+                {
+                    if(point1 == line->get_line()->line().p1()
+                    && point1 == line->get_line()->line().p2())
+                    {
+                        if(transition->get_roomList().size() == 0)
+                        {
+                            transition->set_rooms(room, nullptr);
+                        }
+                        else if(transition->get_roomList().size() == 1)
+                        {
+                            transition->set_rooms(transition->get_roomList().first(), room);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    qDebug("Leave jpsDatamanager::recognizeRoomForTransition");
 }
 
 QList<jpsLandmark *> jpsDatamanager::get_landmarks()
@@ -2279,6 +2306,11 @@ bool jpsDatamanager::readDXF(std::string filename)
             msgBox.setDetailedText(detailied_text);
             msgBox.setStandardButtons(QMessageBox::Ok);
             msgBox.exec();
+        }
+
+        for (auto transition : transition_list)
+        {
+            recognizeRoomForTransition(transition);
         }
 
         qDebug("Leave jpsDatamanager::readDXF");
