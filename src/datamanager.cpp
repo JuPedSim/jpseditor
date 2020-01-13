@@ -2307,16 +2307,45 @@ void jpsDatamanager::addLine(const DL_LineData &d)
         }
 
         auto wall = _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
-        roomlist.last()->getCorridorList().last()->addWall(wall);
-        _mView->getLayerList().last()->addLineToLayer(wall);
+
+        if(roomlist.last()->getCorridorList().isEmpty())
+        {
+            // Nothing to do
+        }
+        else
+        {
+            roomlist.last()->getCorridorList().last()->addWall(wall);
+            _mView->getLayerList().last()->addLineToLayer(wall);
+        }
     }
     else if (layername.contains("transition"))
     {
         _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"transition");
     }
-    else if (layername.contains("track"))
+    else if (layername.contains("platform"))
     {
-        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"track");
+
+        if(isRepeatedRoomName(layername))
+        {
+            // Nothing to do
+        }else {
+            // Create a new room at first;
+            addRoom();
+            roomlist.last()->setName(layername);
+            addPlatform(roomlist.last());
+        }
+
+        auto track = _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"track");
+
+        if(roomlist.last()->getPlatfromList().isEmpty())
+        {
+            // Nothing to do
+        }
+        else
+        {
+            roomlist.last()->getPlatfromList().last()->addTrack(track, QString(1));
+            _mView->getLayerList().last()->addLineToLayer(track);
+        }
     }
     else if (layername.contains("source"))
     {
@@ -2344,6 +2373,7 @@ void jpsDatamanager::addLine(const DL_LineData &d)
     }
     else
     {
+        // Save unimported layer name into list to print it after importing
         if(!unimported_layer.contains(layername))
         {
             unimported_layer.append(layername);
