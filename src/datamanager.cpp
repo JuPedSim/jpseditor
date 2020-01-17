@@ -373,6 +373,7 @@ void jpsDatamanager::removeAllTransition()
  * */
 void jpsDatamanager::recognizeRoomForTransition(jpsTransition *transition)
 {
+    //TODO: Complete this func after redesign the room
     qDebug("Enter jpsDatamanager::recognizeRoomForTransition");
     auto point1 = transition->get_cLine()->get_line()->line().p1();
 
@@ -2308,10 +2309,10 @@ bool jpsDatamanager::readDXF(std::string filename)
             msgBox.exec();
         }
 
-        for (auto transition : transition_list)
-        {
-            recognizeRoomForTransition(transition);
-        }
+//        for (auto transition : transition_list)
+//        {
+//            recognizeRoomForTransition(transition);
+//        }
 
         qDebug("Leave jpsDatamanager::readDXF");
         return true;

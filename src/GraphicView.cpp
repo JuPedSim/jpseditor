@@ -403,7 +403,7 @@ void jpsGraphicsView::unmark_all_lines()
 
     for (int i=0; i<marked_lines.size();i++)
     {
-        if(marked_lines[i]!= nullptr)
+        if(marked_lines[i] != nullptr)
         {
             pen.setColor(QColor(marked_lines[i]->get_defaultColor()));
             marked_lines[i]->get_line()->setPen(pen);
@@ -1980,10 +1980,11 @@ qreal jpsGraphicsView::calc_d_point(const QLineF &line,const qreal &x, const qre
 
 }
 
-// Delete single line
+// Delete all marked lines
 void jpsGraphicsView::delete_marked_lines()
 {
     qDebug("Enter jpsGraphicsView::delete_marked_lines");
+    //TODO: Orgnize the flow for delete marked lines
     if (line_tracked!=-1)
     {
         for(int i=0; i<marked_lines.size(); ++i)
@@ -1998,6 +1999,8 @@ void jpsGraphicsView::delete_marked_lines()
 
         //intersect_point_vector.clear();
         line_tracked=-1;
+
+        marked_lines.clear();
 
         update();
     }
