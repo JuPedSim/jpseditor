@@ -403,8 +403,11 @@ void jpsGraphicsView::unmark_all_lines()
 
     for (int i=0; i<marked_lines.size();i++)
     {
-        pen.setColor(QColor(marked_lines[i]->get_defaultColor()));
-        marked_lines[i]->get_line()->setPen(pen);
+        if(marked_lines[i] != nullptr)
+        {
+            pen.setColor(QColor(marked_lines[i]->get_defaultColor()));
+            marked_lines[i]->get_line()->setPen(pen);
+        }
     }
     marked_lines.clear();
     qDebug("Leave jpsGraphicsView::unmark_all_lines");
@@ -1211,8 +1214,6 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
     /*
      * add Lineitem when prase a XML file
      */
-
-    qDebug() << "Enter jpsGraphicsView::addLineItem";
     QPen pen = QPen(Qt::black,2);
 
     pen.setCosmetic(true);
@@ -1220,7 +1221,7 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
     current_line=this->scene()->addLine(x1,y1,x2,y2,pen);
     current_line->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
 
-    jpsLineItem* newLine = new jpsLineItem(current_line);
+    auto* newLine = new jpsLineItem(current_line);
     newLine->set_id(id_counter);
     id_counter++;
 
@@ -1231,6 +1232,9 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
     else if (type=="transition")
     {
         newLine->setTransition();
+        // Transition isn't a normal JPSLineItem, rather JPSTransition class
+        _datamanager->newTransition(newLine);
+        emit transitonsChanged();
     }
     else if (type=="hline")
     {
@@ -1270,11 +1274,9 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
     }
 
     current_line=nullptr;
-    
-    qDebug() << "Leave jpsGraphicsView::addLineItem";
+
     qDebug("Leave jpsGraphicsView::addLineItem");
     return newLine;
-
 }
 
 jpsLineItem *jpsGraphicsView::addLineItem(const QLineF &line, const QString &type)
@@ -1283,10 +1285,40 @@ jpsLineItem *jpsGraphicsView::addLineItem(const QLineF &line, const QString &typ
     return addLineItem(line.p1().x(),line.p1().y(),line.p2().x(),line.p2().y(),type);
 }
 
+void jpsGraphicsView::addSourceItem(const QList<QPointF> &points)
+{
+    qDebug("Enter jpsGraphicsView::addSourceItem");
+    QGraphicsRectItem *rectItem = this->scene()->addRect(QRectF(points.first(), points.last()),currentPen);
+    auto *sourceItem = new JPSSource(rectItem);
+    sourceItem->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+    this->scene()->addItem(sourceItem);
+    this->scene()->removeItem(rectItem);
+
+    this->scene()->update();
+
+    emit sourcesChanged();
+    qDebug("Leave jpsGraphicsView::addSourceItem");
+}
+
+void jpsGraphicsView::addGoalItem(const QList<QPointF> &points)
+{
+    qDebug("Enter jpsGraphicsView::addGoalItem");
+    QGraphicsRectItem *rectItem = this->scene()->addRect(QRectF(points.first(), points.last()),currentPen);
+    auto *goalItem = new JPSGoal(rectItem);
+    goalItem->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
+    this->scene()->addItem(goalItem);
+    this->scene()->removeItem(rectItem);
+
+    this->scene()->update();
+
+    emit goalsChanged();
+    qDebug("Leave jpsGraphicsView::addGoalItem");
+}
+
 void jpsGraphicsView::locate_intersection(jpsLineItem *item1, jpsLineItem *item2)
 {
     qDebug("Enter jpsGraphicsView::locate_intersection");
-    //this pointer is necessary due to the architecture of the method 'intersect'
+    // this pointer is necessary due to the architecture of the method 'intersect'
     QPointF* intersection_point = new QPointF;
     // if 'intersect'==1 -> an intersection point exists
     if (item1->get_line()->line().intersect(item2->get_line()->line(),intersection_point)==1)
@@ -1310,7 +1342,6 @@ void jpsGraphicsView::locate_intersection(jpsLineItem *item1, jpsLineItem *item2
         intersection_point=nullptr;
     }
     qDebug("Leave jpsGraphicsView::locate_intersection");
-
 }
 
 void jpsGraphicsView::SetVLine()
@@ -1669,16 +1700,8 @@ void jpsGraphicsView::translations(QPointF old_pos)
             continue;
         }
         line_vector[i]->get_line()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
+    }
 
-    }
-    for (jpsTransition* transition : _datamanager->getTransitionList())
-    {
-        if(current_line==transition->get_cLine()->get_line())
-        {
-            continue;
-        }
-        transition->get_cLine()->get_line()->setTransform(QTransform::fromTranslate(pos.x()-old_pos.x(),pos.y()-old_pos.y()), true);
-    }
     for (int i=0; i<caption_list.size(); ++i)
     {
         //line_vector[i]->get_line()->translate(pos.x()-old_pos.x(),pos.y()-old_pos.y());
@@ -1957,10 +1980,11 @@ qreal jpsGraphicsView::calc_d_point(const QLineF &line,const qreal &x, const qre
 
 }
 
-// Delete single line
+// Delete all marked lines
 void jpsGraphicsView::delete_marked_lines()
 {
     qDebug("Enter jpsGraphicsView::delete_marked_lines");
+    //TODO: Orgnize the flow for delete marked lines
     if (line_tracked!=-1)
     {
         for(int i=0; i<marked_lines.size(); ++i)
@@ -1975,6 +1999,8 @@ void jpsGraphicsView::delete_marked_lines()
 
         //intersect_point_vector.clear();
         line_tracked=-1;
+
+        marked_lines.clear();
 
         update();
     }
@@ -2200,6 +2226,14 @@ QList<jpsLineItem *> jpsGraphicsView::get_line_vector()
 {
     qDebug("Enter/Return jpsGraphicsView::get_line_vector");
     return line_vector;
+}
+
+void jpsGraphicsView::removeLineFromLine_vector(jpsLineItem *line)
+{
+    qDebug("Enter jpsGraphicsView::removeLineFromLine_vector");
+    if (line_vector.contains(line))
+        line_vector.removeOne(line);
+    qDebug("Leave jpsGraphicsView::removeLineFromLine_vector");
 }
 
 qreal jpsGraphicsView::get_scale_f()
@@ -2862,6 +2896,8 @@ void jpsGraphicsView::addLayer()
     qDebug("Enter jpsGraphicsView::addLayer");
     auto *layer = new Layer();
 
+    emit layersChanged();
+
     this->scene()->addItem(layer); // Add layer into scene
 
     layer_list.append(layer);
@@ -2872,6 +2908,8 @@ void jpsGraphicsView::deleteLayer(Layer *deletedLayer)
 {
     qDebug("Enter jpsGraphicsView::deleteLayer");
     layer_list.removeOne(deletedLayer);
+
+    emit layersChanged();
     qDebug("Leave jpsGraphicsView::deleteLayer");
 }
 

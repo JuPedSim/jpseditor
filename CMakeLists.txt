@@ -26,7 +26,7 @@ cmake_minimum_required(VERSION 3.2)
 # ENDIF (POLICY CMP0025)
 
 project(JPSeditor LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STAADARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -82,12 +82,6 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "")
 endif()
 
 message( STATUS "Generating  ................................... ${PROJECT_NAME} (${JPSEDITOR_VERSION}) -- ${CMAKE_BUILD_TYPE}")
-if(APPLE)
-  set (CMAKE_INSTALL_PREFIX "/Applications")
-  set (CMAKE_PREFIX_PATH "/Applications/Qt/5.13.0/clang_64")
-endif()
-message(STATUS "${PROJECT_NAME} will be installed to ${CMAKE_INSTALL_PREFIX}")
-
 
 # ------------------------- Begin Generic CMake Variable Logging ------------------
 # the compiler used for C files
@@ -327,6 +321,7 @@ endif()
 
 # this command will generate rules that will run rcc on all files from RCS
 # in result RC_SRCS variable will contain paths to files produced by rcc
+
 if( ${QT5_INSTALLED})
   message(STATUS "Working with Qt5")
   # http://www.kdab.com/using-cmake-with-qt-5/
@@ -360,7 +355,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   set(CMAKE_CXX_FLAGS                "${CMAKE_CXX_FLAGS} ${warning_flags}")
   set(CMAKE_CXX_FLAGS_DEBUG          "${CMAKE_CXX_FLAGS_DEBUG} ${warning_flags} -O0 -g -Wunused-variable -Wunused-parameter -Wunused-function -Wshadow -Wunused")
 endif()
-
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     message(STATUS "Using compiler ................................ Clang (${CMAKE_CXX_COMPILER_VERSION})")
@@ -432,62 +426,4 @@ IF(APPLE)
   SET(MACOSX_BUNDLE_SHORT_VERSION_STRING "${JPSEDITOR_VERSION}")
   SET(MACOSX_BUNDLE_EDIT_IDENTIFIER "https://www.jupedsim.org")
 ENDIF(APPLE)
-
-# To Create a package, one can run "cpack -G DragNDrop CPackConfig.cmake" on Mac OS X
-# where CPackConfig.cmake is created by including CPack
-# And then there's ways to customize this as well
-# https://github.com/mikemcquaid/Fabula
-#set(CPACK_BINARY_DRAGNDROP ON)
-#set(CPACK_GENERATOR "TBZ2")
-#set(CPACK_PACKAGE_VERSION_MAJOR "${JPSEDITOR_MAJOR_VERSION}")
-#set(CPACK_PACKAGE_VERSION_MINOR "${JPSEDITOR_MINOR_VERSION}")
-#set(CPACK_PACKAGE_VERSION_PATCH "${JPSEDITOR_PATCH_VERSION}")
-#set(CPACK_PACKAGE_VERSION "${JPSEDITOR_VERSION}")
-#set(CPACK_PACKAGE_VENDOR "${JPSEDITOR_VENDOR}")
-#set(CPACK_RESOURCE_FILE_README "${README_FILE}")
-#if(WIN32) #
-#  set(CPACK_GENERATOR "NSIS")
-#  set(CPACK_PACKAGE_EXECUTABLES "${PROJECT_NAME}" "${PROJECT_NAME}")
-#  set(CPACK_PACKAGE_INSTALL_DIRECTORY "${PROJECT_NAME}")
-#  set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME} ${JPSEDITOR_VERSION}")
-#  set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/${LICENSE_FILE}")
-#  set(CPACK_NSIS_EXECUTABLES_DIRECTORY "${BIN_INSTALL_DIR}")
-#  #set(CPACK_NSIS_MUI_ICON "${PROJECT_ICONS_DIRECTORY}/NSIS.ico")
-#  #set(CPACK_PACKAGE_ICON "${PROJECT_ICONS_DIRECTORY}\\\\NSISHeader.bmp")
-#  set(CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX}")
-#  #    set(CPACK_NSIS_MENU_LINKS "${LICENSE_FILE}" "License" "${README_FILE}" "Readme")
-#  #   set(CPACK_NSIS_MUI_FINISHPAGE_RUN "${CPACK_NSIS_INSTALLED_ICON_NAME}")
-#elseif(APPLE) #
-#  set(CPACK_GENERATOR "DragNDrop")
-#  set(CPACK_DMG_FORMAT "UDBZ")
-#  set(CPACK_DMG_VOLUME_NAME "${PROJECT_NAME}")
-#  set(CPACK_SYSTEM_NAME "OSX")
-#  set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${JPSEDITOR_VERSION}")
-#  #set(CPACK_PACKAGE_ICON "${ICONS_DIR}/DMG.icns")
-#  #set(CPACK_DMG_DS_STORE "${ICONS_DIR}/DMGDSStore")
-#  #set(CPACK_DMG_BACKGROUND_IMAGE "${ICONS_DIR}/DMGBackground.png")
-#elseif(UNIX)
-#  # tested with success in
-#  # Linux dhcppc5 3.2.0-4-686-pae #1 SMP Debian 3.2.68-1+deb7u2 i686 GNU/Linux
-#  set(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
-#  SET(CPACK_GENERATOR "DEB")
-#
-#  SET(CPACK_PACKAGE_DESCRIPTION "simulation core of JuPedSim")
-#  SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Geometry editor of JuPedSim, a framework for simulation and analysis of pedestrian dynamics")
-#  #SET(CPACK_PACKAGE_VENDOR "nowardev")
-#  SET(CPACK_PACKAGE_CONTACT "m.chraibi@fz-juelich.de")
-#  SET(CPACK_PACKAGE_VERSION_MAJOR "${JPSEDITOR_MAJOR_VERSION}")
-#  SET(CPACK_PACKAGE_VERSION_MINOR "${JPSEDITOR_MINOR_VERSION}")
-#  SET(CPACK_PACKAGE_VERSION_PATCH "${JPSEDITOR_PATCH_VERSION}")
-#  SET(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${JPSEDITOR_VERSION}")
-#  SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${JPSEDITOR_VERSION}")
-#  #SET(CPACK_DEBIAN_PACKAGE_DEPENDS " Boost (>= 1.59) ")
-#  SET(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-#  SET( CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://jupedsim.org")
-#  SET(CPACK_DEBIAN_PACKAGE_SUGGESTS, "jpsvis, jpsreport, jpscore")
-#  SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
-#  SET(CPACK_DEBIAN_PACKAGE_SECTION "science")
-#  SET(CPACK_DEBIAN_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
-#endif()
-#include(CPack)
 

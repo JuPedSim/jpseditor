@@ -40,9 +40,6 @@ RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGra
 
     updateRoomsListWidget();
 
-    // Delete all contents
-    connect(parent, SIGNAL(allContentsDeleted()), this, SLOT(updateRoomsListWidget()));
-
     // Highlight room and subroom
     connect(ui->listWidget_rooms, SIGNAL(itemClicked(QListWidgetItem *)),this, SLOT(highlightRoom(QListWidgetItem *)));
     connect(ui->listWidget_zones, SIGNAL(itemClicked(QListWidgetItem *)),this, SLOT(highlightZone(QListWidgetItem *)));

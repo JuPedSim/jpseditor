@@ -72,8 +72,6 @@ SourceWidget::~SourceWidget()
 void SourceWidget::showSource()
 {
     qDebug("Enter SourceWidget::showSource");
-    model->setSourceList(currentView->getSources());
-    ui->sourcesListView->setModel(model);
 
     ui->IDlineEdit->clear();
     ui->agents_maxLineEdit->clear();
@@ -93,6 +91,12 @@ void SourceWidget::showSource()
     ui->X_MaxllneEdit->clear();
     ui->Y_MinLineEdit->clear();
     ui->Y_MaxLineEdit->clear();
+
+    if(!currentView->getSources().isEmpty())
+    {
+        model->setSourceList(currentView->getSources());
+        ui->sourcesListView->setModel(model);
+    }
     qDebug("Leave SourceWidget::showSource");
 }
 

@@ -135,8 +135,14 @@ public:
     // lines read from dxf-file
     jpsLineItem *addLineItem(const qreal &x1, const qreal &y1, const qreal &x2, const qreal &y2, const QString &type="");
     jpsLineItem *addLineItem(const QLineF &line, const QString &type="");
+
+    // Sources and goals read from dxf-file
+    void addSourceItem(const QList<QPointF> &points);
+    void addGoalItem(const QList<QPointF> &points);
+
     QList<jpsLineItem *> get_markedLines();
     QList<jpsLineItem *> get_line_vector();
+    void removeLineFromLine_vector(jpsLineItem *line);
     void unmark_all_lines();
     void markLine(jpsLineItem *mline);
     void SetVLine();
@@ -249,7 +255,7 @@ private:
     QGraphicsLineItem* current_line;
     QPolygonF polygon;
     QList<QPointF *> intersect_point_vector;
-    QList<jpsLineItem *> line_vector;
+    QList<jpsLineItem *> line_vector; // Save all jpsLineItem when they created, remove them when they written in xml
     QList<QGraphicsLineItem *> _origin;
 
     QPointF pos; // position of the mouse cursor;
@@ -340,7 +346,6 @@ signals:
     void set_focus_textedit();
     void lines_deleted();
     void markedLineDeleted();
-    void allContentsDeleted();
     void no_drawing();
 
     void remove_all();

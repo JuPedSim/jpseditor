@@ -55,7 +55,7 @@ JPSGoal::JPSGoal(QGraphicsRectItem *goalRectItem)
 
     //Set-up default values of a JPSGoal
     id = 0;
-    caption="Goal";
+    caption="goal";
     beSaved="true";
     isFinal="true";
     x_min = QString::number(this->rect().bottomLeft().x());

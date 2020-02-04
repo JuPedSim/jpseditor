@@ -61,7 +61,6 @@ public:
     MWindow();
     ~MWindow();
 
-
 private:
     // qwidget pointers, will be deleted by QtWidgets itself
     roomWidget *rwidget;
@@ -243,8 +242,6 @@ private slots:
     // BottemDockWidget
     void closeBottomDockWidget();
 
-signals:
-    void allContentsDeleted();
 };
 
 #endif // MAINWINDOW_H

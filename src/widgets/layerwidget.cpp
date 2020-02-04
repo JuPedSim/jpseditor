@@ -73,7 +73,6 @@ void LayerWidget::addLayerButtonClicked()
 {
     qDebug("Enter LayerWidget::addLayerButtonClicked");
     view->addLayer();
-    updateLayerListWidget();
     qDebug("Leave LayerWidget::addLayerButtonClicked");
 }
 
@@ -151,7 +150,6 @@ void LayerWidget::deleteLayerButtonClicked()
         view->deleteLayer(view->getLayerList()[ui->listWidget_layers->currentRow()]);
     }
 
-    updateLayerListWidget();
     updateItemsListWidget(ui->listWidget_layers->currentItem());
     qDebug("Leave void LayerWidget::deleteLayerButtonClicked");
 }

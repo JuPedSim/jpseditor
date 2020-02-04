@@ -472,19 +472,17 @@ void MWindow::openFileDXF(){
     //QFile file(fileName);
     std::string fName= fileName.toStdString();
 
-    if (!dmanager->readDXF(fName))
+    closeListDockWidget(); // Close list widget at first, in case datamanager changed but widget can't update
+
+    if (dmanager->readDXF(fName))
+    {
+        statusBar()->showMessage("DXF-File successfully loaded!",10000);
+    }
+    else
     {
         statusBar()->showMessage("DXF-File could not be parsed!",10000);
     }
-    //if(file.open(QIODevice::ReadOnly|QIODevice::Text)) {
-      //  textEdit->setPlainText(QString::fromUtf8(file.readAll()));
-     //   statusBar()->showMessage(tr("Datei erfolgreich geladen"),5000);
-    //}
-    else
-    {
 
-        statusBar()->showMessage("DXF-File successfully loaded!",10000);
-    }
     qDebug("Leave MWindow::openFileDXF");
 }
 
@@ -755,9 +753,6 @@ void MWindow::saveAsXML(){
 
     if(file.open(QIODevice::WriteOnly|QIODevice::Text))
     {
-        //Save geometry
-        dmanager->writeXML(file);
-
         //Save routing (hlines)
         QString fileNameRouting=fileName.split(".").first()+"_routing.xml";
         QFile routingFile(fileNameRouting);
@@ -787,6 +782,9 @@ void MWindow::saveAsXML(){
         QFile transitionFile(fileNameTransition);
         if(transitionFile.open(QIODevice::WriteOnly|QIODevice::Text))
             dmanager->writeTransitionXML(transitionFile);
+
+        //Save geometry
+        dmanager->writeXML(file);
 
         statusBar()->showMessage(tr("XML-File successfully saved!"),10000);
     }
@@ -994,11 +992,10 @@ void MWindow::deleteAllContents()
     // Delete all QGraphicsitem in view
     mview->removeContents();
 
-    emit mview->sourcesChanged(); // emit to update source widget
-    emit mview->goalsChanged(); // emit to update goal widget
-    emit mview->transitonsChanged(); // emit to update transition widget
-    emit mview->layersChanged(); // emit to update layer widget
-    emit allContentsDeleted(); // emit to property & roomlist widget
+    // Close all related widgets
+    closePropertyDockWidget();
+    closeListDockWidget();
+    closeLeftToolBarArea();
 
     statusBar()->showMessage(tr("All lines are deleted!"),10000);
     qDebug("Leave MWindow::deleteAllContents");

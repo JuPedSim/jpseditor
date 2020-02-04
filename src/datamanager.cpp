@@ -354,20 +354,9 @@ void jpsDatamanager::newTransition(jpsLineItem *transition)
     qDebug("Leave jpsDatamanager::newTransition");
 }
 
-void jpsDatamanager::remove_exit(jpsTransition *exit)
-{
-     qDebug("Enter jpsDatamanager::remove_exit");
-    if (transition_list.size()>0)
-    {
-        transition_list.removeOne(exit);
-        delete exit;
-    }
-    qDebug("Leave jpsDatamanager::remove_exit");
-}
-
 void jpsDatamanager::removeAllTransition()
 {
-     qDebug("Enter jpsDatamanager::removeAllTransition");
+    qDebug("Enter jpsDatamanager::removeAllTransition");
     for (int i=0; i<transition_list.size(); i++)
     {
         delete transition_list[i]; // delete jpsTransition
@@ -376,6 +365,45 @@ void jpsDatamanager::removeAllTransition()
     transition_list.clear();
 
     qDebug("Leave jpsDatamanager::removeAllTransition");
+}
+
+/*
+ * Recognize the from and to rooms for transition
+ *
+ * */
+void jpsDatamanager::recognizeRoomForTransition(jpsTransition *transition)
+{
+    //TODO: Complete this func after redesign the room
+    qDebug("Enter jpsDatamanager::recognizeRoomForTransition");
+    auto point1 = transition->get_cLine()->get_line()->line().p1();
+
+    for (auto room : roomlist)
+    {
+        for (auto list : room->getZoneList())
+        {
+            for (auto zone : list)
+            {
+                auto wall_list = zone->get_listWalls();
+
+                for(auto line : wall_list)
+                {
+                    if(point1 == line->get_line()->line().p1()
+                    && point1 == line->get_line()->line().p2())
+                    {
+                        if(transition->get_roomList().size() == 0)
+                        {
+                            transition->set_rooms(room, nullptr);
+                        }
+                        else if(transition->get_roomList().size() == 1)
+                        {
+                            transition->set_rooms(transition->get_roomList().first(), room);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    qDebug("Leave jpsDatamanager::recognizeRoomForTransition");
 }
 
 QList<jpsLandmark *> jpsDatamanager::get_landmarks()
@@ -526,7 +554,8 @@ void jpsDatamanager::writeXML(QFile &file)
     qDebug("Enter jpsDatamanager::writeXML");
     auto *stream = new QXmlStreamWriter(&file);
 
-    QList<jpsLineItem* > lines = _mView->get_line_vector(); //lines are all jpsLineItem
+    // Lines is a copy of line_vector, just using for writing
+    QList<jpsLineItem* > lines = _mView->get_line_vector();
 
     stream->setAutoFormatting(true);
     stream->writeStartDocument("1.0",true);
@@ -582,7 +611,6 @@ void jpsDatamanager::writeRoutingXML(QFile &file) // Construction side
 
     delete stream;
     qDebug("Leave jpsDatamanager::writeRoutingXML");
-
 }
 
 void jpsDatamanager::writeLineItems(QFile &file)
@@ -1008,7 +1036,7 @@ void jpsDatamanager::writeCrossings(QXmlStreamWriter *stream, JPSZone *room, QLi
                     crossing->get_cLine()->get_line()->line().y2());
 
             QMessageBox msgBox;
-            msgBox.setText("This crossing incorrect \n It will be saved in unsigned lines");
+            msgBox.setText("This crossing is incorrect \n It will be saved in unsigned lines");
             msgBox.setDetailedText(string);
             msgBox.setStandardButtons(QMessageBox::Ok);
 
@@ -1037,50 +1065,60 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineIte
 
     for(jpsTransition *transition : transition_list)
     {
-        stream->writeStartElement("transition");
-        stream->writeAttribute("id",QString::number(transition->get_id()));
-        stream->writeAttribute("caption","exit");
-        stream->writeAttribute("type","emergency");
-
-        // room 1
-        if(transition->get_roomList().isEmpty() || transition->get_roomList()[0] == nullptr)
+        if(transition->get_roomList()[0] == nullptr && transition->get_roomList()[1] == nullptr)
         {
-            //outside
-            stream->writeAttribute("room1_id","-1");
-            stream->writeAttribute("subroom1_id","-1");
+            continue;
         } else
         {
-            //room
-            stream->writeAttribute("room1_id",QString::number(transition->get_roomList()[0]->getFatherRoom()->get_id()));
-            stream->writeAttribute("subroom1_id",QString::number(transition->get_roomList()[0]->get_id()));
+            stream->writeStartElement("transition");
+            stream->writeAttribute("id",QString::number(transition->get_id()));
+            stream->writeAttribute("caption","exit");
+            stream->writeAttribute("type","emergency");
+
+            // Skip unused transition, whose both sides are outside
+
+            // room 1
+            if(transition->get_roomList().isEmpty() || transition->get_roomList()[0] == nullptr)
+            {
+                //outside
+                stream->writeAttribute("room1_id","-1");
+                stream->writeAttribute("subroom1_id","-1");
+            } else
+            {
+                //room
+                stream->writeAttribute("room1_id",QString::number(transition->get_roomList()[0]->getFatherRoom()->get_id()));
+                stream->writeAttribute("subroom1_id",QString::number(transition->get_roomList()[0]->get_id()));
+            }
+
+            // room 2
+            if(transition->get_roomList().isEmpty() || transition->get_roomList()[1] == nullptr)
+            {
+                //outside
+                stream->writeAttribute("room2_id","-1");
+                stream->writeAttribute("subroom2_id","-1");
+            } else
+            {
+                //room
+                stream->writeAttribute("room2_id",QString::number(transition->get_roomList()[1]->getFatherRoom()->get_id()));
+                stream->writeAttribute("subroom2_id",QString::number(transition->get_roomList()[1]->get_id()));
+            }
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px",QString::number(transition->get_cLine()->get_line()->line().x1()));
+            stream->writeAttribute("py",QString::number(transition->get_cLine()->get_line()->line().y1()));
+            stream->writeEndElement(); //vertex
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px",QString::number(transition->get_cLine()->get_line()->line().x2()));
+            stream->writeAttribute("py",QString::number(transition->get_cLine()->get_line()->line().y2()));
+            stream->writeEndElement(); //vertex
+
+            stream->writeEndElement(); //transition
+
+            // Remove jpsLineItem of transition from line_vector
+            // If not removed now, the transition will be written in unsigned lines
+            lines.removeOne(transition->get_cLine());
         }
-
-        // room 2
-        if(transition->get_roomList().isEmpty() || transition->get_roomList()[1] == nullptr)
-        {
-            //outside
-            stream->writeAttribute("room2_id","-1");
-            stream->writeAttribute("subroom2_id","-1");
-        } else
-        {
-            //room
-            stream->writeAttribute("room2_id",QString::number(transition->get_roomList()[1]->getFatherRoom()->get_id()));
-            stream->writeAttribute("subroom2_id",QString::number(transition->get_roomList()[1]->get_id()));
-        }
-
-        stream->writeStartElement("vertex");
-        stream->writeAttribute("px",QString::number(transition->get_cLine()->get_line()->line().x1()));
-        stream->writeAttribute("py",QString::number(transition->get_cLine()->get_line()->line().y1()));
-        stream->writeEndElement(); //vertex
-
-        stream->writeStartElement("vertex");
-        stream->writeAttribute("px",QString::number(transition->get_cLine()->get_line()->line().x2()));
-        stream->writeAttribute("py",QString::number(transition->get_cLine()->get_line()->line().y2()));
-        stream->writeEndElement(); //vertex
-
-        stream->writeEndElement(); //transition
-
-        lines.removeOne(transition->get_cLine());
     }
     qDebug("Leave jpsDatamanager::writeTransitions");
 }
@@ -1962,29 +2000,34 @@ void jpsDatamanager::parseSubRoom(const QDomElement &element)
     // Setup subroom
     JPSZone *current_subroom = nullptr;
 
-    if(element.attribute("class") == "corridor" || element.attribute("class") == "subroom")
+    if(element.attribute("class") == "Corridor"
+    || element.attribute("class") == "corridor"
+    || element.attribute("class") == "Subroom"
+    || element.attribute("class") == "subroom")
     {
         addCorridor(roomlist.last());
         current_subroom = roomlist.last()->getCorridorList().last();
-    }else if(element.attribute("class") == "platform")
+    }else if(element.attribute("class") == "Platform" || element.attribute("class") == "platform")
     {
         addPlatform(roomlist.last());
         current_subroom = roomlist.last()->getPlatfromList().last();
-    }else if(element.attribute("class") == "lobby")
+    }else if(element.attribute("class") == "Lobby" || element.attribute("class") == "lobby")
     {
         addLobby(roomlist.last());
         current_subroom = roomlist.last()->getLobbyList().last();
-    }else if(element.attribute("class") == "office")
+    }else if(element.attribute("class") == "Office" || element.attribute("class") == "office")
     {
         addOffice(roomlist.last());
         current_subroom = roomlist.last()->getOfficeList().last();
-    }else if(element.attribute("class") == "stair")
+    }else if(element.attribute("class") == "Stair" || element.attribute("class") == "stair")
     {
         addStair(roomlist.last());
         current_subroom = roomlist.last()->getStairList().last();
     } else{
+        // No class or not vaild class, prase as corridor
+        addCorridor(roomlist.last());
+        current_subroom = roomlist.last()->getCorridorList().last();
         qDebug("Not vaild subroom type");
-        return;
     }
 
     current_subroom->set_id(element.attribute("id").toInt());
@@ -2235,6 +2278,10 @@ bool jpsDatamanager::readDXF(std::string filename)
 {
     qDebug("Enter jpsDatamanager::readDXF");
     DL_Dxf dxf;
+
+    // Every import dxf as a layer
+    _mView->addLayer();
+
     if (!dxf.in(filename, this))
     {
         qDebug("Leave jpsDatamanager::readDXF");
@@ -2267,40 +2314,110 @@ bool jpsDatamanager::readDXF(std::string filename)
             msgBox.exec();
         }
 
+//        for (auto transition : transition_list)
+//        {
+//            recognizeRoomForTransition(transition);
+//        }
+
         qDebug("Leave jpsDatamanager::readDXF");
         return true;
     }
 }
 
+//TODO: Refoctoring for issue212
 void jpsDatamanager::addLine(const DL_LineData &d)
 {
     qDebug("Enter jpsDatamanager::addLine");
     DL_Attributes attributes = DL_CreationInterface::getAttributes();
+
     auto layername = QString::fromStdString(attributes.getLayer());
 
-    if (layername.contains("wall"))
+    if (layername.contains("room"))
     {
-        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
-    }
-    else if (layername.contains("crossing"))
-    {
-        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"crossing");
+        if(isRepeatedRoomName(layername))
+        {
+            // Nothing to do
+        }else {
+            // Create a new room at first;
+            addRoom();
+            roomlist.last()->setName(layername);
+            addCorridor(roomlist.last());
+        }
+
+        auto wall = _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
+
+        if(roomlist.last()->getCorridorList().isEmpty())
+        {
+            // Nothing to do
+        }
+        else
+        {
+            roomlist.last()->getCorridorList().last()->addWall(wall);
+            _mView->getLayerList().last()->addLineToLayer(wall);
+        }
     }
     else if (layername.contains("transition"))
     {
         _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"transition");
     }
-    else if (layername.contains("track"))
+    else if (layername.contains("platform"))
     {
-        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"track");
+
+        if(isRepeatedRoomName(layername))
+        {
+            // Nothing to do
+        }else {
+            // Create a new room at first;
+            addRoom();
+            roomlist.last()->setName(layername);
+            addPlatform(roomlist.last());
+        }
+
+        auto track = _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"track");
+
+        if(roomlist.last()->getPlatfromList().isEmpty())
+        {
+            // Nothing to do
+        }
+        else
+        {
+            roomlist.last()->getPlatfromList().last()->addTrack(track, QString(1));
+            _mView->getLayerList().last()->addLineToLayer(track);
+        }
+    }
+    else if (layername.contains("source"))
+    {
+        points.append(QPointF(d.x1, d.y1));
+        points.append(QPointF(d.x2, d.y2));
+
+        if(points.size() == 8) // Every 4 lines as a rect
+        {
+            _mView->addSourceItem(points);
+
+            points.clear();
+        }
+    }
+    else if (layername.contains("goal"))
+    {
+        points.append(QPointF(d.x1, d.y1));
+        points.append(QPointF(d.x2, d.y2));
+
+        if(points.size() == 8)
+        {
+            _mView->addGoalItem(points);
+
+            points.clear();
+        }
     }
     else
     {
+        // Save unimported layer name into list to print it after importing
         if(!unimported_layer.contains(layername))
         {
             unimported_layer.append(layername);
         }
     }
+
     qDebug("Leave jpsDatamanager::addLine");
 }
 
@@ -2392,23 +2509,23 @@ void jpsDatamanager::writeDXFTables(DL_Dxf *dxf, DL_WriterA *dw)
     100,             //default width
     "CONTINUOUS"));    //default line style
 
-    dxf->writeLayer(*dw,
-    DL_LayerData("mainlayer", 0),
-    DL_Attributes(
-    std::string(""),
-    2,
-    2,
-    100,
-    "CONTINUOUS"));
-
-    dxf->writeLayer(*dw,
-    DL_LayerData("anotherlayer", 0),
-    DL_Attributes(
-    std::string(""),
-    1,
-    1,
-    100,
-    "CONTINUOUS"));
+//    dxf->writeLayer(*dw,
+//    DL_LayerData("mainlayer", 0),
+//    DL_Attributes(
+//    std::string(""),
+//    2,
+//    2,
+//    100,
+//    "CONTINUOUS"));
+//
+//    dxf->writeLayer(*dw,
+//    DL_LayerData("anotherlayer", 0),
+//    DL_Attributes(
+//    std::string(""),
+//    1,
+//    1,
+//    100,
+//    "CONTINUOUS"));
     dw->tableEnd();
 
     //dxf->writeStyle(*dw,);
@@ -2452,22 +2569,11 @@ void jpsDatamanager::writeDXFBlocks(DL_Dxf *dxf, DL_WriterA *dw)
     dxf->writeBlock(*dw,
     DL_BlockData("*Paper_Space0", 0, 0.0, 0.0, 0.0));
     dxf->writeEndBlock(*dw, "*Paper_Space0");
-    dxf->writeBlock(*dw,
-    DL_BlockData("myblock1", 0, 0.0, 0.0, 0.0));
-    // ...
-    // write block entities e.g. with dxf.writeLine(), ..
-    // ...
-    dxf->writeEndBlock(*dw, "myblock1");
-    dxf->writeBlock(*dw,
-    DL_BlockData("myblock2", 0, 0.0, 0.0, 0.0));
-    // ...
-    // write block entities e.g. with dxf.writeLine(), ..
-    // ...
-    dxf->writeEndBlock(*dw, "myblock2");
     dw->sectionEnd();
     qDebug("Leave jpsDatamanager::writeDXFBlocks");
 }
 
+//TODO: Refoctoring for issue212
 void jpsDatamanager::writeDXFEntities(DL_Dxf *dxf, DL_WriterA *dw)
 {
     qDebug("Enter jpsDatamanager::writeDXFEntities");
@@ -2475,11 +2581,15 @@ void jpsDatamanager::writeDXFEntities(DL_Dxf *dxf, DL_WriterA *dw)
 
     // Write wall, crossing, transition, hline, track
     QList<jpsLineItem* > lines = _mView->get_line_vector();
+    QList<JPSSource* > sources = _mView->getSources();
+    QList<JPSGoal* > goals = _mView->getGoals();
 
     DL_Attributes attributeWall("wall", 256, 256, -1, "BYLAYER");
     DL_Attributes attributeCrossing("crossing", 256, 256, -1, "BYLAYER");
     DL_Attributes attributeTransition("transition", 256, 256, -1, "BYLAYER");
     DL_Attributes attributeTrack("track", 256, 256, -1, "BYLAYER");
+
+    DL_Attributes attributeGoal("goal", 256, 256, -1, "BYLAYER");
 
     for (jpsLineItem* lineItem:lines)
     {
@@ -2511,11 +2621,85 @@ void jpsDatamanager::writeDXFEntities(DL_Dxf *dxf, DL_WriterA *dw)
         {
             continue; // Don't write hline into dxf
         }
-
     }
 
-    // TODO: Write goal, source
+    // Write sources
+    for(JPSSource* source: sources)
+    {
+        QString name = source->getCaption();
 
+        DL_Attributes attributeSource(name.toStdString(), 256, 256, -1, "BYLAYER");
+
+        DL_LineData line_top(source->rect().topLeft().x(),
+                             source->rect().topLeft().y(),
+                             0.0,
+                             source->rect().topRight().x(),
+                             source->rect().topRight().y(),
+                             0.0);
+
+        DL_LineData line_left(source->rect().topLeft().x(),
+                              source->rect().topLeft().y(),
+                              0.0,
+                              source->rect().bottomLeft().x(),
+                              source->rect().bottomLeft().y(),
+                              0.0);
+
+        DL_LineData line_right(source->rect().topRight().x(),
+                               source->rect().topRight().y(),
+                               0.0,
+                               source->rect().bottomRight().x(),
+                               source->rect().bottomRight().y(),
+                               0.0);
+
+        DL_LineData line_bottem(source->rect().bottomLeft().x(),
+                                source->rect().bottomLeft().y(),
+                                0.0,
+                                source->rect().bottomRight().x(),
+                                source->rect().bottomRight().y(),
+                                0.0);
+
+        dxf->writeLine(*dw, line_top, attributeSource);
+        dxf->writeLine(*dw, line_bottem, attributeSource);
+        dxf->writeLine(*dw, line_left, attributeSource);
+        dxf->writeLine(*dw, line_right, attributeSource);
+    }
+
+    // Write goals
+    for(JPSGoal* goal: goals)
+    {
+        DL_LineData line_top(goal->rect().topLeft().x(),
+                             goal->rect().topLeft().y(),
+                             0.0,
+                             goal->rect().topRight().x(),
+                             goal->rect().topRight().y(),
+                             0.0);
+
+        DL_LineData line_left(goal->rect().topLeft().x(),
+                              goal->rect().topLeft().y(),
+                              0.0,
+                              goal->rect().bottomLeft().x(),
+                              goal->rect().bottomLeft().y(),
+                              0.0);
+
+        DL_LineData line_right(goal->rect().topRight().x(),
+                               goal->rect().topRight().y(),
+                               0.0,
+                               goal->rect().bottomRight().x(),
+                               goal->rect().bottomRight().y(),
+                               0.0);
+
+        DL_LineData line_bottem(goal->rect().bottomLeft().x(),
+                                goal->rect().bottomLeft().y(),
+                                0.0,
+                                goal->rect().bottomRight().x(),
+                                goal->rect().bottomRight().y(),
+                                0.0);
+
+        dxf->writeLine(*dw, line_top, attributeGoal);
+        dxf->writeLine(*dw, line_bottem, attributeGoal);
+        dxf->writeLine(*dw, line_left, attributeGoal);
+        dxf->writeLine(*dw, line_right, attributeGoal);
+    }
     dw->sectionEnd();
     qDebug("Leave jpsDatamanager::writeDXFEntities");
 }
@@ -2885,7 +3069,6 @@ void jpsDatamanager::writeSourceXML(QFile &file) {
     writeSourceHeader(stream);
 
     stream->writeStartElement("agents_sources");
-    sourcelist.clear();
     sourcelist = getSourcelist();
     writeSources(stream, sourcelist);
     stream->writeEndElement(); //end sources
@@ -2944,7 +3127,6 @@ void jpsDatamanager::writeGoalXML(QFile &file)
     stream->writeAttribute("version", "0.8");
 
     stream->writeStartElement("goals");
-    goallist.clear();
     goallist = getGoallist();
     writeGoals(stream, goallist);
     stream->writeEndElement(); //end goals
@@ -3034,6 +3216,8 @@ void jpsDatamanager::writeTransitionXML(QFile &file)
 {
     qDebug("Enter jpsDatamanager::writeTransitionXML");
     QXmlStreamWriter* stream = new QXmlStreamWriter(&file);
+
+    // Lines is a copy of line_vector, just using for writing
     QList<jpsLineItem* > lines = _mView->get_line_vector();
 
     stream->setAutoFormatting(true);
@@ -3092,7 +3276,6 @@ void jpsDatamanager::writeTrafficXML(QFile &file)
             doorlist.append(door);
         }
     }
-
 
     stream->setAutoFormatting(true);
 
@@ -3427,4 +3610,17 @@ QList<jpsTransition *> jpsDatamanager::getTransitionInSubroom(JPSZone *subroom)
     return transitions;
 
     qDebug("Leave jpsDatamanager::getTransitionInSubroom");
+}
+
+
+bool jpsDatamanager::isRepeatedRoomName(QString name)
+{
+    qDebug("Enter jpsDatamanager::isRepeatedRoomName");
+    for(auto *room : roomlist)
+    {
+        if(name == room->getName())
+            return true;
+    }
+    return false;
+    qDebug("Leave jpsDatamanager::isRepeatedRoomName");
 }

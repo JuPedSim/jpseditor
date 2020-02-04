@@ -2281,7 +2281,7 @@ DL_WriterA* DL_Dxf::out(const char* file, DL_Codes::version version) {
  */
 void DL_Dxf::writeHeader(DL_WriterA& dw) {
     dw.sectionHeader();
-
+    dw.comment("dxflib " DL_VERSION);
     dw.dxfString(9, "$ACADVER");
     switch (version) {
     case DL_Codes::AC1009:

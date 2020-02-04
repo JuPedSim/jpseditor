@@ -63,6 +63,7 @@ public:
     ///Zone
     QList<JPSZone *> get_roomlist();
     void addRoom();
+    bool isRepeatedRoomName(QString name);
     void remove_room(JPSZone* room);
     void change_roomName(JPSZone* room, QString name);
     void remove_all_rooms();
@@ -79,9 +80,9 @@ public:
     QList<jpsTransition *> getTransitionList();
     void new_exit(QList<jpsLineItem *> newExits);
     void newTransition(jpsLineItem *transition);
-    void remove_exit(jpsTransition* exit);
     void removeAllTransition();
     QList<jpsTransition *> getTransitionInSubroom(JPSZone* subroom);
+    void recognizeRoomForTransition(jpsTransition *transition);
 
     ///Landmark
     QList<jpsLandmark *> get_landmarks();
@@ -155,7 +156,7 @@ public:
     void writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeSubRoom(QXmlStreamWriter *stream, JPSZone* room, QList<jpsLineItem* >& lines);
     void writeCrossings(QXmlStreamWriter *stream, JPSZone *room, QList<jpsLineItem *> &lines);
-    void writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
+    void writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines);
     void writeObstacles(QXmlStreamWriter *stream, jpsObstacle *obs, QList<jpsLineItem *> &lines);
     void writeNotAssignedLines(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines);
     void writeTransitionXML(QFile &file);
@@ -277,6 +278,9 @@ private:
     std::default_random_engine _generator;
 
     bool isInCrossingList(jpsLineItem *markedLine);
+
+    // For DXF import
+    QList<QPointF> points; // Points in rects of sources or goals
 
     // Deprecated
     QList<jpsCrossing *> crossingList;

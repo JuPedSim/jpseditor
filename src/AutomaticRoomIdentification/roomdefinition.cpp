@@ -1,9 +1,7 @@
 #include "roomdefinition.h"
 #include "../datamanager.h"
-#include "../jpsLineItem.h"
-#include "./djsf.h"
 #include "./roomID.h"
-#include "roomidentification.h"
+
 
 RoomDefinition::RoomDefinition()
 {

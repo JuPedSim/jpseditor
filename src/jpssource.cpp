@@ -54,7 +54,7 @@ JPSSource::JPSSource(QGraphicsRectItem *sourceRectItem)
 
     //Set-up default values of a JPSsource
     id = 0;
-    caption="Source";
+    caption="source";
     agents_max = "";
     frequency = "";
     group_id = "";

@@ -74,8 +74,7 @@ GoalWidget::~GoalWidget()
 void GoalWidget::showGoals()
 {
     qDebug("Enter GoalWidget::showGoals");
-    model->setGoalsList(currentView->getGoals());
-    ui->goalsListView->setModel(model);
+
     ui->IDlineEdit->clear();
     ui->captionLineEdit->clear();
     ui->finalLineEdit->clear();
@@ -83,6 +82,13 @@ void GoalWidget::showGoals()
     ui->lineEdit_XMax->clear();
     ui->lineEdit_YMin->clear();
     ui->lineEdit_YMax->clear();
+
+    if(!currentView->getGoals().isEmpty())
+    {
+        model->setGoalsList(currentView->getGoals());
+        ui->goalsListView->setModel(model);
+    }
+
     qDebug("Leave GoalWidget::showGoals");
 }
 
