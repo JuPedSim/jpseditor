@@ -2000,29 +2000,34 @@ void jpsDatamanager::parseSubRoom(const QDomElement &element)
     // Setup subroom
     JPSZone *current_subroom = nullptr;
 
-    if(element.attribute("class") == "corridor" || element.attribute("class") == "subroom")
+    if(element.attribute("class") == "Corridor"
+    || element.attribute("class") == "corridor"
+    || element.attribute("class") == "Subroom"
+    || element.attribute("class") == "subroom")
     {
         addCorridor(roomlist.last());
         current_subroom = roomlist.last()->getCorridorList().last();
-    }else if(element.attribute("class") == "platform")
+    }else if(element.attribute("class") == "Platform" || element.attribute("class") == "platform")
     {
         addPlatform(roomlist.last());
         current_subroom = roomlist.last()->getPlatfromList().last();
-    }else if(element.attribute("class") == "lobby")
+    }else if(element.attribute("class") == "Lobby" || element.attribute("class") == "lobby")
     {
         addLobby(roomlist.last());
         current_subroom = roomlist.last()->getLobbyList().last();
-    }else if(element.attribute("class") == "office")
+    }else if(element.attribute("class") == "Office" || element.attribute("class") == "office")
     {
         addOffice(roomlist.last());
         current_subroom = roomlist.last()->getOfficeList().last();
-    }else if(element.attribute("class") == "stair")
+    }else if(element.attribute("class") == "Stair" || element.attribute("class") == "stair")
     {
         addStair(roomlist.last());
         current_subroom = roomlist.last()->getStairList().last();
     } else{
+        // No class or not vaild class, prase as corridor
+        addCorridor(roomlist.last());
+        current_subroom = roomlist.last()->getCorridorList().last();
         qDebug("Not vaild subroom type");
-        return;
     }
 
     current_subroom->set_id(element.attribute("id").toInt());
