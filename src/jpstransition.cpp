@@ -1,7 +1,7 @@
 /**
- * \file        jpsexit.cpp
- * \date        Oct-01-2018
- * \version     v0.8.4
+ * \file        jpstransition.cpp
+ * \date        Feb-25-2020
+ * \version     v0.8.9
  * \copyright   <2009-2018> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
