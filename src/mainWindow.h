@@ -21,8 +21,7 @@
  * along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
  *
  * \section Description
- * This class is setting up the main window incl. all buttons and bars. It is the parent widget of all other widgets
- * (GraphicView, roomWidget, widgetLandmark).
+ * Controller for main window, connect data manager(model) and mainwinow.ui(view)
  *
  **/
 
@@ -34,7 +33,6 @@
 #include <QLineEdit>
 #include <QDockWidget>
 #include "ui_mainwindow.h"
-#include "src/widgets/roomwidget.h"
 #include "src/widgets/widgetlandmark.h"
 #include "src/widgets/widgetsettings.h"
 #include "src/widgets/roomlistwidget.h"
@@ -55,7 +53,6 @@
 #include "src/widgets/runningwidget.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
-
     Q_OBJECT
 public:
     MWindow();
@@ -63,13 +60,14 @@ public:
 
 private:
     // qwidget pointers, will be deleted by QtWidgets itself
-    roomWidget *rwidget;
     widgetLandmark *lwidget;
     InifileWidget *inifileWidget;
 
     QDockWidget *bottomDockWidget;
     QDockWidget *propertyDockWidget;
     QDockWidget *listDockWidget;
+
+    SettingDialog *settingDialog;
 
     QToolBar *drawing_toolbar_;
     QActionGroup *drawingActionGroup;
@@ -80,6 +78,7 @@ private:
     SnappingOptions* snappingOptions;
 
     QGraphicsScene *mscene;
+
     //QVBoxLayout* VBox;
     QLineEdit* length_edit;
     QLineEdit* x_edit;
@@ -91,9 +90,7 @@ private:
     QLabel* infoLabel;
     QString _filename;
 
-    SettingDialog *settingDialog;
-
-    /// Pointers, delete these in ~MWindow()
+    /// Model
     jpsDatamanager* dmanager;
 
     // CMap
@@ -208,6 +205,7 @@ public slots:
     void setTimer(int interval);
 
 private slots:
+    //TODO: Redesign with signal and slot
     void on_actionCopy_triggered();
     void on_actionOnline_Help_triggered();
     void on_actionClear_all_Rooms_and_Doors_triggered();
@@ -225,6 +223,7 @@ private slots:
 
     //Zone ToolBar
     void setupZoneToolBar();
+
     void corridorButtonClicked();
     void platformButtonClicked();
     void lobbyButtonClicked();
@@ -232,7 +231,7 @@ private slots:
     void stairButtonClicked();
 
     // PropertyDockWidget
-    void addPropertyDockWidget(JPSZone *zone);
+    void addPropertyDockWidget(JPSZone *zone); // used in room list widget
     void closePropertyDockWidget();
 
     // ListDockWidget

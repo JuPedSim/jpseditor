@@ -132,7 +132,7 @@ set( SRCS
 
 ## Controllers
     src/mainWindow.cpp
-    src/widgets/roomwidget.cpp
+
     src/widgets/settingdialog.cpp
     src/widgets/inifilewidget.cpp
     src/widgets/snappingoptions.cpp
@@ -198,7 +198,7 @@ set( HDR
     src/widgets/layerwidget.h
     src/widgets/templatewidget.h
     src/widgets/runningwidget.h
-    src/widgets/roomwidget.h
+
     src/widgets/widgetlandmark.h
     src/widgets/widgetsettings.h
     src/widgets/settingdialog.h
@@ -258,7 +258,6 @@ set( HDR
 # *.ui files
 set( UIS
     forms/mainwindow.ui
-    forms/roomwidget.ui
     forms/widgetlandmark.ui
     forms/widgetsettings.ui
     forms/settingdialog.ui
@@ -270,7 +269,6 @@ set( UIS
     forms/propertywidget.ui
     forms/transitionwidget.ui
     forms/layerwidget.ui
-    forms/templatewidget.ui
     forms/runningwidget.ui
   )
 

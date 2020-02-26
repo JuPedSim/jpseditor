@@ -22,7 +22,6 @@
  *
  * \section Description
  * This class is setting up the main window incl. all buttons and bars. It is the parent widget of all other widgets
- * (GraphicView, roomWidget, widgetLandmark).
  *
  **/
 
@@ -56,8 +55,6 @@ MWindow :: MWindow()
     this->toolBar->setMovable(false);
     drawing_toolbar_ = nullptr;
 
-    //Roomwidget
-    rwidget=nullptr;
     //Landmarkwidget
     lwidget=nullptr;
     //Snapping Options
@@ -400,25 +397,7 @@ void MWindow::AutoSave()
 void MWindow::GatherData()
 {
     qDebug("Enter MWindow::GatherData");
-    if (rwidget==nullptr)
-    {
-        rwidget = new roomWidget(this,this->dmanager,this->mview);
-        //rwidget->setGeometry(QRect(QPoint(5,75), rwidget->size()));
-        rwidget->setAttribute(Qt::WA_DeleteOnClose);
-        rwidget->GatherRTData();
-        rwidget->close();
-        rwidget=nullptr;
-        actionRoom->setChecked(false);
-        //rwidget->show();
-
-    }
-    else
-    {
-        rwidget->GatherRTData();
-    }
-
-    statusBar()->showMessage(tr("Data gathered"),10000);
-    qDebug("Leave MWindow::GatherData");
+    /// there is no more room widget, auto define room isn't needed
 }
 
 
@@ -1016,18 +995,6 @@ void MWindow::delete_marked_lines()
     qDebug("Leave MWindow::delete_marked_lines");
 }
 
-void MWindow::send_length()
-{
-    qDebug("Enter MWindow::send_length");
-    qreal length = length_edit->text().toDouble();
-    if(length != 0)
-    {
-         mview->take_l_from_lineEdit(length);
-    }
-    length_edit->clear();
-    qDebug("Leave MWindow::send_length");
-}
-
 void MWindow::send_xy()
 {
     qDebug("Enter MWindow::send_xy");
@@ -1041,6 +1008,7 @@ void MWindow::send_xy()
     mview->take_endpoint_from_xyEdit(endpoint);
 
     x_edit->clear();
+    y_edit->clear();
     qDebug("Leave MWindow::send_xy");
 }
 
@@ -1048,43 +1016,15 @@ void MWindow::send_xy()
 void MWindow::define_room()
 {
     qDebug("Enter MWindow::define_room");
-    if (rwidget==nullptr)
-    {
-        rwidget = new roomWidget(this,this->dmanager,this->mview);
-        rwidget->setGeometry(QRect(QPoint(75,75), rwidget->size()));
-        rwidget->setAttribute(Qt::WA_DeleteOnClose);
-        rwidget->show();
-    }
-    else
-    {
-        rwidget->close();
-        rwidget=nullptr;
-        actionRoom->setChecked(false);
-    }
+    /// there is no more room widget, auto define room isn't needed
+
     qDebug("Leave MWindow::define_room");
 }
 
 void MWindow::autoDefine_room()
 {
     qDebug("Enter autoDefine_room");
-    if (rwidget==nullptr)
-    {
-        rwidget = new roomWidget(this,this->dmanager,this->mview);
-        //rwidget->setGeometry(QRect(QPoint(5,75), rwidget->size()));
-        rwidget->setAttribute(Qt::WA_DeleteOnClose);
-        rwidget->StartAutoDef();
-        rwidget->close();
-        rwidget=nullptr;
-        actionRoom->setChecked(false);
-        //rwidget->show();
-
-    }
-    else
-    {
-        rwidget->StartAutoDef();
-    }
-
-    statusBar()->showMessage(tr("Rooms and doors are set."),10000);
+    /// there is no more room widget, auto define room isn't needed
     qDebug("Leave autoDefine_room");
 }
 
@@ -1217,16 +1157,7 @@ void MWindow::on_actionOnline_Help_triggered()
 void MWindow::on_actionClear_all_Rooms_and_Doors_triggered()
 {
     qDebug("Enter MWindow::on_actionClear_all_Rooms_and_Doors_triggered");
-    dmanager->remove_all();
-
-    if(rwidget!= nullptr){
-        rwidget->show_rooms();
-        rwidget->showLayersInfo();
-        rwidget->show_crossings();
-        rwidget->show_obstacles();
-    }
-
-    statusBar()->showMessage(tr("All rooms and doors are cleared!"),10000);
+    //TODO: Finsh here
     qDebug("Leave MWindow::on_actionClear_all_Rooms_and_Doors_triggered");
 }
 
