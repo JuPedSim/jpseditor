@@ -275,14 +275,14 @@
           <item>
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Goal file</string>
+             <string>GoalMode file</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Source file</string>
+             <string>SourceMode file</string>
             </property>
            </widget>
           </item>
@@ -580,7 +580,7 @@
      </column>
      <column>
       <property name="text">
-       <string>Goal ID</string>
+       <string>GoalMode ID</string>
       </property>
      </column>
      <column>
@@ -1034,7 +1034,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Wall&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;WallMode&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gcfm_14">
@@ -1156,7 +1156,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Wall&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;WallMode&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gompertz_11">
@@ -1590,7 +1590,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Wall&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;WallMode&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_tordeux_01">
@@ -1790,7 +1790,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Wall&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;WallMode&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_12">
@@ -2063,7 +2063,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Wall distance</string>
+      <string>WallMode distance</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_model_gradnav_07">
@@ -2102,7 +2102,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Wall avoidance</string>
+      <string>WallMode avoidance</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_model_gradnav_06">

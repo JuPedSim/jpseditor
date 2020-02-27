@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## v0.8.8 [03.05.2019]
 ### Added
-- Add Goal/Source element for drawing #109
+- Add GoalMode/SourceMode element for drawing #109
 - New dock widget as inspector #131
 - Export external xml files #126
 
@@ -21,7 +21,7 @@ All notable changes to this project will be documented in this file.
 - Add layers controlling #90
 
 ### Changed
-- Change warning for Hline #117
+- Change warning for HlineMode #117
 - Show operations message on statusBar #113
 - Redesign Inifile widget Layout #112
 
@@ -80,7 +80,7 @@ All notable changes to this project will be documented in this file.
 
 ## v0.8.3 [16.05.2018]
 ### Added
-- Now user can type x and y to define endpoint for line and Hline.  !7
+- Now user can type x and y to define endpoint for line and HlineMode.  !7
 
 ### Changed
 -  Defining length is removed for the feature !7

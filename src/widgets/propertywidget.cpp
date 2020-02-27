@@ -82,24 +82,12 @@ void PropertyWidget::updateWidget(ZoneType type)
             ui->tabWidget->removeTab(0); // Remove track tab
             ui->tabWidget->removeTab(0); // Remove crossing tab
             break;
-        case Corridor:
-            ui->tabWidget->removeTab(1); // Remove track tab
-            updateWallListWidget();
 
-            break;
         case Platform:
             ui->tabWidget->removeTab(0); // Remove wall tab
             updateTrackListWidget();
 
             break;
-        case Lobby:
-            ui->tabWidget->removeTab(1); // Remove track tab
-            updateWallListWidget();
-
-            break;
-        case Office:
-            ui->tabWidget->removeTab(1); // Remove track tab
-            updateWallListWidget();
 
         case Stair:
             ui->tabWidget->removeTab(1); // Remove track tab
@@ -194,13 +182,13 @@ void PropertyWidget::highlightWall(QListWidgetItem *item)
     int tRow = ui->listWidget_track->currentRow();
     int index = ui->tabWidget->currentIndex();
 
-    if(ui->tabWidget->tabText(index) == "Wall")
+    if(ui->tabWidget->tabText(index) == "WallMode")
     {
         auto *line= current_zone->get_listWalls()[wRow];
         view->unmark_all_lines();
         view->markLine(line);
     }
-    else if(ui->tabWidget->tabText(index) == "Track")
+    else if(ui->tabWidget->tabText(index) == "TrackMode")
     {
         auto *line = current_zone->getTrackList()[tRow];
         view->unmark_all_lines();

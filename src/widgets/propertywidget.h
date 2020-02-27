@@ -24,13 +24,13 @@ protected slots:
     void updateWidget(ZoneType type);
     void updateListwidget();
 
-    // Wall tab
+    // WallMode tab
     void updateWallListWidget();
     void addWallButtonClicked();
     void removeWallButtonClicked();
     void highlightWall(QListWidgetItem *item);
 
-    // Track tab
+    // TrackMode tab
     void updateTrackListWidget();
     void addTrackButtonClicked();
     void removeTrackButtonClicked();

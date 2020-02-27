@@ -100,45 +100,6 @@ void jpsDatamanager::addPlatform(JPSZone *father_room)
     qDebug("Leave jpsDatamanager::addPlatform");
 }
 
-void jpsDatamanager::addCorridor(JPSZone *father_room)
-{
-    qDebug("Enter jpsDatamanager::addCorridor");
-    auto *new_Corridor = new JPSZone(zone_id, father_room, Corridor);// Corridor belongs to the father room and
-    // saving in father room, rather than datamanger;
-
-    if(father_room != nullptr)
-        father_room->addZoneInList(new_Corridor);
-
-    zone_id += 1;
-    qDebug("Leave jpsDatamanager::addCorridor");
-}
-
-void jpsDatamanager::addLobby(JPSZone *father_room)
-{
-    qDebug("Enter jpsDatamanager::addLobby");
-    auto *new_Lobby = new JPSZone(zone_id, father_room, Lobby);// Lobby belongs to the father room and
-    // saving in father room, rather than datamanger;
-
-    if(father_room != nullptr)
-        father_room->addZoneInList(new_Lobby);
-
-    zone_id += 1;
-    qDebug("Leave jpsDatamanager::addLobby");
-}
-
-void jpsDatamanager::addOffice(JPSZone *father_room)
-{
-    qDebug("Enter jpsDatamanager::addOffice");
-    auto *new_Office = new JPSZone(zone_id, father_room, Office);// Office belongs to the father room and
-    // saving in father room, rather than datamanger;
-
-    if(father_room != nullptr)
-        father_room->addZoneInList(new_Office);
-
-    zone_id += 1;
-    qDebug("Leave jpsDatamanager::addOffice");
-}
-
 void jpsDatamanager::addStair(JPSZone *father_room)
 {
     qDebug("Enter jpsDatamanager::addStair");
@@ -798,7 +759,7 @@ void jpsDatamanager::writeHLines(QXmlStreamWriter *stream, QList<jpsLineItem *> 
 
     for (jpsLineItem *lineItem:hLines)
     {
-        stream->writeStartElement("Hline");
+        stream->writeStartElement("HlineMode");
         stream->writeAttribute("id",QString::number(id));
         stream->writeAttribute("room_id","0");
         rid = RoomIDHLine(lineItem);
@@ -822,7 +783,7 @@ void jpsDatamanager::writeHLines(QXmlStreamWriter *stream, QList<jpsLineItem *> 
         stream->writeAttribute("py",QString::number(lineItem->get_line()->line().p2().y()));
         stream->writeEndElement(); //vertex
 
-        stream->writeEndElement(); //Hline
+        stream->writeEndElement(); //HlineMode
         id++;
     }
 
@@ -1755,7 +1716,7 @@ void jpsDatamanager::remove_marked_lines()
                 }
             }
 
-            qDebug()<< "jpsDatamanager::remove_marked_lines: Wall is removed" ;
+            qDebug()<< "jpsDatamanager::remove_marked_lines: WallMode is removed" ;
         }
 
         // Delete track
@@ -1776,7 +1737,7 @@ void jpsDatamanager::remove_marked_lines()
                     }
                 }
             }
-            qDebug()<< "jpsDatamanager::remove_marked_lines(): Track is deleted!";
+            qDebug()<< "jpsDatamanager::remove_marked_lines(): TrackMode is deleted!";
         }
 
         // Delete crossing
@@ -1800,7 +1761,7 @@ void jpsDatamanager::remove_marked_lines()
                     }
                 }
             }
-            qDebug()<< "jpsDatamanager::remove_marked_lines(): Crossing is deleted!";
+            qDebug()<< "jpsDatamanager::remove_marked_lines(): CrossingMode is deleted!";
         }
 
         // Delete transition
@@ -1815,7 +1776,7 @@ void jpsDatamanager::remove_marked_lines()
                     tran = nullptr;
                 }
             }
-            qDebug()<< "jpsDatamanager::remove_marked_lines(): Transition is deleted!";
+            qDebug()<< "jpsDatamanager::remove_marked_lines(): TransitionMode is deleted!";
         }
         else
         {
@@ -1997,118 +1958,92 @@ void jpsDatamanager::parseSubRoom(const QDomElement &element)
 {
     qDebug("Enter jpsDatamanager::parseSubRoom");
 
-    // Setup subroom
-    JPSZone *current_subroom = nullptr;
+//    // Setup subroom
+//    JPSZone *current_subroom = nullptr;
 
-    if(element.attribute("class") == "Corridor"
-    || element.attribute("class") == "corridor"
-    || element.attribute("class") == "Subroom"
-    || element.attribute("class") == "subroom")
-    {
-        addCorridor(roomlist.last());
-        current_subroom = roomlist.last()->getCorridorList().last();
-    }else if(element.attribute("class") == "Platform" || element.attribute("class") == "platform")
-    {
-        addPlatform(roomlist.last());
-        current_subroom = roomlist.last()->getPlatfromList().last();
-    }else if(element.attribute("class") == "Lobby" || element.attribute("class") == "lobby")
-    {
-        addLobby(roomlist.last());
-        current_subroom = roomlist.last()->getLobbyList().last();
-    }else if(element.attribute("class") == "Office" || element.attribute("class") == "office")
-    {
-        addOffice(roomlist.last());
-        current_subroom = roomlist.last()->getOfficeList().last();
-    }else if(element.attribute("class") == "Stair" || element.attribute("class") == "stair")
-    {
-        addStair(roomlist.last());
-        current_subroom = roomlist.last()->getStairList().last();
-    } else{
-        // No class or not vaild class, prase as corridor
-        addCorridor(roomlist.last());
-        current_subroom = roomlist.last()->getCorridorList().last();
-        qDebug("Not vaild subroom type");
-    }
+//        current_subroom = roomlist.last()->getCorridorList().last();
+//        qDebug("Not vaild subroom type");
+//    }
 
-    current_subroom->set_id(element.attribute("id").toInt());
+//    current_subroom->set_id(element.attribute("id").toInt());
 
-    // Set subroom name
-    if(element.hasAttribute("caption"))
-        current_subroom->setName(element.attribute("caption"));
-    else
-        current_subroom->setName("room id:"
-        + QString::number(roomlist.last()->get_id())
-        +", subroom id:"
-        + element.attribute("id"));
+//    // Set subroom name
+//    if(element.hasAttribute("caption"))
+//        current_subroom->setName(element.attribute("caption"));
+//    else
+//        current_subroom->setName("room id:"
+//        + QString::number(roomlist.last()->get_id())
+//        +", subroom id:"
+//        + element.attribute("id"));
 
-    // Set X Y Z
-    if(element.hasAttribute("A_x"))
-        current_subroom->set_ax(element.attribute("A_x").toFloat());
-    else
-        current_subroom->set_ax(0.0);
+//    // Set X Y Z
+//    if(element.hasAttribute("A_x"))
+//        current_subroom->set_ax(element.attribute("A_x").toFloat());
+//    else
+//        current_subroom->set_ax(0.0);
 
-    if(element.hasAttribute("B_y"))
-        current_subroom->set_by(element.attribute("B_y").toFloat());
-    else
-        current_subroom->set_by(0.0);
+//    if(element.hasAttribute("B_y"))
+//        current_subroom->set_by(element.attribute("B_y").toFloat());
+//    else
+//        current_subroom->set_by(0.0);
 
-    auto elevation = element.attribute("C_z").toFloat();
+//    auto elevation = element.attribute("C_z").toFloat();
 
-    current_subroom->set_cz(elevation);
-    current_subroom->set_elevation(elevation);
+//    current_subroom->set_cz(elevation);
+//    current_subroom->set_elevation(elevation);
 
-    // Parse walls
-    QDomElement polygon = element.firstChildElement("polygon");
-    double pos_count=1;
+//    // Parse walls
+//    QDomElement polygon = element.firstChildElement("polygon");
+//    double pos_count=1;
 
-    while(!polygon.isNull()) {
-        QDomNodeList xVertices=polygon.elementsByTagName("vertex");
-        pos_count+=xVertices.count()-1;
+//    while(!polygon.isNull()) {
+//        QDomNodeList xVertices=polygon.elementsByTagName("vertex");
+//        pos_count+=xVertices.count()-1;
 
-        for( int i=0; i<xVertices.count()-1; i++)
-        {
-            //all unit are converted in cm
-            double x1=xVertices.item(i).toElement().attribute("px", "0").toDouble();
-            double y1=xVertices.item(i).toElement().attribute("py", "0").toDouble();
-            double x2=xVertices.item(i+1).toElement().attribute("px", "0").toDouble();
-            double y2=xVertices.item(i+1).toElement().attribute("py", "0").toDouble();
+//        for( int i=0; i<xVertices.count()-1; i++)
+//        {
+//            //all unit are converted in cm
+//            double x1=xVertices.item(i).toElement().attribute("px", "0").toDouble();
+//            double y1=xVertices.item(i).toElement().attribute("py", "0").toDouble();
+//            double x2=xVertices.item(i+1).toElement().attribute("px", "0").toDouble();
+//            double y2=xVertices.item(i+1).toElement().attribute("py", "0").toDouble();
 
-            if(polygon.attribute("caption") == "track")
-            {
-                jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"track");
-                QString number = polygon.attribute("type").split("-").last();
-                current_subroom->addTrack(lineItem, number);
-            } else
-            {
-                jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"wall");
-                current_subroom->addWall(lineItem);
-            }
-        }
-        polygon = polygon.nextSiblingElement("polygon");
-    }
+//            if(polygon.attribute("caption") == "track")
+//            {
+//                jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"track");
+//                QString number = polygon.attribute("type").split("-").last();
+//                current_subroom->addTrack(lineItem, number);
+//            } else
+//            {
+//                jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"wall");
+//                current_subroom->addWall(lineItem);
+//            }
+//        }
+//        polygon = polygon.nextSiblingElement("polygon");
+//    }
 
-    // Parse up and down for stairs
-    if(current_subroom->getType() == Stair)
-    {
-        QDomNode child = element.firstChild();
-        while (!child.isNull())
-        {
-            if (child.toElement().tagName() == "up")
-            {
-                double px = child.toElement().attribute("px").toDouble();
-                double py = child.toElement().attribute("py").toDouble();
-                current_subroom->set_up(QPointF(px, py));
-            }
-            else if (child.toElement().tagName() == "down")
-            {
-                double px = child.toElement().attribute("px").toDouble();
-                double py = child.toElement().attribute("py").toDouble();
-                current_subroom->set_down(QPointF(px, py));
-            }
+//    // Parse up and down for stairs
+//    if(current_subroom->getType() == Stair)
+//    {
+//        QDomNode child = element.firstChild();
+//        while (!child.isNull())
+//        {
+//            if (child.toElement().tagName() == "up")
+//            {
+//                double px = child.toElement().attribute("px").toDouble();
+//                double py = child.toElement().attribute("py").toDouble();
+//                current_subroom->set_up(QPointF(px, py));
+//            }
+//            else if (child.toElement().tagName() == "down")
+//            {
+//                double px = child.toElement().attribute("px").toDouble();
+//                double py = child.toElement().attribute("py").toDouble();
+//                current_subroom->set_down(QPointF(px, py));
+//            }
 
-            child = child.nextSibling();
-        }
-    }
+//            child = child.nextSibling();
+//        }
+//    }
     qDebug("Leave jpsDatamanager::parseSubRoom");
 }
 
@@ -2144,7 +2079,7 @@ bool jpsDatamanager::readRoutingXML(QFile &file)
                 continue;
             }
 
-            if(xmlReader.name() == "Hline")
+            if(xmlReader.name() == "HlineMode")
             {
                 this->parseHline(xmlReader);
             }
@@ -2173,7 +2108,7 @@ void jpsDatamanager::parseHline(QXmlStreamReader &xmlReader)
     qDebug("Enter jpsDatamanager::parseHline");
 
     while(!(xmlReader.tokenType() == QXmlStreamReader::EndElement &&
-                xmlReader.name() == "Hline"))
+                xmlReader.name() == "HlineMode"))
     {
         xmlReader.readNext();
 
@@ -2341,7 +2276,7 @@ void jpsDatamanager::addLine(const DL_LineData &d)
             // Create a new room at first;
             addRoom();
             roomlist.last()->setName(layername);
-            addCorridor(roomlist.last());
+            //TODO: Fix here!
         }
 
         auto wall = _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
@@ -3397,26 +3332,6 @@ ZoneType jpsDatamanager::convertToZoneType(const QString string)
     {
         qDebug("Leave jpsDatamanager::convertToZoneType");
         return Room;
-    }
-    else if(string == "Corridor")
-    {
-        qDebug("Leave jpsDatamanager::convertToZoneType");
-        return Corridor;
-    }
-    else if(string == "Office")
-    {
-        qDebug("Leave jpsDatamanager::convertToZoneType");
-        return Office;
-    }
-    else if(string == "Lobby")
-    {
-        qDebug("Leave jpsDatamanager::convertToZoneType");
-        return Lobby;
-    }
-    else if(string == "Entrance")
-    {
-        qDebug("Leave jpsDatamanager::convertToZoneType");
-        return Entrance;
     }
     else if(string == "Stair")
     {

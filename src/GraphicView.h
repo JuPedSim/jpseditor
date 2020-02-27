@@ -153,7 +153,7 @@ public:
     void ScaleLines(const double& factor);
     QPointF getNearstPointOnLine(jpsLineItem* selected_line);
 
-    // Landmark
+    // LandmarkMode
     void deleteMarkedLandmark();
     void catch_landmark();
     void select_landmark(jpsLandmark *landmark);
@@ -187,7 +187,7 @@ public:
     void SetGrid(QString grid);
     void ChangeGridSize(const qreal& factor);
 
-    // MeasureLength
+    // MeasureMode
     void drawMeasureLengthLine();
     void enableMeasureLengthMode();
 
@@ -296,16 +296,16 @@ private:
 
     int id_counter;
 
-    //Source
+    //SourceMode
     QGraphicsRectItem *currentSource;
 
-    //Goal
+    //GoalMode
     QGraphicsRectItem *currentGoal;
 
 //    QGraphicsItemGroup *sourceGroup;
 //    QGraphicsItemGroup *getSourceGroup() const;
 
-    //Landmark and waypoints
+    //LandmarkMode and waypoints
     jpsLandmark* markedLandmark;
     QGraphicsRectItem* currentLandmarkRect;
     QList<QGraphicsLineItem* > _connections;

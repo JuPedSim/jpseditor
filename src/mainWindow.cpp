@@ -161,7 +161,7 @@ MWindow :: MWindow()
     timer->setInterval(interval);
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
 
-    /// Landmark specifications
+    /// LandmarkMode specifications
     connect(actionLandmarkWidget,SIGNAL(triggered(bool)),this,SLOT(define_landmark()));
 
     /// CMap
@@ -213,27 +213,27 @@ MWindow :: MWindow()
     drawingActionGroup = new QActionGroup(this);
     drawingActionGroup->addAction(actionWall);
     drawingActionGroup->addAction(actionTransition);
-    drawingActionGroup->addAction(actionHLine);
-    drawingActionGroup->addAction(actionLandmark);
     drawingActionGroup->addAction(actionSource);
     drawingActionGroup->addAction(actionGoal);
     drawingActionGroup->addAction(actionTrack);
+    drawingActionGroup->addAction(actionHLine);
+//    drawingActionGroup->addAction(actionLandmark);
 
     // Zone toolbar
     zone_toolbar_ = nullptr;
 
-    connect(actionCorridor, SIGNAL(triggered(bool)),this, SLOT(corridorButtonClicked()));
     connect(actionPlatform, SIGNAL(triggered(bool)),this, SLOT(platformButtonClicked()));
-    connect(actionLobby, SIGNAL(triggered(bool)),this, SLOT(lobbyButtonClicked()));
-    connect(actionOffice, SIGNAL(triggered(bool)),this, SLOT(officeButtonClicked()));
     connect(actionStairs, SIGNAL(triggered(bool)),this, SLOT(stairButtonClicked()));
 
     // Assemble actions group
     zoneActionGroup = new QActionGroup(this);
-    zoneActionGroup->addAction(actionCorridor);
-    zoneActionGroup->addAction(actionLobby);
-    zoneActionGroup->addAction(actionOffice);
+
+    zoneActionGroup->addAction(actionRoom);
+    zoneActionGroup->addAction(actionTransitionWidget);
+    zoneActionGroup->addAction(actionGoalWidget);
+    zoneActionGroup->addAction(actionSourceWidget);
     zoneActionGroup->addAction(actionStairs);
+//    zoneActionGroup->addAction(actionLandmarkWidget);
     zoneActionGroup->addAction(actionPlatform);
 
     // Set background
@@ -596,7 +596,7 @@ QString MWindow::openSource(QString fileName)
 
     if(!fileSource.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        QString error = "Source file isn't found!";
+        QString error = "SourceMode file isn't found!";
         qDebug("Leave MWindow::openSource, source file isn't found!");
         return error;
     }
@@ -625,7 +625,7 @@ QString MWindow::openGoal(QString fileName)
 
     if(!fileGoal.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        QString error = "Goal file isn't found!";
+        QString error = "GoalMode file isn't found!";
         qDebug("Leave QString MWindow::openGoal, goal file isn't found!");
         return error;
     }
@@ -884,7 +884,7 @@ void MWindow::trackButtonClicked()
 
     mview->enableTrack();
 
-/*  For now Track property Widget isn't needed
+/*  For now TrackMode property Widget isn't needed
     propertyDockWidget = new QDockWidget(tr("Tracks"), this);
     propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     propertyDockWidget->setAllowedAreas( Qt::RightDockWidgetArea);
@@ -1190,7 +1190,7 @@ void MWindow::sourceButtonClicked()
 
 }
 
-// Goal drawing mode
+// GoalMode drawing mode
 /*
     since 0.8.8
 

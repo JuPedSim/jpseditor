@@ -81,7 +81,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     centerpoint_snap=false;
     linepoint_snap=false;
     _gridmode=false;
-    drawingMode = Selecting;
+    drawingMode = SelectMode;
     statzoomwindows=false;
     currentPen.setColor(Qt::black);
     currentPen.setCosmetic(true);
@@ -113,11 +113,11 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     _statgrid="Line";
     _gridSize=1.0;
 
-    //Source
+    //SourceMode
 //    sourceGroup = new QGraphicsItemGroup;
     currentSource = nullptr;
 
-    //Goal
+    //GoalMode
     currentGoal = nullptr;
     qDebug("Leave GraphicsView::jpsGraphicsView");
 
@@ -170,9 +170,9 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
     QGraphicsView::mouseMoveEvent(mouseEvent);
 
     switch (drawingMode){
-        case Selecting:
+        case SelectMode:
             break;
-        case Source:
+        case SourceMode:
             if(currentSource != nullptr)
             {
 
@@ -180,14 +180,14 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
                         QPointF(translated_pos.x(),translated_pos.y())));
             }
             break;
-        case Goal:
+        case GoalMode:
             if(currentGoal != nullptr)
             {
                 currentGoal->setRect(QRectF(QPointF(currentGoal->rect().x(),currentGoal->rect().y()),
                         QPointF(translated_pos.x(),translated_pos.y())));
             }
             break;
-        case Landmark:
+        case LandmarkMode:
             break;
         default:
             // draw wall, door, exit, HLine
@@ -276,7 +276,7 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
         }
 
         //VLine
-        if (point_tracked && (drawingMode==Wall || drawingMode==Crossing || drawingMode==Transition))
+        if (point_tracked && (drawingMode==WallMode || drawingMode==CrossingMode || drawingMode==TransitionMode))
         {
 //            SetVLine();
         }
@@ -301,19 +301,19 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
     if (mouseEvent->button() == Qt::LeftButton)
     {
         switch (drawingMode){
-            case Landmark:
+            case LandmarkMode:
                 drawLandmark();
                 break;
-            case Source:
+            case SourceMode:
                 drawSource();
                 break;
-            case Goal:
+            case GoalMode:
                 drawGoal();
                 break;
-            case MeasureLength:
+            case MeasureMode:
                 drawMeasureLengthLine();
                 break;
-            case Selecting:
+            case SelectMode:
                 if (_statDefConnections==1)
                 {
                     emit DefConnection1Completed();
@@ -424,7 +424,7 @@ void jpsGraphicsView::drawLandmark()
                           +pixmap.height()/1000.));
     pixmapItem->setTransform(QTransform::fromScale(1,-1),true);
     pixmapItem->setTransform(QTransform::fromTranslate(translation_x,-translation_y), true);
-    QString name="Landmark"+QString::number(_datamanager->GetLandmarkCounter());
+    QString name="LandmarkMode"+QString::number(_datamanager->GetLandmarkCounter());
     jpsLandmark* landmark = new jpsLandmark(pixmapItem,name,pixmapItem->scenePos());
     //text immediately under the pixmap
     QGraphicsTextItem* text = this->scene()->addText(name);
@@ -453,7 +453,7 @@ void jpsGraphicsView::drawLandmark(const QPointF &pos)
                           +pixmap.height()/1000.));
     pixmapItem->setTransform(QTransform::fromScale(1,-1),true);
     pixmapItem->setTransform(QTransform::fromTranslate(translation_x,-translation_y), true);
-    QString name="Landmark"+QString::number(_datamanager->GetLandmarkCounter());
+    QString name="LandmarkMode"+QString::number(_datamanager->GetLandmarkCounter());
     jpsLandmark* landmark = new jpsLandmark(pixmapItem,name,pos);
     //text immediately under the pixmap
     QGraphicsTextItem* text = this->scene()->addText(name);
@@ -585,7 +585,7 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton)
     {
         // Select lines that are located within the rectangle
-        if (drawingMode == Selecting)
+        if (drawingMode == SelectMode)
         {
             leftbutton_hold=false;
 
@@ -598,7 +598,7 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
             {
                 if (_posDef)
                 {
-                    //Landmark position definition
+                    //LandmarkMode position definition
                     emit PositionDefCompleted();
                     _posDef=false;
                 }
@@ -625,7 +625,7 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
                     // Select lines by creating a rect with the cursor
                     catch_lines();
 
-                    // unmark Landmark is possible
+                    // unmark LandmarkMode is possible
                     unmarkLandmark();
                     // Look for landmarks with position in the currentSelectRect
                     catch_landmark();
@@ -1108,22 +1108,22 @@ void jpsGraphicsView::drawLine()
         }
 
         switch (drawingMode){
-            case Wall:
+            case WallMode:
                 lineItem->setWall();
                 break;
-            case Crossing:
+            case CrossingMode:
                 lineItem->setCrossing();
                 break;
-            case Hline:
+            case HlineMode:
                 lineItem->setHline();
                 break;
-            case Transition:
+            case TransitionMode:
                 lineItem->setTransition();
                 // Transion won't be added in any zone, so should be created here
                 _datamanager->newTransition(lineItem);
                 emit transitonsChanged();
                 break;
-            case Track:
+            case TrackMode:
                 lineItem->setTrack();
                 break;
             default:
@@ -1180,7 +1180,7 @@ void jpsGraphicsView::disable_drawing()
     qDebug("Enter jpsGraphicsView::disable_drawing");
     _statCopy=0;
 
-    drawingMode = Selecting;
+    drawingMode = SelectMode;
 
     // if drawing was canceled by pushing ESC
     if (current_line!=nullptr)
@@ -1232,7 +1232,7 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
     else if (type=="transition")
     {
         newLine->setTransition();
-        // Transition isn't a normal JPSLineItem, rather JPSTransition class
+        // TransitionMode isn't a normal JPSLineItem, rather JPSTransition class
         _datamanager->newTransition(newLine);
         emit transitonsChanged();
     }
@@ -2128,13 +2128,13 @@ void jpsGraphicsView::take_l_from_lineEdit(const qreal &length)
         id_counter++;
 //        jpsline->setType(statWall,statDoor,statExit);
         switch (drawingMode){
-            case Wall:
+            case WallMode:
                 jpsline->setWall();
                 break;
-            case Crossing:
+            case CrossingMode:
                 jpsline->setCrossing();
                 break;
-            case Transition:
+            case TransitionMode:
                 jpsline->setTransition();
                 break;
             default:
@@ -2178,13 +2178,13 @@ void jpsGraphicsView::take_endpoint_from_xyEdit(const QPointF &endpoint)
         id_counter++;
 //        jpsline->setType(statWall,statDoor,statExit);
         switch (drawingMode){
-            case Wall:
+            case WallMode:
                 jpsline->setWall();
                 break;
-            case Crossing:
+            case CrossingMode:
                 jpsline->setCrossing();
                 break;
-            case Transition:
+            case TransitionMode:
                 jpsline->setTransition();
                 break;
             default:
@@ -2267,9 +2267,9 @@ void jpsGraphicsView::change_gridmode()
 void jpsGraphicsView::en_disableWall()
 {
     qDebug("Enter jpsGraphicsView::en_disableWall");
-    drawingMode = Wall;
+    drawingMode = WallMode;
 
-    if(drawingMode != Wall)
+    if(drawingMode != WallMode)
     {
         emit no_drawing();
     } else
@@ -2283,7 +2283,7 @@ void jpsGraphicsView::en_disableWall()
 bool jpsGraphicsView::statusWall()
 {
     qDebug("Enter jpsGraphicsView::statusWall");
-    if(drawingMode == Wall)
+    if(drawingMode == WallMode)
     {
         return true;
     } else
@@ -2307,9 +2307,9 @@ bool jpsGraphicsView::get_stat_anglesnap()
 void jpsGraphicsView::en_disableCrossing()
 {
     qDebug("Enter jpsGraphicsView::en_disableCrossing");
-    drawingMode = Crossing;
+    drawingMode = CrossingMode;
 
-    if(drawingMode != Crossing)
+    if(drawingMode != CrossingMode)
     {
         emit no_drawing();
     } else
@@ -2322,7 +2322,7 @@ void jpsGraphicsView::en_disableCrossing()
 bool jpsGraphicsView::statusDoor()
 {
     qDebug("Enter jpsGraphicsView::statusDoor");
-    if(drawingMode == Crossing)
+    if(drawingMode == CrossingMode)
     {
         return true;
     } else
@@ -2333,9 +2333,9 @@ bool jpsGraphicsView::statusDoor()
 void jpsGraphicsView::enableTransition()
 {
     qDebug("Enter jpsGraphicsView::enableTransition");
-    drawingMode = Transition;
+    drawingMode = TransitionMode;
 
-    if(drawingMode != Transition)
+    if(drawingMode != TransitionMode)
     {
         emit no_drawing();
     } else
@@ -2348,9 +2348,9 @@ void jpsGraphicsView::enableTransition()
 void jpsGraphicsView::enableTrack()
 {
     qDebug("Enter jpsGraphicsView::enableTrack");
-    drawingMode = Track;
+    drawingMode = TrackMode;
 
-    if(drawingMode != Track)
+    if(drawingMode != TrackMode)
     {
         emit no_drawing();
     } else
@@ -2364,7 +2364,7 @@ bool jpsGraphicsView::statusHLine()
 {
     qDebug("Enter jpsGraphicsView::statusHLine");
 //    return _statHLine;
-    if(drawingMode == Hline)
+    if(drawingMode == HlineMode)
     {
         return true;
     } else
@@ -2376,9 +2376,9 @@ void jpsGraphicsView::en_disableHLine()
 {
     qDebug("Enter jpsGraphicsView::en_disableHLine");
     _statCopy=0;
-    drawingMode = Hline;
+    drawingMode = HlineMode;
 
-    if(drawingMode != Hline)
+    if(drawingMode != HlineMode)
     {
         emit no_drawing();
     } else
@@ -2392,7 +2392,7 @@ bool jpsGraphicsView::statusLandmark()
 {
     qDebug("Enter jpsGraphicsView::en_disableHLine");
 //    return statLandmark;
-    if(drawingMode == Landmark)
+    if(drawingMode == LandmarkMode)
     {
         qDebug("Leave jpsGraphicsView::en_disableHLine");
         return true;
@@ -2405,9 +2405,9 @@ void jpsGraphicsView::en_disableLandmark()
 {
     qDebug("Enter jpsGraphicsView::en_disableLandmark");
     _statCopy=0;
-    drawingMode = Landmark;
+    drawingMode = LandmarkMode;
 
-    if(drawingMode != Landmark)
+    if(drawingMode != LandmarkMode)
     {
         emit no_drawing();
     }
@@ -2624,9 +2624,9 @@ void jpsGraphicsView::ChangeGridSize(const qreal &gridSize)
 void jpsGraphicsView::enableSourceMode()
 {
     qDebug("Enter jpsGraphicsView::enableSourceMode");
-    setDrawingMode(Source);
+    setDrawingMode(SourceMode);
 
-    if(drawingMode != Source)
+    if(drawingMode != SourceMode)
     {
         emit no_drawing();
     } else
@@ -2734,7 +2734,7 @@ void jpsGraphicsView::seleteSource(const QModelIndex &index)
 //    return sourceGroup;
 //}
 
-// Goal Mode
+// GoalMode Mode
 /*
     since 0.8.8
 
@@ -2744,9 +2744,9 @@ void jpsGraphicsView::seleteSource(const QModelIndex &index)
 void jpsGraphicsView::enableGoalMode()
 {
     qDebug("Enter jpsGraphicsView::enableGoalMode");
-    setDrawingMode(Goal);
+    setDrawingMode(GoalMode);
 
-    if(drawingMode != Goal)
+    if(drawingMode != GoalMode)
     {
         emit no_drawing();
     } else
@@ -2879,9 +2879,9 @@ void jpsGraphicsView::drawMeasureLengthLine()
 void jpsGraphicsView::enableMeasureLengthMode()
 {
     qDebug("Enter jpsGraphicsView::enableMeasureLengthMode");
-    setDrawingMode(MeasureLength);
+    setDrawingMode(MeasureMode);
 
-    if(drawingMode != MeasureLength)
+    if(drawingMode != MeasureMode)
     {
         emit no_drawing();
     } else

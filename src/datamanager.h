@@ -76,7 +76,7 @@ public:
     void change_obstacleName(jpsObstacle* obs, QString name);
     void remove_all_obstacles();
 
-    ///Transition
+    ///TransitionMode
     QList<jpsTransition *> getTransitionList();
     void new_exit(QList<jpsLineItem *> newExits);
     void newTransition(jpsLineItem *transition);
@@ -84,7 +84,7 @@ public:
     QList<jpsTransition *> getTransitionInSubroom(JPSZone* subroom);
     void recognizeRoomForTransition(jpsTransition *transition);
 
-    ///Landmark
+    ///LandmarkMode
     QList<jpsLandmark *> get_landmarks();
     void new_landmark(jpsLandmark * newlandmark);
     void remove_landmark(jpsLandmark* landmark);
@@ -212,9 +212,7 @@ public:
 
     // add zones
     void addPlatform(JPSZone *father_room);
-    void addCorridor(JPSZone *father_room);
-    void addLobby(JPSZone *father_room);
-    void addOffice(JPSZone *father_room);
+
     void addStair(JPSZone *father_room);
 
     // delete zones
@@ -228,7 +226,7 @@ public:
     void remove_crossing(jpsCrossing* crossing);
     void change_crossingName(jpsCrossing* crossing, QString name);
 
-    // Transition
+    // TransitionMode
     void removeTransition(jpsTransition *transition);
 
 /*

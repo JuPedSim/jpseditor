@@ -41,7 +41,7 @@ class jpsLandmark
 {
 public:
     jpsLandmark();
-    jpsLandmark(QGraphicsPixmapItem* pixmap,const QString& caption, const QPointF& realPos,const qreal& rA=0, const qreal& rB=0, const int& id=0, const QString& type="Landmark");
+    jpsLandmark(QGraphicsPixmapItem* pixmap,const QString& caption, const QPointF& realPos,const qreal& rA=0, const qreal& rB=0, const int& id=0, const QString& type="LandmarkMode");
     ~jpsLandmark();
     //Setter
 

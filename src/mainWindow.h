@@ -184,7 +184,7 @@ public slots:
 
     void showStatusBarMessage(QString msg, int duration);
 
-    // MeasureLength
+    // MeasureMode
     void measureLengthButtonClicked();
     void msgReceived(QString Msg);
 

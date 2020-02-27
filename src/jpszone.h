@@ -72,7 +72,7 @@ public:
     const QList<JPSZone *> &getOfficeList() const;
     const QList<JPSZone *> &getStairList() const;
 
-    // Wall
+    // WallMode
     void addWall(QList<jpsLineItem *> newWalls);
     void addWall(jpsLineItem* newWall);
     void addinnerWall(QList<jpsLineItem *> newWalls, int id_polygon=0);
@@ -82,7 +82,7 @@ public:
     QList<jpsLineItem *> get_listWalls();
     bool isInWallList(jpsLineItem* wall);
 
-    // Crossing
+    // CrossingMode
     QList<jpsCrossing *> getCrossingList();
     bool isInCrossingList(jpsCrossing *crossing);
     void addCrossing(jpsCrossing *crossing);
@@ -93,7 +93,7 @@ public:
     bool isInEnterAndExitList(jpsCrossing *crossing);
     jpsCrossing * getExitedCrossing(jpsLineItem *line);
 
-    // Track
+    // TrackMode
     void addTrack(jpsLineItem *line, QString number);
     void removeTrack(JPSTrack *track);
     QList<JPSTrack *> getTrackList() const;

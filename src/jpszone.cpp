@@ -134,14 +134,14 @@ void JPSZone::removeWall(QList <jpsLineItem *> wall)
 /*
     Purpose: Remove selecting wall from wall list
 
-    Note: Wall won't be deleted in graphic view after removing
+    Note: WallMode won't be deleted in graphic view after removing
 */
 void JPSZone::removeWall(jpsLineItem *wall)
 {
     qDebug("Enter JPSZone::removeWall");
     if (wall == nullptr)
     {
-        qDebug("Wall is nullptr, Leave JPSZone::removeWall");
+        qDebug("WallMode is nullptr, Leave JPSZone::removeWall");
         return;
     }
 
@@ -861,18 +861,6 @@ void JPSZone::addZoneInList(JPSZone *zone)
 
     switch (type)
     {
-        case Corridor:
-            corridor_list.append(zone);
-            break;
-        case Platform:
-            platfrom_list.append(zone);
-            break;
-        case Lobby:
-            lobby_list.append(zone);
-            break;
-        case Office:
-            office_list.append(zone);
-            break;
         case Stair:
             stair_list.append(zone);
             break;
@@ -889,26 +877,6 @@ void JPSZone::removeZoneFromList(JPSZone *zone)
 
     switch (type)
     {
-        case Corridor:
-            corridor_list.removeOne(zone);
-            delete zone;
-            zone = nullptr;
-            break;
-        case Platform:
-            platfrom_list.removeOne(zone);
-            delete zone;
-            zone = nullptr;
-            break;
-        case Lobby:
-            lobby_list.removeOne(zone);
-            delete zone;
-            zone = nullptr;
-            break;
-        case Office:
-            office_list.removeOne(zone);
-            delete zone;
-            zone = nullptr;
-            break;
         case Stair:
             stair_list.removeOne(zone);
             delete zone;
@@ -926,7 +894,7 @@ const QList<JPSZone*> &JPSZone::getCorridorList() const
     return corridor_list;
 }
 
-// Crossing
+// CrossingMode
 QList<jpsCrossing*> JPSZone::getCrossingList()
 {
     qDebug("Enter/Return JPSZone::getCrossingList");
@@ -1002,7 +970,7 @@ void JPSZone::addInEnterAndExitList(jpsCrossing *crossing)
                 // should never be reached
                 break;
         }
-        qDebug("Crossing is problematic, Leave JPSZone::addInEnterAndExitList");
+        qDebug("CrossingMode is problematic, Leave JPSZone::addInEnterAndExitList");
         return;
     }
     qDebug("Leave JPSZone::addInEnterAndExitList");
@@ -1017,7 +985,7 @@ void JPSZone::removeEnterOrExit(jpsCrossing *crossing)
     }
     else
     {
-        qDebug("Crossing is problematic, Leave JPSZone::addInEnterAndExitList");
+        qDebug("CrossingMode is problematic, Leave JPSZone::addInEnterAndExitList");
         return;
     }
     qDebug("Leave JPSZone::removeEnterOrExit");
@@ -1103,12 +1071,6 @@ QString JPSZone::getTypeInString() const
     qDebug("Enter JPSZone::getZoneList");
     switch (zoneType)
     {
-        case Corridor:
-            return "corridor";
-        case Lobby:
-            return "lobby";
-        case Office:
-            return "office";
         case Stair:
             return "stair";
         case Platform:

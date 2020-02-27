@@ -108,24 +108,22 @@
      <string>Draw</string>
     </property>
     <addaction name="actionWall"/>
-    <addaction name="actionCrossing"/>
     <addaction name="actionTransition"/>
-    <addaction name="actionHLine"/>
-    <addaction name="actionLandmark"/>
     <addaction name="actionSource"/>
     <addaction name="actionGoal"/>
     <addaction name="actionTrack"/>
+    <addaction name="actionHLine"/>
    </widget>
    <widget class="QMenu" name="menuZone">
     <property name="title">
      <string>Zone</string>
     </property>
-    <addaction name="actionCorridor"/>
-    <addaction name="actionLobby"/>
-    <addaction name="actionEntrance"/>
-    <addaction name="actionOffice"/>
+    <addaction name="actionRoom"/>
+    <addaction name="actionTransitionWidget"/>
     <addaction name="actionStairs"/>
     <addaction name="actionPlatform"/>
+    <addaction name="actionSourceWidget"/>
+    <addaction name="actionGoalWidget"/>
    </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuEdit"/>
@@ -264,7 +262,7 @@
     <string>Meta+W</string>
    </property>
    <property name="iconVisibleInMenu">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionObjectsnap">
@@ -336,10 +334,10 @@
      <normaloff>:/inAppIcons/Icons/Door.png</normaloff>:/inAppIcons/Icons/Door.png</iconset>
    </property>
    <property name="text">
-    <string>Crossing</string>
+    <string>CrossingMode</string>
    </property>
    <property name="toolTip">
-    <string>Crossing</string>
+    <string>CrossingMode</string>
    </property>
    <property name="shortcut">
     <string>Meta+D</string>
@@ -350,7 +348,7 @@
   </action>
   <action name="actionTransition">
    <property name="checkable">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="enabled">
     <bool>true</bool>
@@ -366,7 +364,7 @@
     <string>Draw transition</string>
    </property>
    <property name="iconVisibleInMenu">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionRoom">
@@ -375,13 +373,16 @@
    </property>
    <property name="icon">
     <iconset resource="../Resources/resources.qrc">
-     <normaloff>:/inAppIcons/Icons/attribute.svg</normaloff>:/inAppIcons/Icons/attribute.svg</iconset>
+     <normaloff>:/inAppIcons/Icons/rooms.png</normaloff>:/inAppIcons/Icons/rooms.png</iconset>
    </property>
    <property name="text">
-    <string>Define Geometry</string>
+    <string>Define Room</string>
+   </property>
+   <property name="iconText">
+    <string>Room</string>
    </property>
    <property name="toolTip">
-    <string>Define Geometry</string>
+    <string>Define Room</string>
    </property>
    <property name="shortcut">
     <string>Meta+R</string>
@@ -480,7 +481,7 @@
     <string>Landmark</string>
    </property>
    <property name="toolTip">
-    <string>Landmark</string>
+    <string>LandmarkMode</string>
    </property>
    <property name="shortcut">
     <string>Meta+L</string>
@@ -489,15 +490,22 @@
     <bool>true</bool>
    </property>
    <property name="iconVisibleInMenu">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionLandmarkWidget">
    <property name="enabled">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/landmark.svg</normaloff>:/inAppIcons/Icons/landmark.svg</iconset>
+   </property>
    <property name="text">
-    <string>Edit Landmark </string>
+    <string>Define Landmark</string>
+   </property>
+   <property name="iconText">
+    <string>Landmark</string>
    </property>
    <property name="toolTip">
     <string>LandmarkSpecs</string>
@@ -642,7 +650,7 @@
     <string>Meta+H</string>
    </property>
    <property name="iconVisibleInMenu">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionSpeichern_cogmap">
@@ -825,7 +833,7 @@
      <normaloff>:/inAppIcons/Icons/ruler.png</normaloff>:/inAppIcons/Icons/ruler.png</iconset>
    </property>
    <property name="text">
-    <string>MeasureLength length</string>
+    <string>MeasureMode length</string>
    </property>
   </action>
   <action name="actionDraw">
@@ -902,13 +910,16 @@
   </action>
   <action name="actionStairs">
    <property name="checkable">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="../Resources/resources.qrc">
      <normaloff>:/inAppIcons/Icons/stairs.png</normaloff>:/inAppIcons/Icons/stairs.png</iconset>
    </property>
    <property name="text">
+    <string>Define Stairs</string>
+   </property>
+   <property name="iconText">
     <string>Stairs</string>
    </property>
    <property name="toolTip">
@@ -917,13 +928,16 @@
   </action>
   <action name="actionPlatform">
    <property name="checkable">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="../Resources/resources.qrc">
      <normaloff>:/inAppIcons/Icons/platform.png</normaloff>:/inAppIcons/Icons/platform.png</iconset>
    </property>
    <property name="text">
+    <string>Define Platform</string>
+   </property>
+   <property name="iconText">
     <string>Platform</string>
    </property>
    <property name="toolTip">
@@ -957,7 +971,7 @@
     <string>Track</string>
    </property>
    <property name="toolTip">
-    <string>Draw Track</string>
+    <string>Draw TrackMode</string>
    </property>
   </action>
   <action name="actionLayer">
@@ -998,6 +1012,42 @@
    </property>
    <property name="shortcut">
     <string>Shift+Num+Down</string>
+   </property>
+  </action>
+  <action name="actionSourceWidget">
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/source.png</normaloff>:/inAppIcons/Icons/source.png</iconset>
+   </property>
+   <property name="text">
+    <string>Define Source</string>
+   </property>
+   <property name="iconText">
+    <string>Source</string>
+   </property>
+  </action>
+  <action name="actionGoalWidget">
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/goal.png</normaloff>:/inAppIcons/Icons/goal.png</iconset>
+   </property>
+   <property name="text">
+    <string>Define Goal</string>
+   </property>
+   <property name="iconText">
+    <string>Goal</string>
+   </property>
+  </action>
+  <action name="actionTransitionWidget">
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/inAppIcons/Icons/Exit.png</normaloff>:/inAppIcons/Icons/Exit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Define Transition</string>
+   </property>
+   <property name="iconText">
+    <string>Transition</string>
    </property>
   </action>
  </widget>

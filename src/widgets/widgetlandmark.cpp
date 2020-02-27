@@ -43,8 +43,8 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     _dmanager=dmanager;
     _gview=gview;
 
-    //Landmark type
-    ui->Box_landmarkType->addItem("Landmark");
+    //LandmarkMode type
+    ui->Box_landmarkType->addItem("LandmarkMode");
     ui->Box_landmarkType->addItem("Main Target");
 
 
@@ -162,7 +162,7 @@ void widgetLandmark::enable_room_selection()
 
 
         }
-        //mark Landmark
+        //mark LandmarkMode
         _gview->select_landmark(_dmanager->get_landmarks()[cLanRow]);
 
 
@@ -240,7 +240,7 @@ void widgetLandmark::ShowLandmarkType()
 
    if (landmark!=nullptr)
    {
-       if (landmark->GetType()=="Landmark")
+       if (landmark->GetType()=="LandmarkMode")
         ui->Box_landmarkType->setCurrentIndex(0);
        else
            ui->Box_landmarkType->setCurrentIndex(1);

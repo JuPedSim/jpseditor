@@ -63,7 +63,6 @@ void RoomIdentification::IdentifyRooms()
         // add 2.3 to penalty_circ to increase accuracy of correct declaration. The value has been found by trial
         if (2.3+penalty_circ>penalty_common)
         {
-            room->setType(Office);
             //std::cout << "Office" << std::endl;
             //std::cout << "Circ " << penalty_circ << std::endl;
             //std::cout << "Common " << penalty_common << std::endl;
@@ -71,7 +70,7 @@ void RoomIdentification::IdentifyRooms()
         else
         {
             //std::cout << "Corridor" << std::endl;
-            room->setType(Corridor);
+
 
         }
 
