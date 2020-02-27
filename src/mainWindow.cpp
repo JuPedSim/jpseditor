@@ -280,14 +280,22 @@ void MWindow::setupDrawingToolBar()
     closeListDockWidget(); // close running list widget
     closePropertyDockWidget(); // close running property widget
 
-    drawing_toolbar_ = new QToolBar("Drawing ToolBar", this);
-    addToolBar(Qt::LeftToolBarArea, drawing_toolbar_);
-    drawing_toolbar_->setMovable(false);
-    drawing_toolbar_->setBackgroundRole(QPalette::HighlightedText);
-    drawing_toolbar_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    if(drawing_toolbar_!= nullptr)
+    {
+        // If drawing tool bar is just hide
+        drawing_toolbar_->setVisible(!drawing_toolbar_->isVisible());
+    }
+    else{
+        // Set-up zone tool bar at first time
+        drawing_toolbar_ = new QToolBar("Drawing ToolBar", this);
+        addToolBar(Qt::LeftToolBarArea, drawing_toolbar_);
+        drawing_toolbar_->setMovable(false);
+        drawing_toolbar_->setBackgroundRole(QPalette::HighlightedText);
+        drawing_toolbar_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    // drawing actions group
-    drawing_toolbar_->addActions(drawingActionGroup->actions());
+        // drawing actions group
+        drawing_toolbar_->addActions(drawingActionGroup->actions());
+    }
     qDebug("Leave MWindow::setupDrawingToolBar");
 }
 
@@ -314,8 +322,14 @@ void MWindow::closeLeftToolBarArea()
     qDebug("Enter MWindow::closeLeftToolBarArea");
     if(drawing_toolbar_ != nullptr)
     {
-        drawing_toolbar_->close();
-        drawing_toolbar_ = nullptr;
+        for(auto action : drawing_toolbar_->actions())
+        {
+            if(action->isChecked())
+                action->setChecked(false);
+        }
+
+        drawing_toolbar_->setVisible(false);
+
     }
 
     if(zone_toolbar_ != nullptr)
@@ -989,22 +1003,6 @@ void MWindow::send_xy()
     x_edit->clear();
     y_edit->clear();
     qDebug("Leave MWindow::send_xy");
-}
-
-
-void MWindow::define_room()
-{
-    qDebug("Enter MWindow::define_room");
-    /// there is no more room widget, auto define room isn't needed
-
-    qDebug("Leave MWindow::define_room");
-}
-
-void MWindow::autoDefine_room()
-{
-    qDebug("Enter autoDefine_room");
-    /// there is no more room widget, auto define room isn't needed
-    qDebug("Leave autoDefine_room");
 }
 
 void MWindow::define_landmark()

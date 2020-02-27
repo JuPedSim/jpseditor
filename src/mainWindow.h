@@ -153,9 +153,6 @@ public slots:
 
     void send_xy();
     
-    //Room and landmark def
-    void define_room();
-    void autoDefine_room();
     void define_landmark();
     
     //view options
@@ -175,10 +172,10 @@ public slots:
     //void UpdateCMap();
 
     //quit
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event) override;
 
     // ESCAPE
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
 
     void showStatusBarMessage(QString msg, int duration);
 

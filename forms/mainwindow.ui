@@ -348,7 +348,7 @@
   </action>
   <action name="actionTransition">
    <property name="checkable">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="enabled">
     <bool>true</bool>
