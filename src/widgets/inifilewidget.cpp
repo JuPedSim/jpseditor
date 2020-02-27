@@ -424,16 +424,11 @@ void InifileWidget::writeTrafficData(QXmlStreamWriter *stream, QFile &file)
     stream->writeStartElement("traffic_constraints");
 
     stream->writeStartElement("doors");
-    QList<jpsCrossing *> crossings = dataManager->get_crossingList();
-    QList<jpsCrossing *> doorlist;
+//    QList<jpsCrossing *> crossings = dataManager->get_crossingList();
+//    QList<jpsCrossing *> doorlist;
 
-    for(jpsCrossing *crossing:crossings)
-    {
-//        if(crossing->IsExit())
-//            doorlist.append(crossing);
-    }
 
-    dataManager->writeTraffics(stream, doorlist);
+    dataManager->writeTraffics(stream);
 
     auto traffic_FileName = ui->lineEdit_TrafficFile->text().split("/").last();
     stream->writeStartElement("file");

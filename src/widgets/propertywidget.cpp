@@ -80,7 +80,6 @@ void PropertyWidget::updateWidget(ZoneType type)
         case Room:
             ui->tabWidget->removeTab(0); // Remove wall tab
             ui->tabWidget->removeTab(0); // Remove track tab
-            ui->tabWidget->removeTab(0); // Remove crossing tab
             break;
 
         case Platform:

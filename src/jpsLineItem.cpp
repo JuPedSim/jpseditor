@@ -73,9 +73,6 @@ QString jpsLineItem::getType()
         case wall:
             qDebug("Leave jpsLineItem::getType(wall)");
             return "wall";
-        case crossing:
-            qDebug("Leave jpsLineItem::getType(crossing)");
-            return "crossing";
         case track:
             qDebug("Leave jpsLineItem::getType(track)");
             return "track";
@@ -117,9 +114,6 @@ void jpsLineItem::setType(LineType type) {
         case track:
             setTrack();
             break;
-        case crossing:
-            setCrossing();
-            break;
         case hline:
             setHline();
             break;
@@ -140,13 +134,6 @@ void jpsLineItem::setWall()
     qDebug("Leave jpsLineItem::setWall");
 }
 
-void jpsLineItem::setCrossing()
-{
-    qDebug("Enter jpsLineItem::setCrossing");
-    lineType = crossing;
-    defaultColor="darkMagenta";
-    qDebug("Leave jpsLineItem::setCrossing");
-}
 
 void jpsLineItem::setHline()
 {
@@ -202,19 +189,6 @@ bool jpsLineItem::is_Wall()
 
 }
 
-bool jpsLineItem::is_Crossing()
-{
-    qDebug("Enter jpsLineItem::is_Crossing");
-    if(lineType == crossing)
-    {
-        qDebug("Leave jpsLineItem::is_Crossing(true)");
-        return true;
-    } else
-    {
-        qDebug("Leave jpsLineItem::is_Crossing(false)");
-        return false;
-    }
-}
 
 bool jpsLineItem::is_Transition()
 {

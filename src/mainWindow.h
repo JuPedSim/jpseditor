@@ -35,7 +35,6 @@
 
 #include "ui_mainwindow.h"
 #include "src/widgets/widgetlandmark.h"
-#include "src/widgets/widgetsettings.h"
 #include "src/widgets/roomlistwidget.h"
 #include "GraphicView.h"
 #include "datamanager.h"
@@ -50,7 +49,6 @@
 #include "src/widgets/propertywidget.h"
 #include "src/widgets/transitionwidget.h"
 #include "src/widgets/layerwidget.h"
-#include "src/widgets/templatewidget.h"
 #include "src/widgets/runningwidget.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {

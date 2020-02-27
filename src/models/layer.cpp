@@ -25,7 +25,7 @@
  * \section Description
  *
  * Layer class to manage items
- * Layer can contain jpsLineitem(wall, crossing...), JPSSource, JPSGoal and jpsLandmark
+ * Layer can contain jpsLineitem, JPSSource, JPSGoal and jpsLandmark
  * Model for layer
 ****************************************************************/
 
@@ -78,7 +78,7 @@ void Layer::setVisible(bool is_visible)
     qDebug("Leave Layer::setVisible");
 }
 
-// For wall, crossing, transition, track, hline
+// For wall, transition, track, hline
 void Layer::addLineToLayer(jpsLineItem *wall)
 {
     qDebug("Enter Layer::addLineToLayer");

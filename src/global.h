@@ -32,7 +32,7 @@ bool isDirtyChange(QGraphicsItem::GraphicsItemChange change);
 
 enum ZoneType {Room, Stair, Obstacle, Platform, Source, Goal, Landmark, NotAssigned};
 
-enum LineType {wall, crossing, transition, hline, track, landmarkText, goalRect, sourceRect, undefined};
+enum LineType {wall , transition, hline, track, landmarkText, goalRect, sourceRect, undefined};
 
-enum DrawingMode {WallMode, CrossingMode, TransitionMode, HlineMode, TrackMode, LandmarkMode, SourceMode, GoalMode, SelectMode, MeasureMode};
+enum DrawingMode {WallMode, TransitionMode, HlineMode, TrackMode, LandmarkMode, SourceMode, GoalMode, SelectMode, MeasureMode};
 #endif //JPSEDITOR_GLOBAL_H

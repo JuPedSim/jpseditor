@@ -1,3 +1,30 @@
+/**
+ * \file        jpszone.h
+ * \date        Feb-26-2020
+ * \version     v0.8.9
+ * \copyright   <2009-2018> Forschungszentrum Jülich GmbH. All rights reserved.
+ *
+ * \section License
+ * This file is part of JuPedSim.
+ *
+ * JuPedSim is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * JuPedSim is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * \section Description
+ * This class represents zones in geometry, in differernt types (room, stair, plattform)
+ *
+ **/
+
 #ifndef ROOMS_H
 #define ROOMS_H
 
@@ -6,24 +33,38 @@
 #include "jpstrack.h"
 #include "global.h"
 
-class jpsCrossing;
 class jpsTransition;
 
 class JPSZone
 {
 
 public:
-    JPSZone(int id_zone, JPSZone *father, ZoneType type);
+    JPSZone(int id_zone, ZoneType type);
 
     ~JPSZone(){}
 
+    /// General
     QString getName() const;
     void setName(const QString &name);
 
+    int get_id();
     void set_id(int id_room);
     void set_ax(float ax);
     void set_by(float by);
     void set_cz(float cz);
+
+    bool is_highlighted();
+    void highlight(const QString &color="random");
+
+    ZoneType getType() const;
+    QString getTypeInString() const;
+    void setType(const ZoneType &type);
+
+    void switchVisibility();
+    bool isVisible();
+    void setVisible(bool visibility);
+
+    /// For stair
     void set_up(QPointF up);
     void set_down(QPointF down);
     void switchHighlight();
@@ -32,13 +73,8 @@ public:
     float get_cz();
     QPointF get_up();
     QPointF get_down();
-    int get_id();
+
     QPointF get_center();
-    void highlight(const QString &color="random");
-    void switchVisibility();
-    ZoneType getType() const;
-    QString getTypeInString() const;
-    void setType(const ZoneType &type);
     QList<QPointF> GetDoorVertices() const;
 
     QVector<QPointF> RoomAsSortedPolygon(const QVector<QLineF> &lines) const;
@@ -47,32 +83,15 @@ public:
     QVector<QPointF> get_vertices() const;
     void IdentifyInnerOuter();
 
-    // calculate attributes
+    /// Calculate attributes
     QRectF CalculateBoundingBox() const;
     qreal CalculateArea(const QVector<QLineF> &poly) const;
 
     float get_elevation();
     void set_elevation(float elevation);
     void correctPlaneCoefficients(QList<jpsTransition *> transitions); // calculates the coefficients A_x, B_y and C_z
-    // for stairs
-    bool is_highlighted();
-    bool isVisible();
-    void setVisible(bool visibility);
 
-    // For room, father room can only be JPSZone::Room;
-    JPSZone *getFatherRoom();
-    void setFatherRoom(JPSZone *room);
-    void addZoneInList(JPSZone *zone);
-    void removeZoneFromList(JPSZone *zone);
-
-    const QList<QList<JPSZone *>> &getZoneList();
-    const QList<JPSZone *> &getPlatfromList() const;
-    const QList<JPSZone *> &getCorridorList() const;
-    const QList<JPSZone *> &getLobbyList() const;
-    const QList<JPSZone *> &getOfficeList() const;
-    const QList<JPSZone *> &getStairList() const;
-
-    // WallMode
+    // Wall
     void addWall(QList<jpsLineItem *> newWalls);
     void addWall(jpsLineItem* newWall);
     void addinnerWall(QList<jpsLineItem *> newWalls, int id_polygon=0);
@@ -82,18 +101,7 @@ public:
     QList<jpsLineItem *> get_listWalls();
     bool isInWallList(jpsLineItem* wall);
 
-    // CrossingMode
-    QList<jpsCrossing *> getCrossingList();
-    bool isInCrossingList(jpsCrossing *crossing);
-    void addCrossing(jpsCrossing *crossing);
-    void removeCrossing(jpsCrossing* crossing);
-    void addInEnterAndExitList(jpsCrossing *crossing);
-    void removeEnterOrExit(jpsCrossing *crossing);
-    QList<jpsCrossing *> getEnterAndExitList();
-    bool isInEnterAndExitList(jpsCrossing *crossing);
-    jpsCrossing * getExitedCrossing(jpsLineItem *line);
-
-    // TrackMode
+    // Track
     void addTrack(jpsLineItem *line, QString number);
     void removeTrack(JPSTrack *track);
     QList<JPSTrack *> getTrackList() const;
@@ -101,27 +109,12 @@ public:
 
 private:
     int id;
-    JPSZone *father_room;
-
     ZoneType zoneType;
     QString name;
     bool highlighted;
 
-    // For subroom
     QList<jpsLineItem *> wall_list;
     QList<JPSTrack *> track_list;
-    QList<jpsCrossing *> enterAndExitList; // Contains only crossing for this subroom
-
-    // For room
-    QList<JPSZone *> corridor_list;
-    QList<JPSZone *> platfrom_list;
-    QList<JPSZone *> lobby_list;
-    QList<JPSZone *> office_list;
-    QList<JPSZone *> stair_list;
-
-    QList<QList<JPSZone *>> zone_list;
-
-    QList<jpsCrossing *> crossing_list; // Contains all crossing in all subrooms
 
     bool visible;
     float A_x;

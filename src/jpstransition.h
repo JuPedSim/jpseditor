@@ -34,14 +34,16 @@ class jpsTransition
 public:
     jpsTransition(jpsLineItem *line);
     ~jpsTransition(){}
+
     QList<JPSZone *> get_roomList();
+
     QString get_name();
     jpsLineItem *get_cLine();
     void change_name(QString name);
-    QString get_type();
+
     int get_id();
     void set_id(int id);
-    void set_type(QString type);
+
     void set_rooms(JPSZone* room1, JPSZone* room2=nullptr);
 
     float getElevation() const;
@@ -52,7 +54,7 @@ private:
     QList<JPSZone *> roomList;
     QString cName;
     jpsLineItem *cLine;
-    QString _type;
+
     int _id;
     float elevation;
 

@@ -97,17 +97,18 @@ void TransitionWidget::applyRooms()
 
     for(JPSZone * room : data->getRoomlist())
     {
-        for(QList<JPSZone *> list : room->getZoneList())
-        {
-            for(JPSZone *subroom : list)
-            {
-                if(subroom->getName() == ui->comboBox_from->currentText())
-                    room1 = subroom;
+        //TODO: Fix here!
+//        for(QList<JPSZone *> list : room->getZoneList())
+//        {
+//            for(JPSZone *subroom : list)
+//            {
+//                if(subroom->getName() == ui->comboBox_from->currentText())
+//                    room1 = subroom;
 
-                if(subroom->getName() == ui->comboBox_to->currentText())
-                    room2 = subroom;
-            }
-        }
+//                if(subroom->getName() == ui->comboBox_to->currentText())
+//                    room2 = subroom;
+//            }
+//        }
     }
 
     cTran->set_rooms(room1, room2);
@@ -136,14 +137,15 @@ void TransitionWidget::showRoomsinButton(QListWidgetItem *item)
 
     for(JPSZone *zone : data->getRoomlist())
     {
-        for(QList<JPSZone *> list : zone->getZoneList())
-        {
-            for(JPSZone *subroom : list)
-            {
-                ui->comboBox_from->addItem(subroom->getName());
-                ui->comboBox_to->addItem(subroom->getName());
-            }
-        }
+        //TODO: Fix here!
+//        for(QList<JPSZone *> list : zone->getZoneList())
+//        {
+//            for(JPSZone *subroom : list)
+//            {
+//                ui->comboBox_from->addItem(subroom->getName());
+//                ui->comboBox_to->addItem(subroom->getName());
+//            }
+//        }
     }
 
     int cRow = ui->listWidget_transitions->currentRow();

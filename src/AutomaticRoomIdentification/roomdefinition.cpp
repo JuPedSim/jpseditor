@@ -58,20 +58,6 @@ void RoomDefinition::SetUpRoomsAndDoors()
             jpsLineItem* cLineItem = FindLineItem(line);
             if (cLineItem->is_Wall())
                 cRoom->addWall(cLineItem);
-
-            else if (cLineItem->is_Crossing())
-            {
-                // will only be done if crossing not already exists (check in function new_crossing)
-                _dManager->new_crossing(cLineItem);
-
-                for (jpsCrossing* crossing:_dManager->get_crossingList())
-                {
-                    if (crossing->get_cLine()==cLineItem)
-                    {
-                        crossing->setSubroom(cRoom);
-                    }
-                }
-            }
         }
     }
 
@@ -94,16 +80,6 @@ void RoomDefinition::SetUpRoomsAndDoors()
     }
 
 
-    // declare exits
-    for (jpsCrossing* crossing:_dManager->get_crossingList())
-    {
-        if (crossing->get_roomList().size()<2)
-        {
-//            crossing->SetStatExit(true);
-            crossing->get_cLine()->setCrossing();
-        }
-    }
-
 }
 
 void RoomDefinition::RemoveOutside()
@@ -125,11 +101,7 @@ void RoomDefinition::RemoveOutside()
 
 void RoomDefinition::RemoveRoomsWithoutDoors()
 {
-    for (JPSZone* room:_dManager->get_roomlist())
-    {
-        if (room->getCrossingList().empty())
-            _dManager->remove_room(room);
-    }
+
 }
 
 

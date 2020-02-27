@@ -79,8 +79,6 @@ public:
     void change_gridmode();
     bool statusWall();
     void en_disableWall();
-    bool statusDoor();
-    void en_disableCrossing();
     void enableTransition();
     void enableTrack();
     bool statusHLine();

@@ -276,7 +276,7 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
         }
 
         //VLine
-        if (point_tracked && (drawingMode==WallMode || drawingMode==CrossingMode || drawingMode==TransitionMode))
+        if (point_tracked && (drawingMode==WallMode || drawingMode==TransitionMode))
         {
 //            SetVLine();
         }
@@ -361,7 +361,7 @@ void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                 }
                 else
                 {
-                    // Draw wall, crossing, transition, hline, track
+                    // Draw wall, transition, hline, track
                     drawLine();
                     break;
                 }
@@ -1019,7 +1019,7 @@ void jpsGraphicsView::catch_line_point()
 void jpsGraphicsView::catch_lines()
 {
     qDebug("Enter jpsGraphicsView::catch_lines");
-    // Catch wall, crossing, transition, track, hline
+    // Catch wall, transition, track, hline
     // If current rect was build up moving the cursor to the left ->
     // Whole line has to be within the rect to select the line
     line_tracked=-1;
@@ -1110,9 +1110,6 @@ void jpsGraphicsView::drawLine()
         switch (drawingMode){
             case WallMode:
                 lineItem->setWall();
-                break;
-            case CrossingMode:
-                lineItem->setCrossing();
                 break;
             case HlineMode:
                 lineItem->setHline();
@@ -1225,11 +1222,7 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
     newLine->set_id(id_counter);
     id_counter++;
 
-    if (type=="crossing")
-    {
-        newLine->setCrossing();
-    }
-    else if (type=="transition")
+    if (type=="transition")
     {
         newLine->setTransition();
         // TransitionMode isn't a normal JPSLineItem, rather JPSTransition class
@@ -2131,9 +2124,6 @@ void jpsGraphicsView::take_l_from_lineEdit(const qreal &length)
             case WallMode:
                 jpsline->setWall();
                 break;
-            case CrossingMode:
-                jpsline->setCrossing();
-                break;
             case TransitionMode:
                 jpsline->setTransition();
                 break;
@@ -2180,9 +2170,6 @@ void jpsGraphicsView::take_endpoint_from_xyEdit(const QPointF &endpoint)
         switch (drawingMode){
             case WallMode:
                 jpsline->setWall();
-                break;
-            case CrossingMode:
-                jpsline->setCrossing();
                 break;
             case TransitionMode:
                 jpsline->setTransition();
@@ -2302,32 +2289,6 @@ bool jpsGraphicsView::get_stat_anglesnap()
 {
     qDebug("Enter/Return jpsGraphicsView::get_stat_anglesnap");
     return anglesnap;
-}
-
-void jpsGraphicsView::en_disableCrossing()
-{
-    qDebug("Enter jpsGraphicsView::en_disableCrossing");
-    drawingMode = CrossingMode;
-
-    if(drawingMode != CrossingMode)
-    {
-        emit no_drawing();
-    } else
-    {
-        currentPen.setColor(Qt::blue);
-    }
-    qDebug("Leave jpsGraphicsView::en_disableCrossing");
-}
-
-bool jpsGraphicsView::statusDoor()
-{
-    qDebug("Enter jpsGraphicsView::statusDoor");
-    if(drawingMode == CrossingMode)
-    {
-        return true;
-    } else
-        return false;
-    qDebug("Leave jpsGraphicsView::statusDoor");
 }
 
 void jpsGraphicsView::enableTransition()

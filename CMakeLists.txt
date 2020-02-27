@@ -137,7 +137,6 @@ set( SRCS
     src/widgets/inifilewidget.cpp
     src/widgets/snappingoptions.cpp
     src/widgets/widgetlandmark.cpp
-    src/widgets/widgetsettings.cpp
     src/widgets/roomlistwidget.cpp
     src/widgets/propertywidget.cpp
     src/widgets/transitionwidget.cpp
@@ -159,7 +158,6 @@ set( SRCS
 
 ## JPSelements
     src/jpszone.cpp
-    src/jpscrossing.cpp
     src/jpsLineItem.cpp
     src/jpstransition.cpp
     src/jpsobstacle.cpp
@@ -200,7 +198,6 @@ set( HDR
     src/widgets/runningwidget.h
 
     src/widgets/widgetlandmark.h
-    src/widgets/widgetsettings.h
     src/widgets/settingdialog.h
     src/widgets/inifilewidget.h
     src/widgets/snappingoptions.h
@@ -211,7 +208,6 @@ set( HDR
     src/jpsgoal.h
     src/jpszone.h
     src/datamanager.h
-    src/jpscrossing.h
     src/jpsLineItem.h
     src/jpstransition.h
     src/jpsobstacle.h

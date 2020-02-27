@@ -51,14 +51,13 @@ public:
     void setType(LineType type);
 
     void setWall();
-    void setCrossing();
     void setHline();
     void setTransition();
     void setTrack();
     void setUndefined();
     void set_defaultColor(QString color);
     bool is_Wall();
-    bool is_Crossing();
+
     bool is_Transition();
     bool IsHLine();
 
