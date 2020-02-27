@@ -60,8 +60,8 @@ MWindow :: MWindow()
     //Snapping Options
     snappingOptions=nullptr;
 
-    //StaturBar
-
+    /// StaturBar
+    // TODO: Redesign with widget to draw a line with input
     length_edit = new QLineEdit();
     length_edit->setMaximumWidth(75);
 
@@ -90,10 +90,6 @@ MWindow :: MWindow()
     label2->setMinimumWidth(300);
     label2->setText("[m]");
 
-
-    //filename of saved project
-    _filename="";
-
     statusBar()->addPermanentWidget(infoLabel);
     statusBar()->addPermanentWidget(label_x);
     statusBar()->addPermanentWidget(x_edit);
@@ -102,8 +98,10 @@ MWindow :: MWindow()
 
     _statScale=false;
 
-    // Signals and Slots
-    // Menu - File
+    _filename=""; // filename of saved project
+
+    /// Signals and Slots
+    /// Menu - File
     connect(actionBeenden, SIGNAL(triggered(bool)),this,SLOT(close()));
     connect(action_ffnen,SIGNAL(triggered(bool)),this,SLOT(openFileDXF()));
     connect(action_ffnen_xml,SIGNAL(triggered(bool)),this,SLOT(openFileXML()));
@@ -111,11 +109,11 @@ MWindow :: MWindow()
     connect(actionSpeichern,SIGNAL(triggered(bool)),this,SLOT(saveAsXML()));
     connect(actionSpeichern_dxf,SIGNAL(triggered(bool)),this,SLOT(saveAsDXF()));
 
-    // Tab Preference
+    /// Tab Preference
     settingDialog = nullptr;
     connect(actionSettings,SIGNAL(triggered(bool)),this,SLOT(Settings()));
 
-    // Tab Help
+    /// Tab Help
     connect(action_ber,SIGNAL(triggered(bool)),this,SLOT(info()));
 
     // Tab Tools
@@ -153,17 +151,8 @@ MWindow :: MWindow()
     connect(str_a, SIGNAL(triggered(bool)), mview, SLOT(SelectAllLines()));
     this->addAction(str_a);
 
-    // Remove all lines
-//    QAction *str_del = new QAction(this);
-//    str_del->setShortcut(Qt::Key_D | Qt::CTRL);
-//    connect(str_del,SIGNAL(triggered(bool)),this,SLOT(remove_all_lines()));
-
-    // Autosave
-//    _cMapTimer = new QTimer(this);
-    // Timer needed for autosaving function
-    // timer will trigger autosave every 5th minute
+    /// Autosave
     timer = new QTimer(this);
-
     timer->start();
     QSettings settings("FZJ","JPSeditor");
     settings.beginGroup("backup");
@@ -172,10 +161,10 @@ MWindow :: MWindow()
     timer->setInterval(interval);
     connect(timer, SIGNAL(timeout()), this, SLOT(AutoSave()));
 
-    // Landmark specifications
+    /// Landmark specifications
     connect(actionLandmarkWidget,SIGNAL(triggered(bool)),this,SLOT(define_landmark()));
 
-    // CMap
+    /// CMap
 //    connect(actionRun_visualisation,SIGNAL(triggered(bool)),this,SLOT(RunCMap()));
 //    connect(_cMapTimer,SIGNAL(timeout()),this,SLOT(UpdateCMap()));
 //    connect(actionSpeichern_cogmap,SIGNAL(triggered()),this,SLOT(SaveCogMapXML()));
@@ -183,13 +172,13 @@ MWindow :: MWindow()
     // Room type data gathering
     connect(actionGather_data,SIGNAL(triggered(bool)),this, SLOT(GatherData()));
 
-    // Right dock widget
+    /// Right dock widget
     propertyDockWidget = nullptr;
 
-    // Left dock widget
+    /// Left dock widget
     listDockWidget = nullptr;
 
-    // Object snapping
+    /// Object snapping
     objectsnapping = {};
     bool endpoint = false;
     bool Intersections_point = false;
@@ -200,7 +189,7 @@ MWindow :: MWindow()
     objectsnapping.append(Center_point);
     objectsnapping.append(SelectedLine_point);
 
-    // Main toolbar action group
+    /// Main toolbar action group
     auto main_toolbar_actionGroup = new QActionGroup(this);
     main_toolbar_actionGroup->addAction(actionSelect_Mode); // select mode
     main_toolbar_actionGroup->addAction(actionDraw); // draw mode
@@ -214,7 +203,6 @@ MWindow :: MWindow()
 
     // Drawing toolbar
     connect(actionWall,SIGNAL(triggered(bool)),this,SLOT(en_disableWall()));
-    connect(actionCrossing,SIGNAL(triggered(bool)),this,SLOT(en_disableCrossing()));
     connect(actionHLine,SIGNAL(triggered(bool)),this,SLOT(en_disableHLine()));
     connect(actionLandmark,SIGNAL(triggered(bool)),this,SLOT(en_disableLandmark()));
     connect(actionSource, SIGNAL(triggered(bool)),this,SLOT(sourceButtonClicked()));
@@ -224,7 +212,6 @@ MWindow :: MWindow()
 
     drawingActionGroup = new QActionGroup(this);
     drawingActionGroup->addAction(actionWall);
-    drawingActionGroup->addAction(actionCrossing);
     drawingActionGroup->addAction(actionTransition);
     drawingActionGroup->addAction(actionHLine);
     drawingActionGroup->addAction(actionLandmark);
@@ -852,14 +839,6 @@ void MWindow::en_disableWall()
     qDebug("Leave MWindow::en_disableWall");
 }
 
-void MWindow::en_disableCrossing()
-{
-    qDebug("Enter MWindow::en_disableCrossing");
-    closePropertyDockWidget();
-
-    mview->en_disableCrossing();
-    qDebug("Leave MWindow::en_disableCrossing");
-}
 
 void MWindow::en_disableLandmark()
 {
@@ -1064,25 +1043,11 @@ void MWindow::en_selectMode()
 void MWindow::dis_selectMode()
 {
     qDebug("Enter MWindow::dis_selectMode");
-/*
- if (actionWall->isChecked()==true || actionCrossing->isChecked()==true || actionExit->isChecked()==true
-            || actionLandmark->isChecked()==true)
-    {
-        actionSelect_Mode->setChecked(false);
-    }
-*/
 
     if(drawingActionGroup->checkedAction() != actionSelect_Mode)
         actionSelect_Mode->setChecked(false);
     qDebug("Leave MWindow::dis_selectMode");
 }
-
-//void MWindow::lines_deleted()
-//{
-//    qDebug("Enter MWindow::lines_deleted");
-//    dmanager->remove_marked_lines();
-//    qDebug("Leave MWindow::lines_deleted");
-//}
 
 void MWindow::ShowLineLength()
 {
@@ -1390,7 +1355,6 @@ void MWindow::addListDockWidget(const QString &type)
 
     // create list widget
     auto *listWidget = new RoomListWidget(this, this->dmanager, this->mview);
-    listWidget->setLabel(type);
 
     // add list widget into dock widget
     addDockWidget(Qt::LeftDockWidgetArea, listDockWidget);

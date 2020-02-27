@@ -24,24 +24,11 @@ protected slots:
     void updateWidget(ZoneType type);
     void updateListwidget();
 
-    void clearListWidget();
-
-    // Crossing tab
-    void updateCrossingListWidget();
-    void addCrossingButtonClicked();
-    void removeCrossingButtonClicked();
-    void applyOutflowButtonClicked();
-    void applyMaxagentsButtonClicked();
-    void updateCrossingInfo(QListWidgetItem* item);
-
     // Wall tab
     void updateWallListWidget();
     void addWallButtonClicked();
     void removeWallButtonClicked();
     void highlightWall(QListWidgetItem *item);
-
-    // Inspector Tab
-    void applyElevationButtonClicked();
 
     // Track tab
     void updateTrackListWidget();

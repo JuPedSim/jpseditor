@@ -32,6 +32,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QDockWidget>
+
 #include "ui_mainwindow.h"
 #include "src/widgets/widgetlandmark.h"
 #include "src/widgets/widgetsettings.h"
@@ -39,13 +40,13 @@
 #include "GraphicView.h"
 #include "datamanager.h"
 #include "jpszone.h"
+#include "src/XML/goalreader.h"
+#include "src/XML/sourcereader.h"
 #include "src/widgets/settingdialog.h"
 #include "src/widgets/inifilewidget.h"
 #include "src/widgets/snappingoptions.h"
 #include "src/widgets/sourcewidget.h"
 #include "src/widgets/goalwidget.h"
-#include "src/XML/goalreader.h"
-#include "src/XML/sourcereader.h"
 #include "src/widgets/propertywidget.h"
 #include "src/widgets/transitionwidget.h"
 #include "src/widgets/layerwidget.h"
@@ -77,9 +78,6 @@ private:
 
     SnappingOptions* snappingOptions;
 
-    QGraphicsScene *mscene;
-
-    //QVBoxLayout* VBox;
     QLineEdit* length_edit;
     QLineEdit* x_edit;
     QLineEdit* y_edit;
@@ -91,6 +89,7 @@ private:
     QString _filename;
 
     /// Model
+    QGraphicsScene *mscene;
     jpsDatamanager* dmanager;
 
     // CMap
@@ -106,7 +105,6 @@ private:
     bool _statScale;
 
     QList<bool> objectsnapping;
-
 
 public slots:
     
@@ -136,7 +134,6 @@ public slots:
     //drawing options
     void anglesnap();
     void en_disableWall();
-    void en_disableCrossing();
     void en_disableLandmark();
     void en_disableHLine();
     void objectsnap();
@@ -149,10 +146,9 @@ public slots:
     void show_coords();
     void deleteAllContents();
     void delete_marked_lines();
-    void send_length();
+
     void en_selectMode();
     void dis_selectMode();
-//    void lines_deleted();
     void ShowLineLength();
     void ScaleLines();
     void enableScale();

@@ -20,19 +20,12 @@ public:
 
     ~RoomListWidget();
 
-    void setLabel(QString name);
 
 public slots:
     void updateRoomsListWidget();
-    void updateZonesListWidget(QListWidgetItem *item);
 
     void addRoomButtonClicked();
-    void addZoneButtonClicked();
     void deleteRoomButtonClicked();
-    void deleteZoneButtonClicked();
-
-    void selectZone(QListWidgetItem *item);
-    JPSZone *getCurrentZone(QListWidgetItem *item);
 
     void selectRoom(QListWidgetItem *item);
     JPSZone *getCurrentRoom(QListWidgetItem *item);
@@ -40,11 +33,9 @@ public slots:
     void renameRoom(QListWidgetItem *item);
     bool isRepeatedRoomName(QString name);
 
-    void renameZone(QListWidgetItem *item);
-    bool isRepeatedZoneName(QString name);
+
 
     void highlightRoom(QListWidgetItem *item);
-    void highlightZone(QListWidgetItem *item);
 
 signals:
     void zoneSelected(JPSZone *);
