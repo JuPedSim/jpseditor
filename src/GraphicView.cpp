@@ -104,7 +104,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     setResizeAnchor(QGraphicsView::AnchorUnderMouse);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setCursor(Qt::CrossCursor);
+//    setCursor(Qt::CrossCursor);
 
     //Grid Mode
     _translationX=0.0;
@@ -298,84 +298,85 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
 {
     qDebug("Enter jpsGraphicsView::mousePressEvent");
-    if (mouseEvent->button() == Qt::LeftButton)
-    {
-        switch (drawingMode){
-            case LandmarkMode:
-                drawLandmark();
-                break;
-            case SourceMode:
-                drawSource();
-                break;
-            case GoalMode:
-                drawGoal();
-                break;
-            case MeasureMode:
-                drawMeasureLengthLine();
-                break;
-            case SelectMode:
-                if (_statDefConnections==1)
-                {
-                    emit DefConnection1Completed();
-                    break;
-                }
-                else if (_currentTrackedPoint!=nullptr && line_tracked==1 && _statCopy==0)
-                {
-                    EditLine(_currentTrackedPoint);
-                    _currentTrackedPoint=nullptr;
-                    line_tracked=-1;
-                    break;
-                }
-                else if (_statCopy!=0)
-                {
-                    if (_statCopy==1)
-                    {
-                        _copyOrigin=return_Pos();
-                        _statCopy += 1;
-                    }
-                    else
-                        Copy_lines(return_Pos()-_copyOrigin);
-                    break;
-                }
-                else
-                {
-                    //Select_mode
-                    currentSelectRect=scene()->addRect(translated_pos.x(),translated_pos.y(),0,0,QPen(Qt::blue,0));
-                    currentSelectRect->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
-                    leftbutton_hold=true;
-                    break;
-                }
-            default:
-                if (_statLineEdit)
-                {
-                    // Edit line
-                    for (jpsLineItem* line:line_vector)
-                    {
-                        locate_intersection(marked_lines.first(),line);
-                    }
-                    current_line=nullptr;
-                    _statLineEdit=false;
-                    line_tracked=1;
-                    emit no_drawing();
-                    break;
-                }
-                else
-                {
-                    // Draw wall, transition, hline, track
+    if (mouseEvent->button() == Qt::LeftButton) {
+        if (_statLineEdit) {
+            // Edit line
+            for (jpsLineItem *line:line_vector) {
+                locate_intersection(marked_lines.first(), line);
+            }
+            current_line = nullptr;
+            _statLineEdit = false;
+            line_tracked = 1;
+            emit no_drawing();
+        }
+        else {
+            switch (drawingMode) {
+                case WallMode:
                     drawLine();
                     break;
-                }
+                case TransitionMode:
+                    drawLine();
+                    break;
+                case TrackMode:
+                    drawLine();
+                    break;
+                case HlineMode:
+                    drawLine();
+                    break;
+                case LandmarkMode:
+                    drawLandmark();
+                    break;
+                case SourceMode:
+                    drawSource();
+                    break;
+                case GoalMode:
+                    drawGoal();
+                    break;
+                case MeasureMode:
+                    drawMeasureLengthLine();
+                    break;
+                case SelectMode:
+                    if (_statDefConnections == 1) {
+                        emit DefConnection1Completed();
+                        break;
+                    }
+                    else if (_currentTrackedPoint != nullptr && line_tracked == 1 && _statCopy == 0) {
+                        EditLine(_currentTrackedPoint);
+                        _currentTrackedPoint = nullptr;
+                        line_tracked = -1;
+                        break;
+                    }
+                    else if (_statCopy != 0) {
+                        if (_statCopy == 1) {
+                            _copyOrigin = return_Pos();
+                            _statCopy += 1;
+                        }
+                        else
+                            Copy_lines(return_Pos() - _copyOrigin);
+                        break;
+                    }
+                    else {
+                        currentSelectRect = scene()->addRect(translated_pos.x(), translated_pos.y(),
+                            0, 0, QPen(Qt::blue, 0));
+                        currentSelectRect->setTransform(QTransform::fromTranslate(translation_x, translation_y), true);
+                        leftbutton_hold = true;
+                        break;
+                    }
+                default:
+                    break;
+            }
         }
     }
     else if (mouseEvent->button()==Qt::MidButton)
     {
-        midbutton_hold=true;
+        midbutton_hold=true; // enter panning mode when move mouse
     }
     else if (mouseEvent->button()==Qt::RightButton)
     {
         disable_drawing();
         emit no_drawing();
     }
+    else{}
 
     update();
     qDebug("Leave jpsGraphicsView::mousePressEvent");

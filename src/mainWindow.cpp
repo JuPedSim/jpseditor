@@ -306,14 +306,29 @@ void MWindow::setupZoneToolBar()
     closeListDockWidget();
     closePropertyDockWidget();
 
-    zone_toolbar_ = new QToolBar("Zone ToolBar", this);
+    if(zone_toolbar_!= nullptr)
+    {
+        // If zone tool bar is just hide
+        if(!zone_toolbar_->isVisible())
+        {
+            zone_toolbar_->setVisible(true);
+        }
 
-    addToolBar(Qt::LeftToolBarArea, zone_toolbar_);
-    zone_toolbar_->setMovable(false);
-    zone_toolbar_->setBackgroundRole(QPalette::HighlightedText);
-    zone_toolbar_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    }
+    else{
+        // Set-up zone tool bar at first time
+        zone_toolbar_ = new QToolBar("Zone ToolBar", this);
 
-    zone_toolbar_->addActions(zoneActionGroup->actions());
+        addToolBar(Qt::LeftToolBarArea, zone_toolbar_);
+        zone_toolbar_->setMovable(false);
+        zone_toolbar_->setBackgroundRole(QPalette::HighlightedText);
+        zone_toolbar_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        zone_toolbar_->addActions(zoneActionGroup->actions());
+    }
+
+    mview->setDrawingMode(SelectMode);
+
     qDebug("Leave MWindow::setupZoneToolBar");
 }
 
@@ -334,8 +349,12 @@ void MWindow::closeLeftToolBarArea()
 
     if(zone_toolbar_ != nullptr)
     {
-        zone_toolbar_->close();
-        zone_toolbar_ = nullptr;
+        for(auto action : zone_toolbar_->actions())
+        {
+            if(action->isChecked())
+                action->setChecked(false);
+        }
+        zone_toolbar_->setVisible(false);
     }
     qDebug("Leave MWindow::closeLeftToolBarArea");
 }
