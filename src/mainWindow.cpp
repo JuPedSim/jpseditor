@@ -212,10 +212,10 @@ MWindow :: MWindow()
 
     drawingActionGroup = new QActionGroup(this);
     drawingActionGroup->addAction(actionWall);
-    drawingActionGroup->addAction(actionTransition);
-    drawingActionGroup->addAction(actionSource);
-    drawingActionGroup->addAction(actionGoal);
     drawingActionGroup->addAction(actionTrack);
+    drawingActionGroup->addAction(actionTransition);
+    drawingActionGroup->addAction(actionGoal);
+    drawingActionGroup->addAction(actionSource);
     drawingActionGroup->addAction(actionHLine);
 //    drawingActionGroup->addAction(actionLandmark);
 
@@ -229,12 +229,12 @@ MWindow :: MWindow()
     zoneActionGroup = new QActionGroup(this);
 
     zoneActionGroup->addAction(actionRoom);
+    zoneActionGroup->addAction(actionStairs);
+    zoneActionGroup->addAction(actionPlatform);
     zoneActionGroup->addAction(actionTransitionWidget);
     zoneActionGroup->addAction(actionGoalWidget);
     zoneActionGroup->addAction(actionSourceWidget);
-    zoneActionGroup->addAction(actionStairs);
-//    zoneActionGroup->addAction(actionLandmarkWidget);
-    zoneActionGroup->addAction(actionPlatform);
+    //    zoneActionGroup->addAction(actionLandmarkWidget);
 
     // Set background
     connect(actionImportNewBackgorund, SIGNAL(triggered(bool)),this,SLOT(importBackground()));
@@ -1327,16 +1327,6 @@ void MWindow::importBackground()
     create a listDockwidget and propertyDockwidget
  */
 
-void MWindow::corridorButtonClicked()
-{
-    qDebug("Enter MWindow::corridorButtonClicked");
-    closeListDockWidget();
-    closePropertyDockWidget();
-
-    addListDockWidget("Corridor");
-    qDebug("Leave MWindow::corridorButtonClicked");
-}
-
 void MWindow::closePropertyDockWidget()
 {
     qDebug("Enter MWindow::closePropertyDockWidget");
@@ -1359,27 +1349,37 @@ void MWindow::closeListDockWidget()
     qDebug("Leave MWindow::closeListDockWidget");
 }
 
+/**
+ * Set-up list widget for room, stair, platform
+ **/
+
 void MWindow::addListDockWidget(const QString &type)
 {
     qDebug("Enter MWindow::addListDockWidget");
-    closeListDockWidget();
-    closePropertyDockWidget();
+    if(listDockWidget != nullptr)
+    {
+        qDebug("List dock widget is already existet. Leave MWindow::addListDockWidget");
+        return;
+    }
 
-    // create dock widget
+    // Create dock widget
     listDockWidget = new QDockWidget(type, this);
     listDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     listDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
 
-    // create list widget
-    auto *listWidget = new RoomListWidget(this, this->dmanager, this->mview);
+    // Create list widget
+    auto *listWidget = new ListWidget(this, this->dmanager, this->mview);
 
-    // add list widget into dock widget
+    // Add list widget into dock widget
     addDockWidget(Qt::LeftDockWidgetArea, listDockWidget);
     listDockWidget->setWidget(listWidget);
 
     qDebug("Leave MWindow::addListDockWidget");
 }
 
+/**
+ * Called in room list widget
+ **/
 void MWindow::addPropertyDockWidget(JPSZone *zone)
 {
     qDebug("Enter MWindow::addPropertyDockWidget");
@@ -1433,26 +1433,6 @@ void MWindow::layerButtonClicked()
     listDockWidget->setWidget(layerWidget);
 
     qDebug("Leave MWindow::layerButtonClicked");
-}
-
-void MWindow::lobbyButtonClicked()
-{
-    qDebug("Enter MWindow::lobbyButtonClicked");
-    closeListDockWidget();
-    closePropertyDockWidget();
-
-    addListDockWidget("Lobby");
-    qDebug("Leave MWindow::lobbyButtonClicked");
-}
-
-void MWindow::officeButtonClicked()
-{
-    qDebug("Enter MWindow::officeButtonClicked");
-    closeListDockWidget();
-    closePropertyDockWidget();
-
-    addListDockWidget("Office");
-    qDebug("Leave MWindow::officeButtonClicked");
 }
 
 void MWindow::stairButtonClicked()

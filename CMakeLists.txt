@@ -137,7 +137,7 @@ set( SRCS
     src/widgets/inifilewidget.cpp
     src/widgets/snappingoptions.cpp
     src/widgets/widgetlandmark.cpp
-    src/widgets/roomlistwidget.cpp
+        src/widgets/listwidget.cpp
     src/widgets/propertywidget.cpp
     src/widgets/transitionwidget.cpp
     src/widgets/layerwidget.cpp
@@ -190,7 +190,7 @@ set( HDR
     src/GraphicView.h
     src/graphicscene.h
 
-    src/widgets/roomlistwidget.h
+        src/widgets/listwidget.h
     src/widgets/propertywidget.h
     src/widgets/transitionwidget.h
     src/widgets/layerwidget.h
@@ -261,7 +261,7 @@ set( UIS
     forms/snappingoptions.ui
     forms/sourcewidget.ui
     forms/goalwidget.ui
-    forms/roomlistwidget.ui
+    forms/listwidget.ui
     forms/propertywidget.ui
     forms/transitionwidget.ui
     forms/layerwidget.ui

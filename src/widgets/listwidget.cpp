@@ -1,6 +1,6 @@
 /***************************************************************
  *
- * \file roomlistwidget.cpp
+ * \file listwidget.cpp
  * \date 2019-06-19
  * \version v0.8.9
  * \author Tao Zhong
@@ -27,18 +27,18 @@
  *
 ****************************************************************/
 
-#include "roomlistwidget.h"
-#include "ui_roomlistwidget.h"
+#include "listwidget.h"
+#include "ui_listwidget.h"
 
-RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsView *gview)
-    : QWidget(parent), ui(new Ui::RoomListWidget)
+ListWidget::ListWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsView *gview)
+    : QWidget(parent), ui(new Ui::ListWidget)
 {
-    qDebug("Enter RoomListWidget::RoomListWidget");
+    qDebug("Enter ListWidget::ListWidget");
     ui->setupUi(this);
     data = dmanager;
     view = gview;
 
-    updateRoomsListWidget();
+    updateList();
 
     // Highlight room and subroom
     connect(ui->listWidget_rooms, SIGNAL(itemClicked(QListWidgetItem *)),this, SLOT(highlightRoom(QListWidgetItem *)));
@@ -50,10 +50,10 @@ RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     connect(this, SIGNAL(roomDeleted()), parent, SLOT(closePropertyDockWidget()));
 
     // Add
-    connect(ui->pushButton_addRoom, SIGNAL(clicked()), this, SLOT(addRoomButtonClicked()));
+    connect(ui->pushButton_addRoom, SIGNAL(clicked()), this, SLOT(addButtonClicked()));
 
     // delete
-    connect(ui->pushButton_deleteRoom, SIGNAL(clicked()), this, SLOT(deleteRoomButtonClicked()));
+    connect(ui->pushButton_deleteRoom, SIGNAL(clicked()), this, SLOT(deleteButtonClicked()));
 
     // Send emit to PropertyWidget
     // click room -> add room property widget
@@ -61,19 +61,19 @@ RoomListWidget::RoomListWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGra
 
     // Rename items
     connect(ui->listWidget_rooms, SIGNAL(itemDoubleClicked(QListWidgetItem *)),this, SLOT(renameRoom(QListWidgetItem*)));
-    qDebug("Leave RoomListWidget::RoomListWidget");
+    qDebug("Leave ListWidget::ListWidget");
 }
 
-RoomListWidget::~RoomListWidget()
+ListWidget::~ListWidget()
 {
-    qDebug("Enter RoomListWidget::~RoomListWidget");
+    qDebug("Enter ListWidget::ListWidget");
     delete ui;
-    qDebug("Leave RoomListWidget::~RoomListWidget");
+    qDebug("Leave ListWidget::ListWidget");
 }
 
-void RoomListWidget::updateRoomsListWidget()
+void ListWidget::updateList()
 {
-    qDebug("Enter RoomListWidget::updateRoomsListWidget");
+    qDebug("Enter ListWidget::updateList");
     ui->listWidget_rooms->clear();
 
     QList<JPSZone*> roomslist = data->getRoomlist();
@@ -83,33 +83,33 @@ void RoomListWidget::updateRoomsListWidget()
         ui->listWidget_rooms->addItem(room->getName());
     }
 
-    qDebug("Leave RoomListWidget::updateRoomsListWidget");
+    qDebug("Leave ListWidget::updateList");
 }
 
 
-void RoomListWidget::addRoomButtonClicked()
+void ListWidget::addButtonClicked()
 {
-    qDebug("Enter RoomListWidget::addRoomButtonClicked");
+    qDebug("Enter ListWidget::addButtonClicked");
     data->addRoom();
-    updateRoomsListWidget();
-    qDebug("Leave RoomListWidget::addRoomButtonClicked");
+    updateList();
+    qDebug("Leave ListWidget::addButtonClicked");
 }
 
-void RoomListWidget::selectRoom(QListWidgetItem *item)
+void ListWidget::selectRoom(QListWidgetItem *item)
 {
-    qDebug("Enter RoomListWidget::selectRoom");
+    qDebug("Enter ListWidget::selectRoom");
     if(item == nullptr)
         return;
 
     auto *room = getCurrentRoom(item);
     emit roomSelected(room); // emit to mainWindow
-    qDebug("Leave RoomListWidget::selectRoom");
+    qDebug("Leave ListWidget::selectRoom");
 }
 
 
-JPSZone *RoomListWidget::getCurrentRoom(QListWidgetItem *item)
+JPSZone *ListWidget::getCurrentRoom(QListWidgetItem *item)
 {
-    qDebug("Enter RoomListWidget::getCurrentRoom");
+    qDebug("Enter ListWidget::getCurrentRoom");
     if(item == nullptr)
         return nullptr;
 
@@ -124,13 +124,13 @@ JPSZone *RoomListWidget::getCurrentRoom(QListWidgetItem *item)
             return room;
         }
     }
-    qDebug("Leave RoomListWidget::getCurrentRoom");
+    qDebug("Leave ListWidget::getCurrentRoom");
     return nullptr;
 }
 
-void RoomListWidget::renameRoom(QListWidgetItem *item)
+void ListWidget::renameRoom(QListWidgetItem *item)
 {
-    qDebug("Enter RoomListWidget::renameRoom");
+    qDebug("Enter ListWidget::renameRoom");
     QString name = QInputDialog::getText(this, tr("Rename"),
                                          tr("New name:"), QLineEdit::Normal,
                                          "Room");
@@ -158,50 +158,50 @@ void RoomListWidget::renameRoom(QListWidgetItem *item)
         }
     }
 
-    updateRoomsListWidget();
-    qDebug("Leave RoomListWidget::renameRoom");
+    updateList();
+    qDebug("Leave ListWidget::renameRoom");
 }
 
-bool RoomListWidget::isRepeatedRoomName(QString name)
+bool ListWidget::isRepeatedRoomName(QString name)
 {
-    qDebug("Enter RoomListWidget::isRepeatedRoomName");
+    qDebug("Enter ListWidget::isRepeatedRoomName");
     foreach(JPSZone *zone, data->getRoomlist())
     {
         if(name == zone->getName())
             return true;
     }
-    qDebug("Leave RoomListWidget::isRepeatedRoomName");
+    qDebug("Leave ListWidget::isRepeatedRoomName");
     return false;
 }
 
 /*
     Purpose: Delete room from room list widget
 
-    Flow: RoomListWidget::deleteRoomButtonClicked
+    Flow: ListWidget::deleteButtonClicked
             -> jpsDatamanager::removeRoom
 
 */
-void RoomListWidget::deleteRoomButtonClicked()
+void ListWidget::deleteButtonClicked()
 {
-    qDebug("Enter RoomListWidget::deleteRoomButtonClicked");
+    qDebug("Enter ListWidget::deleteButtonClicked");
     if(ui->listWidget_rooms->currentItem() != nullptr)
     {
         data->removeRoom(getCurrentRoom(ui->listWidget_rooms->currentItem())); // removing opreation in datamanager
     }
     emit roomDeleted();
 
-    updateRoomsListWidget();
-    qDebug("Leave RoomListWidget::deleteRoomButtonClicked");
+    updateList();
+    qDebug("Leave ListWidget::deleteButtonClicked");
 }
 
 /*
     Purpose: Delete zone from zone list widget
 
-    Flow: RoomListWidget::deleteZoneButtonClicked
+    Flow: ListWidget::deleteZoneButtonClicked
             -> jpsDatamanager::removeZone
 */
 
-void RoomListWidget::highlightRoom(QListWidgetItem *item)
+void ListWidget::highlightRoom(QListWidgetItem *item)
 {
     qDebug("Enter oomListWidget::highlightRoom");
     if(item == nullptr)

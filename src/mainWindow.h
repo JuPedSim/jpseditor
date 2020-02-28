@@ -35,7 +35,7 @@
 
 #include "ui_mainwindow.h"
 #include "src/widgets/widgetlandmark.h"
-#include "src/widgets/roomlistwidget.h"
+#include "src/widgets/listwidget.h"
 #include "GraphicView.h"
 #include "datamanager.h"
 #include "jpszone.h"
@@ -215,15 +215,12 @@ private slots:
     //Zone ToolBar
     void setupZoneToolBar();
 
-    void corridorButtonClicked();
+    // Property widget
     void platformButtonClicked();
-    void lobbyButtonClicked();
-    void officeButtonClicked();
     void stairButtonClicked();
-
-    // PropertyDockWidget
     void addPropertyDockWidget(JPSZone *zone); // used in room list widget
     void closePropertyDockWidget();
+
 
     // ListDockWidget
     void addListDockWidget(const QString &type);
