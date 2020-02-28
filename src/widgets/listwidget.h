@@ -28,26 +28,29 @@ public slots:
     void addButtonClicked();
     void deleteButtonClicked();
 
-    void selectRoom(QListWidgetItem *item);
-    JPSZone *getCurrentRoom(QListWidgetItem *item);
+    void select(QListWidgetItem *item);
+    JPSZone *getCurrent(QListWidgetItem *item);
+    const QList<JPSZone *> &getCurrentList(ZoneType type) const;
 
-    void renameRoom(QListWidgetItem *item);
-    bool isRepeatedRoomName(QString name);
+    void rename(QListWidgetItem *item);
+    bool isRepeatedName(QString name);
 
-    void highlightRoom(QListWidgetItem *item);
+    void highlight(QListWidgetItem *item);
+
+    ZoneType getZoneType() const;
+    void setZoneType(ZoneType zoneType);
 
 signals:
-    void zoneSelected(JPSZone *);
-    void roomSelected(JPSZone *);
+    void zoneSelected(JPSZone *zone);
     void zoneDeleted();
-    void roomDeleted();
+
 
 private:
     Ui::ListWidget *ui;
     jpsDatamanager *data;
     jpsGraphicsView *view;
 
-
+    ZoneType zoneType;
 };
 
 #endif //JPSEDITOR_LISTWIDGET_H

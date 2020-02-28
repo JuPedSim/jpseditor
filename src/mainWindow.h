@@ -65,6 +65,8 @@ private:
     QDockWidget *bottomDockWidget;
     QDockWidget *propertyDockWidget;
     QDockWidget *listDockWidget;
+    ListWidget *listWidget;
+    PropertyWidget *propertyWidget;
 
     SettingDialog *settingDialog;
 
@@ -103,6 +105,9 @@ private:
     bool _statScale;
 
     QList<bool> objectsnapping;
+
+    // Zone type in list widget
+    ZoneType curentTypeListwidget;
 
 public slots:
     
@@ -195,6 +200,7 @@ public slots:
     // Time
     void setTimer(int interval);
 
+
 private slots:
     //TODO: Redesign with signal and slot
     void on_actionCopy_triggered();
@@ -216,6 +222,7 @@ private slots:
     void setupZoneToolBar();
 
     // Property widget
+    void roomBuutonClicked();
     void platformButtonClicked();
     void stairButtonClicked();
     void addPropertyDockWidget(JPSZone *zone); // used in room list widget

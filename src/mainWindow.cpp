@@ -177,6 +177,7 @@ MWindow :: MWindow()
 
     /// Left dock widget
     listDockWidget = nullptr;
+    curentTypeListwidget = NotAssigned;
 
     /// Object snapping
     objectsnapping = {};
@@ -222,6 +223,7 @@ MWindow :: MWindow()
     // Zone toolbar
     zone_toolbar_ = nullptr;
 
+    connect(actionRoom, SIGNAL(triggered(bool)),this, SLOT(roomBuutonClicked()));
     connect(actionPlatform, SIGNAL(triggered(bool)),this, SLOT(platformButtonClicked()));
     connect(actionStairs, SIGNAL(triggered(bool)),this, SLOT(stairButtonClicked()));
 
@@ -1345,6 +1347,8 @@ void MWindow::closeListDockWidget()
     {
         listDockWidget->close();
         listDockWidget = nullptr;
+
+        curentTypeListwidget = NotAssigned;
     }
     qDebug("Leave MWindow::closeListDockWidget");
 }
@@ -1368,7 +1372,8 @@ void MWindow::addListDockWidget(const QString &type)
     listDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
 
     // Create list widget
-    auto *listWidget = new ListWidget(this, this->dmanager, this->mview);
+    listWidget = new ListWidget(this, this->dmanager, this->mview);
+    listWidget->setZoneType(curentTypeListwidget);
 
     // Add list widget into dock widget
     addDockWidget(Qt::LeftDockWidgetArea, listDockWidget);
@@ -1396,7 +1401,7 @@ void MWindow::addPropertyDockWidget(JPSZone *zone)
     propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     propertyDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
 
-    auto *propertyWidget = new PropertyWidget(this, this->dmanager,
+    propertyWidget = new PropertyWidget(this, this->dmanager,
                                               zone, mview);
 
     addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
@@ -1405,11 +1410,25 @@ void MWindow::addPropertyDockWidget(JPSZone *zone)
     qDebug("Leave MWindow::addPropertyDockWidget");
 }
 
+void MWindow::roomBuutonClicked()
+{
+    qDebug("Enter MWindow::roomBuutonClicked");
+    closeListDockWidget();
+    closePropertyDockWidget();
+
+    curentTypeListwidget = Room;
+
+    addListDockWidget("Room");
+    qDebug("Leave MWindow::roomBuutonClicked");
+}
+
 void MWindow::platformButtonClicked()
 {
     qDebug("Enter MWindow::platformButtonClicked");
     closeListDockWidget();
     closePropertyDockWidget();
+
+    curentTypeListwidget = Platform;
 
     addListDockWidget("Platform");
     qDebug("Leave MWindow::platformButtonClicked");
@@ -1440,6 +1459,8 @@ void MWindow::stairButtonClicked()
     qDebug("Enter MWindow::stairButtonClicked");
     closeListDockWidget();
     closePropertyDockWidget();
+
+    curentTypeListwidget = Stair;
 
     addListDockWidget("Stair");
     qDebug("Leave MWindow::stairButtonClicked");

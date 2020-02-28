@@ -66,6 +66,10 @@ public:
     void remove_room(JPSZone* room);
     void change_roomName(JPSZone* room, QString name);
     void remove_all_rooms();
+    const QList<JPSZone *> &getPlatform_list() const;
+    const QList<JPSZone *> &getStair_list() const;
+    void removeStair(JPSZone* stair);
+    void removePlatform(JPSZone* platform);
 
     ///Obstacle
     QList<jpsObstacle *> get_obstaclelist();

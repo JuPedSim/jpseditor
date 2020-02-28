@@ -31,26 +31,19 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Room</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QListWidget" name="listWidget_rooms"/>
+        <widget class="QListWidget" name="listWidget_zones"/>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QPushButton" name="pushButton_deleteRoom">
+          <widget class="QPushButton" name="pushButton_delete">
            <property name="text">
             <string>Delete</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_addRoom">
+          <widget class="QPushButton" name="pushButton_add">
            <property name="text">
             <string>Add</string>
            </property>

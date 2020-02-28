@@ -38,29 +38,29 @@ ListWidget::ListWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     data = dmanager;
     view = gview;
 
+    zoneType = NotAssigned;
+
     updateList();
 
     // Highlight room and subroom
-    connect(ui->listWidget_rooms, SIGNAL(itemClicked(QListWidgetItem *)),this, SLOT(highlightRoom(QListWidgetItem *)));
+    connect(ui->listWidget_zones, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlight(QListWidgetItem * )));
 
     // add propertyDockWidget
     connect(this, SIGNAL(zoneSelected(JPSZone *)), parent, SLOT(addPropertyDockWidget(JPSZone *)));
-    connect(this, SIGNAL(roomSelected(JPSZone *)), parent, SLOT(addPropertyDockWidget(JPSZone *)));
     connect(this, SIGNAL(zoneDeleted()), parent, SLOT(closePropertyDockWidget()));
-    connect(this, SIGNAL(roomDeleted()), parent, SLOT(closePropertyDockWidget()));
 
     // Add
-    connect(ui->pushButton_addRoom, SIGNAL(clicked()), this, SLOT(addButtonClicked()));
+    connect(ui->pushButton_add, SIGNAL(clicked()), this, SLOT(addButtonClicked()));
 
     // delete
-    connect(ui->pushButton_deleteRoom, SIGNAL(clicked()), this, SLOT(deleteButtonClicked()));
+    connect(ui->pushButton_delete, SIGNAL(clicked()), this, SLOT(deleteButtonClicked()));
 
     // Send emit to PropertyWidget
     // click room -> add room property widget
-    connect(ui->listWidget_rooms, SIGNAL(itemClicked(QListWidgetItem *)),this, SLOT(selectRoom(QListWidgetItem *)));
+    connect(ui->listWidget_zones, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(select(QListWidgetItem * )));
 
     // Rename items
-    connect(ui->listWidget_rooms, SIGNAL(itemDoubleClicked(QListWidgetItem *)),this, SLOT(renameRoom(QListWidgetItem*)));
+    connect(ui->listWidget_zones, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(rename(QListWidgetItem * )));
     qDebug("Leave ListWidget::ListWidget");
 }
 
@@ -74,13 +74,13 @@ ListWidget::~ListWidget()
 void ListWidget::updateList()
 {
     qDebug("Enter ListWidget::updateList");
-    ui->listWidget_rooms->clear();
+    ui->listWidget_zones->clear();
 
-    QList<JPSZone*> roomslist = data->getRoomlist();
+    QList<JPSZone*> list = getCurrentList(zoneType);
 
-    foreach(JPSZone *room, roomslist)
+    foreach(JPSZone *zone, list)
     {
-        ui->listWidget_rooms->addItem(room->getName());
+        ui->listWidget_zones->addItem(zone->getName());
     }
 
     qDebug("Leave ListWidget::updateList");
@@ -90,54 +90,68 @@ void ListWidget::updateList()
 void ListWidget::addButtonClicked()
 {
     qDebug("Enter ListWidget::addButtonClicked");
-    data->addRoom();
+    switch(zoneType){
+        case Room:
+            data->addRoom();
+            break;
+        case Stair:
+            data->addStair();
+            break;
+        case Platform:
+            data->addPlatform();
+            break;
+        default:
+            break;
+    }
+
     updateList();
     qDebug("Leave ListWidget::addButtonClicked");
 }
 
-void ListWidget::selectRoom(QListWidgetItem *item)
+void ListWidget::select(QListWidgetItem *item)
 {
-    qDebug("Enter ListWidget::selectRoom");
+    qDebug("Enter ListWidget::select");
     if(item == nullptr)
         return;
 
-    auto *room = getCurrentRoom(item);
-    emit roomSelected(room); // emit to mainWindow
-    qDebug("Leave ListWidget::selectRoom");
+    auto *zone = getCurrent(item);
+
+    emit zoneSelected(zone); // emit to mainWindow
+    qDebug("Leave ListWidget::select");
 }
 
 
-JPSZone *ListWidget::getCurrentRoom(QListWidgetItem *item)
+JPSZone *ListWidget::getCurrent(QListWidgetItem *item)
 {
-    qDebug("Enter ListWidget::getCurrentRoom");
+    qDebug("Enter ListWidget::getCurrent");
     if(item == nullptr)
         return nullptr;
 
     QString name = item->text();
 
-    QList<JPSZone*> zoneslist = data->getRoomlist();
+    QList<JPSZone*> list = getCurrentList(zoneType);
 
-    foreach(JPSZone *room, zoneslist)
+    foreach(JPSZone *zone, list)
     {
-        if(name == room->getName()) // find selected room
+        if(name == zone->getName()) // find selected room
         {
-            return room;
+            return zone;
         }
     }
-    qDebug("Leave ListWidget::getCurrentRoom");
+    qDebug("Leave ListWidget::getCurrent");
     return nullptr;
 }
 
-void ListWidget::renameRoom(QListWidgetItem *item)
+void ListWidget::rename(QListWidgetItem *item)
 {
-    qDebug("Enter ListWidget::renameRoom");
+    qDebug("Enter ListWidget::rename");
     QString name = QInputDialog::getText(this, tr("Rename"),
                                          tr("New name:"), QLineEdit::Normal,
                                          "Room");
 
-    if(!isRepeatedRoomName(name) && getCurrentRoom(item) != nullptr)
+    if(!isRepeatedName(name) && getCurrent(item) != nullptr)
     {
-        getCurrentRoom(item)->setName(name);
+        getCurrent(item)->setName(name);
     } else
     {
         QMessageBox msgBox;
@@ -159,18 +173,18 @@ void ListWidget::renameRoom(QListWidgetItem *item)
     }
 
     updateList();
-    qDebug("Leave ListWidget::renameRoom");
+    qDebug("Leave ListWidget::rename");
 }
 
-bool ListWidget::isRepeatedRoomName(QString name)
+bool ListWidget::isRepeatedName(QString name)
 {
-    qDebug("Enter ListWidget::isRepeatedRoomName");
+    qDebug("Enter ListWidget::isRepeatedName");
     foreach(JPSZone *zone, data->getRoomlist())
     {
         if(name == zone->getName())
             return true;
     }
-    qDebug("Leave ListWidget::isRepeatedRoomName");
+    qDebug("Leave ListWidget::isRepeatedName");
     return false;
 }
 
@@ -184,11 +198,25 @@ bool ListWidget::isRepeatedRoomName(QString name)
 void ListWidget::deleteButtonClicked()
 {
     qDebug("Enter ListWidget::deleteButtonClicked");
-    if(ui->listWidget_rooms->currentItem() != nullptr)
+    if(ui->listWidget_zones->currentItem() != nullptr)
     {
-        data->removeRoom(getCurrentRoom(ui->listWidget_rooms->currentItem())); // removing opreation in datamanager
+        switch(zoneType){
+            // removing opreation in datamanager
+            case Room:
+                data->removeRoom(getCurrent(ui->listWidget_zones->currentItem()));
+                break;
+            case Stair:
+                data->removeStair(getCurrent(ui->listWidget_zones->currentItem()));
+                break;
+            case Platform:
+                data->removePlatform(getCurrent(ui->listWidget_zones->currentItem()));
+                break;
+            default:
+                break;
+        }
     }
-    emit roomDeleted();
+
+    emit zoneDeleted();
 
     updateList();
     qDebug("Leave ListWidget::deleteButtonClicked");
@@ -201,13 +229,13 @@ void ListWidget::deleteButtonClicked()
             -> jpsDatamanager::removeZone
 */
 
-void ListWidget::highlightRoom(QListWidgetItem *item)
+void ListWidget::highlight(QListWidgetItem *item)
 {
-    qDebug("Enter oomListWidget::highlightRoom");
+    qDebug("Enter oomListWidget::highlight");
     if(item == nullptr)
         return;
 
-    auto *room = getCurrentRoom(item);
+    auto *room = getCurrent(item);
 
     view->unmark_all_lines();
     //TODO: Fix here!
@@ -246,5 +274,43 @@ void ListWidget::highlightRoom(QListWidgetItem *item)
 //        }
 //    }
 
-    qDebug("Leave oomListWidget::highlightRoom");
+    qDebug("Leave oomListWidget::highlight");
+}
+ZoneType ListWidget::getZoneType() const
+{
+    qDebug("Enter/Leave ListWidget::getZoneType()");
+    return zoneType;
+}
+void ListWidget::setZoneType(ZoneType zoneType)
+{
+    qDebug("Enter ListWidget::setZoneType");
+    ListWidget::zoneType = zoneType;
+    updateList();
+    qDebug("Leave ListWidget::setZoneType");
+}
+
+const QList<JPSZone *> &ListWidget::getCurrentList(ZoneType type) const
+{
+    qDebug("Enter ListWidget::getCurrentList");
+    if(type == Room)
+    {
+        const QList<JPSZone*> &roomlist = data->getRoomlist();
+        qDebug("Leave ListWidget::getCurrentList");
+        return roomlist;
+    }
+    else if(type == Stair) {
+        const QList<JPSZone*> &stairlist = data->getStair_list();
+        qDebug("Leave ListWidget::getCurrentList");
+        return stairlist;
+    }
+    else if(type == Platform) {
+        const QList<JPSZone*> &platformlist = data->getPlatform_list();
+        qDebug("Leave ListWidget::getCurrentList");
+        return platformlist;
+    }
+    else{
+        const QList<JPSZone*> &list = QList<JPSZone *>();
+        qDebug("Leave ListWidget::getCurrentList");
+        return list;
+    }
 }

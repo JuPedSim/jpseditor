@@ -783,11 +783,13 @@ QString JPSZone::getTypeInString() const
     qDebug("Enter JPSZone::getZoneList");
     switch (zoneType)
     {
+        case Room:
+            return "room";
         case Stair:
             return "stair";
         case Platform:
             return "platform";
         default:
-            return "subroom";
+            break;
     }
 }

@@ -3048,12 +3048,51 @@ QList<jpsTransition *> jpsDatamanager::getTransitionInSubroom(JPSZone *subroom)
 
 bool jpsDatamanager::isRepeatedRoomName(QString name)
 {
-    qDebug("Enter jpsDatamanager::isRepeatedRoomName");
+    qDebug("Enter jpsDatamanager::isRepeatedName");
     for(auto *room : roomlist)
     {
         if(name == room->getName())
             return true;
     }
     return false;
-    qDebug("Leave jpsDatamanager::isRepeatedRoomName");
+    qDebug("Leave jpsDatamanager::isRepeatedName");
+}
+
+const QList<JPSZone *> &jpsDatamanager::getStair_list() const
+{
+    qDebug("Enter/Leave jpsDatamanager::getStair_list()");
+    return stair_list;
+
+}
+
+const QList<JPSZone *> &jpsDatamanager::getPlatform_list() const
+{
+    qDebug("Enter/Leave jpsDatamanager::getPlatform_list()");
+    return platform_list;
+}
+
+void jpsDatamanager::removeStair(JPSZone *stair)
+{
+    qDebug("Enter jpsDatamanager::removeStair");
+    if(stair == nullptr)
+        return;
+
+    stair_list.removeOne(stair); //removed from roomlist
+
+    delete stair;
+    stair = nullptr; //removed from memory
+    qDebug("Leave jpsDatamanager::removeStair");
+}
+
+void jpsDatamanager::removePlatform(JPSZone *platform)
+{
+    qDebug("Enter jpsDatamanager::removePlatform");
+    if(platform == nullptr)
+        return;
+
+    platform_list.removeOne(platform); //removed from roomlist
+
+    delete platform;
+    platform = nullptr; //removed from memory
+    qDebug("Leave jpsDatamanager::removePlatform");
 }
