@@ -30,7 +30,7 @@
 
 bool isDirtyChange(QGraphicsItem::GraphicsItemChange change);
 
-enum ZoneType {Room, Stair, Obstacle, Platform, Source, Goal, Landmark, NotAssigned};
+enum ZoneType {Room, Stair, Obstacle, Platform, Transition, Source, Goal, Landmark, NotAssigned};
 
 enum LineType {wall , transition, hline, track, landmarkText, goalRect, sourceRect, undefined};
 

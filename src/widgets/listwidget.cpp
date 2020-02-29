@@ -45,18 +45,18 @@ ListWidget::ListWidget(QWidget *parent, jpsDatamanager *dmanager, jpsGraphicsVie
     // Highlight room and subroom
     connect(ui->listWidget_zones, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlight(QListWidgetItem * )));
 
-    // add propertyDockWidget
+    // Add/delete propertyDockWidget
     connect(this, SIGNAL(zoneSelected(JPSZone *)), parent, SLOT(addPropertyDockWidget(JPSZone *)));
     connect(this, SIGNAL(zoneDeleted()), parent, SLOT(closePropertyDockWidget()));
 
     // Add
     connect(ui->pushButton_add, SIGNAL(clicked()), this, SLOT(addButtonClicked()));
 
-    // delete
+    // Delete
     connect(ui->pushButton_delete, SIGNAL(clicked()), this, SLOT(deleteButtonClicked()));
 
     // Send emit to PropertyWidget
-    // click room -> add room property widget
+    // Click room -> add room property widget
     connect(ui->listWidget_zones, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(select(QListWidgetItem * )));
 
     // Rename items

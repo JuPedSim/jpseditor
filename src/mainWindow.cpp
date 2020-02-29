@@ -223,9 +223,10 @@ MWindow :: MWindow()
     // Zone toolbar
     zone_toolbar_ = nullptr;
 
-    connect(actionRoom, SIGNAL(triggered(bool)),this, SLOT(roomBuutonClicked()));
+    connect(actionRoom, SIGNAL(triggered(bool)),this, SLOT(roomButtonClicked()));
     connect(actionPlatform, SIGNAL(triggered(bool)),this, SLOT(platformButtonClicked()));
     connect(actionStairs, SIGNAL(triggered(bool)),this, SLOT(stairButtonClicked()));
+    connect(actionTransitionWidget, SIGNAL(triggered(bool)),this, SLOT(transitionWidgetButtonClicked()));
 
     // Assemble actions group
     zoneActionGroup = new QActionGroup(this);
@@ -258,6 +259,7 @@ MWindow :: MWindow()
     connect(actionRunSimulation, SIGNAL(triggered(bool)),this,SLOT(runSimulationButtonClicked()));
     qDebug("Leave MWindow :: MWindow");
 }
+
 
 MWindow::~MWindow()
 {
@@ -899,16 +901,6 @@ void MWindow::transitionButtonClicked()
     closePropertyDockWidget();
 
     mview->enableTransition();
-
-    propertyDockWidget = new QDockWidget(tr("Transitions"), this);
-    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    propertyDockWidget->setAllowedAreas( Qt::RightDockWidgetArea);
-
-    auto *transitionWidget = new TransitionWidget(this, this->dmanager, mview);
-
-
-    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
-    propertyDockWidget->setWidget(transitionWidget);
     qDebug("Leave MWindow::transitionButtonClicked");
 }
 
@@ -1410,16 +1402,16 @@ void MWindow::addPropertyDockWidget(JPSZone *zone)
     qDebug("Leave MWindow::addPropertyDockWidget");
 }
 
-void MWindow::roomBuutonClicked()
+void MWindow::roomButtonClicked()
 {
-    qDebug("Enter MWindow::roomBuutonClicked");
+    qDebug("Enter MWindow::roomButtonClicked");
     closeListDockWidget();
     closePropertyDockWidget();
 
     curentTypeListwidget = Room;
 
     addListDockWidget("Room");
-    qDebug("Leave MWindow::roomBuutonClicked");
+    qDebug("Leave MWindow::roomButtonClicked");
 }
 
 void MWindow::platformButtonClicked()
@@ -1503,4 +1495,24 @@ void MWindow::setTimer(int interval)
     qDebug("Enter MWindow::setTimer");
     timer->setInterval(interval*60000); // Convert interval into millisecond
     qDebug("Leave MWindow::setTimer");
+}
+
+void MWindow::transitionWidgetButtonClicked()
+{
+    qDebug("Enter MWindow::transitionWidgetButtonClicked");
+    closeListDockWidget();
+    closePropertyDockWidget();
+
+    curentTypeListwidget = Transition;
+
+    propertyDockWidget = new QDockWidget(tr("Transitions"), this);
+    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    propertyDockWidget->setAllowedAreas( Qt::RightDockWidgetArea);
+
+    auto *transitionWidget = new TransitionWidget(this, this->dmanager, mview);
+
+    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+    propertyDockWidget->setWidget(transitionWidget);
+
+    qDebug("Leave MWindow::transitionWidgetButtonClicked");
 }

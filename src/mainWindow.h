@@ -222,9 +222,10 @@ private slots:
     void setupZoneToolBar();
 
     // Property widget
-    void roomBuutonClicked();
+    void roomButtonClicked();
     void platformButtonClicked();
     void stairButtonClicked();
+    void transitionWidgetButtonClicked();
     void addPropertyDockWidget(JPSZone *zone); // used in room list widget
     void closePropertyDockWidget();
 
