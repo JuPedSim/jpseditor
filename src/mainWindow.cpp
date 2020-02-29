@@ -227,6 +227,7 @@ MWindow :: MWindow()
     connect(actionPlatform, SIGNAL(triggered(bool)),this, SLOT(platformButtonClicked()));
     connect(actionStairs, SIGNAL(triggered(bool)),this, SLOT(stairButtonClicked()));
     connect(actionTransitionWidget, SIGNAL(triggered(bool)),this, SLOT(transitionWidgetButtonClicked()));
+    connect(actionSourceWidget, SIGNAL(triggered(bool)),this, SLOT(sourceWidgetButtonClicked()));
 
     // Assemble actions group
     zoneActionGroup = new QActionGroup(this);
@@ -1185,18 +1186,11 @@ void MWindow::on_actionZoom_Extents_triggered()
 void MWindow::sourceButtonClicked()
 {
     qDebug("Enter MWindow::sourceButtonClicked");
+    closeListDockWidget();
     closePropertyDockWidget();
 
     //source widget off, dockwidget off -> open source widget
     mview->enableSourceMode();
-
-    propertyDockWidget = new QDockWidget(tr("Sources"), this);
-    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    propertyDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-
-    auto *sourceWidget = new SourceWidget(this, mview, this->dmanager);
-    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
-    propertyDockWidget->setWidget(sourceWidget);
     qDebug("Leave MWindow::sourceButtonClicked");
 
 }
@@ -1515,4 +1509,23 @@ void MWindow::transitionWidgetButtonClicked()
     propertyDockWidget->setWidget(transitionWidget);
 
     qDebug("Leave MWindow::transitionWidgetButtonClicked");
+}
+
+void MWindow::sourceWidgetButtonClicked()
+{
+    qDebug("Enter MWindow::sourceWidgetButtonClicked");
+    closeListDockWidget();
+    closePropertyDockWidget();
+
+    curentTypeListwidget = Source;
+
+    propertyDockWidget = new QDockWidget(tr("Sources"), this);
+    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    propertyDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+
+    auto *sourceWidget = new SourceWidget(this, mview, this->dmanager);
+    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+    propertyDockWidget->setWidget(sourceWidget);
+
+    qDebug("Leave MWindow::sourceWidgetButtonClicked");
 }

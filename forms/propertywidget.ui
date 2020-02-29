@@ -35,7 +35,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="wall">
       <attribute name="title">
@@ -177,7 +177,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="comboBox">
+          <widget class="QComboBox" name="comboBox_roomType">
            <item>
             <property name="text">
              <string>Office</string>
@@ -212,7 +212,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="comboBox_2"/>
+          <widget class="QComboBox" name="comboBox_locateIn"/>
          </item>
         </layout>
        </item>

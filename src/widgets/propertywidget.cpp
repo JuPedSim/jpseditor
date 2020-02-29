@@ -9,6 +9,7 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
     ui->setupUi(this);
     view = gview;
     data = dmanager;
+
     current_zone = zone;
 
     // Change layout depends on type
@@ -51,16 +52,21 @@ void PropertyWidget::updateWidget(ZoneType type)
         case Room:
             ui->tabWidget->removeTab(1); // Remove track tab
             updateWallListWidget();
+            ui->comboBox_locateIn->setEnabled(false);
             break;
 
         case Platform:
             ui->tabWidget->removeTab(0); // Remove wall tab
             updateTrackListWidget();
+            ui->comboBox_locateIn->setEnabled(false);
+            ui->comboBox_locateIn->setEnabled(false);
             break;
 
         case Stair:
             ui->tabWidget->removeTab(1); // Remove track tab
             updateWallListWidget();
+            ui->comboBox_locateIn->setEnabled(false);
+            ui->comboBox_locateIn->setEnabled(false);
         default:
             qDebug("Leave PropertyWidget::updateWidget");
             return;
