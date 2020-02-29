@@ -228,6 +228,7 @@ MWindow :: MWindow()
     connect(actionStairs, SIGNAL(triggered(bool)),this, SLOT(stairButtonClicked()));
     connect(actionTransitionWidget, SIGNAL(triggered(bool)),this, SLOT(transitionWidgetButtonClicked()));
     connect(actionSourceWidget, SIGNAL(triggered(bool)),this, SLOT(sourceWidgetButtonClicked()));
+    connect(actionGoalWidget, SIGNAL(triggered(bool)),this, SLOT(goalWidgetButtonClicked()));
 
     // Assemble actions group
     zoneActionGroup = new QActionGroup(this);
@@ -1205,17 +1206,10 @@ void MWindow::sourceButtonClicked()
 void MWindow::goalButtionClicked()
 {
     qDebug("Enter MWindow::goalButtionClicked");
+    closeListDockWidget();
     closePropertyDockWidget();
 
     mview->enableGoalMode();
-
-    propertyDockWidget = new QDockWidget(tr("Goals"), this);
-    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-
-    auto *goalWidget = new GoalWidget(this, mview, this->dmanager);
-    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
-    propertyDockWidget->setWidget(goalWidget);
 
     qDebug("Leave MWindow::goalButtionClicked");
 }
@@ -1528,4 +1522,22 @@ void MWindow::sourceWidgetButtonClicked()
     propertyDockWidget->setWidget(sourceWidget);
 
     qDebug("Leave MWindow::sourceWidgetButtonClicked");
+}
+
+void MWindow::goalWidgetButtonClicked()
+{
+    qDebug("Enter MWindow::goalWidgetButtonClicked");
+    closeListDockWidget();
+    closePropertyDockWidget();
+
+    curentTypeListwidget = Goal;
+
+    propertyDockWidget = new QDockWidget(tr("Goals"), this);
+    propertyDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    propertyDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+    auto *goalWidget = new GoalWidget(this, mview, this->dmanager);
+    addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
+    propertyDockWidget->setWidget(goalWidget);
+    qDebug("Leave MWindow::goalWidgetButtonClicked");
 }

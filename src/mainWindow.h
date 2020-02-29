@@ -227,6 +227,7 @@ private slots:
     void stairButtonClicked();
     void transitionWidgetButtonClicked();
     void sourceWidgetButtonClicked();
+    void goalWidgetButtonClicked();
     void addPropertyDockWidget(JPSZone *zone); // used in room list widget
     void closePropertyDockWidget();
 
