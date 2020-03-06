@@ -684,15 +684,31 @@ QString jpsDatamanager::RoomIDHLine(jpsLineItem *lineItem)
 void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
     qDebug(" Enter jpsDatamanager::writeRooms");
-
-    for (JPSZone* room:roomlist)
+    // TODO: Refactoring here, spilt in 3 functions
+    for (JPSZone* room : roomlist)
     {
         stream->writeStartElement("room");
         stream->writeAttribute("id", QString::number(room->get_id()));
         stream->writeAttribute("caption",room->getName());
-
         writeSubRoom(stream,room,lines);
+        stream->writeEndElement();//room
+    }
 
+    for (JPSZone* stair : stair_list)
+    {
+        stream->writeStartElement("room");
+        stream->writeAttribute("id", QString::number(stair->get_id()));
+        stream->writeAttribute("caption",stair->getName());
+        writeSubRoom(stream,stair,lines);
+        stream->writeEndElement();//room
+    }
+
+    for (JPSZone* platform : platform_list)
+    {
+        stream->writeStartElement("room");
+        stream->writeAttribute("id", QString::number(platform->get_id()));
+        stream->writeAttribute("caption",platform->getName());
+        writeSubRoom(stream,platform,lines);
         stream->writeEndElement();//room
     }
     qDebug(" Leave jpsDatamanager::writeRooms");
@@ -701,102 +717,100 @@ void jpsDatamanager::writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem *> &
 void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, JPSZone *room, QList<jpsLineItem *> &lines)
 {
     qDebug("Enter jpsDatamanager::writeSubRoom");
-    //TODO: Fix because room
-//    for(QList<JPSZone *> zonelist:room->getZoneList())
+
+    stream->writeStartElement("subroom");
+
+    stream->writeAttribute("id",QString::number(room->get_id()));
+    stream->writeAttribute("caption",room->getName());
+    stream->writeAttribute("class", room->getTypeInString());
+
+    room->correctPlaneCoefficients(getTransitionInSubroom(room));
+
+    stream->writeAttribute("A_x",QString::number(room->get_ax()));
+    stream->writeAttribute("B_y",QString::number(room->get_by()));
+    stream->writeAttribute("C_z",QString::number(room->get_cz()));
+
+    //walls, for all room except platform
+    QList<jpsLineItem *> wallList = room->get_listWalls();
+    QList<JPSTrack *> tracklist = room->getTrackList();
+
+    if(room->getType() == Platform)
+    {
+        // Write track
+        for(JPSTrack *track:room->getTrackList())
+        {
+            stream->writeStartElement("polygon");
+            stream->writeAttribute("caption","track");
+            stream->writeAttribute("type","track-"+QString::number(track->getType()));
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px",QString::number(track->getLine()->get_line()->line().x1()));
+            stream->writeAttribute("py",QString::number(track->getLine()->get_line()->line().y1()));
+            stream->writeEndElement(); //vertex
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px",QString::number(track->getLine()->get_line()->line().x2()));
+            stream->writeAttribute("py",QString::number(track->getLine()->get_line()->line().y2()));
+            stream->writeEndElement(); //vertex
+
+            stream->writeEndElement(); //polygon
+
+            lines.removeOne(track->getLine());
+        }
+    }
+    else
+    {
+        // Write wall
+        for (int j=0; j<wallList.size(); ++j)
+        {
+            stream->writeStartElement("polygon");
+            stream->writeAttribute("caption","wall");
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x1()));
+            stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y1()));
+            stream->writeEndElement(); //vertex
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x2()));
+            stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y2()));
+            stream->writeEndElement(); //vertex
+
+            stream->writeEndElement(); //polygon
+
+            //remove wall from line vector
+            lines.removeOne(wallList[j]);
+        }
+    }
+
+    //TODO: Fix for obstacle
+//    for (int k=0; k<obstaclelist.size(); k++)
 //    {
-//        for(JPSZone *zone:zonelist)
+//        if (room==obstaclelist[k]->get_room())
 //        {
-//            stream->writeStartElement("subroom");
-//
-//            stream->writeAttribute("id",QString::number(zone->get_id()));
-//            stream->writeAttribute("caption",zone->getName());
-//            stream->writeAttribute("class", zone->getTypeInString());
-//
-//            zone->correctPlaneCoefficients(getTransitionInSubroom(zone));
-//
-//            stream->writeAttribute("A_x",QString::number(zone->get_ax()));
-//            stream->writeAttribute("B_y",QString::number(zone->get_by()));
-//            stream->writeAttribute("C_z",QString::number(zone->get_cz()));
-//
-//            //walls, for all zone except platform
-//            QList<jpsLineItem *> wallList = zone->get_listWalls();
-//            QList<JPSTrack *> tracklist = zone->getTrackList();
-//
-//            if(zone->getType() == Platform)
-//            {
-//                for(JPSTrack *track:zone->getTrackList())
-//                {
-//                    stream->writeStartElement("polygon");
-//                    stream->writeAttribute("caption","track");
-//                    stream->writeAttribute("type","track-"+QString::number(track->getType()));
-//
-//                    stream->writeStartElement("vertex");
-//                    stream->writeAttribute("px",QString::number(track->getLine()->get_line()->line().x1()));
-//                    stream->writeAttribute("py",QString::number(track->getLine()->get_line()->line().y1()));
-//                    stream->writeEndElement(); //vertex
-//
-//                    stream->writeStartElement("vertex");
-//                    stream->writeAttribute("px",QString::number(track->getLine()->get_line()->line().x2()));
-//                    stream->writeAttribute("py",QString::number(track->getLine()->get_line()->line().y2()));
-//                    stream->writeEndElement(); //vertex
-//
-//                    stream->writeEndElement(); //polygon
-//
-//                    lines.removeOne(track->getLine());
-//                }
-//            }
-//            else
-//            {
-//                for (int j=0; j<wallList.size(); ++j)
-//                {
-//                    stream->writeStartElement("polygon");
-//                    stream->writeAttribute("caption","wall");
-//
-//                    stream->writeStartElement("vertex");
-//                    stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x1()));
-//                    stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y1()));
-//                    stream->writeEndElement(); //vertex
-//
-//                    stream->writeStartElement("vertex");
-//                    stream->writeAttribute("px",QString::number(wallList[j]->get_line()->line().x2()));
-//                    stream->writeAttribute("py",QString::number(wallList[j]->get_line()->line().y2()));
-//                    stream->writeEndElement(); //vertex
-//
-//                    stream->writeEndElement(); //polygon
-//
-//                    //remove wall from line vector
-//                    lines.removeOne(wallList[j]);
-//                }
-//            }
-//
-//            for (int k=0; k<obstaclelist.size(); k++)
-//            {
-//                if (room==obstaclelist[k]->get_room())
-//                {
-//                    writeObstacles(stream ,obstaclelist[k],lines);
-//                }
-//            }
-//
-//            // up and down, for stair
-//            if (zone->getType() == Stair)
-//            {
-//                // <up>
-//                stream->writeStartElement("up");
-//                stream->writeAttribute("px",QString::number( zone->get_up().x()));
-//                stream->writeAttribute("py",QString::number( zone->get_up().y()));
-//                stream->writeEndElement();
-//                // </up>
-//                // <down>
-//                stream->writeStartElement("down");
-//                stream->writeAttribute("px",QString::number( zone->get_down().x()));
-//                stream->writeAttribute("py",QString::number( zone->get_down().y()));
-//                stream->writeEndElement();
-//                // </down>
-//            }
-//
-//            stream->writeEndElement();//subroom
+//            writeObstacles(stream ,obstaclelist[k],lines);
 //        }
 //    }
+
+    // Set up and down for stair
+    if (room->getType() == Stair)
+    {
+        // <up>
+        stream->writeStartElement("up");
+        stream->writeAttribute("px",QString::number( room->get_up().x()));
+        stream->writeAttribute("py",QString::number( room->get_up().y()));
+        stream->writeEndElement();
+        // </up>
+        // <down>
+        stream->writeStartElement("down");
+        stream->writeAttribute("px",QString::number( room->get_down().x()));
+        stream->writeAttribute("py",QString::number( room->get_down().y()));
+        stream->writeEndElement();
+        // </down>
+    }
+
+    stream->writeEndElement();//subroom
+
     qDebug("Leave jpsDatamanager::writeSubRoom");
 }
 
@@ -804,64 +818,64 @@ void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, JPSZone *room, QList
 void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines)
 {
     qDebug("Enter jpsDatamanager::writeTransitions");
-    // TODO: Fix because of room
-//    for(jpsTransition *transition : transition_list)
-//    {
-//        if(transition->get_roomList()[0] == nullptr && transition->get_roomList()[1] == nullptr)
-//        {
-//            continue;
-//        } else
-//        {
-//            stream->writeStartElement("transition");
-//            stream->writeAttribute("id",QString::number(transition->get_id()));
-//            stream->writeAttribute("caption","exit");
-//            stream->writeAttribute("type","emergency");
-//
-//            // Skip unused transition, whose both sides are outside
-//
-//            // room 1
-//            if(transition->get_roomList().isEmpty() || transition->get_roomList()[0] == nullptr)
-//            {
-//                //outside
-//                stream->writeAttribute("room1_id","-1");
-//                stream->writeAttribute("subroom1_id","-1");
-//            } else
-//            {
-//                //room
-//                stream->writeAttribute("room1_id",QString::number(transition->get_roomList()[0]->getFatherRoom()->get_id()));
-//                stream->writeAttribute("subroom1_id",QString::number(transition->get_roomList()[0]->get_id()));
-//            }
-//
-//            // room 2
-//            if(transition->get_roomList().isEmpty() || transition->get_roomList()[1] == nullptr)
-//            {
-//                //outside
-//                stream->writeAttribute("room2_id","-1");
-//                stream->writeAttribute("subroom2_id","-1");
-//            } else
-//            {
-//                //room
-//                stream->writeAttribute("room2_id",QString::number(transition->get_roomList()[1]->getFatherRoom()->get_id()));
-//                stream->writeAttribute("subroom2_id",QString::number(transition->get_roomList()[1]->get_id()));
-//            }
-//
-//            stream->writeStartElement("vertex");
-//            stream->writeAttribute("px",QString::number(transition->get_cLine()->get_line()->line().x1()));
-//            stream->writeAttribute("py",QString::number(transition->get_cLine()->get_line()->line().y1()));
-//            stream->writeEndElement(); //vertex
-//
-//            stream->writeStartElement("vertex");
-//            stream->writeAttribute("px",QString::number(transition->get_cLine()->get_line()->line().x2()));
-//            stream->writeAttribute("py",QString::number(transition->get_cLine()->get_line()->line().y2()));
-//            stream->writeEndElement(); //vertex
-//
-//            stream->writeEndElement(); //transition
-//
-//            // Remove jpsLineItem of transition from line_vector
-//            // If not removed now, the transition will be written in unsigned lines
-//            lines.removeOne(transition->get_cLine());
-//        }
-//    }
+    for(jpsTransition *transition : transition_list)
+    {
+        if(transition->get_roomList()[0] == nullptr && transition->get_roomList()[1] == nullptr)
+        {
+            // Unvaild transiton
+            continue;
+        } else
+        {
+            stream->writeStartElement("transition");
+            stream->writeAttribute("id",QString::number(transition->get_id()));
+            stream->writeAttribute("caption","exit");
+            stream->writeAttribute("type","emergency");
+
+            // Skip unused transition, whose both sides are outside
+
+            // room 1
+            if(transition->get_roomList().isEmpty() || transition->get_roomList()[0] == nullptr)
+            {
+                //outside
+                stream->writeAttribute("room1_id","-1");
+                stream->writeAttribute("subroom1_id","-1");
+            } else
+            {
+                //room
+                stream->writeAttribute("room1_id",QString::number(transition->get_roomList()[0]->get_id()));
+                stream->writeAttribute("subroom1_id",QString::number(transition->get_roomList()[0]->get_id()));
+            }
+
+            // room 2
+            if(transition->get_roomList().isEmpty() || transition->get_roomList()[1] == nullptr)
+            {
+                //outside
+                stream->writeAttribute("room2_id","-1");
+                stream->writeAttribute("subroom2_id","-1");
+            } else
+            {
+                //room
+                stream->writeAttribute("room2_id",QString::number(transition->get_roomList()[1]->get_id()));
+                stream->writeAttribute("subroom2_id",QString::number(transition->get_roomList()[1]->get_id()));
+            }
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px",QString::number(transition->get_cLine()->get_line()->line().x1()));
+            stream->writeAttribute("py",QString::number(transition->get_cLine()->get_line()->line().y1()));
+            stream->writeEndElement(); //vertex
+
+            stream->writeStartElement("vertex");
+            stream->writeAttribute("px",QString::number(transition->get_cLine()->get_line()->line().x2()));
+            stream->writeAttribute("py",QString::number(transition->get_cLine()->get_line()->line().y2()));
+            stream->writeEndElement(); //vertex
+
+            stream->writeEndElement(); //transition
+
+            // Remove jpsLineItem of transition from line_vector
+            // If not removed now, the transition will be written in unsigned lines
+            lines.removeOne(transition->get_cLine());
+        }
+    }
     qDebug("Leave jpsDatamanager::writeTransitions");
 }
 
@@ -910,7 +924,7 @@ void jpsDatamanager::writeNotAssignedLines(QXmlStreamWriter *stream, QList<jpsLi
     stream->writeStartElement("Room");
 
     stream->writeAttribute("id",QString::number(-1));
-    stream->writeAttribute("caption","not assigned lines");
+    stream->writeAttribute("caption","Not assigned lines");
     stream->writeAttribute("class","container");
 
     stream->writeStartElement("subroom");

@@ -67,6 +67,7 @@ void PropertyWidget::updateWidget()
         case Stair:
             ui->tabWidget->removeTab(1); // Remove track tab
             ui->tabWidget->removeTab(1); // Remove property tab
+            break;
         default:
             qDebug("Leave PropertyWidget::updateWidget");
             return;
