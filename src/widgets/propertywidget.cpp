@@ -73,7 +73,7 @@ void PropertyWidget::updateWidget()
             return;
     }
 
-    updateWallListWidget();
+    updateListwidget();
     updatePropertyWidget();
     qDebug("Leave PropertyWidget::updateWidget");
 }
@@ -190,8 +190,6 @@ void PropertyWidget::updateTrackListWidget()
         qDebug("Leave PropertyWidget::updateTrackListWidget");
         return;
     }
-
-
 
     for (int i = 0; i < track_list.size(); i++)
     {

@@ -1986,40 +1986,11 @@ bool jpsDatamanager::readDXF(std::string filename)
     {
         _mView->AutoZoom();
 
-        if(unimported_layer.isEmpty())
-        {
-        }
-        else
-        {
-            // Print unimported layer
-
-            QString detailied_text;
-
-            QStringListIterator javaStyleIterator(unimported_layer);
-            while (javaStyleIterator.hasNext())
-            {
-                detailied_text += javaStyleIterator.next() + "\n";
-            }
-
-            QMessageBox msgBox;
-
-            msgBox.setText("Geometry is loaded, but lines in these layer aren't loaded.");
-            msgBox.setDetailedText(detailied_text);
-            msgBox.setStandardButtons(QMessageBox::Ok);
-            msgBox.exec();
-        }
-
-//        for (auto transition : transition_list)
-//        {
-//            recognizeRoomForTransition(transition);
-//        }
-
         qDebug("Leave jpsDatamanager::readDXF");
         return true;
     }
 }
 
-//TODO: Refoctoring for issue212
 void jpsDatamanager::addLine(const DL_LineData &d)
 {
     qDebug("Enter jpsDatamanager::addLine");
@@ -2027,43 +1998,57 @@ void jpsDatamanager::addLine(const DL_LineData &d)
 
     auto layername = QString::fromStdString(attributes.getLayer());
 
-    if (layername.contains("room"))
+    if (layername.contains("jps_room"))
     {
-        if(isRepeatedRoomName(layername))
+        if(isRepeatedZoneName(layername))
         {
             // Nothing to do
         }else {
             // Create a new room at first;
             addRoom();
             roomlist.last()->setName(layername);
-            //TODO: Fix here!
         }
-
         auto wall = _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
-        //TODO: Fix here!
-
+        roomlist.last()->addWall(wall);
     }
-    else if (layername.contains("transition"))
+    else if (layername.contains("jps_transition"))
     {
         _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"transition");
     }
-    else if (layername.contains("platform"))
+    else if (layername.contains("jps_platform"))
     {
 
-        if(isRepeatedRoomName(layername))
+        if(isRepeatedZoneName(layername))
         {
             // Nothing to do
         }else {
             // Create a new room at first;
-            addRoom();
-            roomlist.last()->setName(layername);
             addPlatform();
+            platform_list.last()->setName(layername);
+            platform_list.last()->setType(Platform);
+
+        }
+        auto track = _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"track");
+        platform_list.last()->addTrack(track, 0);
+    }
+    else if (layername.contains("jps_stair"))
+    {
+
+        if(isRepeatedZoneName(layername))
+        {
+            // Nothing to do
+        }else {
+            // Create a new room at first;
+            addStair();
+            stair_list.last()->setName(layername);
+            stair_list.last()->setType(Stair);
+
         }
 
-        auto track = _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"track");
-        //TODO: Fix here!
+        auto wall = _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
+        stair_list.last()->addWall(wall);
     }
-    else if (layername.contains("source"))
+    else if (layername.contains("jps_source"))
     {
         points.append(QPointF(d.x1, d.y1));
         points.append(QPointF(d.x2, d.y2));
@@ -2075,7 +2060,7 @@ void jpsDatamanager::addLine(const DL_LineData &d)
             points.clear();
         }
     }
-    else if (layername.contains("goal"))
+    else if (layername.contains("jps_goal"))
     {
         points.append(QPointF(d.x1, d.y1));
         points.append(QPointF(d.x2, d.y2));
@@ -2089,11 +2074,8 @@ void jpsDatamanager::addLine(const DL_LineData &d)
     }
     else
     {
-        // Save unimported layer name into list to print it after importing
-        if(!unimported_layer.contains(layername))
-        {
-            unimported_layer.append(layername);
-        }
+        // Add lines as wall in graphicview
+        auto wall = _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
     }
 
     qDebug("Leave jpsDatamanager::addLine");
@@ -3155,12 +3137,25 @@ QList<jpsTransition *> jpsDatamanager::getTransitionInSubroom(JPSZone *subroom)
 }
 
 
-bool jpsDatamanager::isRepeatedRoomName(QString name)
+bool jpsDatamanager::isRepeatedZoneName(QString name)
 {
     qDebug("Enter jpsDatamanager::isRepeatedName");
     for(auto *room : roomlist)
     {
         if(name == room->getName())
+            return true;
+    }
+
+    for(auto *platform : platform_list)
+    {
+        if(name == platform->getName())
+            return true;
+    }
+
+
+    for(auto *stair : stair_list)
+    {
+        if(name == stair->getName())
             return true;
     }
     return false;

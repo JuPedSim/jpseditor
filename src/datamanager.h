@@ -62,7 +62,7 @@ public:
     ///Zone
     QList<JPSZone *> get_roomlist();
     void addRoom();
-    bool isRepeatedRoomName(QString name);
+    bool isRepeatedZoneName(QString name);
     void remove_room(JPSZone* room);
     void change_roomName(JPSZone* room, QString name);
     void remove_all_rooms();
@@ -192,7 +192,6 @@ public:
     // Read DXF
     bool readDXF(std::string filename);
     void addLine(const DL_LineData& d) override;
-    QStringList unimported_layer;
 
     // write DXF
     void writeDXF(std::string filename);
