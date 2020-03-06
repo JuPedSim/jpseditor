@@ -241,41 +241,21 @@ void ListWidget::highlight(QListWidgetItem *item)
     auto *room = getCurrent(item);
 
     view->unmark_all_lines();
-    //TODO: Fix here!
-//    for(QList<JPSZone *> list : room->getZoneList())
-//    {
-//        for(JPSZone *zone : list)
-//        {
-//            if(zone != nullptr) // Mark every zones
-//            {
-//                if(zone->getType() == Platform)
-//                {
-//                    for(JPSTrack *track : zone->getTrackList())
-//                    {
-//                        view->markLine(track->getLine());
-//                    }
-//                } else
-//                {
-//                    for(jpsLineItem *wall : zone->get_listWalls())
-//                    {
-//                        view->markLine(wall);
-//                    }
-//                }
 
-//                // Mark crossing
-//                for(jpsCrossing *crossing : zone->getEnterAndExitList())
-//                {
-//                    view->markLine(crossing->get_cLine());
-//                }
 
-//                // Mark transitions in the subroom
-//                for(jpsTransition *transition : data->getTransitionInSubroom(zone))
-//                {
-//                    view->markLine(transition->get_cLine());
-//                }
-//            }
-//        }
-//    }
+    if(room->getType() == Platform)
+    {
+        for(JPSTrack *track : room->getTrackList())
+        {
+            view->markLine(track->getLine());
+        }
+    } else
+    {
+        for(jpsLineItem *wall : room->get_listWalls())
+        {
+            view->markLine(wall);
+        }
+    }
 
     qDebug("Leave oomListWidget::highlight");
 }

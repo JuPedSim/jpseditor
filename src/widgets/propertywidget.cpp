@@ -160,13 +160,13 @@ void PropertyWidget::highlightWall(QListWidgetItem *item)
     int tRow = ui->listWidget_track->currentRow();
     int index = ui->tabWidget->currentIndex();
 
-    if(ui->tabWidget->tabText(index) == "WallMode")
+    if(ui->tabWidget->tabText(index) == "Wall")
     {
         auto *line= current_zone->get_listWalls()[wRow];
         view->unmark_all_lines();
         view->markLine(line);
     }
-    else if(ui->tabWidget->tabText(index) == "TrackMode")
+    else if(ui->tabWidget->tabText(index) == "Track")
     {
         auto *line = current_zone->getTrackList()[tRow];
         view->unmark_all_lines();
