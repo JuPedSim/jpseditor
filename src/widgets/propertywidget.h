@@ -50,8 +50,8 @@ public:
     ~PropertyWidget();
 
 protected slots:
-    void updateWidget(ZoneType type);
-    void updateListwidget();
+    void updateWidget();
+    void updateListwidget(); // update wall/track list widget
 
     // WallMode tab
     void updateWallListWidget();
@@ -66,12 +66,20 @@ protected slots:
     void updateType(QListWidgetItem* item);
     void applyTypeButtonClicked();
 
+    // Property tab
+    void updatePropertyWidget();
+    int getRoomType(JPSZone *zone);
+    RoomType getRoomTypeFromString(QString type);
+    void applyButtonClicked();
+
 private:
     Ui::PropertyWidget *ui;
     jpsGraphicsView *view;
     jpsDatamanager *data;
 
     JPSZone *current_zone;
+
+    ZoneType zoneType;
 };
 
 #endif //JPSEDITOR_PROPERTYWIDGET_H

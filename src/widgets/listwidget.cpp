@@ -149,6 +149,9 @@ void ListWidget::rename(QListWidgetItem *item)
                                          tr("New name:"), QLineEdit::Normal,
                                          "Room");
 
+    if(name.isEmpty())
+        return;
+
     if(!isRepeatedName(name) && getCurrent(item) != nullptr)
     {
         getCurrent(item)->setName(name);

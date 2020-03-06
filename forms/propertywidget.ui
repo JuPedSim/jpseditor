@@ -35,7 +35,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="wall">
       <attribute name="title">
@@ -180,12 +180,12 @@
           <widget class="QComboBox" name="comboBox_roomType">
            <item>
             <property name="text">
-             <string>Office</string>
+             <string>Corridor</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>Corridor</string>
+             <string>Office</string>
             </property>
            </item>
            <item>
@@ -217,7 +217,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="pushButton_applyProperty">
          <property name="text">
           <string>Apply</string>
          </property>

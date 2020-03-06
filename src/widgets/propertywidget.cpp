@@ -14,7 +14,10 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
 
     // Change layout depends on type
     if(zone != nullptr)
-        updateWidget(zone->getType());
+    {
+        zoneType = zone->getType();
+        updateWidget();
+    }
 
     // Update list widget if line deleted
     connect(view, SIGNAL(markedLineDeleted()), this, SLOT(updateListwidget()));
@@ -34,6 +37,10 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
     connect(ui->listWidget_track, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlightWall(QListWidgetItem*)));
     connect(ui->listWidget_track, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(updateType(QListWidgetItem*)));
     connect(ui->pushButton_applyType, SIGNAL(clicked()), this, SLOT(applyTypeButtonClicked()));
+
+    // For property tab
+    connect(ui->pushButton_applyProperty, SIGNAL(clicked()), this, SLOT(applyButtonClicked()));
+
     qDebug("Leave PropertyWidget::PropertyWidget");
 }
 
@@ -44,33 +51,29 @@ PropertyWidget::~PropertyWidget()
     qDebug("Leave PropertyWidget::~PropertyWidget");
 }
 
-void PropertyWidget::updateWidget(ZoneType type)
+void PropertyWidget::updateWidget()
 {
     qDebug("Enter PropertyWidget::updateWidget");
-    switch(type)
+    switch(zoneType)
     {
         case Room:
             ui->tabWidget->removeTab(1); // Remove track tab
-            updateWallListWidget();
-            ui->comboBox_locateIn->setEnabled(false);
             break;
 
         case Platform:
             ui->tabWidget->removeTab(0); // Remove wall tab
-            updateTrackListWidget();
-            ui->comboBox_locateIn->setEnabled(false);
-            ui->comboBox_locateIn->setEnabled(false);
             break;
 
         case Stair:
             ui->tabWidget->removeTab(1); // Remove track tab
-            updateWallListWidget();
-            ui->comboBox_locateIn->setEnabled(false);
-            ui->comboBox_locateIn->setEnabled(false);
+            ui->tabWidget->removeTab(1); // Remove property tab
         default:
             qDebug("Leave PropertyWidget::updateWidget");
             return;
     }
+
+    updateWallListWidget();
+    updatePropertyWidget();
     qDebug("Leave PropertyWidget::updateWidget");
 }
 
@@ -260,4 +263,99 @@ void PropertyWidget::applyTypeButtonClicked()
     if(current_zone != nullptr)
         current_zone->getTrackList()[ui->listWidget_track->currentRow()]->setType(type);
     qDebug("Leave PropertyWidget::applyTypeButtonClicked");
+}
+
+void PropertyWidget::updatePropertyWidget()
+{   
+    qDebug("Enter PropertyWidget::updatePropertyWidget");
+    if(current_zone == nullptr)
+        return;
+
+    switch(zoneType)
+    {
+        case Room:
+            ui->comboBox_locateIn->setEnabled(false);
+            ui->comboBox_roomType->setCurrentIndex(getRoomType(current_zone));
+            ui->lineEdit_elevation->setText(QString::number(current_zone->get_elevation()));
+            break;
+
+        case Platform:
+            ui->comboBox_locateIn->setEnabled(false);
+            ui->comboBox_roomType->setEnabled(false);
+            ui->lineEdit_elevation->setText(QString::number(current_zone->get_elevation()));
+            break;
+        default:
+            qDebug("Leave PropertyWidget::updateWidget");
+            return;
+    }
+
+    qDebug("Leave PropertyWidget::updatePropertyWidget");
+}
+
+int PropertyWidget::getRoomType(JPSZone *zone)
+{
+    qDebug("Enter PropertyWidget::getRoomType");
+    switch(zone->getRoomType())
+    {
+        case Corridor:
+            return 0;
+        case Office:
+            return 1;
+        case Lobby:
+            return 2;
+        case Entrance:
+            return 3;
+    }
+    qDebug("Leave PropertyWidget::getRoomType");
+    return 0;
+}
+
+void PropertyWidget::applyButtonClicked()
+{
+    qDebug("Enter PropertyWidget::applyButtonClicked");
+    if(current_zone == nullptr)
+        return;
+
+    switch(zoneType)
+    {
+        case Room:
+            current_zone->set_elevation(ui->lineEdit_elevation->text().toFloat());
+            current_zone->setRoomType(getRoomTypeFromString(ui->lineEdit_Type->text()));
+            break;
+
+        case Platform:
+            current_zone->set_elevation(ui->lineEdit_elevation->text().toFloat());
+            break;
+
+        case Stair:
+            break;
+        default:
+            qDebug("Leave PropertyWidget::updateWidget");
+            return;
+    }
+    qDebug("Leave PropertyWidget::applyButtonClicked");
+}
+
+RoomType PropertyWidget::getRoomTypeFromString(QString type)
+{
+    if(type == "Corridor")
+    {
+        return Corridor;
+    }
+    else if(type == "Office")
+    {
+        return Office;
+    }
+    else if(type == "Lobby")
+    {
+        return Lobby;
+    }
+    else if(type == "Entrance")
+    {
+        return Entrance;
+    }
+    else
+    {
+        return Corridor;
+    }
 }

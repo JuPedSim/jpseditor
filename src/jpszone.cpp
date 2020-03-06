@@ -14,6 +14,7 @@ JPSZone::JPSZone(int id_zone, ZoneType type)
     qDebug("Enter JPSZone::JPSZone");
     id=id_zone;
     zoneType = type;
+    roomType = Corridor;
 
     name = getTypeInString() + QString::number(id_zone);
 
@@ -792,4 +793,13 @@ QString JPSZone::getTypeInString() const
         default:
             break;
     }
+}
+
+RoomType JPSZone::getRoomType() const
+{
+    return roomType;
+}
+void JPSZone::setRoomType(RoomType roomType)
+{
+    JPSZone::roomType = roomType;
 }

@@ -106,10 +106,13 @@ public:
     void removeTrack(JPSTrack *track);
     QList<JPSTrack *> getTrackList() const;
     bool isInTrackList(JPSTrack *track);
+    RoomType getRoomType() const;
+    void setRoomType(RoomType roomType);
 
 private:
     int id;
     ZoneType zoneType;
+    RoomType roomType;
     QString name;
     bool highlighted;
 
