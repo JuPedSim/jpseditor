@@ -2233,7 +2233,6 @@ void jpsDatamanager::writeDXFBlocks(DL_Dxf *dxf, DL_WriterA *dw)
     qDebug("Leave jpsDatamanager::writeDXFBlocks");
 }
 
-//TODO: Refoctoring for issue212
 void jpsDatamanager::writeDXFEntities(DL_Dxf *dxf, DL_WriterA *dw)
 {
     qDebug("Enter jpsDatamanager::writeDXFEntities");
@@ -2244,11 +2243,11 @@ void jpsDatamanager::writeDXFEntities(DL_Dxf *dxf, DL_WriterA *dw)
     QList<JPSSource* > sources = _mView->getSources();
     QList<JPSGoal* > goals = _mView->getGoals();
 
-    DL_Attributes attributeWall("wall", 256, 256, -1, "BYLAYER");
-    DL_Attributes attributeTransition("transition", 256, 256, -1, "BYLAYER");
-    DL_Attributes attributeTrack("track", 256, 256, -1, "BYLAYER");
-
-    DL_Attributes attributeGoal("goal", 256, 256, -1, "BYLAYER");
+    DL_Attributes attributeWall("jps_room", 256, 256, -1, "BYLAYER");
+    DL_Attributes attributeTransition("jps_transition", 256, 256, -1, "BYLAYER");
+    DL_Attributes attributeTrack("jps_platform", 256, 256, -1, "BYLAYER");
+    DL_Attributes attributeSource("jps_source", 256, 256, -1, "BYLAYER");
+    DL_Attributes attributeGoal("jps_goal", 256, 256, -1, "BYLAYER");
 
     for (jpsLineItem* lineItem:lines)
     {
@@ -2282,8 +2281,6 @@ void jpsDatamanager::writeDXFEntities(DL_Dxf *dxf, DL_WriterA *dw)
     for(JPSSource* source: sources)
     {
         QString name = source->getCaption();
-
-        DL_Attributes attributeSource(name.toStdString(), 256, 256, -1, "BYLAYER");
 
         DL_LineData line_top(source->rect().topLeft().x(),
                              source->rect().topLeft().y(),
