@@ -108,6 +108,7 @@ public:
     bool isInTrackList(JPSTrack *track);
     RoomType getRoomType() const;
     void setRoomType(RoomType roomType);
+    QString getRoomTypeInString() const;
 
 private:
     int id;

@@ -321,13 +321,11 @@ void PropertyWidget::applyButtonClicked()
     {
         case Room:
             current_zone->set_elevation(ui->lineEdit_elevation->text().toFloat());
-            current_zone->setRoomType(getRoomTypeFromString(ui->lineEdit_Type->text()));
+            current_zone->setRoomType(getRoomTypeFromString(ui->comboBox_roomType->currentText()));
             break;
-
         case Platform:
             current_zone->set_elevation(ui->lineEdit_elevation->text().toFloat());
             break;
-
         case Stair:
             break;
         default:
@@ -339,6 +337,7 @@ void PropertyWidget::applyButtonClicked()
 
 RoomType PropertyWidget::getRoomTypeFromString(QString type)
 {
+    qDebug("Enter getRoomTypeFromString");
     if(type == "Corridor")
     {
         return Corridor;
@@ -359,4 +358,5 @@ RoomType PropertyWidget::getRoomTypeFromString(QString type)
     {
         return Corridor;
     }
+    qDebug("Leave getRoomTypeFromString");
 }

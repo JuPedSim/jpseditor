@@ -127,8 +127,8 @@ MWindow :: MWindow()
     connect(actionUndo,SIGNAL(triggered(bool)),mview,SLOT(Undo()));
     connect(actionRedo,SIGNAL(triggered(bool)),mview,SLOT(Redo()));
 
-    connect(actionRoom,SIGNAL(triggered(bool)),this,SLOT(define_room()));
-    connect(actionAuto_Definition,SIGNAL(triggered(bool)),this,SLOT(autoDefine_room()));
+//    connect(actionRoom,SIGNAL(triggered(bool)),this,SLOT(define_room()));
+//    connect(actionAuto_Definition,SIGNAL(triggered(bool)),this,SLOT(autoDefine_room()));
 
     connect(actionScale,SIGNAL(triggered(bool)),this,SLOT(enableScale()));
     // Tab View

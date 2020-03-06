@@ -803,3 +803,20 @@ void JPSZone::setRoomType(RoomType roomType)
 {
     JPSZone::roomType = roomType;
 }
+
+QString JPSZone::getRoomTypeInString() const
+{
+    switch(roomType)
+    {
+        case Corridor:
+            return "corridor";
+        case Office:
+            return "office";
+        case Lobby:
+            return "lobby";
+        case Entrance:
+            return "entrance";
+        default:
+            return "room";
+    }
+}

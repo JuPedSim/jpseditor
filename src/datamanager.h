@@ -70,6 +70,9 @@ public:
     const QList<JPSZone *> &getStair_list() const;
     void removeStair(JPSZone* stair);
     void removePlatform(JPSZone* platform);
+    void remove_all_stairs();
+    void remove_all_platforms();
+    JPSZone * getZonefromId(int id) const;
 
     ///Obstacle
     QList<jpsObstacle *> get_obstaclelist();

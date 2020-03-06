@@ -138,6 +138,30 @@ void jpsDatamanager::remove_all_rooms()
     qDebug("Leave jpsDatamanager::remove_all_rooms");
 }
 
+void jpsDatamanager::remove_all_stairs()
+{
+    qDebug("Enter jpsDatamanager::remove_all_stairs");
+    for (int i=0; i<stair_list.size(); i++)
+    {
+        delete stair_list[i];
+        stair_list[i] = nullptr;
+    }
+    stair_list.clear();
+    qDebug("Leave jpsDatamanager::remove_all_stairs");
+}
+
+void jpsDatamanager::remove_all_platforms()
+{
+    qDebug("Enter jpsDatamanager::remove_all_platforms");
+    for (int i=0; i<platform_list.size(); i++)
+    {
+        delete platform_list[i];
+        platform_list[i] = nullptr;
+    }
+    platform_list.clear();
+    qDebug("Leave jpsDatamanager::remove_all_platforms");
+}
+
 QList<JPSZone *> jpsDatamanager::get_roomlist()
 {
     qDebug("Enter/return jpsDatamanager::get_roomlist");
@@ -722,7 +746,15 @@ void jpsDatamanager::writeSubRoom(QXmlStreamWriter *stream, JPSZone *room, QList
 
     stream->writeAttribute("id",QString::number(room->get_id()));
     stream->writeAttribute("caption",room->getName());
-    stream->writeAttribute("class", room->getTypeInString());
+    if(room->getType() == Room)
+    {
+        stream->writeAttribute("class", room->getRoomTypeInString());
+    }
+    else
+    {
+        stream->writeAttribute("class", room->getTypeInString());
+    }
+
 
     room->correctPlaneCoefficients(getTransitionInSubroom(room));
 
@@ -838,12 +870,10 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineIte
             {
                 //outside
                 stream->writeAttribute("room1_id","-1");
-                stream->writeAttribute("subroom1_id","-1");
             } else
             {
                 //room
                 stream->writeAttribute("room1_id",QString::number(transition->get_roomList()[0]->get_id()));
-                stream->writeAttribute("subroom1_id",QString::number(transition->get_roomList()[0]->get_id()));
             }
 
             // room 2
@@ -851,12 +881,10 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineIte
             {
                 //outside
                 stream->writeAttribute("room2_id","-1");
-                stream->writeAttribute("subroom2_id","-1");
             } else
             {
                 //room
                 stream->writeAttribute("room2_id",QString::number(transition->get_roomList()[1]->get_id()));
-                stream->writeAttribute("subroom2_id",QString::number(transition->get_roomList()[1]->get_id()));
             }
 
             stream->writeStartElement("vertex");
@@ -1404,6 +1432,8 @@ void jpsDatamanager::remove_all()
     removeAllSource();
 
     remove_all_rooms();
+    remove_all_stairs();
+    remove_all_platforms();
     remove_all_obstacles();
 
     remove_all_landmarks();
@@ -1601,20 +1631,15 @@ void jpsDatamanager::parseTransitions(const QDomElement &element)
         double x2=xVertices.item(1).toElement().attribute("px", "0").toDouble();
         double y2=xVertices.item(1).toElement().attribute("py", "0").toDouble();
 
-        jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"transition");
-        auto *transition = new jpsTransition(lineItem);
+        jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"transition"); // Here a transition was built
+        auto *transition = transition_list.last();
 
         transition->set_id(xTransition.attribute("id").toInt());
-
 
         int room1_id = xTransition.attribute("room1_id").toInt();
         int room2_id = xTransition.attribute("room2_id").toInt();
 
-        JPSZone *room1 = new JPSZone(room1_id, Room);
-        JPSZone *room2 = new JPSZone(room2_id, Room);
-
-        transition->set_rooms(room1,room2);
-        transition_list.append(transition);
+        transition->set_rooms(getZonefromId(room1_id), getZonefromId(room2_id));
     }
     qDebug("Leave jpsDatamanager::parseTransitions");
 }
@@ -1646,20 +1671,85 @@ void jpsDatamanager::parseUndefine(const QDomElement &element)
 void jpsDatamanager::parseRoom(const QDomElement &element)
 {
     qDebug("Enter jpsDatamanager::parseRoom");
-    addRoom(); // Create room
-
-    roomlist.last()->set_id(element.attribute("id").toInt());
-    roomlist.last()->setName(element.attribute("caption"));
 
     QDomNode child = element.firstChild();
 
-    while (!child.isNull()) {
-        if (child.toElement().tagName() == "subroom")
+    while (!child.isNull())
+    {
+        if (child.toElement().tagName() == "subroom" && child.toElement().attribute("class") == "subroom")
         {
+            addRoom(); // Create room
+
+            roomlist.last()->setType(Room);
+            roomlist.last()->setRoomType(Corridor);
+            roomlist.last()->set_id(element.attribute("id").toInt());
+            roomlist.last()->setName(element.attribute("caption"));
             parseSubRoom(child.toElement());
         }
+        else if(child.toElement().tagName() == "subroom" && child.toElement().attribute("class") == "corridor")
+        {
+            addRoom(); // Create room
+
+            roomlist.last()->setType(Room);
+            roomlist.last()->setRoomType(Corridor);
+            roomlist.last()->set_id(element.attribute("id").toInt());
+            roomlist.last()->setName(element.attribute("caption"));
+            parseSubRoom(child.toElement());
+        }
+        else if(child.toElement().tagName() == "subroom" && child.toElement().attribute("class") == "office")
+        {
+            addRoom(); // Create room
+
+            roomlist.last()->setType(Room);
+            roomlist.last()->setRoomType(Office);
+            roomlist.last()->set_id(element.attribute("id").toInt());
+            roomlist.last()->setName(element.attribute("caption"));
+            parseSubRoom(child.toElement());
+        }
+        else if(child.toElement().tagName() == "subroom" && child.toElement().attribute("class") == "Lobby")
+        {
+            addRoom(); // Create room
+
+            roomlist.last()->setType(Room);
+            roomlist.last()->setRoomType(Lobby);
+            roomlist.last()->set_id(element.attribute("id").toInt());
+            roomlist.last()->setName(element.attribute("caption"));
+            parseSubRoom(child.toElement());
+        }
+        else if(child.toElement().tagName() == "subroom" && child.toElement().attribute("class") == "Entrance")
+        {
+            addRoom(); // Create room
+
+            roomlist.last()->setType(Room);
+            roomlist.last()->setRoomType(Entrance);
+            roomlist.last()->set_id(element.attribute("id").toInt());
+            roomlist.last()->setName(element.attribute("caption"));
+            parseSubRoom(child.toElement());
+        }
+        else if(child.toElement().tagName() == "subroom" && child.toElement().attribute("class") == "stair")
+        {
+            addStair();
+
+            stair_list.last()->setType(Stair);
+            stair_list.last()->set_id(element.attribute("id").toInt());
+            stair_list.last()->setName(element.attribute("caption"));
+
+            parseSubRoom(child.toElement());
+        }
+        else if(child.toElement().tagName() == "subroom" && child.toElement().attribute("class") == "platform")
+        {
+            addPlatform();
+
+            platform_list.last()->setType(Platform);
+            platform_list.last()->set_id(element.attribute("id").toInt());
+            platform_list.last()->setName(element.attribute("caption"));
+
+            parseSubRoom(child.toElement());
+        }
+
         child = child.nextSibling();
     }
+
     qDebug("Leave jpsDatamanager::parseRoom");
 }
 
@@ -1667,92 +1757,97 @@ void jpsDatamanager::parseSubRoom(const QDomElement &element)
 {
     qDebug("Enter jpsDatamanager::parseSubRoom");
 
-//    // Setup subroom
-//    JPSZone *current_subroom = nullptr;
+    // Setup subroom
+    JPSZone *current_zone = nullptr;
 
-//        current_subroom = roomlist.last()->getCorridorList().last();
-//        qDebug("Not vaild subroom type");
-//    }
+    if( element.attribute("class") == "subroom" ||
+        element.attribute("class") == "corridor" ||
+        element.attribute("class") == "lobby" ||
+        element.attribute("class") == "office" ||
+        element.attribute("class") == "entrance")
+    {
+        current_zone = roomlist.last();
+    }
+    else if(element.attribute("class") == "platform")
+    {
+        current_zone = platform_list.last();
+    }
+    else if(element.attribute("class") == "stair")
+    {
+        current_zone = stair_list.last();
+    } else{
+        qDebug("Not vaild subroom type");
+        return;
+    }
 
-//    current_subroom->set_id(element.attribute("id").toInt());
+    // Set X Y Z
+    if(element.hasAttribute("A_x"))
+        current_zone->set_ax(element.attribute("A_x").toFloat());
+    else
+        current_zone->set_ax(0.0);
 
-//    // Set subroom name
-//    if(element.hasAttribute("caption"))
-//        current_subroom->setName(element.attribute("caption"));
-//    else
-//        current_subroom->setName("room id:"
-//        + QString::number(roomlist.last()->get_id())
-//        +", subroom id:"
-//        + element.attribute("id"));
+    if(element.hasAttribute("B_y"))
+        current_zone->set_by(element.attribute("B_y").toFloat());
+    else
+        current_zone->set_by(0.0);
 
-//    // Set X Y Z
-//    if(element.hasAttribute("A_x"))
-//        current_subroom->set_ax(element.attribute("A_x").toFloat());
-//    else
-//        current_subroom->set_ax(0.0);
+    auto elevation = element.attribute("C_z").toFloat();
 
-//    if(element.hasAttribute("B_y"))
-//        current_subroom->set_by(element.attribute("B_y").toFloat());
-//    else
-//        current_subroom->set_by(0.0);
+    current_zone->set_cz(elevation);
+    current_zone->set_elevation(elevation);
 
-//    auto elevation = element.attribute("C_z").toFloat();
+    // Parse walls
+    QDomElement polygon = element.firstChildElement("polygon");
+    double pos_count=1;
 
-//    current_subroom->set_cz(elevation);
-//    current_subroom->set_elevation(elevation);
+    while(!polygon.isNull()) {
+        QDomNodeList xVertices=polygon.elementsByTagName("vertex");
+        pos_count+=xVertices.count()-1;
 
-//    // Parse walls
-//    QDomElement polygon = element.firstChildElement("polygon");
-//    double pos_count=1;
+        for( int i=0; i<xVertices.count()-1; i++)
+        {
+            //all unit are converted in cm
+            double x1=xVertices.item(i).toElement().attribute("px", "0").toDouble();
+            double y1=xVertices.item(i).toElement().attribute("py", "0").toDouble();
+            double x2=xVertices.item(i+1).toElement().attribute("px", "0").toDouble();
+            double y2=xVertices.item(i+1).toElement().attribute("py", "0").toDouble();
 
-//    while(!polygon.isNull()) {
-//        QDomNodeList xVertices=polygon.elementsByTagName("vertex");
-//        pos_count+=xVertices.count()-1;
+            if(polygon.attribute("caption") == "track")
+            {
+                jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"track");
+                QString number = polygon.attribute("type").split("-").last();
+                current_zone->addTrack(lineItem, number);
+            } else
+            {
+                jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"wall");
+                current_zone->addWall(lineItem);
+            }
+        }
+        polygon = polygon.nextSiblingElement("polygon");
+    }
 
-//        for( int i=0; i<xVertices.count()-1; i++)
-//        {
-//            //all unit are converted in cm
-//            double x1=xVertices.item(i).toElement().attribute("px", "0").toDouble();
-//            double y1=xVertices.item(i).toElement().attribute("py", "0").toDouble();
-//            double x2=xVertices.item(i+1).toElement().attribute("px", "0").toDouble();
-//            double y2=xVertices.item(i+1).toElement().attribute("py", "0").toDouble();
+    // Parse up and down for stairs
+    if(current_zone->getType() == Stair)
+    {
+        QDomNode child = element.firstChild();
+        while (!child.isNull())
+        {
+            if (child.toElement().tagName() == "up")
+            {
+                double px = child.toElement().attribute("px").toDouble();
+                double py = child.toElement().attribute("py").toDouble();
+                current_zone->set_up(QPointF(px, py));
+            }
+            else if (child.toElement().tagName() == "down")
+            {
+                double px = child.toElement().attribute("px").toDouble();
+                double py = child.toElement().attribute("py").toDouble();
+                current_zone->set_down(QPointF(px, py));
+            }
 
-//            if(polygon.attribute("caption") == "track")
-//            {
-//                jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"track");
-//                QString number = polygon.attribute("type").split("-").last();
-//                current_subroom->addTrack(lineItem, number);
-//            } else
-//            {
-//                jpsLineItem* lineItem = _mView->addLineItem(x1,y1,x2,y2,"wall");
-//                current_subroom->addWall(lineItem);
-//            }
-//        }
-//        polygon = polygon.nextSiblingElement("polygon");
-//    }
-
-//    // Parse up and down for stairs
-//    if(current_subroom->getType() == Stair)
-//    {
-//        QDomNode child = element.firstChild();
-//        while (!child.isNull())
-//        {
-//            if (child.toElement().tagName() == "up")
-//            {
-//                double px = child.toElement().attribute("px").toDouble();
-//                double py = child.toElement().attribute("py").toDouble();
-//                current_subroom->set_up(QPointF(px, py));
-//            }
-//            else if (child.toElement().tagName() == "down")
-//            {
-//                double px = child.toElement().attribute("px").toDouble();
-//                double py = child.toElement().attribute("py").toDouble();
-//                current_subroom->set_down(QPointF(px, py));
-//            }
-
-//            child = child.nextSibling();
-//        }
-//    }
+            child = child.nextSibling();
+        }
+    }
     qDebug("Leave jpsDatamanager::parseSubRoom");
 }
 
@@ -3109,4 +3204,30 @@ void jpsDatamanager::removePlatform(JPSZone *platform)
     delete platform;
     platform = nullptr; //removed from memory
     qDebug("Leave jpsDatamanager::removePlatform");
+}
+
+JPSZone * jpsDatamanager::getZonefromId(int id) const
+{
+    qDebug("Enter jpsDatamanager::getZonefromId");
+    for (auto room : roomlist)
+    {
+        if(room->get_id() == id)
+            return room;
+    }
+
+    for (auto platform : platform_list)
+    {
+        if(platform->get_id() == id)
+            return platform;
+    }
+
+
+    for (auto stair : stair_list)
+    {
+        if(stair->get_id() == id)
+            return stair;
+    }
+
+    return nullptr;
+    qDebug("Leave jpsDatamanager::getZonefromId");
 }
