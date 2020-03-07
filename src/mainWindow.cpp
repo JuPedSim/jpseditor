@@ -992,10 +992,9 @@ void MWindow::delete_marked_lines()
 {
     qDebug("Enter MWindow::delete_marked_lines");
 
-    mview->delete_marked_lines();
-    dmanager->remove_marked_lines();
-    mview->clearMarkedLineList();
-
+    mview->delete_marked_lines(); // Delete QGraphicsLineItems in scene and
+    dmanager->remove_marked_lines(); // Remove lines out of zones && Delete marked lines points
+    mview->clearMarkedLineList(); // Move out of line_vector && Clear list;
     mview->deleteMarkedLandmark();
 
     emit mview->markedLineDeleted();

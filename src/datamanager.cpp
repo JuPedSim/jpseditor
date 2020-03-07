@@ -1447,6 +1447,7 @@ void jpsDatamanager::remove_all()
 
 void jpsDatamanager::remove_marked_lines()
 {
+    /// Remove marked lins out of zones, but doesn't delete points yet.
     qDebug("Enter jpsDatamanager::remove_marked_lines");
     QList<jpsLineItem* > marked_lines = _mView->get_markedLines();
 
@@ -1462,16 +1463,22 @@ void jpsDatamanager::remove_marked_lines()
             for(JPSZone *room : roomlist)
             {
                 if(room->isInWallList(jpsLine));
+                {
                     room->removeWall(jpsLine);
+                }
+
             }
 
             for(JPSZone *stair : stair_list)
             {
                 if(stair->isInWallList(jpsLine))
+                {
                     stair->removeWall(jpsLine);
+                }
+
             }
 
-            // Delete jpsLine
+            // Delete marked lines
             delete jpsLine;
             jpsLine = nullptr;
             qDebug()<< "jpsDatamanager::remove_marked_lines: Wall is removed" ;

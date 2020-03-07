@@ -1036,17 +1036,6 @@ void jpsGraphicsView::catch_lines()
                 markLine(item);
             }
         }
-
-        // select transitions
-        for (auto item:_datamanager->getTransitionList())
-        {
-            if (currentSelectRect->contains(item->get_cLine()->get_line()->line().p1())
-                && currentSelectRect->contains(item->get_cLine()->get_line()->line().p2()))
-            {
-                markLine(item->get_cLine());
-            }
-        }
-
     }
         // Ff current rect was build up moving the cursor to the right ->
         // Throwing the select rect only over a part of a line is sufficent to select it
@@ -1057,16 +1046,6 @@ void jpsGraphicsView::catch_lines()
             if (currentSelectRect->collidesWithItem(item->get_line()) && item->get_defaultColor()!="white")
             {
                 markLine(item);
-                line_tracked=1;
-            }
-        }
-
-        // select transitions
-        for (auto item:_datamanager->getTransitionList())
-        {
-            if (currentSelectRect->collidesWithItem(item->get_cLine()->get_line()))
-            {
-                markLine(item->get_cLine());
                 line_tracked=1;
             }
         }
@@ -1985,10 +1964,7 @@ void jpsGraphicsView::delete_marked_lines()
         {
 //            RecordUndoLineAction("LineDeleted", marked_lines[i]->getType(),marked_lines[i]->get_id(),marked_lines[i]->get_line()->line());
 //            RemoveIntersections(marked_lines[i]);
-
-            delete marked_lines[i]->get_line();
-
-            line_vector.removeOne(marked_lines[i]);
+            this->scene()->removeItem(marked_lines[i]->get_line());
         }
 
         //intersect_point_vector.clear();
@@ -2941,6 +2917,12 @@ void jpsGraphicsView::scaleDownBackground()
 void jpsGraphicsView::clearMarkedLineList()
 {
     qDebug("Enter jpsGraphicsView::clearMarkedLineList");
+
+    for(int i=0; i<marked_lines.size(); ++i)
+    {
+        removeLineFromLine_vector(marked_lines[i]);
+    }
+
     marked_lines.clear();
     qDebug("Leave jpsGraphicsView::clearMarkedLineList");
 }

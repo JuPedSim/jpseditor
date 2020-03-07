@@ -129,6 +129,7 @@ public:
 
     void remove_all();
     void remove_marked_lines();
+
     void set_view(jpsGraphicsView* view);
     jpsGraphicsView* get_view();
 
@@ -212,7 +213,6 @@ public:
 
     // add zones
     void addPlatform();
-
     void addStair();
 
     // delete zones

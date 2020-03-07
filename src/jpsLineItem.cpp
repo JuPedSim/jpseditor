@@ -81,10 +81,10 @@ QString jpsLineItem::getType()
             qDebug("Leave jpsLineItem::getType(transition)");
             return "transition";
         case hline:
-            qDebug("Leave jpsLineItem::getType(hline");
+            qDebug("Leave jpsLineItem::getType(hline)");
             return "hline";
         case undefined:
-            qDebug("Leave jpsLineItem::getType(undefined");
+            qDebug("Leave jpsLineItem::getType(undefined)");
             return "undefined";
         default:
             qDebug("Leave jpsLineItem::getType(invalid)");
