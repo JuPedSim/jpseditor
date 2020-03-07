@@ -266,6 +266,7 @@ set( UIS
     forms/transitionwidget.ui
     forms/layerwidget.ui
     forms/runningwidget.ui
+    forms/templatewidget.ui
   )
 
 # and finally a resource file
