@@ -33,6 +33,7 @@ jpsLineItem::jpsLineItem(QGraphicsLineItem *line)
 {
     qDebug("Enter jpsLineItem::jpsLineItem");
     mLine = line;
+    defaultColor = "black";
     qDebug("Leave jpsLineItem::jpsLineItem");
 }
 

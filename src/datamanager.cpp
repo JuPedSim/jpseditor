@@ -991,7 +991,7 @@ void jpsDatamanager::WriteLandmarks(jpsRegion* cRegion, QXmlStreamWriter *stream
     _landmarksAfterLoose=_landmarks;
     if (fuzzy)
         CutOutLandmarks();
-    
+
     for (jpsLandmark* landmark:_landmarksAfterLoose)
     {
         if (landmark->GetRegion()==cRegion)
@@ -1449,80 +1449,73 @@ void jpsDatamanager::remove_marked_lines()
 {
     qDebug("Enter jpsDatamanager::remove_marked_lines");
     QList<jpsLineItem* > marked_lines = _mView->get_markedLines();
+
 //    QList<jpsObstacle*> obstacle_list = this->get_obstaclelist();
-    QList<JPSZone* > cList = this->get_roomlist();
 
-    for (int i=0; i<marked_lines.size(); i++)
+    for (jpsLineItem *jpsLine : marked_lines)
     {
-//        // delete wall which in obstacle
-//        if (marked_lines[i]->getType() == "wall" && obstacle_list.size()>0)
-//        {
-//            for (int m=0; m<obstacle_list.size(); m++)
-//            {
-//                QList<jpsLineItem* > deleted_obstacle_lines;
-//                for (int n=0; n<obstacle_list[m]->get_listWalls().size(); n++)
-//                {
-//                    if(marked_lines[i]==obstacle_list[m]->get_listWalls()[n])
-//                    {
-//                        deleted_obstacle_lines.push_back(obstacle_list[m]->get_listWalls()[n]);
-//                    }
-//                }
-//                obstacle_list[m]->removeWall(deleted_obstacle_lines);
-//                qDebug()<< "jpsDatamanager::remove_marked_lines(): Obstacle line is deleted!";
-//            }
-//        }
-//        else
-//        {
-//            qDebug()<< "jpsDatamanager::remove_marked_lines(): Marked line isn't in obstacle!";
-//        }
+        // TODO: Dlete wall which in obstacle
 
-        // delete wall
-        if (marked_lines[i]->getType() == "wall" && cList.size()>0)
+        // Remove & delete wall
+        if (jpsLine->getType() == "wall")
         {
-            QList<jpsLineItem *> walls;
-
-            for(auto room : cList)
+            for(JPSZone *room : roomlist)
             {
-                //TODO: Finish here
+                if(room->isInWallList(jpsLine));
+                    room->removeWall(jpsLine);
             }
 
-            qDebug()<< "jpsDatamanager::remove_marked_lines: WallMode is removed" ;
+            for(JPSZone *stair : stair_list)
+            {
+                if(stair->isInWallList(jpsLine))
+                    stair->removeWall(jpsLine);
+            }
+
+            // Delete jpsLine
+            delete jpsLine;
+            jpsLine = nullptr;
+            qDebug()<< "jpsDatamanager::remove_marked_lines: Wall is removed" ;
         }
 
-        // Delete track
-        else if (marked_lines[i]->getType() == "track" && cList.size()>0)
+        // Remove & delete track
+        else if (jpsLine->getType() == "track")
         {
-            for (auto room : cList)
+            for(JPSZone *platform : platform_list)
             {
-                for(auto platform : cList)
+                for(JPSTrack *track : platform->getTrackList())
                 {
-                    for(auto track : platform->getTrackList())
+                    if(track->getLine() == jpsLine)
                     {
-                        if(marked_lines[i] == track->getLine())
-                        {
-                            platform->removeTrack(track);
-                            delete track;
-                            track = nullptr;
-                        }
+                        platform->removeTrack(track);
+
+                        delete jpsLine;
+                        jpsLine = nullptr;
+
+                        delete track;
+                        track = nullptr;
                     }
                 }
             }
-            qDebug()<< "jpsDatamanager::remove_marked_lines(): TrackMode is deleted!";
+            qDebug()<< "jpsDatamanager::remove_marked_lines(): Track is deleted!";
         }
 
-        // Delete transition
-        else if(marked_lines[i]->getType() == "transition")
+        // Remove & delete transition
+        else if(jpsLine->getType() == "transition")
         {
             for (jpsTransition *tran : transition_list)
             {
-                if(marked_lines[i] == tran->get_cLine())
+                if(jpsLine == tran->get_cLine())
                 {
                     transition_list.removeOne(tran);
+
+                    delete jpsLine;
+                    jpsLine = nullptr;
+
                     delete tran;
                     tran = nullptr;
                 }
             }
-            qDebug()<< "jpsDatamanager::remove_marked_lines(): TransitionMode is deleted!";
+            qDebug()<< "jpsDatamanager::remove_marked_lines(): Transition is deleted!";
         }
         else
         {
@@ -2535,7 +2528,7 @@ bool jpsDatamanager::ReadLineFile(QFile &file)
     QTextStream in(&file);
 
     while ( !in.atEnd() )
-    {       
+    {
         QString Qline = in.readLine();
         if (Qline.startsWith("Room"))
         {

@@ -1978,23 +1978,21 @@ qreal jpsGraphicsView::calc_d_point(const QLineF &line,const qreal &x, const qre
 void jpsGraphicsView::delete_marked_lines()
 {
     qDebug("Enter jpsGraphicsView::delete_marked_lines");
-    //TODO: Orgnize the flow for delete marked lines
+    // Delete QGraphicsLineItems in scene and move out of line_vector
     if (line_tracked!=-1)
     {
         for(int i=0; i<marked_lines.size(); ++i)
         {
-            RecordUndoLineAction("LineDeleted", marked_lines[i]->getType(),marked_lines[i]->get_id(),marked_lines[i]->get_line()->line());
-            RemoveIntersections(marked_lines[i]);
+//            RecordUndoLineAction("LineDeleted", marked_lines[i]->getType(),marked_lines[i]->get_id(),marked_lines[i]->get_line()->line());
+//            RemoveIntersections(marked_lines[i]);
 
-            delete marked_lines[i]->get_line(); // Delete in scene
+            delete marked_lines[i]->get_line();
 
             line_vector.removeOne(marked_lines[i]);
         }
 
         //intersect_point_vector.clear();
         line_tracked=-1;
-
-        marked_lines.clear();
 
         update();
     }

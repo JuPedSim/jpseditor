@@ -104,7 +104,7 @@ void JPSZone::removeWall(QList <jpsLineItem *> wall)
 /*
     Purpose: Remove selecting wall from wall list
 
-    Note: WallMode won't be deleted in graphic view after removing
+    Note: Wall won't be deleted in graphic view after removing
 */
 void JPSZone::removeWall(jpsLineItem *wall)
 {
@@ -126,7 +126,17 @@ void JPSZone::removeWall(jpsLineItem *wall)
 void JPSZone::removeTrack(JPSTrack *track)
 {
     qDebug("Enter JPSZone::removeTrack");
-    track_list.removeOne(track);
+    if (track == nullptr)
+    {
+        qDebug("WallMode is nullptr, Leave JPSZone::removeWall");
+        return;
+    }
+
+    bool result = track_list.removeOne(track);
+
+    if(result)
+        qDebug("JPSZone::removeWall Deleted track %d", track->getLine()->get_id());
+
     qDebug("Leave JPSZone::removeTrack");
 }
 
@@ -765,9 +775,11 @@ void JPSZone::addTrack(jpsLineItem *line, QString number)
 bool JPSZone::isInTrackList(JPSTrack *track) {
     qDebug("Enter JPSZone::isInTrackList");
     if(track == nullptr)
-        qDebug("var track is nullptr");
+    {
+        qDebug("Track is nullptr");
         qDebug("Leave JPSZone::isInTrackList");
         return false;
+    }
 
     foreach(JPSTrack *track_inList, track_list)
     {

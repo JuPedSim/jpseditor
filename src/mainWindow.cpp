@@ -995,6 +995,7 @@ void MWindow::delete_marked_lines()
     mview->delete_marked_lines();
     dmanager->remove_marked_lines();
     mview->clearMarkedLineList();
+
     mview->deleteMarkedLandmark();
 
     emit mview->markedLineDeleted();
