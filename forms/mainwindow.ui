@@ -94,14 +94,11 @@
      <string>Edit</string>
     </property>
     <addaction name="separator"/>
-    <addaction name="actionUndo"/>
-    <addaction name="actionRedo"/>
     <addaction name="actionCopy"/>
     <addaction name="actionScale"/>
     <addaction name="separator"/>
     <addaction name="actionDeleteAll"/>
     <addaction name="actionDelete_single_line"/>
-    <addaction name="actionClear_all_Rooms_and_Doors"/>
    </widget>
    <widget class="QMenu" name="menuDraw">
     <property name="title">
@@ -144,10 +141,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionUndo"/>
-   <addaction name="actionRedo"/>
    <addaction name="actionDelete_single_line"/>
-   <addaction name="actionClear_all_Rooms_and_Doors"/>
    <addaction name="separator"/>
    <addaction name="actionSelect_Mode"/>
    <addaction name="actionDraw"/>
