@@ -1976,6 +1976,8 @@ bool jpsDatamanager::readDXF(std::string filename)
 
     // Every import dxf as a layer
     _mView->addLayer();
+    QString name = QString::fromStdString(filename).split("/").last();
+    _mView->getLayerList().last()->setName(name);
 
     if (!dxf.in(filename, this))
     {
