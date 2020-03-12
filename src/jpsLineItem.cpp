@@ -29,11 +29,9 @@
 #include <iostream>
 
 jpsLineItem::jpsLineItem(QGraphicsLineItem *line)
-    : mId(-1), mLine(nullptr), lineType(undefined)
+    : mId(-1), mLine(line), lineType(undefined), defaultColor("black")
 {
     qDebug("Enter jpsLineItem::jpsLineItem");
-    mLine = line;
-    defaultColor = "black";
     qDebug("Leave jpsLineItem::jpsLineItem");
 }
 

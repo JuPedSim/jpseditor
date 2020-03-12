@@ -192,7 +192,11 @@ public:
 
     // Read DXF
     bool readDXF(std::string filename);
+    bool readLayersInDXF(std::string filename);
     void addLine(const DL_LineData& d) override;
+    void addLayer(const DL_LayerData &d) override;
+    QList<QString> get_layerInDXF();
+    void addItemInImportLayers(QString layer, QString type);
 
     // write DXF
     void writeDXF(std::string filename);
@@ -220,6 +224,7 @@ public:
 
     // Transition
     void removeTransition(jpsTransition *transition);
+    const QMap<QString, QString> &getImportLayers() const;
 
 /*
     //Show Cognitive Map
@@ -265,7 +270,9 @@ private:
 
     // For DXF import
     QList<QPointF> points; // Points in rects of sources or goals
-
+    QMap<QString, QString> importLayers; // Layers that will import from dxf files
+    QList<QString> layerInDXF; // Layers that are in dxf files
+    bool writeLineNow = false; // If it's ready to read lines, default it's false
 
 };
 

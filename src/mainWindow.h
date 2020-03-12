@@ -50,6 +50,7 @@
 #include "src/widgets/transitionwidget.h"
 #include "src/widgets/layerwidget.h"
 #include "src/widgets/runningwidget.h"
+#include "src/widgets/opendxfdialog.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
     Q_OBJECT
@@ -69,6 +70,7 @@ private:
     PropertyWidget *propertyWidget;
 
     SettingDialog *settingDialog;
+    OpenDXFDialog *openDXFDialog;
 
     QToolBar *drawing_toolbar_;
     QActionGroup *drawingActionGroup;
@@ -110,6 +112,8 @@ private:
     ZoneType curentTypeListwidget;
 
 public slots:
+
+    void ShowInfoOnStatusBar(QString info);
     
     //parseFiles
     void openFileDXF();

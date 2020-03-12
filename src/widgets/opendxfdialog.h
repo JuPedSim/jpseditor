@@ -19,6 +19,12 @@ public:
 public slots:
     void openButtonClicked();
     void addToImportButtonClicked();
+    void removeToImportButtonCliked();
+    void cancelButtonClicked();
+    void confirmButtonClicked();
+
+signals:
+    void DXFImported(QString info);
 
 private:
     Ui::OpenDXFDialog *ui;

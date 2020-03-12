@@ -1974,113 +1974,184 @@ bool jpsDatamanager::readDXF(std::string filename)
     qDebug("Enter jpsDatamanager::readDXF");
     DL_Dxf dxf;
 
-    // Every import dxf as a layer
+    // Import dxf as a layer
     _mView->addLayer();
     QString name = QString::fromStdString(filename).split("/").last();
     _mView->getLayerList().last()->setName(name);
 
-    if (!dxf.in(filename, this))
-    {
-        qDebug("Leave jpsDatamanager::readDXF");
-        return false;
-    }
-    else
+    bool addContents = dxf.in(filename, this);
+
+    importLayers.clear(); // Clear importLayer for new import
+
+    if (addContents)
     {
         _mView->AutoZoom();
 
         qDebug("Leave jpsDatamanager::readDXF");
         return true;
-    }
-}
 
-void jpsDatamanager::addLine(const DL_LineData &d)
-{
-    qDebug("Enter jpsDatamanager::addLine");
-    DL_Attributes attributes = DL_CreationInterface::getAttributes();
-
-    auto layername = QString::fromStdString(attributes.getLayer());
-
-    if (layername.contains("jps_room"))
-    {
-        if(isRepeatedZoneName(layername))
-        {
-            // Nothing to do
-        }else {
-            // Create a new room at first;
-            addRoom();
-            roomlist.last()->setName(layername);
-        }
-        auto wall = _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
-        roomlist.last()->addWall(wall);
-    }
-    else if (layername.contains("jps_transition"))
-    {
-        _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"transition");
-    }
-    else if (layername.contains("jps_platform"))
-    {
-
-        if(isRepeatedZoneName(layername))
-        {
-            // Nothing to do
-        }else {
-            // Create a new room at first;
-            addPlatform();
-            platform_list.last()->setName(layername);
-            platform_list.last()->setType(Platform);
-
-        }
-        auto track = _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"track");
-        platform_list.last()->addTrack(track, 0);
-    }
-    else if (layername.contains("jps_stair"))
-    {
-
-        if(isRepeatedZoneName(layername))
-        {
-            // Nothing to do
-        }else {
-            // Create a new room at first;
-            addStair();
-            stair_list.last()->setName(layername);
-            stair_list.last()->setType(Stair);
-
-        }
-
-        auto wall = _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
-        stair_list.last()->addWall(wall);
-    }
-    else if (layername.contains("jps_source"))
-    {
-        points.append(QPointF(d.x1, d.y1));
-        points.append(QPointF(d.x2, d.y2));
-
-        if(points.size() == 8) // Every 4 lines as a rect
-        {
-            _mView->addSourceItem(points);
-
-            points.clear();
-        }
-    }
-    else if (layername.contains("jps_goal"))
-    {
-        points.append(QPointF(d.x1, d.y1));
-        points.append(QPointF(d.x2, d.y2));
-
-        if(points.size() == 8)
-        {
-            _mView->addGoalItem(points);
-
-            points.clear();
-        }
     }
     else
     {
-        // Add lines as wall in graphicview
-        auto wall = _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
+
+        qDebug("Leave jpsDatamanager::readDXF");
+        return false;
+    }
+}
+
+QList<QString> jpsDatamanager::get_layerInDXF()
+{
+    return layerInDXF;
+}
+
+bool jpsDatamanager::readLayersInDXF(std::string filename)
+{
+    qDebug("Enter jpsDatamanager::readLayersInDXF");
+    // Read layers in dxf file
+    DL_Dxf dxf;
+
+    layerInDXF.clear(); // Clear layerInDXF for new import
+    writeLineNow = false; // Make sure now the lines won't be imported
+
+    bool result = dxf.in(filename, this);
+
+    writeLineNow = true; // Ready for importe lines in readDXF()
+
+    return result;
+    qDebug("Leave jpsDatamanager::readLayersInDXF");
+}
+
+
+/**
+ * @brief jpsDatamanager::addLine
+ * @param This func will override addLine(const DL_LineData& data) in dl_creatiointerface.h,
+ * for adding line in JPSeditor by importing dxf file.
+ */
+void jpsDatamanager::addLine(const DL_LineData &d)
+{
+    qDebug("Enter jpsDatamanager::addLine");
+
+    if(writeLineNow)
+    {
+        DL_Attributes attributes = DL_CreationInterface::getAttributes(); // Get attributes of the line from creationInterface
+
+        auto layername = QString::fromStdString(attributes.getLayer());
+
+        if(importLayers.contains(layername))
+        {
+            QString type = importLayers[layername];
+
+            if (type == "Room")
+            {
+                if(isRepeatedZoneName(layername))
+                {
+                    // Room is added, Nothing to do
+                }else {
+                    // Create a new room at first;
+                    addRoom();
+                    roomlist.last()->setName(layername);
+                }
+                auto wall = _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
+                roomlist.last()->addWall(wall);
+            }
+            else if (type == "Transition")
+            {
+                _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"transition");
+            }
+            else if (type == "Platform")
+            {
+
+                if(isRepeatedZoneName(layername))
+                {
+                    // Nothing to do
+                }else {
+                    // Create a new room at first;
+                    addPlatform();
+                    platform_list.last()->setName(layername);
+                    platform_list.last()->setType(Platform);
+
+                }
+                auto track = _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"track");
+                platform_list.last()->addTrack(track, 0);
+            }
+            else if (type == "Stairs")
+            {
+
+                if(isRepeatedZoneName(layername))
+                {
+                    // Nothing to do
+                }else {
+                    // Create a new room at first;
+                    addStair();
+                    stair_list.last()->setName(layername);
+                    stair_list.last()->setType(Stair);
+
+                }
+
+                auto wall = _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
+                stair_list.last()->addWall(wall);
+            }
+            else if (type == "Source")
+            {
+                points.append(QPointF(d.x1, d.y1));
+                points.append(QPointF(d.x2, d.y2));
+
+                if(points.size() == 8) // Every 4 lines as a rect
+                {
+                    _mView->addSourceItem(points);
+
+                    points.clear();
+                }
+            }
+            else if (type == "Goal")
+            {
+                points.append(QPointF(d.x1, d.y1));
+                points.append(QPointF(d.x2, d.y2));
+
+                if(points.size() == 8)
+                {
+                    _mView->addGoalItem(points);
+
+                    points.clear();
+                }
+            }
+            else
+            {
+                // Add lines as wall in graphicview
+                _mView->addLineItem(d.x1,d.y1,d.x2,d.y2,"wall");
+            }
+        }
+        else
+        {
+            qDebug("Don't add Line. Leave jpsDatamanager::addLine");
+            return;
+        }
+
+
+    }
+    else
+    {
+        qDebug("Don't add Line. Leave jpsDatamanager::addLine");
+        return;
     }
 
-    qDebug("Leave jpsDatamanager::addLine");
+
+    qDebug("Line added. Leave jpsDatamanager::addLine");
+}
+
+/**
+ * @brief jpsDatamanager::addLayer
+ * @param Read layers in dxf, add them into layerInDXF list
+ */
+void jpsDatamanager::addLayer(const DL_LayerData &d)
+{
+    qDebug("Enter jpsDatamanager::addLayer");
+    QString layer = QString::fromStdString(d.name);
+
+    if(!layerInDXF.contains(layer))
+        layerInDXF.append(layer);
+
+    qDebug("Leave jpsDatamanager::addLayer");
 }
 
 void jpsDatamanager::writeDXF(std::string filename)
@@ -3224,4 +3295,17 @@ JPSZone * jpsDatamanager::getZonefromId(int id) const
 
     return nullptr;
     qDebug("Leave jpsDatamanager::getZonefromId");
+}
+
+const QMap<QString, QString> &jpsDatamanager::getImportLayers() const
+{
+    qDebug("Enter/Leave psDatamanager::getImportLayers()");
+    return importLayers;
+}
+
+void jpsDatamanager::addItemInImportLayers(QString layer, QString type)
+{
+    qDebug("Enter jpsDatamanager::addItemInImportLayers");
+    importLayers[layer] = type;
+    qDebug("Leave jpsDatamanager::addItemInImportLayers");
 }

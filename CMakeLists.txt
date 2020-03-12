@@ -145,6 +145,7 @@ set( SRCS
     src/widgets/runningwidget.cpp
     src/widgets/goalwidget.cpp
     src/widgets/sourcewidget.cpp
+    src/widgets/opendxfdialog.cpp
 
     src/GraphicView.cpp
     src/graphicscene.cpp
@@ -190,7 +191,7 @@ set( HDR
     src/GraphicView.h
     src/graphicscene.h
 
-        src/widgets/listwidget.h
+    src/widgets/listwidget.h
     src/widgets/propertywidget.h
     src/widgets/transitionwidget.h
     src/widgets/layerwidget.h
@@ -203,6 +204,7 @@ set( HDR
     src/widgets/snappingoptions.h
     src/widgets/sourcewidget.h
     src/widgets/goalwidget.h
+    src/widgets/opendxfdialog.h
 
 ## JPSelements
     src/jpsgoal.h
@@ -267,6 +269,7 @@ set( UIS
     forms/layerwidget.ui
     forms/runningwidget.ui
     forms/templatewidget.ui
+    forms/opendxfdialog.ui
   )
 
 # and finally a resource file

@@ -472,21 +472,13 @@ void MWindow::ShowOrigin()
 
 void MWindow::openFileDXF(){
     qDebug("Enter MWindow::openFileDXF");
+    closeListDockWidget();
+    closePropertyDockWidget();
 
-    QString fileName=QFileDialog::getOpenFileName(this,tr("Open DXF"),"",tr("DXF-Drawings (*.dxf)"));
-    //QFile file(fileName);
-    std::string fName= fileName.toStdString();
-
-    closeListDockWidget(); // Close list widget at first, in case datamanager changed but widget can't update
-
-    if (dmanager->readDXF(fName))
-    {
-        statusBar()->showMessage("DXF-File successfully loaded!",10000);
-    }
-    else
-    {
-        statusBar()->showMessage("DXF-File could not be parsed!",10000);
-    }
+    // Get layers to import
+    openDXFDialog = new OpenDXFDialog(this, dmanager);
+    openDXFDialog->setModal(true);
+    openDXFDialog->exec();
 
     qDebug("Leave MWindow::openFileDXF");
 }
@@ -1540,4 +1532,9 @@ void MWindow::goalWidgetButtonClicked()
     addDockWidget(Qt::RightDockWidgetArea, propertyDockWidget);
     propertyDockWidget->setWidget(goalWidget);
     qDebug("Leave MWindow::goalWidgetButtonClicked");
+}
+
+void MWindow::ShowInfoOnStatusBar(QString info)
+{
+    statusBar()->showMessage(info,10000);
 }
