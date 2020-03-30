@@ -4,7 +4,7 @@
 // Copyright (C) 2008-2009 Gael Guennebaud <gael.guennebaud@inria.fr>
 // Copyright (C) 2009 Benoit Jacob <jacob.benoit.1@gmail.com>
 //
-// This Source Code Form is subject to the terms of the Mozilla
+// This SourceMode Code Form is subject to the terms of the Mozilla
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
@@ -519,7 +519,7 @@ void ColPivHouseholderQR<MatrixType>::computeInPlace()
     RealScalar biggest_col_sq_norm = numext::abs2(m_colNormsUpdated.tail(cols-k).maxCoeff(&biggest_col_index));
     biggest_col_index += k;
 
-    // Track the number of meaningful pivots but do not stop the decomposition to make
+    // TrackMode the number of meaningful pivots but do not stop the decomposition to make
     // sure that the initial matrix is properly reproduced. See bug 941.
     if(m_nonzero_pivots==size && biggest_col_sq_norm < threshold_helper * RealScalar(rows-k))
       m_nonzero_pivots = k;

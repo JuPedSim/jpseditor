@@ -29,10 +29,9 @@
 #include <iostream>
 
 jpsLineItem::jpsLineItem(QGraphicsLineItem *line)
-    : mId(-1), mLine(nullptr), lineType(undefined)
+    : mId(-1), mLine(line), lineType(undefined), defaultColor("black")
 {
     qDebug("Enter jpsLineItem::jpsLineItem");
-    mLine = line;
     qDebug("Leave jpsLineItem::jpsLineItem");
 }
 
@@ -73,9 +72,6 @@ QString jpsLineItem::getType()
         case wall:
             qDebug("Leave jpsLineItem::getType(wall)");
             return "wall";
-        case crossing:
-            qDebug("Leave jpsLineItem::getType(crossing)");
-            return "crossing";
         case track:
             qDebug("Leave jpsLineItem::getType(track)");
             return "track";
@@ -83,10 +79,10 @@ QString jpsLineItem::getType()
             qDebug("Leave jpsLineItem::getType(transition)");
             return "transition";
         case hline:
-            qDebug("Leave jpsLineItem::getType(hline");
+            qDebug("Leave jpsLineItem::getType(hline)");
             return "hline";
         case undefined:
-            qDebug("Leave jpsLineItem::getType(undefined");
+            qDebug("Leave jpsLineItem::getType(undefined)");
             return "undefined";
         default:
             qDebug("Leave jpsLineItem::getType(invalid)");
@@ -117,9 +113,6 @@ void jpsLineItem::setType(LineType type) {
         case track:
             setTrack();
             break;
-        case crossing:
-            setCrossing();
-            break;
         case hline:
             setHline();
             break;
@@ -140,13 +133,6 @@ void jpsLineItem::setWall()
     qDebug("Leave jpsLineItem::setWall");
 }
 
-void jpsLineItem::setCrossing()
-{
-    qDebug("Enter jpsLineItem::setCrossing");
-    lineType = crossing;
-    defaultColor="darkMagenta";
-    qDebug("Leave jpsLineItem::setCrossing");
-}
 
 void jpsLineItem::setHline()
 {
@@ -202,19 +188,6 @@ bool jpsLineItem::is_Wall()
 
 }
 
-bool jpsLineItem::is_Crossing()
-{
-    qDebug("Enter jpsLineItem::is_Crossing");
-    if(lineType == crossing)
-    {
-        qDebug("Leave jpsLineItem::is_Crossing(true)");
-        return true;
-    } else
-    {
-        qDebug("Leave jpsLineItem::is_Crossing(false)");
-        return false;
-    }
-}
 
 bool jpsLineItem::is_Transition()
 {

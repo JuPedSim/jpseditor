@@ -81,7 +81,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     centerpoint_snap=false;
     linepoint_snap=false;
     _gridmode=false;
-    drawingMode = Selecting;
+    drawingMode = SelectMode;
     statzoomwindows=false;
     currentPen.setColor(Qt::black);
     currentPen.setCosmetic(true);
@@ -104,7 +104,7 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     setResizeAnchor(QGraphicsView::AnchorUnderMouse);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setCursor(Qt::CrossCursor);
+//    setCursor(Qt::CrossCursor);
 
     //Grid Mode
     _translationX=0.0;
@@ -113,11 +113,11 @@ jpsGraphicsView::jpsGraphicsView(QWidget* parent, jpsDatamanager *datamanager):Q
     _statgrid="Line";
     _gridSize=1.0;
 
-    //Source
+    //SourceMode
 //    sourceGroup = new QGraphicsItemGroup;
     currentSource = nullptr;
 
-    //Goal
+    //GoalMode
     currentGoal = nullptr;
     qDebug("Leave GraphicsView::jpsGraphicsView");
 
@@ -170,9 +170,9 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
     QGraphicsView::mouseMoveEvent(mouseEvent);
 
     switch (drawingMode){
-        case Selecting:
+        case SelectMode:
             break;
-        case Source:
+        case SourceMode:
             if(currentSource != nullptr)
             {
 
@@ -180,14 +180,14 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
                         QPointF(translated_pos.x(),translated_pos.y())));
             }
             break;
-        case Goal:
+        case GoalMode:
             if(currentGoal != nullptr)
             {
                 currentGoal->setRect(QRectF(QPointF(currentGoal->rect().x(),currentGoal->rect().y()),
                         QPointF(translated_pos.x(),translated_pos.y())));
             }
             break;
-        case Landmark:
+        case LandmarkMode:
             break;
         default:
             // draw wall, door, exit, HLine
@@ -276,7 +276,7 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
         }
 
         //VLine
-        if (point_tracked && (drawingMode==Wall || drawingMode==Crossing || drawingMode==Transition))
+        if (point_tracked && (drawingMode==WallMode || drawingMode==TransitionMode))
         {
 //            SetVLine();
         }
@@ -298,84 +298,85 @@ void jpsGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent)
 void jpsGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
 {
     qDebug("Enter jpsGraphicsView::mousePressEvent");
-    if (mouseEvent->button() == Qt::LeftButton)
-    {
-        switch (drawingMode){
-            case Landmark:
-                drawLandmark();
-                break;
-            case Source:
-                drawSource();
-                break;
-            case Goal:
-                drawGoal();
-                break;
-            case MeasureLength:
-                drawMeasureLengthLine();
-                break;
-            case Selecting:
-                if (_statDefConnections==1)
-                {
-                    emit DefConnection1Completed();
-                    break;
-                }
-                else if (_currentTrackedPoint!=nullptr && line_tracked==1 && _statCopy==0)
-                {
-                    EditLine(_currentTrackedPoint);
-                    _currentTrackedPoint=nullptr;
-                    line_tracked=-1;
-                    break;
-                }
-                else if (_statCopy!=0)
-                {
-                    if (_statCopy==1)
-                    {
-                        _copyOrigin=return_Pos();
-                        _statCopy += 1;
-                    }
-                    else
-                        Copy_lines(return_Pos()-_copyOrigin);
-                    break;
-                }
-                else
-                {
-                    //Select_mode
-                    currentSelectRect=scene()->addRect(translated_pos.x(),translated_pos.y(),0,0,QPen(Qt::blue,0));
-                    currentSelectRect->setTransform(QTransform::fromTranslate(translation_x,translation_y), true);
-                    leftbutton_hold=true;
-                    break;
-                }
-            default:
-                if (_statLineEdit)
-                {
-                    // Edit line
-                    for (jpsLineItem* line:line_vector)
-                    {
-                        locate_intersection(marked_lines.first(),line);
-                    }
-                    current_line=nullptr;
-                    _statLineEdit=false;
-                    line_tracked=1;
-                    emit no_drawing();
-                    break;
-                }
-                else
-                {
-                    // Draw wall, crossing, transition, hline, track
+    if (mouseEvent->button() == Qt::LeftButton) {
+        if (_statLineEdit) {
+            // Edit line
+            for (jpsLineItem *line:line_vector) {
+                locate_intersection(marked_lines.first(), line);
+            }
+            current_line = nullptr;
+            _statLineEdit = false;
+            line_tracked = 1;
+            emit no_drawing();
+        }
+        else {
+            switch (drawingMode) {
+                case WallMode:
                     drawLine();
                     break;
-                }
+                case TransitionMode:
+                    drawLine();
+                    break;
+                case TrackMode:
+                    drawLine();
+                    break;
+                case HlineMode:
+                    drawLine();
+                    break;
+                case LandmarkMode:
+                    drawLandmark();
+                    break;
+                case SourceMode:
+                    drawSource();
+                    break;
+                case GoalMode:
+                    drawGoal();
+                    break;
+                case MeasureMode:
+                    drawMeasureLengthLine();
+                    break;
+                case SelectMode:
+                    if (_statDefConnections == 1) {
+                        emit DefConnection1Completed();
+                        break;
+                    }
+                    else if (_currentTrackedPoint != nullptr && line_tracked == 1 && _statCopy == 0) {
+                        EditLine(_currentTrackedPoint);
+                        _currentTrackedPoint = nullptr;
+                        line_tracked = -1;
+                        break;
+                    }
+                    else if (_statCopy != 0) {
+                        if (_statCopy == 1) {
+                            _copyOrigin = return_Pos();
+                            _statCopy += 1;
+                        }
+                        else
+                            Copy_lines(return_Pos() - _copyOrigin);
+                        break;
+                    }
+                    else {
+                        currentSelectRect = scene()->addRect(translated_pos.x(), translated_pos.y(),
+                            0, 0, QPen(Qt::blue, 0));
+                        currentSelectRect->setTransform(QTransform::fromTranslate(translation_x, translation_y), true);
+                        leftbutton_hold = true;
+                        break;
+                    }
+                default:
+                    break;
+            }
         }
     }
     else if (mouseEvent->button()==Qt::MidButton)
     {
-        midbutton_hold=true;
+        midbutton_hold=true; // enter panning mode when move mouse
     }
     else if (mouseEvent->button()==Qt::RightButton)
     {
         disable_drawing();
         emit no_drawing();
     }
+    else{}
 
     update();
     qDebug("Leave jpsGraphicsView::mousePressEvent");
@@ -424,7 +425,7 @@ void jpsGraphicsView::drawLandmark()
                           +pixmap.height()/1000.));
     pixmapItem->setTransform(QTransform::fromScale(1,-1),true);
     pixmapItem->setTransform(QTransform::fromTranslate(translation_x,-translation_y), true);
-    QString name="Landmark"+QString::number(_datamanager->GetLandmarkCounter());
+    QString name="LandmarkMode"+QString::number(_datamanager->GetLandmarkCounter());
     jpsLandmark* landmark = new jpsLandmark(pixmapItem,name,pixmapItem->scenePos());
     //text immediately under the pixmap
     QGraphicsTextItem* text = this->scene()->addText(name);
@@ -453,7 +454,7 @@ void jpsGraphicsView::drawLandmark(const QPointF &pos)
                           +pixmap.height()/1000.));
     pixmapItem->setTransform(QTransform::fromScale(1,-1),true);
     pixmapItem->setTransform(QTransform::fromTranslate(translation_x,-translation_y), true);
-    QString name="Landmark"+QString::number(_datamanager->GetLandmarkCounter());
+    QString name="LandmarkMode"+QString::number(_datamanager->GetLandmarkCounter());
     jpsLandmark* landmark = new jpsLandmark(pixmapItem,name,pos);
     //text immediately under the pixmap
     QGraphicsTextItem* text = this->scene()->addText(name);
@@ -585,7 +586,7 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton)
     {
         // Select lines that are located within the rectangle
-        if (drawingMode == Selecting)
+        if (drawingMode == SelectMode)
         {
             leftbutton_hold=false;
 
@@ -598,7 +599,7 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
             {
                 if (_posDef)
                 {
-                    //Landmark position definition
+                    //LandmarkMode position definition
                     emit PositionDefCompleted();
                     _posDef=false;
                 }
@@ -625,7 +626,7 @@ void jpsGraphicsView::mouseReleaseEvent(QMouseEvent *event)
                     // Select lines by creating a rect with the cursor
                     catch_lines();
 
-                    // unmark Landmark is possible
+                    // unmark LandmarkMode is possible
                     unmarkLandmark();
                     // Look for landmarks with position in the currentSelectRect
                     catch_landmark();
@@ -1019,7 +1020,7 @@ void jpsGraphicsView::catch_line_point()
 void jpsGraphicsView::catch_lines()
 {
     qDebug("Enter jpsGraphicsView::catch_lines");
-    // Catch wall, crossing, transition, track, hline
+    // Catch wall, transition, track, hline
     // If current rect was build up moving the cursor to the left ->
     // Whole line has to be within the rect to select the line
     line_tracked=-1;
@@ -1035,17 +1036,6 @@ void jpsGraphicsView::catch_lines()
                 markLine(item);
             }
         }
-
-        // select transitions
-        for (auto item:_datamanager->getTransitionList())
-        {
-            if (currentSelectRect->contains(item->get_cLine()->get_line()->line().p1())
-                && currentSelectRect->contains(item->get_cLine()->get_line()->line().p2()))
-            {
-                markLine(item->get_cLine());
-            }
-        }
-
     }
         // Ff current rect was build up moving the cursor to the right ->
         // Throwing the select rect only over a part of a line is sufficent to select it
@@ -1056,16 +1046,6 @@ void jpsGraphicsView::catch_lines()
             if (currentSelectRect->collidesWithItem(item->get_line()) && item->get_defaultColor()!="white")
             {
                 markLine(item);
-                line_tracked=1;
-            }
-        }
-
-        // select transitions
-        for (auto item:_datamanager->getTransitionList())
-        {
-            if (currentSelectRect->collidesWithItem(item->get_cLine()->get_line()))
-            {
-                markLine(item->get_cLine());
                 line_tracked=1;
             }
         }
@@ -1108,22 +1088,19 @@ void jpsGraphicsView::drawLine()
         }
 
         switch (drawingMode){
-            case Wall:
+            case WallMode:
                 lineItem->setWall();
                 break;
-            case Crossing:
-                lineItem->setCrossing();
-                break;
-            case Hline:
+            case HlineMode:
                 lineItem->setHline();
                 break;
-            case Transition:
+            case TransitionMode:
                 lineItem->setTransition();
                 // Transion won't be added in any zone, so should be created here
                 _datamanager->newTransition(lineItem);
                 emit transitonsChanged();
                 break;
-            case Track:
+            case TrackMode:
                 lineItem->setTrack();
                 break;
             default:
@@ -1180,7 +1157,7 @@ void jpsGraphicsView::disable_drawing()
     qDebug("Enter jpsGraphicsView::disable_drawing");
     _statCopy=0;
 
-    drawingMode = Selecting;
+    drawingMode = SelectMode;
 
     // if drawing was canceled by pushing ESC
     if (current_line!=nullptr)
@@ -1225,14 +1202,10 @@ jpsLineItem* jpsGraphicsView::addLineItem(const qreal &x1,const qreal &y1,const 
     newLine->set_id(id_counter);
     id_counter++;
 
-    if (type=="crossing")
-    {
-        newLine->setCrossing();
-    }
-    else if (type=="transition")
+    if (type=="transition")
     {
         newLine->setTransition();
-        // Transition isn't a normal JPSLineItem, rather JPSTransition class
+        // TransitionMode isn't a normal JPSLineItem, rather JPSTransition class
         _datamanager->newTransition(newLine);
         emit transitonsChanged();
     }
@@ -1984,23 +1957,18 @@ qreal jpsGraphicsView::calc_d_point(const QLineF &line,const qreal &x, const qre
 void jpsGraphicsView::delete_marked_lines()
 {
     qDebug("Enter jpsGraphicsView::delete_marked_lines");
-    //TODO: Orgnize the flow for delete marked lines
+    // Delete QGraphicsLineItems in scene and move out of line_vector
     if (line_tracked!=-1)
     {
         for(int i=0; i<marked_lines.size(); ++i)
         {
-            RecordUndoLineAction("LineDeleted", marked_lines[i]->getType(),marked_lines[i]->get_id(),marked_lines[i]->get_line()->line());
-            RemoveIntersections(marked_lines[i]);
-
-            delete marked_lines[i]->get_line(); // Delete in scene
-
-            line_vector.removeOne(marked_lines[i]);
+//            RecordUndoLineAction("LineDeleted", marked_lines[i]->getType(),marked_lines[i]->get_id(),marked_lines[i]->get_line()->line());
+//            RemoveIntersections(marked_lines[i]);
+            this->scene()->removeItem(marked_lines[i]->get_line());
         }
 
         //intersect_point_vector.clear();
         line_tracked=-1;
-
-        marked_lines.clear();
 
         update();
     }
@@ -2128,13 +2096,10 @@ void jpsGraphicsView::take_l_from_lineEdit(const qreal &length)
         id_counter++;
 //        jpsline->setType(statWall,statDoor,statExit);
         switch (drawingMode){
-            case Wall:
+            case WallMode:
                 jpsline->setWall();
                 break;
-            case Crossing:
-                jpsline->setCrossing();
-                break;
-            case Transition:
+            case TransitionMode:
                 jpsline->setTransition();
                 break;
             default:
@@ -2178,13 +2143,10 @@ void jpsGraphicsView::take_endpoint_from_xyEdit(const QPointF &endpoint)
         id_counter++;
 //        jpsline->setType(statWall,statDoor,statExit);
         switch (drawingMode){
-            case Wall:
+            case WallMode:
                 jpsline->setWall();
                 break;
-            case Crossing:
-                jpsline->setCrossing();
-                break;
-            case Transition:
+            case TransitionMode:
                 jpsline->setTransition();
                 break;
             default:
@@ -2267,9 +2229,9 @@ void jpsGraphicsView::change_gridmode()
 void jpsGraphicsView::en_disableWall()
 {
     qDebug("Enter jpsGraphicsView::en_disableWall");
-    drawingMode = Wall;
+    drawingMode = WallMode;
 
-    if(drawingMode != Wall)
+    if(drawingMode != WallMode)
     {
         emit no_drawing();
     } else
@@ -2283,7 +2245,7 @@ void jpsGraphicsView::en_disableWall()
 bool jpsGraphicsView::statusWall()
 {
     qDebug("Enter jpsGraphicsView::statusWall");
-    if(drawingMode == Wall)
+    if(drawingMode == WallMode)
     {
         return true;
     } else
@@ -2304,38 +2266,12 @@ bool jpsGraphicsView::get_stat_anglesnap()
     return anglesnap;
 }
 
-void jpsGraphicsView::en_disableCrossing()
-{
-    qDebug("Enter jpsGraphicsView::en_disableCrossing");
-    drawingMode = Crossing;
-
-    if(drawingMode != Crossing)
-    {
-        emit no_drawing();
-    } else
-    {
-        currentPen.setColor(Qt::blue);
-    }
-    qDebug("Leave jpsGraphicsView::en_disableCrossing");
-}
-
-bool jpsGraphicsView::statusDoor()
-{
-    qDebug("Enter jpsGraphicsView::statusDoor");
-    if(drawingMode == Crossing)
-    {
-        return true;
-    } else
-        return false;
-    qDebug("Leave jpsGraphicsView::statusDoor");
-}
-
 void jpsGraphicsView::enableTransition()
 {
     qDebug("Enter jpsGraphicsView::enableTransition");
-    drawingMode = Transition;
+    drawingMode = TransitionMode;
 
-    if(drawingMode != Transition)
+    if(drawingMode != TransitionMode)
     {
         emit no_drawing();
     } else
@@ -2348,9 +2284,9 @@ void jpsGraphicsView::enableTransition()
 void jpsGraphicsView::enableTrack()
 {
     qDebug("Enter jpsGraphicsView::enableTrack");
-    drawingMode = Track;
+    drawingMode = TrackMode;
 
-    if(drawingMode != Track)
+    if(drawingMode != TrackMode)
     {
         emit no_drawing();
     } else
@@ -2364,7 +2300,7 @@ bool jpsGraphicsView::statusHLine()
 {
     qDebug("Enter jpsGraphicsView::statusHLine");
 //    return _statHLine;
-    if(drawingMode == Hline)
+    if(drawingMode == HlineMode)
     {
         return true;
     } else
@@ -2376,9 +2312,9 @@ void jpsGraphicsView::en_disableHLine()
 {
     qDebug("Enter jpsGraphicsView::en_disableHLine");
     _statCopy=0;
-    drawingMode = Hline;
+    drawingMode = HlineMode;
 
-    if(drawingMode != Hline)
+    if(drawingMode != HlineMode)
     {
         emit no_drawing();
     } else
@@ -2392,7 +2328,7 @@ bool jpsGraphicsView::statusLandmark()
 {
     qDebug("Enter jpsGraphicsView::en_disableHLine");
 //    return statLandmark;
-    if(drawingMode == Landmark)
+    if(drawingMode == LandmarkMode)
     {
         qDebug("Leave jpsGraphicsView::en_disableHLine");
         return true;
@@ -2405,9 +2341,9 @@ void jpsGraphicsView::en_disableLandmark()
 {
     qDebug("Enter jpsGraphicsView::en_disableLandmark");
     _statCopy=0;
-    drawingMode = Landmark;
+    drawingMode = LandmarkMode;
 
-    if(drawingMode != Landmark)
+    if(drawingMode != LandmarkMode)
     {
         emit no_drawing();
     }
@@ -2624,9 +2560,9 @@ void jpsGraphicsView::ChangeGridSize(const qreal &gridSize)
 void jpsGraphicsView::enableSourceMode()
 {
     qDebug("Enter jpsGraphicsView::enableSourceMode");
-    setDrawingMode(Source);
+    setDrawingMode(SourceMode);
 
-    if(drawingMode != Source)
+    if(drawingMode != SourceMode)
     {
         emit no_drawing();
     } else
@@ -2734,7 +2670,7 @@ void jpsGraphicsView::seleteSource(const QModelIndex &index)
 //    return sourceGroup;
 //}
 
-// Goal Mode
+// GoalMode Mode
 /*
     since 0.8.8
 
@@ -2744,9 +2680,9 @@ void jpsGraphicsView::seleteSource(const QModelIndex &index)
 void jpsGraphicsView::enableGoalMode()
 {
     qDebug("Enter jpsGraphicsView::enableGoalMode");
-    setDrawingMode(Goal);
+    setDrawingMode(GoalMode);
 
-    if(drawingMode != Goal)
+    if(drawingMode != GoalMode)
     {
         emit no_drawing();
     } else
@@ -2879,9 +2815,9 @@ void jpsGraphicsView::drawMeasureLengthLine()
 void jpsGraphicsView::enableMeasureLengthMode()
 {
     qDebug("Enter jpsGraphicsView::enableMeasureLengthMode");
-    setDrawingMode(MeasureLength);
+    setDrawingMode(MeasureMode);
 
-    if(drawingMode != MeasureLength)
+    if(drawingMode != MeasureMode)
     {
         emit no_drawing();
     } else
@@ -2981,6 +2917,12 @@ void jpsGraphicsView::scaleDownBackground()
 void jpsGraphicsView::clearMarkedLineList()
 {
     qDebug("Enter jpsGraphicsView::clearMarkedLineList");
+
+    for(int i=0; i<marked_lines.size(); ++i)
+    {
+        removeLineFromLine_vector(marked_lines[i]);
+    }
+
     marked_lines.clear();
     qDebug("Leave jpsGraphicsView::clearMarkedLineList");
 }

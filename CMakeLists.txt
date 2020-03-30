@@ -132,13 +132,12 @@ set( SRCS
 
 ## Controllers
     src/mainWindow.cpp
-    src/widgets/roomwidget.cpp
+
     src/widgets/settingdialog.cpp
     src/widgets/inifilewidget.cpp
     src/widgets/snappingoptions.cpp
     src/widgets/widgetlandmark.cpp
-    src/widgets/widgetsettings.cpp
-    src/widgets/roomlistwidget.cpp
+        src/widgets/listwidget.cpp
     src/widgets/propertywidget.cpp
     src/widgets/transitionwidget.cpp
     src/widgets/layerwidget.cpp
@@ -146,6 +145,7 @@ set( SRCS
     src/widgets/runningwidget.cpp
     src/widgets/goalwidget.cpp
     src/widgets/sourcewidget.cpp
+    src/widgets/opendxfdialog.cpp
 
     src/GraphicView.cpp
     src/graphicscene.cpp
@@ -159,7 +159,6 @@ set( SRCS
 
 ## JPSelements
     src/jpszone.cpp
-    src/jpscrossing.cpp
     src/jpsLineItem.cpp
     src/jpstransition.cpp
     src/jpsobstacle.cpp
@@ -192,26 +191,25 @@ set( HDR
     src/GraphicView.h
     src/graphicscene.h
 
-    src/widgets/roomlistwidget.h
+    src/widgets/listwidget.h
     src/widgets/propertywidget.h
     src/widgets/transitionwidget.h
     src/widgets/layerwidget.h
     src/widgets/templatewidget.h
     src/widgets/runningwidget.h
-    src/widgets/roomwidget.h
+
     src/widgets/widgetlandmark.h
-    src/widgets/widgetsettings.h
     src/widgets/settingdialog.h
     src/widgets/inifilewidget.h
     src/widgets/snappingoptions.h
     src/widgets/sourcewidget.h
     src/widgets/goalwidget.h
+    src/widgets/opendxfdialog.h
 
 ## JPSelements
     src/jpsgoal.h
     src/jpszone.h
     src/datamanager.h
-    src/jpscrossing.h
     src/jpsLineItem.h
     src/jpstransition.h
     src/jpsobstacle.h
@@ -258,7 +256,6 @@ set( HDR
 # *.ui files
 set( UIS
     forms/mainwindow.ui
-    forms/roomwidget.ui
     forms/widgetlandmark.ui
     forms/widgetsettings.ui
     forms/settingdialog.ui
@@ -266,12 +263,13 @@ set( UIS
     forms/snappingoptions.ui
     forms/sourcewidget.ui
     forms/goalwidget.ui
-    forms/roomlistwidget.ui
+    forms/listwidget.ui
     forms/propertywidget.ui
     forms/transitionwidget.ui
     forms/layerwidget.ui
-    forms/templatewidget.ui
     forms/runningwidget.ui
+    forms/templatewidget.ui
+    forms/opendxfdialog.ui
   )
 
 # and finally a resource file

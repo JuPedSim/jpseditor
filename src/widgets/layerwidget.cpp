@@ -159,7 +159,7 @@ void LayerWidget::addItemsButtonClicked()
     qDebug("Enter LayerWidget::addItemsButtonClicked");
     if(ui->listWidget_layers->currentItem() != nullptr)
     {
-        // For wall, crossing, transition, track, hline
+        // For wall, transition, track, hline
         if(!view->get_markedLines().isEmpty())
         {
             foreach(jpsLineItem *line, view->get_markedLines())
@@ -254,10 +254,9 @@ void LayerWidget::highLight(QListWidgetItem *item)
     auto *layer = view->getLayerList()[ui->listWidget_layers->currentRow()];
     QString text = item->text();
 
-    if(text.contains("wall") || text.contains("crossing")
-    || text.contains("track") || text.contains("transition") || text.contains("hline"))
+    if(text.contains("track") || text.contains("transition") || text.contains("hline"))
     {
-        // For wall, crossing, transition, track, hline
+        // For wall, transition, track, hline
         auto *line = layer->getLineItemList()[ui->listWidget_items->currentRow()];
         view->markLine(line);
     }

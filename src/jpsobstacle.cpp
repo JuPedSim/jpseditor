@@ -27,7 +27,7 @@
 
 #include "jpsobstacle.h"
 
-jpsObstacle::jpsObstacle(int id): JPSZone(id, nullptr, Obstacle)
+jpsObstacle::jpsObstacle(int id): JPSZone(id, Obstacle)
 {
     qDebug("enter jpsObstacle::jpsObstacle");
     QString string="Obstacle ";

@@ -3,7 +3,7 @@
 //
 // Copyright (C) 2009 Hauke Heibel <hauke.heibel@gmail.com>
 //
-// This Source Code Form is subject to the terms of the Mozilla
+// This SourceMode Code Form is subject to the terms of the Mozilla
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
@@ -80,7 +80,7 @@ struct umeyama_transform_matrix_type
 *
 * \todo Should the return type of umeyama() become a Transform?
 *
-* \param src Source points \f$ \mathbf{x} = \left( x_1, \hdots, x_n \right) \f$.
+* \param src SourceMode points \f$ \mathbf{x} = \left( x_1, \hdots, x_n \right) \f$.
 * \param dst Destination points \f$ \mathbf{y} = \left( y_1, \hdots, y_n \right) \f$.
 * \param with_scaling Sets \f$ c=1 \f$ when <code>false</code> is passed.
 * \return The homogeneous transformation 

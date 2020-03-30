@@ -97,17 +97,29 @@ void TransitionWidget::applyRooms()
 
     for(JPSZone * room : data->getRoomlist())
     {
-        for(QList<JPSZone *> list : room->getZoneList())
-        {
-            for(JPSZone *subroom : list)
-            {
-                if(subroom->getName() == ui->comboBox_from->currentText())
-                    room1 = subroom;
+        if(room->getName() == ui->comboBox_from->currentText())
+            room1 = room;
 
-                if(subroom->getName() == ui->comboBox_to->currentText())
-                    room2 = subroom;
-            }
-        }
+        if(room->getName() == ui->comboBox_to->currentText())
+            room2 = room;
+    }
+
+    for(JPSZone * stair : data->getStair_list())
+    {
+        if(stair->getName() == ui->comboBox_from->currentText())
+            room1 = stair;
+
+        if(stair->getName() == ui->comboBox_to->currentText())
+            room2 = stair;
+    }
+
+    for(JPSZone * platform : data->getPlatform_list())
+    {
+        if(platform->getName() == ui->comboBox_from->currentText())
+            room1 = platform;
+
+        if(platform->getName() == ui->comboBox_to->currentText())
+            room2 = platform;
     }
 
     cTran->set_rooms(room1, room2);
@@ -129,23 +141,30 @@ void TransitionWidget::applyRooms()
 void TransitionWidget::showRoomsinButton(QListWidgetItem *item)
 {
     qDebug("Enter TransitionWidget::showRoomsinButton");
+    // Add room list
     ui->comboBox_from->clear();
     ui->comboBox_to->clear();
     ui->comboBox_from->addItem("Outside");
     ui->comboBox_to->addItem("Outside");
 
-    for(JPSZone *zone : data->getRoomlist())
+    for(JPSZone *room : data->getRoomlist())
     {
-        for(QList<JPSZone *> list : zone->getZoneList())
-        {
-            for(JPSZone *subroom : list)
-            {
-                ui->comboBox_from->addItem(subroom->getName());
-                ui->comboBox_to->addItem(subroom->getName());
-            }
-        }
+        ui->comboBox_from->addItem(room->getName());
+        ui->comboBox_to->addItem(room->getName());
     }
 
+    for(JPSZone *stair : data->getStair_list())
+    {
+        ui->comboBox_from->addItem(stair->getName());
+        ui->comboBox_to->addItem(stair->getName());
+    }
+
+    for(JPSZone *platform : data->getPlatform_list())
+    {
+        ui->comboBox_from->addItem(platform->getName());
+        ui->comboBox_to->addItem(platform->getName());
+    }
+    // Set current room
     int cRow = ui->listWidget_transitions->currentRow();
     auto *transition = data->getTransitionList()[cRow];
 

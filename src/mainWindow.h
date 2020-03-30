@@ -21,8 +21,7 @@
  * along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
  *
  * \section Description
- * This class is setting up the main window incl. all buttons and bars. It is the parent widget of all other widgets
- * (GraphicView, roomWidget, widgetLandmark).
+ * Controller for main window, connect data manager(model) and mainwinow.ui(view)
  *
  **/
 
@@ -33,29 +32,27 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QDockWidget>
+
 #include "ui_mainwindow.h"
-#include "src/widgets/roomwidget.h"
 #include "src/widgets/widgetlandmark.h"
-#include "src/widgets/widgetsettings.h"
-#include "src/widgets/roomlistwidget.h"
+#include "src/widgets/listwidget.h"
 #include "GraphicView.h"
 #include "datamanager.h"
 #include "jpszone.h"
+#include "src/XML/goalreader.h"
+#include "src/XML/sourcereader.h"
 #include "src/widgets/settingdialog.h"
 #include "src/widgets/inifilewidget.h"
 #include "src/widgets/snappingoptions.h"
 #include "src/widgets/sourcewidget.h"
 #include "src/widgets/goalwidget.h"
-#include "src/XML/goalreader.h"
-#include "src/XML/sourcereader.h"
 #include "src/widgets/propertywidget.h"
 #include "src/widgets/transitionwidget.h"
 #include "src/widgets/layerwidget.h"
-#include "src/widgets/templatewidget.h"
 #include "src/widgets/runningwidget.h"
+#include "src/widgets/opendxfdialog.h"
 
 class MWindow : public QMainWindow, private Ui::MainWindow {
-
     Q_OBJECT
 public:
     MWindow();
@@ -63,13 +60,17 @@ public:
 
 private:
     // qwidget pointers, will be deleted by QtWidgets itself
-    roomWidget *rwidget;
     widgetLandmark *lwidget;
     InifileWidget *inifileWidget;
 
     QDockWidget *bottomDockWidget;
     QDockWidget *propertyDockWidget;
     QDockWidget *listDockWidget;
+    ListWidget *listWidget;
+    PropertyWidget *propertyWidget;
+
+    SettingDialog *settingDialog;
+    OpenDXFDialog *openDXFDialog;
 
     QToolBar *drawing_toolbar_;
     QActionGroup *drawingActionGroup;
@@ -79,8 +80,6 @@ private:
 
     SnappingOptions* snappingOptions;
 
-    QGraphicsScene *mscene;
-    //QVBoxLayout* VBox;
     QLineEdit* length_edit;
     QLineEdit* x_edit;
     QLineEdit* y_edit;
@@ -91,9 +90,8 @@ private:
     QLabel* infoLabel;
     QString _filename;
 
-    SettingDialog *settingDialog;
-
-    /// Pointers, delete these in ~MWindow()
+    /// Model
+    QGraphicsScene *mscene;
     jpsDatamanager* dmanager;
 
     // CMap
@@ -110,8 +108,12 @@ private:
 
     QList<bool> objectsnapping;
 
+    // Zone type in list widget
+    ZoneType curentTypeListwidget;
 
 public slots:
+
+    void ShowInfoOnStatusBar(QString info);
     
     //parseFiles
     void openFileDXF();
@@ -139,7 +141,6 @@ public slots:
     //drawing options
     void anglesnap();
     void en_disableWall();
-    void en_disableCrossing();
     void en_disableLandmark();
     void en_disableHLine();
     void objectsnap();
@@ -152,19 +153,15 @@ public slots:
     void show_coords();
     void deleteAllContents();
     void delete_marked_lines();
-    void send_length();
+
     void en_selectMode();
     void dis_selectMode();
-//    void lines_deleted();
     void ShowLineLength();
     void ScaleLines();
     void enableScale();
 
     void send_xy();
     
-    //Room and landmark def
-    void define_room();
-    void autoDefine_room();
     void define_landmark();
     
     //view options
@@ -184,14 +181,14 @@ public slots:
     //void UpdateCMap();
 
     //quit
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event) override;
 
     // ESCAPE
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
 
     void showStatusBarMessage(QString msg, int duration);
 
-    // MeasureLength
+    // MeasureMode
     void measureLengthButtonClicked();
     void msgReceived(QString Msg);
 
@@ -207,7 +204,9 @@ public slots:
     // Time
     void setTimer(int interval);
 
+
 private slots:
+    //TODO: Redesign with signal and slot
     void on_actionCopy_triggered();
     void on_actionOnline_Help_triggered();
     void on_actionClear_all_Rooms_and_Doors_triggered();
@@ -225,15 +224,17 @@ private slots:
 
     //Zone ToolBar
     void setupZoneToolBar();
-    void corridorButtonClicked();
-    void platformButtonClicked();
-    void lobbyButtonClicked();
-    void officeButtonClicked();
-    void stairButtonClicked();
 
-    // PropertyDockWidget
-    void addPropertyDockWidget(JPSZone *zone);
+    // Property widget
+    void roomButtonClicked();
+    void platformButtonClicked();
+    void stairButtonClicked();
+    void transitionWidgetButtonClicked();
+    void sourceWidgetButtonClicked();
+    void goalWidgetButtonClicked();
+    void addPropertyDockWidget(JPSZone *zone); // used in room list widget
     void closePropertyDockWidget();
+
 
     // ListDockWidget
     void addListDockWidget(const QString &type);

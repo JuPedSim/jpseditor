@@ -39,7 +39,6 @@
 #include <QtXml>
 
 #include "jpszone.h"
-#include "jpscrossing.h"
 #include "jpsLineItem.h"
 #include "jpstransition.h"
 #include "jpsobstacle.h"
@@ -63,11 +62,17 @@ public:
     ///Zone
     QList<JPSZone *> get_roomlist();
     void addRoom();
-    bool isRepeatedRoomName(QString name);
+    bool isRepeatedZoneName(QString name);
     void remove_room(JPSZone* room);
     void change_roomName(JPSZone* room, QString name);
     void remove_all_rooms();
-    JPSZone *getSubroomWithID(QString room_id, QString subroom_id);
+    const QList<JPSZone *> &getPlatform_list() const;
+    const QList<JPSZone *> &getStair_list() const;
+    void removeStair(JPSZone* stair);
+    void removePlatform(JPSZone* platform);
+    void remove_all_stairs();
+    void remove_all_platforms();
+    JPSZone * getZonefromId(int id) const;
 
     ///Obstacle
     QList<jpsObstacle *> get_obstaclelist();
@@ -76,15 +81,13 @@ public:
     void change_obstacleName(jpsObstacle* obs, QString name);
     void remove_all_obstacles();
 
-    ///Transition
+    ///TransitionMode
     QList<jpsTransition *> getTransitionList();
-    void new_exit(QList<jpsLineItem *> newExits);
     void newTransition(jpsLineItem *transition);
     void removeAllTransition();
     QList<jpsTransition *> getTransitionInSubroom(JPSZone* subroom);
-    void recognizeRoomForTransition(jpsTransition *transition);
 
-    ///Landmark
+    ///LandmarkMode
     QList<jpsLandmark *> get_landmarks();
     void new_landmark(jpsLandmark * newlandmark);
     void remove_landmark(jpsLandmark* landmark);
@@ -120,12 +123,13 @@ public:
 
     ///Traffic
     void writeTrafficXML(QFile &file);
-    void writeTraffics(QXmlStreamWriter *stream, QList<jpsCrossing *> const &doorlist);
+    void writeTraffics(QXmlStreamWriter *stream);
     bool readTrafficXML(QFile &file);
     void readDoor(QXmlStreamReader &xmlReader);
 
     void remove_all();
     void remove_marked_lines();
+
     void set_view(jpsGraphicsView* view);
     jpsGraphicsView* get_view();
 
@@ -137,7 +141,6 @@ public:
     void parseUndefine(const QDomElement &element);
     void parseRoom(const QDomElement &element);
     void parseSubRoom(const QDomElement &element);
-    void parseCrossings(const QDomElement &element);
 
     void parseObstacles(QXmlStreamReader &xmlReader, JPSZone *room);
 
@@ -155,7 +158,6 @@ public:
     QString RoomIDHLine(jpsLineItem* lineItem);
     void writeRooms(QXmlStreamWriter *stream, QList<jpsLineItem* >& lines);
     void writeSubRoom(QXmlStreamWriter *stream, JPSZone* room, QList<jpsLineItem* >& lines);
-    void writeCrossings(QXmlStreamWriter *stream, JPSZone *room, QList<jpsLineItem *> &lines);
     void writeTransitions(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines);
     void writeObstacles(QXmlStreamWriter *stream, jpsObstacle *obs, QList<jpsLineItem *> &lines);
     void writeNotAssignedLines(QXmlStreamWriter *stream, QList<jpsLineItem *> &lines);
@@ -190,8 +192,11 @@ public:
 
     // Read DXF
     bool readDXF(std::string filename);
+    bool readLayersInDXF(std::string filename);
     void addLine(const DL_LineData& d) override;
-    QStringList unimported_layer;
+    void addLayer(const DL_LayerData &d) override;
+    QList<QString> get_layerInDXF();
+    void addItemInImportLayers(QString layer, QString type);
 
     // write DXF
     void writeDXF(std::string filename);
@@ -211,25 +216,15 @@ public:
     const QList<JPSZone *> &getRoomlist() const;
 
     // add zones
-    void addPlatform(JPSZone *father_room);
-    void addCorridor(JPSZone *father_room);
-    void addLobby(JPSZone *father_room);
-    void addOffice(JPSZone *father_room);
-    void addStair(JPSZone *father_room);
+    void addPlatform();
+    void addStair();
 
     // delete zones
     void removeRoom(JPSZone *room);
-    void removeZone(JPSZone *room, JPSZone *zone);
-
-    // Deprecated! datamanager doesn't control crossing anymore
-    QList<jpsCrossing *> get_crossingList();
-    void new_crossing(QList<jpsLineItem *> newCrossing);
-    void new_crossing(jpsLineItem* newCrossing);
-    void remove_crossing(jpsCrossing* crossing);
-    void change_crossingName(jpsCrossing* crossing, QString name);
 
     // Transition
     void removeTransition(jpsTransition *transition);
+    const QMap<QString, QString> &getImportLayers() const;
 
 /*
     //Show Cognitive Map
@@ -241,16 +236,16 @@ public:
 private:
     //Geometry
     QList<JPSZone *> roomlist; // zontType is room
-
-    int zone_id; // For identify zone
-
-    int transition_id; // for identiy transition
-
-    QList<jpsObstacle *> obstaclelist;
-
     QList<JPSSource *> sourcelist;
     QList<JPSGoal *> goallist;
     QList<jpsTransition *> transition_list;
+    QList<JPSZone *> platform_list; // zontType is platform
+    QList<JPSZone *> stair_list; // zontType is stair
+    QList<jpsObstacle *> obstaclelist;
+
+    int zone_id; // for identify zone
+    int transition_id; // for identiy transition
+    int obstacle_id; // for identiy obstacle
 
     QList<jpsLandmark* > _landmarks;
     QList<jpsConnection* > _landmarkConnections;
@@ -258,10 +253,6 @@ private:
     QList<jpsConnection* > _ConnectionsAfterLandmarkLoose;
     QList<jpsRegion* > _regions;
 
-    QList<JPSTrack *> track_list; // fow saving tracks
-
-    int obs_id_counter;
-    int _crossingIdCounter;
     QWidget* parent_widget;
     jpsGraphicsView* _mView;
 
@@ -277,13 +268,11 @@ private:
 
     std::default_random_engine _generator;
 
-    bool isInCrossingList(jpsLineItem *markedLine);
-
     // For DXF import
     QList<QPointF> points; // Points in rects of sources or goals
-
-    // Deprecated
-    QList<jpsCrossing *> crossingList;
+    QMap<QString, QString> importLayers; // Layers that will import from dxf files
+    QList<QString> layerInDXF; // Layers that are in dxf files
+    bool writeLineNow = false; // If it's ready to read lines, default it's false
 
 };
 

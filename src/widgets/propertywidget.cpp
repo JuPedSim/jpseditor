@@ -1,32 +1,3 @@
-/***************************************************************
- *
- * \file basiczonewidget.cpp
- * \date 2019-06-24
- * \version 0.8.9
- * \author Tao Zhong
- * \copyright <2009-2019> Forschungszentrum Jülich GmbH. All rights reserved.
- *
- * \section Lincense
- * This file is part of JuPedSim.
- *
- * JuPedSim is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * JuPedSim is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with JuPedSim. If not, see <http://www.gnu.org/licenses/>.
- *
- * \section Description
- *
- * This class is for corridor, office, lobby, entrance property widget
-****************************************************************/
-
 #include "propertywidget.h"
 #include "ui_propertywidget.h"
 
@@ -38,11 +9,15 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
     ui->setupUi(this);
     view = gview;
     data = dmanager;
+
     current_zone = zone;
 
     // Change layout depends on type
     if(zone != nullptr)
-        updateWidget(zone->getType());
+    {
+        zoneType = zone->getType();
+        updateWidget();
+    }
 
     // Update list widget if line deleted
     connect(view, SIGNAL(markedLineDeleted()), this, SLOT(updateListwidget()));
@@ -56,24 +31,16 @@ PropertyWidget::PropertyWidget(QWidget *parent, jpsDatamanager *dmanager,
     connect(ui->pushButton_removeWall, SIGNAL(clicked()), this, SLOT(removeWallButtonClicked()));
     connect(ui->listWidget_walls, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlightWall(QListWidgetItem *)));
 
-    // For crossing tab
-    connect(ui->pushButton_addCrossing, SIGNAL(clicked()), this, SLOT(addCrossingButtonClicked()));
-    connect(ui->pushButton_removeCrossing, SIGNAL(clicked()), this, SLOT(removeCrossingButtonClicked()));
-    connect(ui->listWidget_crossing, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlightWall(QListWidgetItem*)));
-    connect(ui->pushButton_applyOutflow, SIGNAL(clicked()), this, SLOT(applyOutflowButtonClicked()));
-    connect(ui->pushButton_applyMaxAgents, SIGNAL(clicked()), this, SLOT(applyMaxagentsButtonClicked()));
-    connect(ui->listWidget_crossing, SIGNAL(itemClicked(QListWidgetItem *)),
-            this, SLOT(updateCrossingInfo(QListWidgetItem*)));
-
-    // For inspector tab
-    connect(ui->pushButton_applyElevation, SIGNAL(clicked()), this, SLOT(applyElevationButtonClicked()));
-
     // For track tab
     connect(ui->pushButton_addTrack, SIGNAL(clicked()), this, SLOT(addTrackButtonClicked()));
     connect(ui->pushButton_removeTrack, SIGNAL(clicked()), this, SLOT(removeTrackButtonClicked()));
     connect(ui->listWidget_track, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(highlightWall(QListWidgetItem*)));
     connect(ui->listWidget_track, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(updateType(QListWidgetItem*)));
     connect(ui->pushButton_applyType, SIGNAL(clicked()), this, SLOT(applyTypeButtonClicked()));
+
+    // For property tab
+    connect(ui->pushButton_applyProperty, SIGNAL(clicked()), this, SLOT(applyButtonClicked()));
+
     qDebug("Leave PropertyWidget::PropertyWidget");
 }
 
@@ -84,43 +51,30 @@ PropertyWidget::~PropertyWidget()
     qDebug("Leave PropertyWidget::~PropertyWidget");
 }
 
-void PropertyWidget::updateWidget(ZoneType type)
+void PropertyWidget::updateWidget()
 {
     qDebug("Enter PropertyWidget::updateWidget");
-    switch(type)
+    switch(zoneType)
     {
         case Room:
-            ui->tabWidget->removeTab(0); // Remove wall tab
-            ui->tabWidget->removeTab(0); // Remove track tab
-            ui->tabWidget->removeTab(0); // Remove crossing tab
-            break;
-        case Corridor:
             ui->tabWidget->removeTab(1); // Remove track tab
-            updateWallListWidget();
-            updateCrossingListWidget();
             break;
+
         case Platform:
             ui->tabWidget->removeTab(0); // Remove wall tab
-            updateTrackListWidget();
-            updateCrossingListWidget();
             break;
-        case Lobby:
-            ui->tabWidget->removeTab(1); // Remove track tab
-            updateWallListWidget();
-            updateCrossingListWidget();
-            break;
-        case Office:
-            ui->tabWidget->removeTab(1); // Remove track tab
-            updateWallListWidget();
-            updateCrossingListWidget();
+
         case Stair:
             ui->tabWidget->removeTab(1); // Remove track tab
-            updateWallListWidget();
-            updateCrossingListWidget();
+            ui->tabWidget->removeTab(1); // Remove property tab
+            break;
         default:
             qDebug("Leave PropertyWidget::updateWidget");
             return;
     }
+
+    updateListwidget();
+    updatePropertyWidget();
     qDebug("Leave PropertyWidget::updateWidget");
 }
 
@@ -129,7 +83,6 @@ void PropertyWidget::updateListwidget()
     qDebug("Enter PropertyWidget::updateListwidget");
 
     updateWallListWidget();
-    updateCrossingListWidget();
     updateTrackListWidget();
 
 }
@@ -204,17 +157,10 @@ void PropertyWidget::highlightWall(QListWidgetItem *item)
 {
     qDebug("Enter PropertyWidget::highlightWall");
     int wRow = ui->listWidget_walls->currentRow();
-    int cRow = ui->listWidget_crossing->currentRow();
     int tRow = ui->listWidget_track->currentRow();
     int index = ui->tabWidget->currentIndex();
 
-    if(ui->tabWidget->tabText(index) == "Crossing")
-    {
-        auto *line = current_zone->getEnterAndExitList()[cRow];
-        view->unmark_all_lines();
-        view->markLine(line->get_cLine());
-    }
-    else if(ui->tabWidget->tabText(index) == "Wall")
+    if(ui->tabWidget->tabText(index) == "Wall")
     {
         auto *line= current_zone->get_listWalls()[wRow];
         view->unmark_all_lines();
@@ -227,106 +173,6 @@ void PropertyWidget::highlightWall(QListWidgetItem *item)
         view->markLine(line->getLine());
     }
     qDebug("Leave PropertyWidget::highlightWall");
-}
-
-void PropertyWidget::updateCrossingListWidget()
-{
-    qDebug("Enter PropertyWidget::updateCrossingListWidget");
-    ui->listWidget_crossing->clear();
-
-    if(current_zone == nullptr)
-        return;
-
-    QList<jpsCrossing *> crossing_list = current_zone->getEnterAndExitList();
-
-    if(crossing_list.isEmpty())
-    {
-        qDebug("Leave PropertyWidget::updateCrossingListWidget");
-        return;
-    }
-
-    for (int i = 0; i < crossing_list.size(); i++)
-    {
-        QString string = "";
-        string.sprintf("[%+06.3f, %+06.3f] - [%+06.3f, %+06.3f]",
-                       crossing_list[i]->get_cLine()->get_line()->line().x1(),
-                       crossing_list[i]->get_cLine()->get_line()->line().x2(),
-                       crossing_list[i]->get_cLine()->get_line()->line().y1(),
-                       crossing_list[i]->get_cLine()->get_line()->line().y2());
-
-        ui->listWidget_crossing->addItem(string);
-    }
-
-    qDebug("Leave PropertyWidget::updateCrossingListWidget");
-}
-
-void PropertyWidget::addCrossingButtonClicked()
-{
-    qDebug("Enter PropertyWidget::addCrossingButtonClicked");
-    if(!view->get_markedLines().isEmpty())
-    {
-        foreach(jpsLineItem *line, view->get_markedLines())
-        {
-            if(line->getType() == "crossing" && current_zone->getFatherRoom() != nullptr)
-            {
-                if(current_zone->getFatherRoom()->getExitedCrossing(line) == nullptr)
-                {
-                    auto *crossing = new jpsCrossing(line);
-                    current_zone->getFatherRoom()->addCrossing(crossing); // add into crossing list of the room
-                    current_zone->addInEnterAndExitList(crossing); // add as enter of exit of the subroom
-                }
-                else
-                {
-                    // this line is already for creating crossing, use existing crossing to add
-                    auto *crossing = current_zone->getFatherRoom()->getExitedCrossing(line);
-                    current_zone->addInEnterAndExitList(crossing); // add as enter of exit of the subroom
-                }
-            }
-        }
-    }
-
-    updateCrossingListWidget();
-    qDebug("Leave PropertyWidget::addCrossingButtonClicked");
-}
-
-void PropertyWidget::removeCrossingButtonClicked()
-{
-    qDebug("Enter PropertyWidget::removeCrossingButtonClicked");
-    int row = ui->listWidget_crossing->currentRow();
-
-    if(row == -1) // There is no rows in list
-        return;
-
-    if(current_zone != nullptr && current_zone->getFatherRoom() != nullptr)
-    {
-        auto* crossing = current_zone->getEnterAndExitList()[row];
-
-        current_zone->removeEnterOrExit(crossing); // Remove from enter or exit list of subroom
-        current_zone->getFatherRoom()->removeCrossing(crossing); // Remove from crossing list of room
-
-        ui->listWidget_crossing->setCurrentRow(-1); // Set no focus
-    }
-
-    updateCrossingListWidget();
-    qDebug("Leave PropertyWidget::removeCrossingButtonClicked");
-}
-
-void PropertyWidget::applyElevationButtonClicked()
-{
-    qDebug("Enter PropertyWidget::applyElevationButtonClicked");
-    float elevation = ui->lineEdit_elevation->text().toFloat();
-
-    if(current_zone == nullptr)
-        return;
-
-    current_zone->set_elevation(elevation);
-
-    // Setting elevation which in subrooms
-    for(auto transition : data->getTransitionInSubroom(current_zone))
-    {
-        transition->setElevation(elevation);
-    }
-    qDebug("Leave PropertyWidget::applyElevationButtonClicked");
 }
 
 void PropertyWidget::updateTrackListWidget()
@@ -344,8 +190,6 @@ void PropertyWidget::updateTrackListWidget()
         qDebug("Leave PropertyWidget::updateTrackListWidget");
         return;
     }
-
-
 
     for (int i = 0; i < track_list.size(); i++)
     {
@@ -420,50 +264,97 @@ void PropertyWidget::applyTypeButtonClicked()
     qDebug("Leave PropertyWidget::applyTypeButtonClicked");
 }
 
-void PropertyWidget::applyOutflowButtonClicked()
-{
-    qDebug("Enter PropertyWidget::applyOutflowButtonClicked");
-    QString outflow = ui->lineEdit_outflow->text();
-
-    if(current_zone != nullptr)
-        current_zone->getEnterAndExitList()[ui->listWidget_crossing->currentRow()]->setOutflow(outflow);
-
-    qDebug("Leave PropertyWidget::applyOutflowButtonClicked");
-}
-
-void PropertyWidget::applyMaxagentsButtonClicked()
-{
-    qDebug("Enter PropertyWidget::applyMaxagentsButtonClicked");
-    QString maxagents = ui->lineEdit_maxAgents->text();
-
-    if(current_zone != nullptr)
-        current_zone->getEnterAndExitList()[ui->listWidget_crossing->currentRow()]->setMaxAgents(maxagents);
-    qDebug("Leave PropertyWidget::applyMaxagentsButtonClicked");
-}
-
-void PropertyWidget::updateCrossingInfo(QListWidgetItem *item)
-{
-    qDebug("Enter PropertyWidget::updateCrossingInfo");
-    ui->lineEdit_outflow->clear();
-    ui->lineEdit_maxAgents->clear();
-
-    if(current_zone == nullptr || item == nullptr)
+void PropertyWidget::updatePropertyWidget()
+{   
+    qDebug("Enter PropertyWidget::updatePropertyWidget");
+    if(current_zone == nullptr)
         return;
 
-    auto *crossing = current_zone->getEnterAndExitList()[ui->listWidget_crossing->currentRow()];
-    ui->lineEdit_outflow->setText(crossing->getOutflow());
-    ui->lineEdit_maxAgents->setText(crossing->getMaxAgents());
-    qDebug("Leave PropertyWidget::updateCrossingInfo");
+    switch(zoneType)
+    {
+        case Room:
+            ui->comboBox_locateIn->setEnabled(false);
+            ui->comboBox_roomType->setCurrentIndex(getRoomType(current_zone));
+            ui->lineEdit_elevation->setText(QString::number(current_zone->get_elevation()));
+            break;
+
+        case Platform:
+            ui->comboBox_locateIn->setEnabled(false);
+            ui->comboBox_roomType->setEnabled(false);
+            ui->lineEdit_elevation->setText(QString::number(current_zone->get_elevation()));
+            break;
+        default:
+            qDebug("Leave PropertyWidget::updateWidget");
+            return;
+    }
+
+    qDebug("Leave PropertyWidget::updatePropertyWidget");
 }
 
-void PropertyWidget::clearListWidget()
+int PropertyWidget::getRoomType(JPSZone *zone)
 {
-    qDebug("Enter PropertyWidget::clearListWidget");
-    current_zone = nullptr;
-
-    ui->listWidget_crossing->clear();
-    ui->listWidget_track->clear();
-    ui->listWidget_walls->clear();
-    qDebug("Leave PropertyWidget::clearListWidget");
+    qDebug("Enter PropertyWidget::getRoomType");
+    switch(zone->getRoomType())
+    {
+        case Corridor:
+            return 0;
+        case Office:
+            return 1;
+        case Lobby:
+            return 2;
+        case Entrance:
+            return 3;
+    }
+    qDebug("Leave PropertyWidget::getRoomType");
+    return 0;
 }
 
+void PropertyWidget::applyButtonClicked()
+{
+    qDebug("Enter PropertyWidget::applyButtonClicked");
+    if(current_zone == nullptr)
+        return;
+
+    switch(zoneType)
+    {
+        case Room:
+            current_zone->set_elevation(ui->lineEdit_elevation->text().toFloat());
+            current_zone->setRoomType(getRoomTypeFromString(ui->comboBox_roomType->currentText()));
+            break;
+        case Platform:
+            current_zone->set_elevation(ui->lineEdit_elevation->text().toFloat());
+            break;
+        case Stair:
+            break;
+        default:
+            qDebug("Leave PropertyWidget::updateWidget");
+            return;
+    }
+    qDebug("Leave PropertyWidget::applyButtonClicked");
+}
+
+RoomType PropertyWidget::getRoomTypeFromString(QString type)
+{
+    qDebug("Enter getRoomTypeFromString");
+    if(type == "Corridor")
+    {
+        return Corridor;
+    }
+    else if(type == "Office")
+    {
+        return Office;
+    }
+    else if(type == "Lobby")
+    {
+        return Lobby;
+    }
+    else if(type == "Entrance")
+    {
+        return Entrance;
+    }
+    else
+    {
+        return Corridor;
+    }
+    qDebug("Leave getRoomTypeFromString");
+}

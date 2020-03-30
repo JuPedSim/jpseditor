@@ -1,7 +1,7 @@
 /**
- * \file        jpsexit.cpp
- * \date        Oct-01-2018
- * \version     v0.8.4
+ * \file        jpstransition.cpp
+ * \date        Feb-25-2020
+ * \version     v0.8.9
  * \copyright   <2009-2018> Forschungszentrum Jülich GmbH. All rights reserved.
  *
  * \section License
@@ -22,7 +22,6 @@
  *
  * \section Description
  * This class is representing an exit to the outside. This class will vanish in the nearer future since the class
- * jpscrossing will overtake the objectives of this class.
  *
  **/
 
@@ -64,11 +63,6 @@ void jpsTransition::change_name(QString name)
     qDebug("Leave jpsTransition::change_name");
 }
 
-QString jpsTransition::get_type()
-{
-    qDebug("Enter/Return");
-    return _type;
-}
 
 int jpsTransition::get_id()
 {
@@ -83,12 +77,6 @@ void jpsTransition::set_id(int id)
     qDebug("Leave jpsTransition::set_id");
 }
 
-void jpsTransition::set_type(QString type)
-{
-    qDebug("Enter jpsTransition::set_type");
-    _type=type;
-    qDebug("Leave jpsTransition::set_type");
-}
 
 void jpsTransition::set_rooms(JPSZone *room1, JPSZone *room2)
 {

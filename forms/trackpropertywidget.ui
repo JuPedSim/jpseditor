@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Track Property</string>
+   <string>TrackMode Property</string>
   </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
@@ -50,7 +50,7 @@
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Number of Track</string>
+         <string>Number of TrackMode</string>
         </property>
        </widget>
       </item>

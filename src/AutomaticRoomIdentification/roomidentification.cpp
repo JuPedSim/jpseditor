@@ -1,5 +1,4 @@
 #include "roomidentification.h"
-#include "../jpscrossing.h"
 #include <QGraphicsLineItem>
 #include <fstream>
 #include <QFileDialog>
@@ -35,7 +34,7 @@ void RoomIdentification::IdentifyRooms()
         else
             ratioBBox=bBox.height()/bBox.width();
 
-        int numberDoors = room->getCrossingList().size();
+//        int numberDoors = room->getCrossingList().size();
 
 
         double penalty_common=0.0;
@@ -46,8 +45,8 @@ void RoomIdentification::IdentifyRooms()
         penalty_common+=diffRatioBBoxArea/_commonRoom._stdRatioBBoxArea;
         double diffRatioBBox=std::fabs(ratioBBox-_commonRoom._meanRatioBBox);
         penalty_common+=diffRatioBBox/_commonRoom._stdRatioBBox;
-        double diffNumDoors=std::fabs(numberDoors-_commonRoom._meanNumDoors);
-        penalty_common+=diffNumDoors/_commonRoom._stdNumDoors;
+//        double diffNumDoors=std::fabs(numberDoors-_commonRoom._meanNumDoors);
+//        penalty_common+=diffNumDoors/_commonRoom._stdNumDoors;
 
         double penalty_circ=0.0;
 
@@ -57,13 +56,12 @@ void RoomIdentification::IdentifyRooms()
         penalty_circ+=diffRatioBBoxArea/_circRoom._stdRatioBBoxArea;
         diffRatioBBox=std::fabs(ratioBBox-_circRoom._meanRatioBBox);
         penalty_circ+=diffRatioBBox/_circRoom._stdRatioBBox;
-        diffNumDoors=std::fabs(numberDoors-_circRoom._meanNumDoors);
-        penalty_circ+=diffNumDoors/_circRoom._stdNumDoors;
+//        diffNumDoors=std::fabs(numberDoors-_circRoom._meanNumDoors);
+//        penalty_circ+=diffNumDoors/_circRoom._stdNumDoors;
 
         // add 2.3 to penalty_circ to increase accuracy of correct declaration. The value has been found by trial
         if (2.3+penalty_circ>penalty_common)
         {
-            room->setType(Office);
             //std::cout << "Office" << std::endl;
             //std::cout << "Circ " << penalty_circ << std::endl;
             //std::cout << "Common " << penalty_common << std::endl;
@@ -71,7 +69,7 @@ void RoomIdentification::IdentifyRooms()
         else
         {
             //std::cout << "Corridor" << std::endl;
-            room->setType(Corridor);
+
 
         }
 
@@ -85,7 +83,7 @@ void RoomIdentification::GatherData()
         room->IdentifyInnerOuter();
         double area= room->GetArea();
         QRectF bBox = room->CalculateBoundingBox();
-        int numberDoors = room->getCrossingList().size();
+//        int numberDoors = room->getCrossingList().size();
 
         double ratioBBox=0.0;
         if (bBox.width()<bBox.height())
@@ -94,13 +92,13 @@ void RoomIdentification::GatherData()
             ratioBBox=bBox.height()/bBox.width();
 
         int numberGreatDoors = 0; // number of doors greater than 1.25 meters
-        for (jpsCrossing* door : room->getCrossingList())
-        {
-            if (door->get_cLine()->get_line()->line().length()>1.25)
-            {
-                ++numberGreatDoors;
-            }
-        }
+//        for (jpsCrossing* door : room->getCrossingList())
+//        {
+//            if (door->get_cLine()->get_line()->line().length()>1.25)
+//            {
+//                ++numberGreatDoors;
+//            }
+//        }
         // type; area; ratio bounding box- area; ratio bounding box
 
         QString type = QString(room->getType());
@@ -110,8 +108,7 @@ void RoomIdentification::GatherData()
         std::string filename = "roomtypedata.txt";
         data.open(filename , std::ofstream::out | std::ofstream::app);
         data << type.toStdString() << ";" << std::to_string(area) << ";"
-                   << std::to_string((bBox.width()*bBox.height())/area) << ";" << std::to_string(ratioBBox) << ";"
-                   << std::to_string(numberDoors) << std::endl;
+             << std::to_string((bBox.width()*bBox.height())/area) << ";" << std::to_string(ratioBBox) << ";" << std::endl;
         data.close();
 
 

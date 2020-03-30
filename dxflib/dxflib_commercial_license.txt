@@ -70,16 +70,16 @@ RibbonSoft's or any of its suppliers' names, logos, or trademarks to
 market Application(s), except to state that Application was developed 
 using the Licensed Software.
 
-NOTE: dxflib Open Source Edition is licensed under the terms of the 
+NOTE: dxflib Open SourceMode Edition is licensed under the terms of the
 GPL and not under this Agreement. If Licensee has, at any time, 
 developed all (or any portions of) the Application(s) using RibbonSoft's 
-publicly licensed dxflib Open Source Edition, Licensee must comply 
+publicly licensed dxflib Open SourceMode Edition, Licensee must comply
 with RibbonSoft's requirements and license such Application(s) 
 (or any portions derived there from) under the terms of the Free Software 
 Foundation's GNU General Public License version 2 (the "GPL") a copy of 
 which is located at http://www.gnu.org/copyleft/gpl.html#SEC1 
 (i.e., any Product(s) and/or parts, components, portions thereof developed 
-using GPL licensed software, including dxflib Open Source Edition, must 
+using GPL licensed software, including dxflib Open SourceMode Edition, must
 be licensed under the terms of the GPL, and the GPL-based source code must 
 be made available upon request).
 
