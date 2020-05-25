@@ -1,6 +1,26 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## v0.8.9 [11.04.2020]
+### Added
+- Select layers in dxf files before importing dxf files #215
+- Write and read source and goal in geometry #207
+- Running JPSvis in JPSeditor #199
+- Running JPScore in JPSeditor #197
+- Terminal for running simulation #143
+- Adding Background #161
+- Ini files templates #178
+- Creating log files by running #182
+
+### Changed
+- Recognize dxf files in new JPSXML format #212
+- Highlighting for whole room #195
+
+### Bugs Fixed
+- Fixed selecting for new elements #13
+- Drew lines by coordinates #95
+
+
 ## v0.8.8 [03.05.2019]
 ### Added
 - Add GoalMode/SourceMode element for drawing #109
