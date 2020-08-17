@@ -870,10 +870,12 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineIte
             {
                 //outside
                 stream->writeAttribute("room1_id","-1");
+                stream->writeAttribute("subroom1_id","-1");
             } else
             {
                 //room
                 stream->writeAttribute("room1_id",QString::number(transition->get_roomList()[0]->get_id()));
+                stream->writeAttribute("subroom1_id",QString::number(transition->get_roomList()[0]->get_id()));
             }
 
             // room 2
@@ -881,10 +883,12 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineIte
             {
                 //outside
                 stream->writeAttribute("room2_id","-1");
+                stream->writeAttribute("subroom2_id","-1");
             } else
             {
                 //room
                 stream->writeAttribute("room2_id",QString::number(transition->get_roomList()[1]->get_id()));
+                stream->writeAttribute("subroom2_id",QString::number(transition->get_roomList()[1]->get_id()));
             }
 
             stream->writeStartElement("vertex");
