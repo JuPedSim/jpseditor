@@ -4,7 +4,7 @@
 // Copyright (C) 2008 Gael Guennebaud <gael.guennebaud@inria.fr>
 // Copyright (C) 2010,2012 Jitse Niesen <jitse@maths.leeds.ac.uk>
 //
-// This Source Code Form is subject to the terms of the Mozilla
+// This SourceMode Code Form is subject to the terms of the Mozilla
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
@@ -326,7 +326,7 @@ RealSchur<MatrixType>& RealSchur<MatrixType>::computeFromHessenberg(const HessMa
       }
       else // No convergence yet
       {
-        // The firstHouseholderVector vector has to be initialized to something to get rid of a silly GCC warning (-O1 -Wall -DNDEBUG )
+        // The firstHouseholderVector vector has to be initialized to something to get rid of a silly GCC warning (-O1 -WallMode -DNDEBUG )
         Vector3s firstHouseholderVector(0,0,0), shiftInfo;
         computeShift(iu, iter, exshift, shiftInfo);
         iter = iter + 1;

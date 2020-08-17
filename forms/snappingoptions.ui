@@ -48,8 +48,8 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>40</y>
-      <width>181</width>
+      <y>30</y>
+      <width>178</width>
       <height>88</height>
      </rect>
     </property>
@@ -59,12 +59,18 @@
        <property name="text">
         <string>Start - endpoint </string>
        </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QCheckBox" name="intersectionspointBox">
        <property name="text">
         <string>Intersections point</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -73,12 +79,18 @@
        <property name="text">
         <string>Center point</string>
        </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QCheckBox" name="linepointBox">
        <property name="text">
         <string>Point on the selected line</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
        </property>
       </widget>
      </item>

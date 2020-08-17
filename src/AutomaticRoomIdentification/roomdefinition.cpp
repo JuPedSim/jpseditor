@@ -1,9 +1,7 @@
 #include "roomdefinition.h"
 #include "../datamanager.h"
-#include "../jpsLineItem.h"
-#include "./djsf.h"
 #include "./roomID.h"
-#include "roomidentification.h"
+
 
 RoomDefinition::RoomDefinition()
 {
@@ -51,8 +49,8 @@ void RoomDefinition::SetUpRoomsAndDoors()
 
     for (const std::list<double>& room:roomList)
     {
-        _dManager->new_room();
-        jpsRoom* cRoom = _dManager->get_roomlist().back();
+        _dManager->addRoom();
+        JPSZone* cRoom = _dManager->get_roomlist().back();
         std::vector<double> roomasVector = std::vector<double>{room.begin(),room.end()};
         for (size_t i=0; i<roomasVector.size(); i+=4)
         {
@@ -60,24 +58,10 @@ void RoomDefinition::SetUpRoomsAndDoors()
             jpsLineItem* cLineItem = FindLineItem(line);
             if (cLineItem->is_Wall())
                 cRoom->addWall(cLineItem);
-
-            else if (cLineItem->is_Door())
-            {
-                // will only be done if crossing not already exists (check in function new_crossing)
-                _dManager->new_crossing(cLineItem);
-
-                for (jpsCrossing* crossing:_dManager->get_crossingList())
-                {
-                    if (crossing->get_cLine()==cLineItem)
-                    {
-                        crossing->SetRoom(cRoom);
-                    }
-                }
-            }
         }
     }
 
-    for (jpsRoom* room:_dManager->get_roomlist())
+    for (JPSZone* room:_dManager->get_roomlist())
     {
         room->IdentifyInnerOuter();
     }
@@ -88,32 +72,22 @@ void RoomDefinition::SetUpRoomsAndDoors()
 
     // set contigous ids after removing outside
     int idCounter=1;
-    for (jpsRoom* room:_dManager->get_roomlist())
+    for (JPSZone* room:_dManager->get_roomlist())
     {
         room->set_id(idCounter);
         idCounter++;
-        room->change_name("Room "+QString::number(room->get_id()));
+        room->setName("Room "+QString::number(room->get_id()));
     }
 
-
-    // declare exits
-    for (jpsCrossing* crossing:_dManager->get_crossingList())
-    {
-        if (crossing->get_roomList().size()<2)
-        {
-            crossing->SetStatExit(true);
-            crossing->get_cLine()->setExit();
-        }
-    }
 
 }
 
 void RoomDefinition::RemoveOutside()
 {
     qreal maxArea=_dManager->get_roomlist().front()->GetArea();
-    jpsRoom* roomWithMaxArea=_dManager->get_roomlist().front();
+    JPSZone* roomWithMaxArea=_dManager->get_roomlist().front();
 
-    for (jpsRoom* room:_dManager->get_roomlist())
+    for (JPSZone* room:_dManager->get_roomlist())
     {
         if (room->GetArea()>maxArea)
         {
@@ -121,18 +95,13 @@ void RoomDefinition::RemoveOutside()
             maxArea=room->GetArea();
         }
     }
-
     _dManager->remove_room(roomWithMaxArea);
 
 }
 
 void RoomDefinition::RemoveRoomsWithoutDoors()
 {
-    for (jpsRoom* room:_dManager->get_roomlist())
-    {
-        if (room->GetDoors().empty())
-            _dManager->remove_room(room);
-    }
+
 }
 
 

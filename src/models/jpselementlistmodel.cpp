@@ -47,8 +47,9 @@ JPSElementListModel::JPSElementListModel(QObject *parent)
 */
 
 JPSElementListModel::JPSElementListModel(QList<QGraphicsItem *> &items, QObject *parent)
-        : QAbstractListModel(parent),lst(lst)
+        : QAbstractListModel(parent)
 {
+
 }
 
 JPSElementListModel::~JPSElementListModel()
@@ -68,9 +69,10 @@ JPSElementListModel::~JPSElementListModel()
 
 int JPSElementListModel::rowCount(const QModelIndex &parent) const
 {
+    qDebug("Enter JPSElementListModel::rowCount");
     if(parent.isValid())
         return 0;
-
+    qDebug("Leave JPSElementListModel::rowCount");
     return lst.count();
 }
 

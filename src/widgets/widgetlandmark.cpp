@@ -38,12 +38,13 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     QTabWidget(parent),
     ui(new Ui::widgetLandmark)
 {
+    qDebug("Enter widgetLandmark::widgetLandmark");
     ui->setupUi(this);
     _dmanager=dmanager;
     _gview=gview;
 
-    //Landmark type
-    ui->Box_landmarkType->addItem("Landmark");
+    //LandmarkMode type
+    ui->Box_landmarkType->addItem("LandmarkMode");
     ui->Box_landmarkType->addItem("Main Target");
 
 
@@ -80,16 +81,20 @@ widgetLandmark::widgetLandmark(QWidget *parent, jpsDatamanager *dmanager, jpsGra
     //saveCogMap
     connect(ui->save_button_cogmap,SIGNAL(clicked(bool)),this->parentWidget(),SLOT(SaveCogMapXML()));
     connect(ui->save_button_multiple_maps,SIGNAL(clicked(bool)),this,SLOT(CreateSimilarMaps()));
+    qDebug("Leave widgetLandmark::widgetLandmark");
 
 }
 
 widgetLandmark::~widgetLandmark()
 {
+    qDebug("Enter widgetLandmark::~widgetLandmark");
     delete ui;
+    qDebug("Leave widgetLandmark::~widgetLandmark");
 }
 
 void widgetLandmark::show_landmarks()
 {
+    qDebug("EnterwidgetLandmark::show_landmarks");
     ui->list_landmarks->clear();
     QList<jpsLandmark*> landmarks=_dmanager->get_landmarks();
     for (jpsLandmark* landmark:landmarks)
@@ -101,11 +106,13 @@ void widgetLandmark::show_landmarks()
     ShowLandmarkType();
     ShowRegionBox();
     ShowRegions();
+    qDebug("Leave widgetLandmark::show_landmarks");
 
 }
 
 void widgetLandmark::add_room_to_landmark()
 {
+    qDebug("Enter widgetLandmark::add_room_to_landmark");
     if (ui->list_landmarks->currentIndex()!=-1)
     {
         int cLanRow=ui->list_landmarks->currentIndex();
@@ -115,10 +122,12 @@ void widgetLandmark::add_room_to_landmark()
             _dmanager->get_landmarks()[cLanRow]->SetRoom(_dmanager->get_roomlist()[cRoomRow]);
         }
     }
+    qDebug("Leave widgetLandmark::add_room_to_landmark");
 }
 
 void widgetLandmark::enable_room_selection()
 {
+    qDebug("Enter widgetLandmark::enable_room_selection");
     if (_dmanager->get_landmarks().size()>0)
     {
         ui->roomBox_landmarks->setEnabled(true);
@@ -131,7 +140,7 @@ void widgetLandmark::enable_room_selection()
         QList<QString> roomNameList;
         for (int i=0; i<_dmanager->get_roomlist().size(); i++)
         {
-            roomNameList.push_back(_dmanager->get_roomlist()[i]->get_name());
+            roomNameList.push_back(_dmanager->get_roomlist()[i]->getName());
         }
         if (roomNameList.isEmpty()==false)
         {
@@ -140,7 +149,7 @@ void widgetLandmark::enable_room_selection()
         int cLanRow=ui->list_landmarks->currentIndex();
         if (cLanRow!=-1)
         {
-            jpsRoom* cRoom = _dmanager->get_landmarks()[cLanRow]->GetRoom();
+            JPSZone* cRoom = _dmanager->get_landmarks()[cLanRow]->GetRoom();
             if (cRoom!=nullptr)
             {
                 int index = _dmanager->get_roomlist().indexOf(cRoom);
@@ -153,7 +162,7 @@ void widgetLandmark::enable_room_selection()
 
 
         }
-        //mark Landmark
+        //mark LandmarkMode
         _gview->select_landmark(_dmanager->get_landmarks()[cLanRow]);
 
 
@@ -162,20 +171,24 @@ void widgetLandmark::enable_room_selection()
     {
         disable_room_selection();
     }
+    qDebug("Leave widgetLandmark::enable_room_selection");
 }
 
 void widgetLandmark::disable_room_selection()
 {
+    qDebug("Enter widgetLandmark::disable_room_selection");
     ui->roomBox_landmarks->setEnabled(false);
     ui->is_in->setEnabled(false);
     ui->label_Waypoints->setEnabled(false);
     ui->label_Waypoints2->setEnabled(false);
     ui->add_button->setEnabled(false);
     ui->remove_button->setEnabled(false);
+    qDebug("Leave widgetLandmark::disable_room_selection");
 }
 
 void widgetLandmark::change_name()
-{    
+{
+    qDebug("Enter widgetLandmark::change_name");
     jpsLandmark* landmark = GetCurrentLandmark();
 
     if (landmark!=nullptr)
@@ -185,11 +198,13 @@ void widgetLandmark::change_name()
         this->show_landmarks();
         ui->list_landmarks->setCurrentIndex(row);
     }
+    qDebug("Leave widgetLandmark::change_name");
 
 }
 
 void widgetLandmark::SetPosInCMap()
 {
+    qDebug("Enter widgetLandmark::SetPosInCMap");
     jpsLandmark* landmark = GetCurrentLandmark();
 
     if (landmark!=nullptr)
@@ -214,36 +229,44 @@ void widgetLandmark::SetPosInCMap()
         landmark->SetEllipseItem(ellipse);
         landmark->SetTextItem(text);
     }
+    qDebug("Leave widgetLandmark::SetPosInCMap");
 
 }
 
 void widgetLandmark::ShowLandmarkType()
 {
+    qDebug("Enter widgetLandmark::ShowLandmarkType");
    jpsLandmark* landmark = GetCurrentLandmark();
 
    if (landmark!=nullptr)
    {
-       if (landmark->GetType()=="Landmark")
+       if (landmark->GetType()=="LandmarkMode")
         ui->Box_landmarkType->setCurrentIndex(0);
        else
            ui->Box_landmarkType->setCurrentIndex(1);
    }
+   qDebug("Leave widgetLandmark::ShowLandmarkType");
 }
 
 void widgetLandmark::SetLandmarkType()
 {
+    qDebug("Enter widgetLandmark::SetLandmarkType");
     jpsLandmark* landmark = GetCurrentLandmark();
 
     if (landmark!=nullptr)
     {
         landmark->SetType(ui->Box_landmarkType->currentText());
     }
+    qDebug("Leave widgetLandmark::SetLandmarkType");
 }
 
 void widgetLandmark::ShowRegionBox()
 {
-    if (_dmanager->GetRegions().empty())
+    qDebug("Enter widgetLandmark::ShowRegionBox");
+    if (_dmanager->GetRegions().empty()){
+        qDebug("Leave widgetLandmark::ShowRegionBox");
         return;
+    }
 
     for (jpsRegion* region:_dmanager->GetRegions())
     {
@@ -266,12 +289,14 @@ void widgetLandmark::ShowRegionBox()
                 }
             }
     }
+    qDebug("Leave widgetLandmark::ShowRegionBox");
 }
 
 
 
 void widgetLandmark::AddAssociation()
 {
+//    qDebug("Enter widgetLandmark::AddAssociation");
 //    if (ui->list_landmarks->currentIndex()!=-1)
 //    {
 //        int cLanRow=ui->list_landmarks->currentIndex();
@@ -282,10 +307,12 @@ void widgetLandmark::AddAssociation()
 //        _waypointIDCounter++;
 //        ui->add_button->setChecked(false);
 //    }
+//    qDebug("Leave widgetLandmark::AddAssociation");
 }
 
 void widgetLandmark::ShowHideLandmark()
 {
+    qDebug("Enter widgetLandmark::ShowHideLandmark");
     jpsLandmark* landmark = GetCurrentLandmark();
 
     if (landmark!=nullptr)
@@ -316,23 +343,29 @@ void widgetLandmark::ShowHideLandmark()
         }
 
     }
+    qDebug("Leave widgetLandmark::ShowHideLandmark");
 }
 
 void widgetLandmark::NewConnection()
 {
+    qDebug("Enter widgetLandmark::NewConnection");
     jpsConnection* connection = new jpsConnection();
     _dmanager->NewConnection(connection);
     _currentConnection=connection;
     AskForFirstLandmark();
+    qDebug("Leave widgetLandmark::NewConnection");
 }
 
 void widgetLandmark::AskForFirstLandmark()
 {
+    qDebug("Enter widgetLandmark::AskForFirstLandmark");
     _gview->SetStatDefConnections(1);
+    qDebug("Leave widgetLandmark::AskForFirstLandmark");
 }
 
 void widgetLandmark::AskForSecondLandmark()
 {
+    qDebug("Enter widgetLandmark::AskForSecondLandmark");
     // if mousePressed: if mousepos in landmark: first landmark set in connection
     QPointF mousePos = _gview->return_Pos();
     for (jpsLandmark* landmark:_dmanager->get_landmarks())
@@ -344,14 +377,17 @@ void widgetLandmark::AskForSecondLandmark()
                 _currentConnection->SetFirstLandmark(landmark);
                 landmark->NewConnection(_currentConnection);
                 _gview->SetStatDefConnections(2);
+                qDebug("Leave widgetLandmark::AskForSecondLandmark");
                 return;
             }
         }
     }
+    qDebug("Leave widgetLandmark::AskForSecondLandmark");
 }
 
 void widgetLandmark::SetLandmarksToConnection()
 {
+    qDebug("Enter widgetLandmark::SetLandmarksToConnection");
     // if mousePressed: if mousepos in landmark: first landmark set in connection
     QPointF mousePos = _gview->return_Pos();
     for (jpsLandmark* landmark:_dmanager->get_landmarks())
@@ -366,16 +402,19 @@ void widgetLandmark::SetLandmarksToConnection()
                 AddConnectionsToWidget();
                 SetLineItemAsConnection();
                 ui->add_button_connections->setChecked(false);
+                qDebug("Leave widgetLandmark::SetLandmarksToConnection");
                 return;
             }
         }
     }
     ui->add_button_connections->setChecked(false);
+    qDebug("Leave widgetLandmark::SetLandmarksToConnection");
 
 }
 
 void widgetLandmark::SetLineItemAsConnection()
 {
+    qDebug("Enter widgetLandmark::SetLineItemAsConnection");
     QLineF line = QLineF(_currentConnection->GetLandmarks().first->GetPos(),_currentConnection->GetLandmarks().second->GetPos());
     QPen pen = QPen(Qt::blue,2);
     pen.setCosmetic(true);
@@ -383,17 +422,20 @@ void widgetLandmark::SetLineItemAsConnection()
     lineItem->setTransform(QTransform::fromTranslate(_gview->GetTranslationX(),_gview->GetTranslationY()), true);
     _currentConnection->SetLineItem(lineItem);
     _currentConnection=nullptr;
+    qDebug("Leave widgetLandmark::SetLineItemAsConnection");
 }
 
 void widgetLandmark::AddConnectionsToWidget()
 {
+    qDebug("Enter widgetLandmark::AddConnectionsToWidget");
     QString string = _currentConnection->GetLandmarks().first->GetCaption()+" <-> "+_currentConnection->GetLandmarks().second->GetCaption();
     ui->listWidgetConnections->addItem(string);
-
+    qDebug("Leave widgetLandmark::AddConnectionsToWidget");
 }
 
 void widgetLandmark::RemoveConnection()
 {
+    qDebug("Enter widgetLandmark::RemoveConnection");
     if (ui->listWidgetConnections->currentRow()!=-1)
     {
         int currentRow = ui->listWidgetConnections->currentRow();
@@ -401,10 +443,12 @@ void widgetLandmark::RemoveConnection()
         delete item;
         _dmanager->RemoveConnection(_dmanager->GetAllConnections()[currentRow]);
     }
+    qDebug("Leave widgetLandmark::RemoveConnection");
 }
 
 void widgetLandmark::NewRegion()
 {
+    qDebug("Enter widgetLandmark::NewRegion");
     ui->add_button->setChecked(false);
     // show ellipse and text in graphics view
     QPen pen = QPen(Qt::darkGreen,2);
@@ -431,10 +475,12 @@ void widgetLandmark::NewRegion()
 
     //show Region in listwidget
     ShowRegions();
+    qDebug("Leave widgetLandmark::NewRegion");
 }
 
 void widgetLandmark::RemoveRegion()
 {
+    qDebug("Enter widgetLandmark::RemoveRegion");
     int row = ui->listWidgetRegions->currentRow();
     if (row!=-1)
     {
@@ -442,10 +488,12 @@ void widgetLandmark::RemoveRegion()
         QListWidgetItem* item = ui->listWidgetRegions->takeItem(row);
         delete item;
     }
+    qDebug("Leave widgetLandmark::RemoveRegion");
 }
 
 void widgetLandmark::SetLandmarkToRegion()
 {
+    qDebug("Enter widgetLandmark::SetLandmarkToRegion");
     jpsLandmark* landmark = GetCurrentLandmark();
 
     if (landmark!=nullptr)
@@ -463,11 +511,13 @@ void widgetLandmark::SetLandmarkToRegion()
             cRegion->AddLandmark(landmark);
         }
     }
+    qDebug("Leave widgetLandmark::SetLandmarkToRegion");
 
 }
 
 void widgetLandmark::ShowHideRegion()
 {
+    qDebug("Enter widgetLandmark::ShowHideRegion");
     jpsRegion* region = GetCurrentRegion();
 
     if (region!=nullptr)
@@ -483,10 +533,12 @@ void widgetLandmark::ShowHideRegion()
             region->GetTextItem()->setVisible(true);
         }
     }
+    qDebug("Leave widgetLandmark::ShowHideRegion");
 }
 
 void widgetLandmark::ShowRegions()
 {
+    qDebug("Enter widgetLandmark::ShowRegions");
     ui->listWidgetRegions->clear();
     for (jpsRegion* region:_dmanager->GetRegions())
     {
@@ -496,10 +548,12 @@ void widgetLandmark::ShowRegions()
                                          + " rB: "+QString::number(region->GetB());
         ui->listWidgetRegions->addItem(string);
     }
+    qDebug("Leave widgetLandmark::ShowRegions");
 }
 
 void widgetLandmark::CreateSimilarMaps()
 {
+    qDebug("Enter widgetLandmark::CreateSimilarMaps");
     int numberMaps = ui->spinBox_numberMaps->value();
 
     int k=1;
@@ -524,6 +578,7 @@ void widgetLandmark::CreateSimilarMaps()
             m+=0.025;
         }
     }
+    qDebug("Leave widgetLandmark::CreateSimilarMaps");
 }
 
 
@@ -532,6 +587,7 @@ void widgetLandmark::CreateSimilarMaps()
 
 void widgetLandmark::RemoveAssociation()
 {
+//    qDebug("Enter widgetLandmark::RemoveAssociation");
 //    if (ui->list_landmarks->currentIndex()!=-1)
 //    {
 
@@ -546,28 +602,39 @@ void widgetLandmark::RemoveAssociation()
 //        }
 
 //    }
+//    qDebug("Leave widgetLandmark::RemoveAssociation");
 }
 
 jpsLandmark* widgetLandmark::GetCurrentLandmark() const
 {
+    qDebug("Enter widgetLandmark::GetCurrentLandmark");
     if (ui->list_landmarks->currentIndex()!=-1)
     {
         int crow=ui->list_landmarks->currentIndex();
 
+        qDebug("Leave widgetLandmark::GetCurrentLandmark");
+
         return _dmanager->get_landmarks()[crow];
     }
-    else
+    else{
+        qDebug("Leave widgetLandmark::GetCurrentLandmark");
         return nullptr;
+    }
 }
 
 jpsRegion *widgetLandmark::GetCurrentRegion() const
 {
+    qDebug("Enter widgetLandmark::GetCurrentRegion");
     if (ui->listWidgetRegions->currentRow()!=-1)
     {
         int crow=ui->listWidgetRegions->currentRow();
 
+        qDebug("Leave widgetLandmark::GetCurrentRegion");
+
         return _dmanager->GetRegions()[crow];
     }
-    else
+    else{
+        qDebug("Leave widgetLandmark::GetCurrentRegion");
         return nullptr;
+    }
 }

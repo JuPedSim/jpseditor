@@ -158,6 +158,8 @@ public slots:
     { setShear(m_shearHorizontal, shearVertical); }
     void setShear(double shearHorizontal, double shearVertical);
 
+    QGraphicsRectItem *getRectItem() const;
+
 protected:
     QVariant itemChange(GraphicsItemChange change,const QVariant &value);
     void keyPressEvent(QKeyEvent *event);

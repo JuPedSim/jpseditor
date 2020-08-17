@@ -120,6 +120,7 @@ public:
 
     bool in(const std::string& file,
             DL_CreationInterface* creationInterface);
+
     bool readDxfGroups(FILE* fp,
                        DL_CreationInterface* creationInterface);
     static bool getStrippedLine(std::string& s, unsigned int size,
@@ -129,6 +130,8 @@ public:
                        DL_CreationInterface* creationInterface);
     bool in(std::stringstream &stream,
             DL_CreationInterface* creationInterface);
+
+
     static bool getStrippedLine(std::string& s, unsigned int size,
                                std::stringstream& stream);
 
@@ -136,6 +139,8 @@ public:
 
     bool processDXFGroup(DL_CreationInterface* creationInterface,
                          int groupCode, const std::string& groupValue);
+
+
     void addSetting(DL_CreationInterface* creationInterface);
     void addLayer(DL_CreationInterface* creationInterface);
     void addLinetype(DL_CreationInterface *creationInterface);

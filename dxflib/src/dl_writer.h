@@ -52,7 +52,6 @@
  * Implements functions that write higher level constructs in terms of
  * the low level ones.
  *
- * @todo Add error checking for string/entry length.
  */
 class DXFLIB_EXPORT DL_Writer {
 public:
@@ -461,7 +460,7 @@ public:
             if (h==0x1C) {
                 dxfInt(67, 1);
             }
-            dxfString(8, "0");                 // TODO: Layer for block
+            dxfString(8, "0");
             dxfString(100, "AcDbBlockBegin");
         }
     }
@@ -487,7 +486,7 @@ public:
             if (h==0x1D) {
                 dxfInt(67, 1);
             }
-            dxfString(8, "0");                 // TODO: Layer for block
+            dxfString(8, "0");
             dxfString(100, "AcDbBlockEnd");
         }
     }
