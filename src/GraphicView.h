@@ -30,7 +30,6 @@
 
 
 #include <QGraphicsView>
-//#include <QGraphicsSceneMouseEvent>
 #include <QGraphicsLineItem>
 #include "jpsLineItem.h"
 #include "jpslandmark.h"
@@ -38,6 +37,8 @@
 #include "jpssource.h"
 #include "jpsgoal.h"
 #include "./UndoFramework/actionstack.h"
+#include "global.h"
+#include "models/layer.h"
 
 using ptrConnection = std::shared_ptr<jpsConnection>;
 using ptrLandmark = std::shared_ptr<jpsLandmark>;
@@ -55,6 +56,8 @@ public:
     //Destructor
     ~jpsGraphicsView() override;
 
+    void removeContents();
+
     QGraphicsScene *GetScene();
     const qreal& GetTranslationX() const;
     const qreal& GetTranslationY() const;
@@ -67,7 +70,6 @@ public:
     void SetDatamanager(jpsDatamanager* datamanager);
 
     //Change modes
-    enum DrawingMode {Selecting, Editing, Wall, Door, Exit, HLine, Landmark, Source, Goal};
     void setDrawingMode(DrawingMode mode);
 
     void change_stat_anglesnap();
@@ -77,20 +79,18 @@ public:
     void change_gridmode();
     bool statusWall();
     void en_disableWall();
-    bool statusDoor();
-    void en_disableDoor();
-    bool statusExit();
-    void en_disableExit();
+    void enableTransition();
+    void enableTrack();
     bool statusHLine();
     void en_disableHLine();
     bool statusLandmark();
     void en_disableLandmark();
-    void enableSourceMode();
-    void drawSource();
-    void drawGoal();
-    void enableEditMode();
-    void enableGoalMode();
 
+    void drawSource();
+    void enableSourceMode();
+
+    void drawGoal();
+    void enableGoalMode();
 
     // global functions
     qreal get_scale_f();
@@ -133,10 +133,16 @@ public:
     // lines read from dxf-file
     jpsLineItem *addLineItem(const qreal &x1, const qreal &y1, const qreal &x2, const qreal &y2, const QString &type="");
     jpsLineItem *addLineItem(const QLineF &line, const QString &type="");
+
+    // Sources and goals read from dxf-file
+    void addSourceItem(const QList<QPointF> &points);
+    void addGoalItem(const QList<QPointF> &points);
+
     QList<jpsLineItem *> get_markedLines();
     QList<jpsLineItem *> get_line_vector();
+    void removeLineFromLine_vector(jpsLineItem *line);
     void unmark_all_lines();
-    void select_line(jpsLineItem *mline);
+    void markLine(jpsLineItem *mline);
     void SetVLine();
     void EditLine(QPointF* point);
     qreal ReturnLineLength();
@@ -145,12 +151,12 @@ public:
     void ScaleLines(const double& factor);
     QPointF getNearstPointOnLine(jpsLineItem* selected_line);
 
-    // Landmark
-    void delete_landmark();
+    // LandmarkMode
+    void deleteMarkedLandmark();
     void catch_landmark();
     void select_landmark(jpsLandmark *landmark);
-    void addLandmark();
-    void addLandmark(const QPointF& pos);
+    void drawLandmark();
+    void drawLandmark(const QPointF& pos);
     // unmark Landmarks see slots
 
     //Connections and YAHPointer
@@ -179,6 +185,13 @@ public:
     void SetGrid(QString grid);
     void ChangeGridSize(const qreal& factor);
 
+    // MeasureMode
+    void drawMeasureLengthLine();
+    void enableMeasureLengthMode();
+
+    // Marked Line
+    void clearMarkedLineList();
+
 public slots:
     //Landmarks/Regions
     void StatPositionDef();
@@ -204,6 +217,17 @@ public slots:
     QList<JPSSource *> getSources();
     QList<JPSGoal *> getGoals();
 
+    // Layer
+    QList<Layer *> getLayerList() const;
+    void addLayer();
+    void deleteLayer(Layer *deletedLayer);
+
+    // Background
+    void setBackground(QString filename);
+    void showHideBackground();
+    void scaleUpBackground();
+    void scaleDownBackground();
+
 protected:
     //Mouse events
     void mouseMoveEvent(QMouseEvent * mouseEvent) override;
@@ -225,18 +249,18 @@ protected slots:
 
 private:
     jpsDatamanager* _datamanager;
+
     QGraphicsLineItem* current_line;
     QPolygonF polygon;
-    //std::vector<jpsLineItem> line_vector;
     QList<QPointF *> intersect_point_vector;
-    //QList<QPointF> grid_point_vector;
-    QList<jpsLineItem *> line_vector;
+    QList<jpsLineItem *> line_vector; // Save all jpsLineItem when they created, remove them when they written in xml
     QList<QGraphicsLineItem *> _origin;
-    //QList<QList<jpsLineItem*> *> mainlist;
-    QPointF pos;
-    //QPointF* intersection_point;
+
+    QPointF pos; // position of the mouse cursor;
+
     bool midbutton_hold;
     bool leftbutton_hold;
+
     qreal translation_x;
     qreal translation_y;
     QPointF translated_pos;
@@ -244,11 +268,6 @@ private:
 
     // Drawing Mode
     DrawingMode drawingMode;
-//    bool statWall;
-//    bool statDoor;
-//    bool statExit;
-//    bool statLandmark;
-//    bool _statHLine;
 
     bool stat_break_;
     int _statCopy;
@@ -257,8 +276,8 @@ private:
     qreal _scaleFactor;
     qreal gl_scale_f;
     bool point_tracked;
-    QGraphicsItem* current_rect;
-    QGraphicsRectItem* currentSelectRect;
+    QGraphicsItem* current_rect; // A rect for marking caught points
+    QGraphicsRectItem* currentSelectRect; // A rect for selecting
     bool objectsnap;
     bool start_endpoint_snap;
     bool intersectionspoint_snap;
@@ -269,22 +288,22 @@ private:
     QPen currentPen;
     qreal catch_line_distance;
     QList<jpsLineItem *> marked_lines;
+
     QGraphicsTextItem* current_caption;
     QList<QGraphicsTextItem* > caption_list;
+
     int id_counter;
 
-    //Source
+    //SourceMode
     QGraphicsRectItem *currentSource;
 
-    //Goal
+    //GoalMode
     QGraphicsRectItem *currentGoal;
 
 //    QGraphicsItemGroup *sourceGroup;
 //    QGraphicsItemGroup *getSourceGroup() const;
 
-private:
-
-    //Landmark and waypoints
+    //LandmarkMode and waypoints
     jpsLandmark* markedLandmark;
     QGraphicsRectItem* currentLandmarkRect;
     QList<QGraphicsLineItem* > _connections;
@@ -300,27 +319,33 @@ private:
     bool _statLineEdit;
     bool lines_collided;
 
-
-    //Undo/Redo
+    // Undo/Redo
     ActionStack _undoStack;
     ActionStack _redoStack;
 
-    //View
+    // View
     bool statzoomwindows;
 
-    //Grid Mode
+    // Grid Mode
     qreal _gridSize;
     bool _gridmode;
     qreal _translationX;
     qreal _translationY;
     QString _statgrid;
 
+    // Layer
+    QList<Layer *> layer_list;
+
+    // Background
+    QGraphicsPixmapItem *background;
+
 signals:
     void mouse_moved();
     void set_focus_textedit();
     void lines_deleted();
+    void markedLineDeleted();
     void no_drawing();
-    void remove_marked_lines();
+
     void remove_all();
     void PositionDefCompleted();
     void LineLengthChanged();
@@ -329,6 +354,10 @@ signals:
     void RegionDefCompleted();
     void sourcesChanged();
     void goalsChanged();
+    void transitonsChanged();
+    void sendMsgToStatusBar(QString Msg);
+    void layersChanged();
+
     //void DoubleClick();
 
 };

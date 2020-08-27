@@ -28,16 +28,16 @@
 #ifndef JPSOBSTACLE_H
 #define JPSOBSTACLE_H
 
-#include "rooms.h"
+#include "jpszone.h"
 
-class jpsObstacle: public jpsRoom
+class jpsObstacle: public JPSZone
 {
 public:
     jpsObstacle(int cId);
-    void set_room(jpsRoom* room);
-    jpsRoom* get_room();
+    void set_room(JPSZone* room);
+    JPSZone* get_room();
 private:
-    jpsRoom* _room;
+    JPSZone* _room;
 };
 
 #endif // JPSOBSTACLE_H

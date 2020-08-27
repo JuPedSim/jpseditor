@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -25,141 +25,135 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>0</y>
-     <width>181</width>
-     <height>491</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout_3">
-    <item>
-     <widget class="QLabel" name="goalLabel">
-      <property name="text">
-       <string>Goals:</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QListView" name="goalsListView"/>
-    </item>
-    <item>
-     <widget class="QRadioButton" name="isSaveButton">
-      <property name="text">
-       <string>Save in Geometry</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_8">
-      <item>
-       <widget class="QPushButton" name="deleteSourceButton">
-        <property name="text">
-         <string>Delete</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="applyButton">
-        <property name="text">
-         <string>Apply</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QLabel" name="IDLabel">
-          <property name="text">
-           <string>ID：</string>
-          </property>
-          <property name="buddy">
-           <cstring>IDlineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="captionLabel">
-          <property name="text">
-           <string>Caption:</string>
-          </property>
-          <property name="buddy">
-           <cstring>captionLineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="finalLabel">
-          <property name="text">
-           <string>Final:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="xminLabel">
-          <property name="text">
-           <string>X Min</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="xmaxLabel">
-          <property name="text">
-           <string>X Max</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="yminLabel">
-          <property name="text">
-           <string>Y Min</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="ymaxLabel">
-          <property name="text">
-           <string>Y Max</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="QLineEdit" name="IDlineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="captionLineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="finalLineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="lineEdit_XMin"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="lineEdit_XMax"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="lineEdit_YMin"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="lineEdit_YMax"/>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
-   </layout>
-  </widget>
+  <layout class="QVBoxLayout" name="verticalLayout_4">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="QLabel" name="goalLabel">
+       <property name="text">
+        <string>Goals:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListView" name="goalsListView"/>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="isSaveButton">
+       <property name="text">
+        <string>Save in Geometry</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_8">
+       <item>
+        <widget class="QPushButton" name="deleteSourceButton">
+         <property name="text">
+          <string>Delete</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="applyButton">
+         <property name="text">
+          <string>Apply</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="IDLabel">
+           <property name="text">
+            <string>ID：</string>
+           </property>
+           <property name="buddy">
+            <cstring>IDlineEdit</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="captionLabel">
+           <property name="text">
+            <string>Caption:</string>
+           </property>
+           <property name="buddy">
+            <cstring>captionLineEdit</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="finalLabel">
+           <property name="text">
+            <string>Final:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="xminLabel">
+           <property name="text">
+            <string>X Min</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="xmaxLabel">
+           <property name="text">
+            <string>X Max</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="yminLabel">
+           <property name="text">
+            <string>Y Min</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="ymaxLabel">
+           <property name="text">
+            <string>Y Max</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QLineEdit" name="IDlineEdit"/>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="captionLineEdit"/>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="finalLineEdit"/>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit_XMin"/>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit_XMax"/>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit_YMin"/>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit_YMax"/>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

@@ -16,6 +16,7 @@
  # copyright   <2009-2018> Forschungszentrum Juelich GmbH.
 
  # Compatibility with Qt4 and Qt5
+
 greaterThan(QT_MAJOR_VERSION, 4):QT += widgets
 
 TEMPLATE = app

@@ -38,6 +38,7 @@ SourceWidget::SourceWidget(QWidget *parent, jpsGraphicsView *view, jpsDatamanage
     QWidget(parent),
     ui(new Ui::SourceWidget)
 {
+    qDebug("Enter SourceWidget::SourceWidget");
     ui->setupUi(this);
 
     currentView = view;
@@ -58,17 +59,19 @@ SourceWidget::SourceWidget(QWidget *parent, jpsGraphicsView *view, jpsDatamanage
     connect(ui->sourcesListView, SIGNAL(clicked(const QModelIndex &)), currentView, SLOT(seleteSource(const
     QModelIndex &)));
     connect(this, SIGNAL(sourceChanged(int)), currentView, SLOT(changeSource(int)));
+    qDebug("Leave SourceWidget::SourceWidget");
 }
 
 SourceWidget::~SourceWidget()
 {
+    qDebug("Enter SourceWidget::~SourceWidget");
     delete ui;
+    qDebug("Leave SourceWidget::~SourceWidget");
 }
 
 void SourceWidget::showSource()
 {
-    model->setSourceList(currentView->getSources());
-    ui->sourcesListView->setModel(model);
+    qDebug("Enter SourceWidget::showSource");
 
     ui->IDlineEdit->clear();
     ui->agents_maxLineEdit->clear();
@@ -88,6 +91,13 @@ void SourceWidget::showSource()
     ui->X_MaxllneEdit->clear();
     ui->Y_MinLineEdit->clear();
     ui->Y_MaxLineEdit->clear();
+
+    if(!currentView->getSources().isEmpty())
+    {
+        model->setSourceList(currentView->getSources());
+        ui->sourcesListView->setModel(model);
+    }
+    qDebug("Leave SourceWidget::showSource");
 }
 
 void SourceWidget::showSourceInformation()
@@ -175,10 +185,12 @@ void SourceWidget::applySourceInformation()
 
 void SourceWidget::deleteButtonClicked()
 {
+    qDebug("Enter SourceWidget::deleteButtonClicked");
     if (ui->sourcesListView->currentIndex().isValid())
     {
         int index = ui->sourcesListView->currentIndex().row();
         emit sourceDeleted(index);
         showSource();
     }
+    qDebug("Leave SourceWidget::deleteButtonClicked");
 }

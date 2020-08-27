@@ -38,6 +38,7 @@ GoalWidget::GoalWidget(QWidget *parent, jpsGraphicsView *view, jpsDatamanager *d
     QWidget(parent),
     ui(new Ui::GoalWidget)
 {
+    qDebug("Enter GoalWidget::GoalWidget");
     ui->setupUi(this);
 
     currentView = view;
@@ -57,20 +58,23 @@ GoalWidget::GoalWidget(QWidget *parent, jpsGraphicsView *view, jpsDatamanager *d
     connect(ui->goalsListView, SIGNAL(clicked(const QModelIndex &)), currentView, SLOT(seleteGoal(const
     QModelIndex &)));
     connect(ui->deleteSourceButton, SIGNAL(clicked(bool)),this, SLOT(deleteButtonClicked()));
+    qDebug("Leave GoalWidget::GoalWidget");
 }
 
 GoalWidget::~GoalWidget()
 {
+    qDebug("Enter GoalWidget::~GoalWidget");
     delete ui;
+    qDebug("Leave GoalWidget::~GoalWidget");
 }
 
+/*
+    show the new added goal informations
+*/
 void GoalWidget::showGoals()
 {
-    /*
-        show the new added goal informations
-     */
-    model->setGoalsList(currentView->getGoals());
-    ui->goalsListView->setModel(model);
+    qDebug("Enter GoalWidget::showGoals");
+
     ui->IDlineEdit->clear();
     ui->captionLineEdit->clear();
     ui->finalLineEdit->clear();
@@ -78,6 +82,14 @@ void GoalWidget::showGoals()
     ui->lineEdit_XMax->clear();
     ui->lineEdit_YMin->clear();
     ui->lineEdit_YMax->clear();
+
+    if(!currentView->getGoals().isEmpty())
+    {
+        model->setGoalsList(currentView->getGoals());
+        ui->goalsListView->setModel(model);
+    }
+
+    qDebug("Leave GoalWidget::showGoals");
 }
 
 
@@ -140,11 +152,13 @@ void GoalWidget::applyGoalInformation()
 
 void GoalWidget::deleteButtonClicked()
 {
+    qDebug("Enter GoalWidget::deleteButtonClicked");
     if (ui->goalsListView->currentIndex().isValid())
     {
         int index = ui->goalsListView->currentIndex().row();
         emit goalDeleted(index);
         showGoals();
     }
+    qDebug("Leave GoalWidget::deleteButtonClicked");
 }
 

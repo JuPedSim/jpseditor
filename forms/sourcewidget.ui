@@ -6,328 +6,326 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>200</width>
-    <height>880</height>
+    <width>300</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
-    <width>200</width>
-    <height>880</height>
+    <width>300</width>
+    <height>600</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>200</width>
-    <height>880</height>
+    <width>300</width>
+    <height>600</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>181</width>
-     <height>852</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout_5">
-      <item>
-       <widget class="QLabel" name="sourcesLabel">
-        <property name="text">
-         <string>Sources:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QListView" name="sourcesListView"/>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="isSaveButton">
-        <property name="text">
-         <string>Save in Geometry</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_8">
-        <item>
-         <widget class="QPushButton" name="deleteSourceButton">
-          <property name="text">
-           <string>Delete</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="applyButton">
-          <property name="text">
-           <string>Apply</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="QLabel" name="IDLabel">
-          <property name="text">
-           <string>ID：</string>
-          </property>
-          <property name="buddy">
-           <cstring>IDlineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="frequencyLabel">
-          <property name="text">
-           <string>Frequency:</string>
-          </property>
-          <property name="buddy">
-           <cstring>frequencyLineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="N_createLabel">
-          <property name="text">
-           <string>N_create:</string>
-          </property>
-          <property name="buddy">
-           <cstring>N_createLineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="percentLabel">
-          <property name="text">
-           <string>Percent:</string>
-          </property>
-          <property name="buddy">
-           <cstring>percentLineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="rateLabel">
-          <property name="text">
-           <string>Rate:</string>
-          </property>
-          <property name="buddy">
-           <cstring>rateLineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="time_minLabel">
-          <property name="text">
-           <string>Time_min:</string>
-          </property>
-          <property name="buddy">
-           <cstring>time_minLineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="time_maxLabel">
-          <property name="text">
-           <string>Time_max:</string>
-          </property>
-          <property name="buddy">
-           <cstring>time_maxLineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="agents_maxLabel">
-          <property name="text">
-           <string>Agents_Max:</string>
-          </property>
-          <property name="buddy">
-           <cstring>agents_maxLineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="group_IDLabel">
-          <property name="text">
-           <string>Group_ID:</string>
-          </property>
-          <property name="buddy">
-           <cstring>group_IDLineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="greedyLabel">
-          <property name="text">
-           <string>Greedy:</string>
-          </property>
-          <property name="buddy">
-           <cstring>greedyLineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="captionLabel">
-          <property name="text">
-           <string>Caption:</string>
-          </property>
-          <property name="buddy">
-           <cstring>captionLineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="timeLabel">
-          <property name="text">
-           <string>Time:</string>
-          </property>
-          <property name="buddy">
-           <cstring>timeLineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="startXLabel">
-          <property name="text">
-           <string>StartX:</string>
-          </property>
-          <property name="buddy">
-           <cstring>startXLineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="startYLabel">
-          <property name="text">
-           <string>StartY:</string>
-          </property>
-          <property name="buddy">
-           <cstring>startYLineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="X_minLabel">
-          <property name="text">
-           <string>X Min:</string>
-          </property>
-          <property name="buddy">
-           <cstring>X_MinLineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="X_maxLabel">
-          <property name="text">
-           <string>X Max:</string>
-          </property>
-          <property name="buddy">
-           <cstring>X_MaxllneEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="Y_minLabel">
-          <property name="text">
-           <string>Y Min:</string>
-          </property>
-          <property name="buddy">
-           <cstring>Y_MinLineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="Y_maxLabel">
-          <property name="text">
-           <string>Y Max:</string>
-          </property>
-          <property name="buddy">
-           <cstring>Y_MaxLineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_7">
-        <item>
-         <widget class="QLineEdit" name="IDlineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="frequencyLineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="N_createLineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="percentLineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="rateLineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="time_minLineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="time_maxLineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="agents_maxLineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="group_IDLineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="greedyLineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="captionLineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="timeLineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="startXLineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="startYLineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="X_MinLineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="X_MaxllneEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="Y_MinLineEdit"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="Y_MaxLineEdit"/>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
-   </layout>
-  </widget>
+  <layout class="QVBoxLayout" name="verticalLayout_6">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_5">
+     <item>
+      <widget class="QLabel" name="sourcesLabel">
+       <property name="text">
+        <string>Sources:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListView" name="sourcesListView"/>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="isSaveButton">
+       <property name="text">
+        <string>Save in Geometry</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_8">
+       <item>
+        <widget class="QPushButton" name="deleteSourceButton">
+         <property name="text">
+          <string>Delete</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="applyButton">
+         <property name="text">
+          <string>Apply</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="IDLabel">
+         <property name="text">
+          <string>ID：</string>
+         </property>
+         <property name="buddy">
+          <cstring>IDlineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="frequencyLabel">
+         <property name="text">
+          <string>Frequency:</string>
+         </property>
+         <property name="buddy">
+          <cstring>frequencyLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="N_createLabel">
+         <property name="text">
+          <string>N_create:</string>
+         </property>
+         <property name="buddy">
+          <cstring>N_createLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="percentLabel">
+         <property name="text">
+          <string>Percent:</string>
+         </property>
+         <property name="buddy">
+          <cstring>percentLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="rateLabel">
+         <property name="text">
+          <string>Rate:</string>
+         </property>
+         <property name="buddy">
+          <cstring>rateLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="time_minLabel">
+         <property name="text">
+          <string>Time_min:</string>
+         </property>
+         <property name="buddy">
+          <cstring>time_minLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="time_maxLabel">
+         <property name="text">
+          <string>Time_max:</string>
+         </property>
+         <property name="buddy">
+          <cstring>time_maxLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="agents_maxLabel">
+         <property name="text">
+          <string>Agents_Max:</string>
+         </property>
+         <property name="buddy">
+          <cstring>agents_maxLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="group_IDLabel">
+         <property name="text">
+          <string>Group_ID:</string>
+         </property>
+         <property name="buddy">
+          <cstring>group_IDLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QLineEdit" name="IDlineEdit"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="frequencyLineEdit"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="N_createLineEdit"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="percentLineEdit"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="rateLineEdit"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="time_minLineEdit"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="time_maxLineEdit"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="agents_maxLineEdit"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="group_IDLineEdit"/>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QLabel" name="greedyLabel">
+         <property name="text">
+          <string>Greedy:</string>
+         </property>
+         <property name="buddy">
+          <cstring>greedyLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="captionLabel">
+         <property name="text">
+          <string>Caption:</string>
+         </property>
+         <property name="buddy">
+          <cstring>captionLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="timeLabel">
+         <property name="text">
+          <string>Time:</string>
+         </property>
+         <property name="buddy">
+          <cstring>timeLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="startXLabel">
+         <property name="text">
+          <string>StartX:</string>
+         </property>
+         <property name="buddy">
+          <cstring>startXLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="startYLabel">
+         <property name="text">
+          <string>StartY:</string>
+         </property>
+         <property name="buddy">
+          <cstring>startYLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="X_minLabel">
+         <property name="text">
+          <string>X Min:</string>
+         </property>
+         <property name="buddy">
+          <cstring>X_MinLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="X_maxLabel">
+         <property name="text">
+          <string>X Max:</string>
+         </property>
+         <property name="buddy">
+          <cstring>X_MaxllneEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="Y_minLabel">
+         <property name="text">
+          <string>Y Min:</string>
+         </property>
+         <property name="buddy">
+          <cstring>Y_MinLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="Y_maxLabel">
+         <property name="text">
+          <string>Y Max:</string>
+         </property>
+         <property name="buddy">
+          <cstring>Y_MaxLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QLineEdit" name="greedyLineEdit"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="captionLineEdit"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="timeLineEdit"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="startXLineEdit"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="startYLineEdit"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="X_MinLineEdit"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="X_MaxllneEdit"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="Y_MinLineEdit"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="Y_MaxLineEdit"/>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

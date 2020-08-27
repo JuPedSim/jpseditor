@@ -247,7 +247,7 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="text">
-     <string>Landmark:</string>
+     <string>LandmarkMode:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_Waypoints2">

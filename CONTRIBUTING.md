@@ -6,11 +6,6 @@ However you are kindly invited not only to use JuPedSim but also contributing to
 It does not matter if you are a researcher, student or just interested in pedestrian dynamics.
 There are only a few rules and advices we want to give to you:
 
-- [Advice for new contributors](#advice-for-new-contributors)
-    - [First steps](#first-steps)
-    - [Guidelines](#guidelines)
-    - [FAQ](#faq)
-
 - [Reporting bugs and requesting features](#reporting-bugs-and-requesting-features)
     - [Using the issue tracker](#using-the-issue-tracker)
     - [Reporting bugs](#reporting-bugs)
@@ -28,14 +23,11 @@ There are only a few rules and advices we want to give to you:
     - Handling pull/merge requests
     - [Committing guidelines](#commiting-guidelines)
     - Reverting commits
-
-## Advice for new contributors
-
-### First steps
-
-### Guidelines
-
-### FAQ
+    
+- [The explanation and workflow of using branches](#The-explanation-and-workflow-of-using-branches)
+    - [Long-running branches](#Long-running-branches)
+    - [Topic branches](#Topic-branches)
+    - [Workflow for contributing JPSeditor repository](#Workflow-for-contributing-JPSeditor-repository)
 
 ## Reporting bugs and requesting features
 If you got a question or a problem and need support from our team feel free to contact us.
@@ -195,7 +187,6 @@ Here are some hints to configure your editor in order to use the *stroustrup* st
     Read also
     [How to change indentation width in eclipse?](https://superuser.com/questions/462221/how-do-i-reliably-change-the-indentation-width-in-eclipse)
 
-
 ## Writing Documentation
 
 ### Comments
@@ -224,3 +215,25 @@ change.
     - :fire: `:fire:` when removing code or files
     - :green_heart: `:green_heart:` when fixing the CI build
     - :white_check_mark: `:white_check_mark:` when adding tests
+    
+## The explanation and workflow of using branches
+
+### Long-running branches
+
+Long-running branches are used for deployment of new versions. They only merge source code from topic branches and **won’t** accept PRs. 
+
+`develop` branch is preparing for releasing, it will merge code from topic branches. After merging it should be tested for weeks, until there are no more malignant bugs which will crash JPSeditor.
+
+After testing, `master` branch will merge code from `develop` branch, then release the new version with tags. 
+
+### Topic branches
+
+Topic branches are for developing of the specific projects and accept PRs. For now there is `KapaKrit` branch for Project KapaKrit.
+
+`version089` is created by the last [development strategy]. After next releasing it wil be cleaded.
+
+### Workflow for contributing JPSeditor repository 
+
+1. According to the purpose of commit, **creating an new issue** in [projects] in JPSeditor repository;
+2. Making a PR to the branch in which the issue is, for example, if you make changing for the issue in project `KapaKrit`, then the PR should be sent to branch `KapaKrit`;
+3. After PR, assign the issue as done.

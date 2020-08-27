@@ -31,7 +31,7 @@
 #include <QPointF>
 #include <QGraphicsTextItem>
 #include <memory>
-#include "rooms.h"
+#include "jpszone.h"
 
 class jpsConnection;
 class jpsRegion;
@@ -41,13 +41,13 @@ class jpsLandmark
 {
 public:
     jpsLandmark();
-    jpsLandmark(QGraphicsPixmapItem* pixmap,const QString& caption, const QPointF& realPos,const qreal& rA=0, const qreal& rB=0, const int& id=0, const QString& type="Landmark");
+    jpsLandmark(QGraphicsPixmapItem* pixmap,const QString& caption, const QPointF& realPos,const qreal& rA=0, const qreal& rB=0, const int& id=0, const QString& type="LandmarkMode");
     ~jpsLandmark();
     //Setter
 
     //Getter
     QGraphicsPixmapItem* GetPixmap() const;
-    jpsRoom *GetRoom() const;
+    JPSZone *GetRoom() const;
     int GetVisibility() const;
     const QPointF& GetPos() const;
     const QPointF& GetRealPos() const;
@@ -64,7 +64,7 @@ public:
 
     //Setter
     void SetPixmap(QGraphicsPixmapItem* pixmap);
-    void SetRoom(jpsRoom* room);
+    void SetRoom(JPSZone* room);
     void SetVisibility(int visibility);
     void SetPos(const QPointF& point);
     void SetRealPos(const QPointF& point);
@@ -113,7 +113,7 @@ private:
     QString _type;
     QPointF _pos;
     QPointF _realPos;
-    jpsRoom* _room;
+    JPSZone* _room;
     int _visibility;
     QGraphicsPixmapItem* _pixmapItem;
     QRectF _rect;

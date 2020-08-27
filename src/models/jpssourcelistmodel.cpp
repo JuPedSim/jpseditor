@@ -63,11 +63,16 @@ JPSSourceListModel::JPSSourceListModel(QList<JPSSource *> &lst, QObject *parent)
 */
 
 QVariant JPSSourceListModel::data(const QModelIndex &index, int role) const {
-    if (index.row() < 0 || index.row() >= lst.size())
-        return QVariant();
+    if (index.row() < 0 || index.row() >= lst.size()){
 
-    if (role == Qt::DisplayRole)
+        return QVariant();
+    }
+
+    if (role == Qt::DisplayRole){
+
         return lst.at(index.row())->getCaption();
+    }
+
 
     return QVariant();
 }
@@ -88,8 +93,9 @@ QVariant JPSSourceListModel::data(const QModelIndex &index, int role) const {
 
 int JPSSourceListModel::rowCount(const QModelIndex &parent) const
 {
-    if(parent.isValid())
+    if(parent.isValid()){
         return 0;
+    }
 
     return lst.count();
 }
@@ -109,18 +115,23 @@ int JPSSourceListModel::rowCount(const QModelIndex &parent) const
 
 bool JPSSourceListModel::setData(const QModelIndex &index, const QVariant &value, int role) {
 
+
     if (index.row() >= 0 && index.row() < lst.size()
         && (role == Qt::EditRole || role == Qt::DisplayRole))
     {
         const QString valueString = value.toString();
 
-        if (lst.at(index.row())->getCaption() == valueString)
+        if (lst.at(index.row())->getCaption() == valueString){
+
             return true;
+        }
 
         lst.at(index.row())->setCaption(valueString);
         emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+
         return true;
     }
+
 
     return false;
 }
@@ -134,9 +145,13 @@ bool JPSSourceListModel::setData(const QModelIndex &index, const QVariant &value
 
 Qt::ItemFlags JPSSourceListModel::flags(const QModelIndex &index) const
 {
-    if (!index.isValid())
+    qDebug("Enter ItemFlags JPSSourceListModel::flags");
+    if (!index.isValid()){
+        qDebug("Leave ItemFlags JPSSourceListModel::flags");
         return JPSElementListModel::flags(index) | Qt::ItemIsDropEnabled;
+    }
 
+    qDebug("Leave ItemFlags JPSSourceListModel::flags");
     return JPSElementListModel::flags(index) | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 }
 
@@ -147,9 +162,11 @@ Qt::ItemFlags JPSSourceListModel::flags(const QModelIndex &index) const
 
 void JPSSourceListModel::setSourceList(QList<JPSSource *> sources)
 {
+    qDebug("Enter JPSSourceListModel::setSourceList");
     beginResetModel();
     lst = sources;
     endResetModel();
+    qDebug("Leave JPSSourceListModel::setSourceList");
 }
 
 /*!
@@ -157,5 +174,6 @@ void JPSSourceListModel::setSourceList(QList<JPSSource *> sources)
 */
 
 QList<JPSSource *> JPSSourceListModel::sourcesList() {
+    qDebug("Enter/Retrun JPSSourceListModel::sourcesList");
     return lst;
 }

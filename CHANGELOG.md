@@ -1,18 +1,38 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## v0.8.8 [03.05.2019]
+## v0.8.9 [11.04.2020]
 ### Added
-- Add Goal&Source Element support #98
-- Dock widget for goals and sources #98
-- Export external xml files #138 #139
+- Select layers in dxf files before importing dxf files #215
+- Write and read source and goal in geometry #207
+- Running JPSvis in JPSeditor #199
+- Running JPScore in JPSeditor #197
+- Terminal for running simulation #143
+- Adding Background #161
+- Ini files templates #178
+- Creating log files by running #182
 
 ### Changed
-- Redesign Inifile widget #125
-- Rewrite inifile xml file reader and writer #140
+- Recognize dxf files in new JPSXML format #212
+- Highlighting for whole room #195
+
+### Bugs Fixed
+- Fixed selecting for new elements #13
+- Drew lines by coordinates #95
+
+
+## v0.8.8 [03.05.2019]
+### Added
+- Add GoalMode/SourceMode element for drawing #109
+- New dock widget as inspector #131
+- Export external xml files #126
+
+### Changed
+- Rewrite inifile reader and writer #134
+- Combine data in inifile widget with mainwindow #127
 
 ### Bugs fixed
-- Fix shortcut 
+- Fix backup for undefined lines;
 
 ## v0.8.7 [08.03.2019]
 ### Added
