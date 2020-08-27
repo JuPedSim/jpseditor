@@ -81,7 +81,7 @@ jpsDatamanager::~jpsDatamanager()
 void jpsDatamanager::addRoom()
 {
     qDebug("Enter jpsDatamanager::addRoom. now zone_id = %d", zone_id);
-    JPSZone* new_room = new JPSZone(this->zone_id, Room);
+    JPSZone* new_room = new JPSZone(zone_id, Room);
     roomlist.push_back(new_room);
     zone_id+=1;
     qDebug("Leave jpsDatamanager::addRoom. now zone_id = %d", zone_id);
@@ -852,7 +852,7 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineIte
     qDebug("Enter jpsDatamanager::writeTransitions");
     for(jpsTransition *transition : transition_list)
     {
-        if(transition->get_roomList()[0] == nullptr && transition->get_roomList()[1] == nullptr)
+        if(transition->get_roomList().empty())
         {
             // Unvaild transiton
             continue;
@@ -870,10 +870,12 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineIte
             {
                 //outside
                 stream->writeAttribute("room1_id","-1");
+                stream->writeAttribute("subroom1_id","-1");
             } else
             {
                 //room
                 stream->writeAttribute("room1_id",QString::number(transition->get_roomList()[0]->get_id()));
+                stream->writeAttribute("subroom1_id",QString::number(transition->get_roomList()[0]->get_id()));
             }
 
             // room 2
@@ -881,10 +883,12 @@ void jpsDatamanager::writeTransitions(QXmlStreamWriter *stream, QList<jpsLineIte
             {
                 //outside
                 stream->writeAttribute("room2_id","-1");
+                stream->writeAttribute("subroom2_id","-1");
             } else
             {
                 //room
                 stream->writeAttribute("room2_id",QString::number(transition->get_roomList()[1]->get_id()));
+                stream->writeAttribute("subroom2_id",QString::number(transition->get_roomList()[1]->get_id()));
             }
 
             stream->writeStartElement("vertex");
@@ -1682,7 +1686,7 @@ void jpsDatamanager::parseRoom(const QDomElement &element)
 
             roomlist.last()->setType(Room);
             roomlist.last()->setRoomType(Corridor);
-            roomlist.last()->set_id(element.attribute("id").toInt());
+//            roomlist.last()->set_id(element.attribute("id").toInt());
             roomlist.last()->setName(element.attribute("caption"));
             parseSubRoom(child.toElement());
         }
@@ -1692,7 +1696,7 @@ void jpsDatamanager::parseRoom(const QDomElement &element)
 
             roomlist.last()->setType(Room);
             roomlist.last()->setRoomType(Corridor);
-            roomlist.last()->set_id(element.attribute("id").toInt());
+//            roomlist.last()->set_id(element.attribute("id").toInt());
             roomlist.last()->setName(element.attribute("caption"));
             parseSubRoom(child.toElement());
         }
@@ -1702,7 +1706,7 @@ void jpsDatamanager::parseRoom(const QDomElement &element)
 
             roomlist.last()->setType(Room);
             roomlist.last()->setRoomType(Office);
-            roomlist.last()->set_id(element.attribute("id").toInt());
+//            roomlist.last()->set_id(element.attribute("id").toInt());
             roomlist.last()->setName(element.attribute("caption"));
             parseSubRoom(child.toElement());
         }
@@ -1712,7 +1716,7 @@ void jpsDatamanager::parseRoom(const QDomElement &element)
 
             roomlist.last()->setType(Room);
             roomlist.last()->setRoomType(Lobby);
-            roomlist.last()->set_id(element.attribute("id").toInt());
+//            roomlist.last()->set_id(element.attribute("id").toInt());
             roomlist.last()->setName(element.attribute("caption"));
             parseSubRoom(child.toElement());
         }
@@ -1722,7 +1726,7 @@ void jpsDatamanager::parseRoom(const QDomElement &element)
 
             roomlist.last()->setType(Room);
             roomlist.last()->setRoomType(Entrance);
-            roomlist.last()->set_id(element.attribute("id").toInt());
+//            roomlist.last()->set_id(element.attribute("id").toInt());
             roomlist.last()->setName(element.attribute("caption"));
             parseSubRoom(child.toElement());
         }
@@ -1731,7 +1735,7 @@ void jpsDatamanager::parseRoom(const QDomElement &element)
             addStair();
 
             stair_list.last()->setType(Stair);
-            stair_list.last()->set_id(element.attribute("id").toInt());
+//            stair_list.last()->set_id(element.attribute("id").toInt());
             stair_list.last()->setName(element.attribute("caption"));
 
             parseSubRoom(child.toElement());
@@ -1741,7 +1745,7 @@ void jpsDatamanager::parseRoom(const QDomElement &element)
             addPlatform();
 
             platform_list.last()->setType(Platform);
-            platform_list.last()->set_id(element.attribute("id").toInt());
+//            platform_list.last()->set_id(element.attribute("id").toInt());
             platform_list.last()->setName(element.attribute("caption"));
 
             parseSubRoom(child.toElement());
@@ -1981,7 +1985,7 @@ bool jpsDatamanager::readDXF(std::string filename)
 
     bool addContents = dxf.in(filename, this);
 
-    importLayers.clear(); // Clear importLayer for new import
+    importLayers.clear(); // Clear importLayer for new new import
 
     if (addContents)
     {
@@ -1993,7 +1997,6 @@ bool jpsDatamanager::readDXF(std::string filename)
     }
     else
     {
-
         qDebug("Leave jpsDatamanager::readDXF");
         return false;
     }

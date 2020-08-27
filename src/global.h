@@ -36,5 +36,5 @@ enum LineType {wall , transition, hline, track, landmarkText, goalRect, sourceRe
 
 enum DrawingMode {WallMode, TransitionMode, HlineMode, TrackMode, LandmarkMode, SourceMode, GoalMode, SelectMode, MeasureMode};
 
-enum RoomType {Corridor, Office, Lobby, Entrance};
+enum RoomType {Corridor, Office, Lobby, Entrance}; //RoomType belongs to Room ZoneType
 #endif //JPSEDITOR_GLOBAL_H
