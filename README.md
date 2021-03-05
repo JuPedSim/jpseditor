@@ -2,6 +2,8 @@
 
 # JPSeditor
 
+**Important notice: This project is no longer on active development, for support question feel free to ask at [JuPedSim core](https://github.com/JuPedSim/jpscore).**
+
 `JPSeditor` is a graphical user interface to create the geometry of a scenario simulated by JuPedSim. It comes with set of CAD- and further tools to simplify the creation of proper xml-files 
 incorporating information about the scenario' geometry.
 
